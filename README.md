@@ -24,3 +24,12 @@ For rendering the map, a combination of [MapLibre GL JS](https://maplibre.org/ma
 3. Run `npm run dev` to get a development server running at [http://localhost:3000](http://localhost:3000)
 4. Explore the data on the map or make changes to the code
 
+## Notes
+
+### Accessing the Grist API from a Next API route
+
+We need to make use of Next's [API route](https://nextjs.org/docs/api-routes/introduction) feature because we have to ensure that the Grist API key remains secret (it can be used for **posting, updating and deleting data** as well). With the custom API route at `/pages/api/grist.ts` we make sure that the Grist API itself is only accessed on our server side and not exposed to clients. Grist is indicating that they are working on building a more nuanced permissions concept for their API keys, which might make our workaround unnecessary in the future.
+
+### The map cluster view
+
+The code for creating the map clusters is mainly taken and adapted from [MapLibre's examples](https://maplibre.org/maplibre-gl-js-docs/example/cluster/). This is a quick proof-of-concept, so please excuse the `@ts-ignore`'s here and there.
