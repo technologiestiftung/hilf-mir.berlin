@@ -1,34 +1,26 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Proof-of-concept: How to use Grist as a backend for an external service
 
-## Getting Started
+This project is a small proof-of-concept on how to use a [Grist](https://www.getgrist.com/) table and display its records in an external service, in this case a Next.js app. The table holds information about ~2700 _Kindertagesstätten_ in Berlin and is used an exemplary set of data.
 
-First, run the development server:
+The main goal of this project was to be able to edit the data in the Grist backend and have a separate frontend that displays the Kindertagesstätten on a map.
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+For rendering the map, a combination of [MapLibre GL JS](https://maplibre.org/maplibre-gl-js-docs/api/) (for the map, the markers and the interactions) and [maptiler](https://www.maptiler.com/) (for vector tiles) is used.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> Note that you don't need to use maptiler if you prefer to not create an account. Open Street Maps provides free (raster) tiles that can be used instead.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Getting started
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+### Requirements
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+- An account at [getgrist.com](https://www.getgrist.com/) or for your self-hosted Grist instance. In this specific case we use out own hosted instance.
+- A Grist table with geo information. In this case we use a table called "Kindertagesstatten" that includes ~2700 Kitas in Berlin.
+- An account at [maptiler.com](https://www.maptiler.com/) along with a personal API key.
+- [Node.js](https://nodejs.org) installed on your computer.
 
-## Learn More
+### Steps
 
-To learn more about Next.js, take a look at the following resources:
+1. Install dependencies via `npm install`
+2. Create a file `/.env.development.local` and fill it according to `/.env.example`
+3. Run `npm run dev` to get a development server running at [http://localhost:3000](http://localhost:3000)
+4. Explore the data on the map or make changes to the code
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
