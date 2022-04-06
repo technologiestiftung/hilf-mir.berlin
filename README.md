@@ -33,3 +33,51 @@ We need to make use of Next's [API route](https://nextjs.org/docs/api-routes/int
 ### The map cluster view
 
 The code for creating the map clusters is mainly taken and adapted from [MapLibre's examples](https://maplibre.org/maplibre-gl-js-docs/example/cluster/). This is a quick proof-of-concept, so please excuse the `@ts-ignore`'s here and there.
+
+## Contributors
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/dnsos"><img src="https://avatars.githubusercontent.com/u/15640196?v=4?s=64" width="64px;" alt=""/><br /><sub><b>Dennis Ostendorf</b></sub></a><br /><a href="https://github.com/technologiestiftung/grist-external-dashboard-poc/commits?author=dnsos" title="Code">💻</a> <a href="https://github.com/technologiestiftung/grist-external-dashboard-poc/commits?author=dnsos" title="Documentation">📖</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+
+## Credits
+
+<table>
+  <tr>
+    <td>
+      <a src="https://citylab-berlin.org/de/start/">
+        <br />
+        <br />
+        <img width="200" src="https://logos.citylab-berlin.org/logo-citylab-berlin.svg" />
+      </a>
+    </td>
+    <td>
+      A project by: <a src="https://www.technologiestiftung-berlin.de/">
+        <br />
+        <br />
+        <img width="150" src="https://logos.citylab-berlin.org/logo-technologiestiftung-berlin-de.svg" />
+      </a>
+    </td>
+    <td>
+      Supported by: <a src="https://www.berlin.de/">
+        <br />
+        <br />
+        <img width="120" src="https://logos.citylab-berlin.org/logo-berlin.svg" />
+      </a>
+    </td>
+  </tr>
+</table>
