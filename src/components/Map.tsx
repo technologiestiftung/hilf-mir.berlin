@@ -1,19 +1,10 @@
 import { useEffect, FC } from "react";
 import maplibregl from "maplibre-gl";
 import { createGeoJsonStructure } from "../lib/createGeojsonStructure";
+import { TableRowType } from "../common/types/gristData";
 
 interface MapType {
-  markers?: MarkerType[];
-}
-
-export interface MarkerType {
-  id: number;
-  fields: {
-    X: number;
-    Y: number;
-    e_name: string;
-    [key: string]: unknown;
-  };
+  markers?: TableRowType[];
 }
 
 export const Map: FC<MapType> = ({ markers }) => {
@@ -113,9 +104,8 @@ export const Map: FC<MapType> = ({ markers }) => {
       });
 
       map.on("click", "unclustered-point", function (e) {
-        // @ts-ignore
+        if (!e.features) return;
         const coordinates = e.features[0].geometry.coordinates.slice();
-        // @ts-ignore
         const name = e.features[0].properties.Projekt;
 
         // Ensure that if the map is zoomed out such that

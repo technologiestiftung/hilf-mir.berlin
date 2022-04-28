@@ -1,6 +1,6 @@
-import { MarkerType } from "../../components/Map";
+import { TableRowType } from "../../common/types/gristData";
 
-export const createGeoJsonStructure = (markers: MarkerType[]) => {
+export const createGeoJsonStructure = (markers: TableRowType[]) => {
   return {
     type: "FeatureCollection",
     features: markers.map((marker) => {
