@@ -1,5 +1,7 @@
 # Proof of concept: How to use Grist as a backend for an external service
 
+> **Note:** There are two relevant branches in this repository. `kitas` has the initial POC of displaying lots of facilities. `main` is the branch for continued work which uses a different, smaller dataset and a more nuanced UI. Neither branch shall be deleted.
+
 This project is a small proof-of-concept on how to use a [Grist](https://www.getgrist.com/) table and display its records in an external service, in this case a Next.js app. The table holds information about ~2700 _Kindertagesstätten_ in Berlin and is used an exemplary set of data.
 
 The main goal of this project was to be able to edit the data in the Grist backend and have a separate frontend that displays the Kindertagesstätten on a map.
