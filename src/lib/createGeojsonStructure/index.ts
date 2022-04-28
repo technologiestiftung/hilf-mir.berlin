@@ -12,6 +12,7 @@ export const createGeoJsonStructure = (markers: TableRowType[]) => {
           coordinates: [marker.fields.long2, marker.fields.lat],
         },
         properties: {
+          id: marker.id,
           ...marker.fields,
         },
       };
