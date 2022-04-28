@@ -11,7 +11,7 @@ export const Map: FC<MapType> = ({ markers }) => {
   useEffect(() => {
     const map = new maplibregl.Map({
       container: "map",
-      style: `https://api.maptiler.com/maps/basic/style.json?key=${process.env.NEXT_PUBLIC_MAPTILER_API_KEY}`,
+      style: `https://api.maptiler.com/maps/bright/style.json?key=${process.env.NEXT_PUBLIC_MAPTILER_API_KEY}`,
       center: [13.404954, 52.520008],
       zoom: 11,
     });
@@ -32,20 +32,7 @@ export const Map: FC<MapType> = ({ markers }) => {
         type: "circle",
         source: "facilities",
         paint: {
-          // Use step expressions (https://maplibre.org/maplibre-gl-js-docs/style-spec/#expressions-step)
-          // with three steps to implement three types of circles:
-          //   * Blue, 20px circles when point count is less than 100
-          //   * Yellow, 30px circles when point count is between 100 and 750
-          //   * Pink, 40px circles when point count is greater than or equal to 750
-          "circle-color": [
-            "step",
-            ["get", "point_count"],
-            "#51bbd6",
-            50,
-            "#f1f075",
-            100,
-            "#f28cb1",
-          ],
+          "circle-color": "#2f2fa2",
           "circle-radius": [
             "step",
             ["get", "point_count"],
@@ -62,11 +49,12 @@ export const Map: FC<MapType> = ({ markers }) => {
         id: "cluster-count",
         type: "symbol",
         source: "facilities",
-        //filter: ['has', 'point_count'],
         layout: {
           "text-field": "{point_count_abbreviated}",
-          "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
-          "text-size": 12,
+          "text-size": 16,
+        },
+        paint: {
+          "text-color": "#fff",
         },
       });
 
@@ -76,9 +64,9 @@ export const Map: FC<MapType> = ({ markers }) => {
         source: "facilities",
         filter: ["!", ["has", "point_count"]],
         paint: {
-          "circle-color": "#11b4da",
+          "circle-color": "#2f2fa2",
           "circle-radius": 8,
-          "circle-stroke-width": 1,
+          "circle-stroke-width": 2,
           "circle-stroke-color": "#fff",
         },
       });
@@ -127,5 +115,5 @@ export const Map: FC<MapType> = ({ markers }) => {
     });
   }, [markers]);
 
-  return <div id="map" style={{ width: "100vw", height: "100vh" }}></div>;
+  return <div id="map" className="w-full h-full"></div>;
 };
