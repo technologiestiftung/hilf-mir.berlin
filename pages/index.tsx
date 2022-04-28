@@ -4,8 +4,10 @@ import { useState } from "react";
 import useSWR from "swr";
 import { TableRowType } from "../src/common/types/gristData";
 import { FacilityInfo } from "../src/components/FacilityInfo";
-import { Map } from "../src/components/Map";
+import { FacilitiesMap } from "../src/components/Map";
+import { Search } from "../src/components/Search";
 import { Sidebar } from "../src/components/Sidebar";
+import { FeatureType } from "../src/lib/requests/geocode";
 const citylabLogo = "images/citylab_logo.svg";
 
 interface FetcherReturnType {
@@ -26,6 +28,7 @@ const Home: NextPage = () => {
   const [selectedFacility, setSelectedFacility] = useState<TableRowType | null>(
     null
   );
+  const [mapCenter, setMapCenter] = useState<[number, number] | undefined>();
 
   const handleMarkerClick = (facilityId: number) => {
     if (!data) return;
@@ -34,6 +37,10 @@ const Home: NextPage = () => {
     );
     if (!selectedFacility) return;
     setSelectedFacility(selectedFacility);
+  };
+
+  const handleSearchResult = (place: FeatureType) => {
+    setMapCenter(place.center);
   };
 
   if (error) return <div>{error.message}</div>;
@@ -67,12 +74,16 @@ const Home: NextPage = () => {
               />
             )}
             {!selectedFacility && (
-              <p>Bitte wähle eine Einrichtung auf der Karte aus.</p>
+              <Search onSelectResult={handleSearchResult} />
             )}
           </Sidebar>
           {!data && !error && <p>Lade ...</p>}
           {data && (
-            <Map markers={data.records} onMarkerClick={handleMarkerClick} />
+            <FacilitiesMap
+              center={mapCenter}
+              markers={data.records}
+              onMarkerClick={handleMarkerClick}
+            />
           )}
         </div>
       </div>
