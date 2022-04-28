@@ -28,7 +28,7 @@ export const Map: FC<MapType> = ({ markers }) => {
     if (!markers) return;
 
     map.on("load", function () {
-      map.addSource("kitas", {
+      map.addSource("facilities", {
         type: "geojson",
         data: createGeoJsonStructure(markers),
         cluster: true,
@@ -39,7 +39,7 @@ export const Map: FC<MapType> = ({ markers }) => {
       map.addLayer({
         id: "clusters",
         type: "circle",
-        source: "kitas",
+        source: "facilities",
         paint: {
           // Use step expressions (https://maplibre.org/maplibre-gl-js-docs/style-spec/#expressions-step)
           // with three steps to implement three types of circles:
@@ -70,7 +70,7 @@ export const Map: FC<MapType> = ({ markers }) => {
       map.addLayer({
         id: "cluster-count",
         type: "symbol",
-        source: "kitas",
+        source: "facilities",
         //filter: ['has', 'point_count'],
         layout: {
           "text-field": "{point_count_abbreviated}",
@@ -82,7 +82,7 @@ export const Map: FC<MapType> = ({ markers }) => {
       map.addLayer({
         id: "unclustered-point",
         type: "circle",
-        source: "kitas",
+        source: "facilities",
         filter: ["!", ["has", "point_count"]],
         paint: {
           "circle-color": "#11b4da",
@@ -99,7 +99,7 @@ export const Map: FC<MapType> = ({ markers }) => {
         const clusterId = features[0].properties.cluster_id;
         // @ts-ignore
         map
-          .getSource("kitas")
+          .getSource("facilities")
           // @ts-ignore
           .getClusterExpansionZoom(clusterId, function (err, zoom) {
             if (err) return;

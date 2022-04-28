@@ -8,7 +8,7 @@ export const createGeoJsonStructure = (markers: MarkerType[]) => {
         type: "Feature",
         geometry: {
           type: "Point",
-          coordinates: [marker.fields.X, marker.fields.Y],
+          coordinates: [marker.fields.long2, marker.fields.lat],
         },
         properties: {
           ...marker.fields,
