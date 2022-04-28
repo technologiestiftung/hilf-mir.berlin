@@ -1,9 +1,13 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import useSWR from "swr";
+import { TableRowType } from "../src/common/types/gristData";
 import { Map } from "../src/components/Map";
 
-const fetcher = async (url: string) => {
+interface FetcherReturnType {
+  records: TableRowType[];
+}
+const fetcher = async (url: string): Promise<FetcherReturnType> => {
   const res = await fetch(url);
   const data = await res.json();
 

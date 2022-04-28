@@ -1,19 +1,10 @@
 import { useEffect, FC } from "react";
 import maplibregl from "maplibre-gl";
 import { createGeoJsonStructure } from "../lib/createGeojsonStructure";
+import { TableRowType } from "../common/types/gristData";
 
 interface MapType {
-  markers?: MarkerType[];
-}
-
-export interface MarkerType {
-  id: number;
-  fields: {
-    X: number;
-    Y: number;
-    e_name: string;
-    [key: string]: unknown;
-  };
+  markers?: TableRowType[];
 }
 
 export const Map: FC<MapType> = ({ markers }) => {
@@ -28,7 +19,7 @@ export const Map: FC<MapType> = ({ markers }) => {
     if (!markers) return;
 
     map.on("load", function () {
-      map.addSource("kitas", {
+      map.addSource("facilities", {
         type: "geojson",
         data: createGeoJsonStructure(markers),
         cluster: true,
@@ -39,7 +30,7 @@ export const Map: FC<MapType> = ({ markers }) => {
       map.addLayer({
         id: "clusters",
         type: "circle",
-        source: "kitas",
+        source: "facilities",
         paint: {
           // Use step expressions (https://maplibre.org/maplibre-gl-js-docs/style-spec/#expressions-step)
           // with three steps to implement three types of circles:
@@ -70,7 +61,7 @@ export const Map: FC<MapType> = ({ markers }) => {
       map.addLayer({
         id: "cluster-count",
         type: "symbol",
-        source: "kitas",
+        source: "facilities",
         //filter: ['has', 'point_count'],
         layout: {
           "text-field": "{point_count_abbreviated}",
@@ -82,7 +73,7 @@ export const Map: FC<MapType> = ({ markers }) => {
       map.addLayer({
         id: "unclustered-point",
         type: "circle",
-        source: "kitas",
+        source: "facilities",
         filter: ["!", ["has", "point_count"]],
         paint: {
           "circle-color": "#11b4da",
@@ -99,7 +90,7 @@ export const Map: FC<MapType> = ({ markers }) => {
         const clusterId = features[0].properties.cluster_id;
         // @ts-ignore
         map
-          .getSource("kitas")
+          .getSource("facilities")
           // @ts-ignore
           .getClusterExpansionZoom(clusterId, function (err, zoom) {
             if (err) return;
@@ -113,10 +104,9 @@ export const Map: FC<MapType> = ({ markers }) => {
       });
 
       map.on("click", "unclustered-point", function (e) {
-        // @ts-ignore
+        if (!e.features) return;
         const coordinates = e.features[0].geometry.coordinates.slice();
-        // @ts-ignore
-        const name = e.features[0].properties.e_name;
+        const name = e.features[0].properties.Projekt;
 
         // Ensure that if the map is zoomed out such that
         // multiple copies of the feature are visible, the

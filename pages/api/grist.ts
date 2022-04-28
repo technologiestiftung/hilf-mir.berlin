@@ -9,7 +9,7 @@ export default async function handler(
 
   try {
     const response = await fetch(
-      `${process.env.NEXT_SECRET_GRIST_DOMAIN}/api/docs/33F9uWYkjdaz/tables/Kindertagesstatten/records`,
+      `${process.env.NEXT_SECRET_GRIST_DOMAIN}/api/docs/${process.env.NEXT_SECRET_GRIST_DOC_ID}/tables/${process.env.NEXT_SECRET_GRIST_TABLE}/records`,
       {
         headers: {
           Authorization: `Bearer ${process.env.NEXT_SECRET_GRIST_API_KEY}`,
@@ -23,7 +23,6 @@ export default async function handler(
     const data = await response.json();
     res.status(200).json(data);
   } catch (error: unknown) {
-    // @ts-ignore
-    return res.status(error.status || 500).end(error.message);
+    return res.status(500).end((error as Error).message);
   }
 }
