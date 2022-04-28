@@ -1,7 +1,9 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import { useState } from "react";
 import useSWR from "swr";
 import { TableRowType } from "../src/common/types/gristData";
+import { FacilityInfo } from "../src/components/FacilityInfo";
 import { Map } from "../src/components/Map";
 import { Sidebar } from "../src/components/Sidebar";
 const citylabLogo = "images/citylab_logo.svg";
@@ -21,13 +23,24 @@ const fetcher = async (url: string): Promise<FetcherReturnType> => {
 
 const Home: NextPage = () => {
   const { data, error } = useSWR(`/api/grist`, fetcher);
+  const [selectedFacility, setSelectedFacility] = useState<TableRowType | null>(
+    null
+  );
+
+  const handleMarkerClick = (facilityId: number) => {
+    if (!data) return;
+    const sel = data?.records.find((facility) => facility.id === facilityId);
+    if (!sel) return;
+    console.log(sel);
+    setSelectedFacility(sel);
+  };
 
   if (error) return <div>{error.message}</div>;
 
   return (
     <>
       <Head>
-        <title>Psychologische Unterstütrzung in Berlin - Prototyp</title>
+        <title>Psychologische Unterstützung in Berlin - Prototyp</title>
       </Head>
       <div className="w-screen h-screen grid grid-cols-1 grid-rows-[auto_1fr]">
         <header className="px-4 py-3 flex flex-wrap gap-2 items-center justify-between border-b border-gray-200">
@@ -45,13 +58,21 @@ const Home: NextPage = () => {
           </div>
         </header>
         <div className="w-full h-full grid grid-cols-[4fr_8fr]">
-          <Sidebar>I am a sidebar</Sidebar>
-          {!data && !error && (
-            <p className="w-full h-full bg-gray-200 self-center justify-self-center">
-              Lade ...
-            </p>
+          <Sidebar>
+            {selectedFacility && (
+              <FacilityInfo
+                facility={selectedFacility}
+                onClose={() => setSelectedFacility(null)}
+              />
+            )}
+            {!selectedFacility && (
+              <p>Bitte wähle eine Einrichtung auf der Karte aus.</p>
+            )}
+          </Sidebar>
+          {!data && !error && <p>Lade ...</p>}
+          {data && (
+            <Map markers={data.records} onMarkerClick={handleMarkerClick} />
           )}
-          {data && <Map markers={data.records} />}
         </div>
       </div>
     </>

@@ -5,9 +5,13 @@ import { TableRowType } from "../common/types/gristData";
 
 interface MapType {
   markers?: TableRowType[];
+  onMarkerClick?: (facilityId: number) => void;
 }
 
-export const Map: FC<MapType> = ({ markers }) => {
+export const Map: FC<MapType> = ({
+  markers,
+  onMarkerClick = () => undefined,
+}) => {
   useEffect(() => {
     const map = new maplibregl.Map({
       container: "map",
@@ -93,8 +97,9 @@ export const Map: FC<MapType> = ({ markers }) => {
 
       map.on("click", "unclustered-point", function (e) {
         if (!e.features) return;
-        const coordinates = e.features[0].geometry.coordinates.slice();
-        const name = e.features[0].properties.Projekt;
+        //const coordinates = e.features[0].geometry.coordinates.slice();
+        //const name = e.features[0].properties.Projekt;
+        onMarkerClick(e.features[0].properties.id);
 
         // Ensure that if the map is zoomed out such that
         // multiple copies of the feature are visible, the
@@ -103,7 +108,7 @@ export const Map: FC<MapType> = ({ markers }) => {
           coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
         } */
 
-        new maplibregl.Popup().setLngLat(coordinates).setText(name).addTo(map);
+        //new maplibregl.Popup().setLngLat(coordinates).setText(name).addTo(map);
       });
 
       map.on("mouseenter", "clusters", function () {
@@ -113,6 +118,7 @@ export const Map: FC<MapType> = ({ markers }) => {
         map.getCanvas().style.cursor = "";
       });
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [markers]);
 
   return <div id="map" className="w-full h-full"></div>;
