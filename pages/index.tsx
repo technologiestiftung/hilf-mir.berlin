@@ -23,7 +23,6 @@ const Home: NextPage = () => {
   const { data, error } = useSWR(`/api/grist`, fetcher);
 
   if (error) return <div>{error.message}</div>;
-  if (!data) return <div>Loading...</div>;
 
   return (
     <>
@@ -47,7 +46,12 @@ const Home: NextPage = () => {
         </header>
         <div className="w-full h-full grid grid-cols-[4fr_8fr]">
           <Sidebar>I am a sidebar</Sidebar>
-          <Map markers={data.records} />
+          {!data && !error && (
+            <p className="w-full h-full bg-gray-200 self-center justify-self-center">
+              Lade ...
+            </p>
+          )}
+          {data && <Map markers={data.records} />}
         </div>
       </div>
     </>
