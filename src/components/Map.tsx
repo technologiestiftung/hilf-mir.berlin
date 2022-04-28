@@ -1,29 +1,40 @@
-import { useEffect, FC } from "react";
-import maplibregl from "maplibre-gl";
+import { useEffect, FC, useRef } from "react";
+import maplibregl, { LngLatLike, Map } from "maplibre-gl";
 import { createGeoJsonStructure } from "../lib/createGeojsonStructure";
 import { TableRowType } from "../common/types/gristData";
 
 interface MapType {
+  center?: LngLatLike;
   markers?: TableRowType[];
   onMarkerClick?: (facilityId: number) => void;
 }
 
-export const Map: FC<MapType> = ({
+const DEFAULT_CENTER = [13.404954, 52.520008] as LngLatLike;
+
+export const FacilitiesMap: FC<MapType> = ({
+  center,
   markers,
   onMarkerClick = () => undefined,
 }) => {
+  const map = useRef<Map>(null);
+
   useEffect(() => {
-    const map = new maplibregl.Map({
+    // @ts-ignore
+    map.current = new maplibregl.Map({
       container: "map",
       style: `https://api.maptiler.com/maps/bright/style.json?key=${process.env.NEXT_PUBLIC_MAPTILER_API_KEY}`,
-      center: [13.404954, 52.520008],
+      center: DEFAULT_CENTER,
       zoom: 11,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    if (!markers) return;
+  useEffect(() => {
+    if (!markers || !map.current) return;
 
-    map.on("load", function () {
-      map.addSource("facilities", {
+    map.current.on("load", function () {
+      if (!map.current) return;
+      map.current.addSource("facilities", {
         type: "geojson",
         data: createGeoJsonStructure(markers),
         cluster: true,
@@ -31,7 +42,7 @@ export const Map: FC<MapType> = ({
         clusterRadius: 50, // Radius of each cluster when clustering points (defaults to 50)
       });
 
-      map.addLayer({
+      map.current.addLayer({
         id: "clusters",
         type: "circle",
         source: "facilities",
@@ -49,7 +60,7 @@ export const Map: FC<MapType> = ({
         },
       });
 
-      map.addLayer({
+      map.current.addLayer({
         id: "cluster-count",
         type: "symbol",
         source: "facilities",
@@ -62,7 +73,7 @@ export const Map: FC<MapType> = ({
         },
       });
 
-      map.addLayer({
+      map.current.addLayer({
         id: "unclustered-point",
         type: "circle",
         source: "facilities",
@@ -75,27 +86,29 @@ export const Map: FC<MapType> = ({
         },
       });
 
-      map.on("click", "clusters", function (e) {
-        const features = map.queryRenderedFeatures(e.point, {
+      map.current.on("click", "clusters", function (e) {
+        if (!map.current) return;
+        const features = map.current.queryRenderedFeatures(e.point, {
           layers: ["clusters"],
         });
         const clusterId = features[0].properties.cluster_id;
         // @ts-ignore
-        map
+        map.current
           .getSource("facilities")
           // @ts-ignore
           .getClusterExpansionZoom(clusterId, function (err, zoom) {
             if (err) return;
             if (!zoom) return;
+            if (!map.current) return;
 
-            map.easeTo({
+            map.current.easeTo({
               center: features[0].geometry.coordinates,
               zoom: zoom,
             });
           });
       });
 
-      map.on("click", "unclustered-point", function (e) {
+      map.current.on("click", "unclustered-point", function (e) {
         if (!e.features) return;
         //const coordinates = e.features[0].geometry.coordinates.slice();
         //const name = e.features[0].properties.Projekt;
@@ -111,15 +124,28 @@ export const Map: FC<MapType> = ({
         //new maplibregl.Popup().setLngLat(coordinates).setText(name).addTo(map);
       });
 
-      map.on("mouseenter", "clusters", function () {
-        map.getCanvas().style.cursor = "pointer";
+      map.current.on("mouseenter", "clusters", function () {
+        if (!map.current) return;
+        map.current.getCanvas().style.cursor = "pointer";
       });
-      map.on("mouseleave", "clusters", function () {
-        map.getCanvas().style.cursor = "";
+      map.current.on("mouseleave", "clusters", function () {
+        if (!map.current) return;
+        map.current.getCanvas().style.cursor = "";
       });
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [markers]);
+
+  useEffect(() => {
+    if (!map.current || !center) return;
+
+    map.current.flyTo({
+      center: center,
+      zoom: 15,
+      essential: true,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [center]);
 
   return <div id="map" className="w-full h-full"></div>;
 };
