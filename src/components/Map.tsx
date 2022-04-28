@@ -116,7 +116,7 @@ export const Map: FC<MapType> = ({ markers }) => {
         // @ts-ignore
         const coordinates = e.features[0].geometry.coordinates.slice();
         // @ts-ignore
-        const name = e.features[0].properties.e_name;
+        const name = e.features[0].properties.Projekt;
 
         // Ensure that if the map is zoomed out such that
         // multiple copies of the feature are visible, the
