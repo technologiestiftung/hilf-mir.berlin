@@ -29,10 +29,11 @@ const Home: NextPage = () => {
 
   const handleMarkerClick = (facilityId: number) => {
     if (!data) return;
-    const sel = data?.records.find((facility) => facility.id === facilityId);
-    if (!sel) return;
-    console.log(sel);
-    setSelectedFacility(sel);
+    const selectedFacility = data?.records.find(
+      (facility) => facility.id === facilityId
+    );
+    if (!selectedFacility) return;
+    setSelectedFacility(selectedFacility);
   };
 
   if (error) return <div>{error.message}</div>;
