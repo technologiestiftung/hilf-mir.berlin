@@ -65,16 +65,13 @@ const Home: NextPage = () => {
             />
           </div>
         </header>
-        <div className="w-full h-full grid grid-cols-[4fr_8fr]">
-          <Sidebar>
+        <div className="w-full h-full">
+          <Sidebar isOpen={!!selectedFacility}>
             {selectedFacility && (
               <FacilityInfo
                 facility={selectedFacility}
                 onClose={() => setSelectedFacility(null)}
               />
-            )}
-            {!selectedFacility && (
-              <Search onSelectResult={handleSearchResult} />
             )}
           </Sidebar>
           {!data && !error && <p>Lade ...</p>}
