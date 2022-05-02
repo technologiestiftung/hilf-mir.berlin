@@ -2,19 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-* {
-  box-sizing: border-box;
+@layer base {
+  @font-face {
+    font-family: "National Regular";
+    font-style: normal;
+    font-weight: 400;
+    src: local("National Regular"),
+      url(/fonts/NationalWeb-Regular.woff2) format("woff2"),
+      url(/fonts/NationalWeb-Regular.woff) format("woff");
+  }
+  @font-face {
+    font-family: "National Regular";
+    font-style: italic;
+    font-weight: 400;
+    src: local("National Regular Italic"),
+      url(/fonts/NationalWeb-RegularItalic.woff2) format("woff2"),
+      url(/fonts/NationalWeb-RegularItalic.woff) format("woff");
+  }
+  @font-face {
+    font-family: "National Regular";
+    font-style: normal;
+    font-weight: 800;
+    src: local("National Extrabold"),
+      url(/fonts/NationalWeb-Extrabold.woff2) format("woff2"),
+      url(/fonts/NationalWeb-Extrabold.woff) format("woff");
+  }
+  @font-face {
+    font-family: "National Regular";
+    font-style: italic;
+    font-weight: 800;
+    src: local("National Extrabold Italic"),
+      url(/fonts/NationalWeb-ExtraboldItalic.woff2) format("woff2"),
+      url(/fonts/NationalWeb-ExtraboldItalic.woff) format("woff");
+  }
+  html, body {
+    @apply antialiased text-gray-700;
+  }
 }

@@ -51,12 +51,12 @@ const Home: NextPage = () => {
         <title>Psychologische Unterstützung in Berlin - Prototyp</title>
       </Head>
       <div className="w-screen h-screen grid grid-cols-1 grid-rows-[auto_1fr]">
-        <header className="px-4 py-3 flex flex-wrap gap-2 items-center justify-between border-b border-gray-200">
-          <h1 className="text-gray-800">
+        <header className="h-14 px-4 py-3 flex flex-wrap gap-2 items-center justify-between border-b border-gray-50">
+          <h1>
             <strong>Psychologische Unterstützung</strong> <span>in Berlin</span>
           </h1>
-          <div className="flex gap-3 items-center">
-            <span className="text-sm text-gray-800">Ein Prototyp des</span>
+          <div className="hidden md:flex gap-3 items-center">
+            <span className="text-md">Ein Prototyp des</span>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={citylabLogo}
@@ -65,18 +65,16 @@ const Home: NextPage = () => {
             />
           </div>
         </header>
-        <div className="w-full h-full grid grid-cols-[4fr_8fr]">
-          <Sidebar>
+        <div className="w-full h-full">
+          <Sidebar isOpen={!!selectedFacility}>
             {selectedFacility && (
               <FacilityInfo
                 facility={selectedFacility}
                 onClose={() => setSelectedFacility(null)}
               />
             )}
-            {!selectedFacility && (
-              <Search onSelectResult={handleSearchResult} />
-            )}
           </Sidebar>
+          <Search onSelectResult={handleSearchResult} />
           {!data && !error && <p>Lade ...</p>}
           {data && (
             <FacilitiesMap
