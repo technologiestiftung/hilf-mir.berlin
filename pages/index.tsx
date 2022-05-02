@@ -51,11 +51,11 @@ const Home: NextPage = () => {
         <title>Psychologische Unterstützung in Berlin - Prototyp</title>
       </Head>
       <div className="w-screen h-screen grid grid-cols-1 grid-rows-[auto_1fr]">
-        <header className="px-4 py-3 flex flex-wrap gap-2 items-center justify-between border-b border-gray-50">
+        <header className="h-14 px-4 py-3 flex flex-wrap gap-2 items-center justify-between border-b border-gray-50">
           <h1>
             <strong>Psychologische Unterstützung</strong> <span>in Berlin</span>
           </h1>
-          <div className="flex gap-3 items-center">
+          <div className="hidden md:flex gap-3 items-center">
             <span className="text-md">Ein Prototyp des</span>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -74,6 +74,7 @@ const Home: NextPage = () => {
               />
             )}
           </Sidebar>
+          <Search onSelectResult={handleSearchResult} />
           {!data && !error && <p>Lade ...</p>}
           {data && (
             <FacilitiesMap
