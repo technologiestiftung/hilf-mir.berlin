@@ -38,7 +38,25 @@ module.exports = {
       trasparent: "transparent",
       currentColor: "currentColor",
     },
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: [
+          "National Regular",
+          "Calibri",
+          "Segoe UI",
+          "Roboto",
+          "Oxygen",
+          "Ubuntu",
+          "Cantarell",
+          "Fira Sans",
+          "Droid Sans",
+          "Helvetica Neue",
+          "Helvetica",
+          "Arial",
+          "sans-serif",
+        ],
+      },
+    },
   },
   plugins: [],
 };
