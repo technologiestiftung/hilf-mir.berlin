@@ -60,14 +60,16 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility, onClose }) => {
           </div>
           {(facility.fields.Telefonnummer || facility.fields.EMail) && (
             <div className="mt-6 grid grid-cols-[1fr] gap-4 items-center">
-              {facility.fields.EMail && (
+              {facility.fields.Website && (
                 <div>
                   <div>Website</div>
                   <a
-                    href={`mailto:${facility.fields.EMail}`}
+                    href={facility.fields.Website}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="inline-block text-xl underline text-blue-500"
                   >
-                    {facility.fields.EMail}
+                    {facility.fields.Website}
                   </a>
                 </div>
               )}
