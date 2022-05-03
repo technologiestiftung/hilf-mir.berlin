@@ -38,12 +38,12 @@ const Home: NextPage = () => {
 
   const handleMarkerClick = (facilityIds: number[]) => {
     if (!data) return;
-    if (facilityIds.length > 1) {
-      setFacilityIdsAtLocation(facilityIds);
-    }
+    setFacilityIdsAtLocation(facilityIds);
+
     const selectedFacility = data?.records.find(
       (facility) => facility.id === facilityIds[0]
     );
+
     if (!selectedFacility) return;
     setSelectedFacility(selectedFacility);
   };
