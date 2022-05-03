@@ -14,7 +14,7 @@ interface FaqItemType {
 
 const FaqItem: FC<FaqItemType> = ({ question, answers }) => {
   return (
-    <div className="py-6 border-b border-gray-50">
+    <div className="py-6 border-b last:border-0 border-gray-50">
       <p>{question}</p>
       {answers.map((r) => {
         return (
@@ -29,7 +29,7 @@ const FaqItem: FC<FaqItemType> = ({ question, answers }) => {
 
 export const FacilityInfo: FC<FacilityInfoType> = ({ facility, onClose }) => {
   return (
-    <article className="h-full flex flex-col place-content-between">
+    <article className="h-full flex flex-col gap-y-8 justify-between">
       <div className="grid gap-2 grid-cols-[1fr_auto] items-start">
         <div>
           <h2 className="text-blue-500 text-3xl">{facility.fields.Projekt}</h2>
@@ -59,26 +59,43 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility, onClose }) => {
             )}
           </div>
           {(facility.fields.Telefonnummer || facility.fields.EMail) && (
-            <div className="mt-6 grid grid-cols-[1fr] gap-4 items-center">
+            <div className="my-4 grid grid-cols-[1fr] gap-0 items-center">
               {facility.fields.Website && (
-                <div>
-                  <div>Website</div>
+                <div className="grid grid-cols-[56px_auto] gap-4 py-2 border-b border-gray-50 first-of-type:border-t">
+                  <div>
+                    <b>Website</b>
+                  </div>
                   <a
                     href={facility.fields.Website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-block text-xl underline text-blue-500 break-all"
+                    className="inline-block underline text-blue-500 break-all"
                   >
                     {facility.fields.Website}
                   </a>
                 </div>
               )}
-              {facility.fields.Telefonnummer && (
-                <div>
-                  <div>Tel.</div>
-                  <div className="text-xl font-bold">
-                    {facility.fields.Telefonnummer}
+              {facility.fields.EMail && (
+                <div className="grid grid-cols-[56px_auto] gap-4 py-2 border-b border-gray-50">
+                  <div>
+                    <b>E-Mail</b>
                   </div>
+                  <a
+                    href={`mailto:${facility.fields.EMail}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block underline text-blue-500 break-all"
+                  >
+                    {facility.fields.EMail}
+                  </a>
+                </div>
+              )}
+              {facility.fields.Telefonnummer && (
+                <div className="grid grid-cols-[56px_auto] gap-4 py-2 border-b border-gray-50">
+                  <div>
+                    <b>Tel.</b>
+                  </div>
+                  <div>{facility.fields.Telefonnummer}</div>
                 </div>
               )}
             </div>
@@ -93,17 +110,19 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility, onClose }) => {
           <img src={closeIcon} alt="Schließen" aria-hidden={true} />
         </button>
       </div>
-      <div className="mt-4 p-4 bg-gray-25">
-        <h4 className="font-bold">Adresse</h4>
-        <address className="not-italic">
-          {facility.fields.Strasse && facility.fields.Hausnummer && (
-            <p>
-              {facility.fields.Strasse} {facility.fields.Hausnummer}
-            </p>
-          )}
-          {facility.fields.PLZ && <p>{facility.fields.PLZ} Berlin</p>}
-          {facility.fields.Bezirk && <p>{facility.fields.Bezirk}</p>}
-        </address>
+      <div className="pb-4">
+        <div className="bg-gray-25 px-3 py-2">
+          <h4 className="font-bold">Adresse</h4>
+          <address className="not-italic">
+            {facility.fields.Strasse && facility.fields.Hausnummer && (
+              <p>
+                {facility.fields.Strasse} {facility.fields.Hausnummer}
+              </p>
+            )}
+            {facility.fields.PLZ && <p>{facility.fields.PLZ} Berlin</p>}
+            {facility.fields.Bezirk && <p>{facility.fields.Bezirk}</p>}
+          </address>
+        </div>
       </div>
     </article>
   );

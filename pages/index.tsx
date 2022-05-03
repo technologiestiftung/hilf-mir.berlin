@@ -10,6 +10,7 @@ import { Search } from "../src/components/Search";
 import { Sidebar } from "../src/components/Sidebar";
 import { FeatureType } from "../src/lib/requests/geocode";
 const citylabLogo = "images/citylab_logo.svg";
+const sengpgLogo = "images/sengpg_logo.svg";
 
 interface FetcherReturnType {
   records: TableRowType[];
@@ -56,20 +57,24 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Psychologische Unterstützung in Berlin - Prototyp</title>
+        <title>Psychologischer Wegweiser - Prototyp</title>
       </Head>
       <div className="w-screen h-screen grid grid-cols-1 grid-rows-[auto_1fr]">
-        <header className="h-14 px-4 py-3 flex flex-wrap gap-2 items-center justify-between border-b border-gray-50">
-          <h1>
-            <strong>Psychologische Unterstützung</strong> <span>in Berlin</span>
-          </h1>
-          <div className="hidden md:flex gap-3 items-center">
-            <span className="text-md">Ein Prototyp des</span>
+        <header className="h-16 pl-4 pr-3 py-3 flex flex-wrap gap-2 items-center justify-between border-b border-gray-50">
+          <h1 className="font-bold">Psychologischer Wegweiser</h1>
+          <div className="hidden md:flex gap-4 items-center">
+            <span className="text-sm">Eine Kooperation von</span>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={citylabLogo}
               alt="Logo des CityLAB Berlin"
               className="h-8 w-auto"
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={sengpgLogo}
+              alt="Logo der Senatsverwaltung für Wissenschaft, Gesundheit, Pflege und Gleichstellung in Berlin"
+              className="h-9 w-auto"
             />
           </div>
         </header>
