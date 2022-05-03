@@ -6,7 +6,7 @@ import { TableRowType } from "../common/types/gristData";
 interface MapType {
   center?: LngLatLike;
   markers?: TableRowType[];
-  onMarkerClick?: (facilityId: number) => void;
+  onMarkerClick?: (facilityIds: number[]) => void;
 }
 
 const DEFAULT_CENTER = [13.404954, 52.520008] as LngLatLike;
@@ -110,9 +110,8 @@ export const FacilitiesMap: FC<MapType> = ({
 
       map.current.on("click", "unclustered-point", function (e) {
         if (!e.features) return;
-        //const coordinates = e.features[0].geometry.coordinates.slice();
-        //const name = e.features[0].properties.Projekt;
-        onMarkerClick(e.features[0].properties.id);
+
+        onMarkerClick(e.features.map((f) => f.properties.id));
 
         // Ensure that if the map is zoomed out such that
         // multiple copies of the feature are visible, the
@@ -147,5 +146,5 @@ export const FacilitiesMap: FC<MapType> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [center]);
 
-  return <div id="map" className="w-full h-full"></div>;
+  return <div id="map" className="w-full h-full bg-[#F8F4F0]"></div>;
 };

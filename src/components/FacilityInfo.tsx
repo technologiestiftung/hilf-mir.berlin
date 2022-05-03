@@ -67,7 +67,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility, onClose }) => {
                     href={facility.fields.Website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-block text-xl underline text-blue-500"
+                    className="inline-block text-xl underline text-blue-500 break-all"
                   >
                     {facility.fields.Website}
                   </a>

@@ -29,7 +29,7 @@ export const Search: FC<SearchType> = ({
           name="place"
           id="geocoding-input"
           className="border border-gray-100 px-3 py-2"
-          placeholder="Nach Standort suchen ..."
+          placeholder="Adresssuche"
           value={searchInput}
           onChange={onSearchInput}
         />

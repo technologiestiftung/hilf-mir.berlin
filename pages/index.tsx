@@ -4,6 +4,7 @@ import { useState } from "react";
 import useSWR from "swr";
 import { TableRowType } from "../src/common/types/gristData";
 import { FacilityInfo } from "../src/components/FacilityInfo";
+import { FacilityPagination } from "../src/components/FacilityPagination";
 import { FacilitiesMap } from "../src/components/Map";
 import { Search } from "../src/components/Search";
 import { Sidebar } from "../src/components/Sidebar";
@@ -28,12 +29,19 @@ const Home: NextPage = () => {
   const [selectedFacility, setSelectedFacility] = useState<TableRowType | null>(
     null
   );
+
+  const [facilityIdsAtLocation, setFacilityIdsAtLocation] = useState<number[]>(
+    []
+  );
   const [mapCenter, setMapCenter] = useState<[number, number] | undefined>();
 
-  const handleMarkerClick = (facilityId: number) => {
+  const handleMarkerClick = (facilityIds: number[]) => {
     if (!data) return;
+    if (facilityIds.length > 1) {
+      setFacilityIdsAtLocation(facilityIds);
+    }
     const selectedFacility = data?.records.find(
-      (facility) => facility.id === facilityId
+      (facility) => facility.id === facilityIds[0]
     );
     if (!selectedFacility) return;
     setSelectedFacility(selectedFacility);
@@ -67,10 +75,27 @@ const Home: NextPage = () => {
         </header>
         <div className="w-full h-full">
           <Sidebar isOpen={!!selectedFacility}>
+            <>
+              {facilityIdsAtLocation.length > 1 && (
+                <FacilityPagination
+                  facilityIds={facilityIdsAtLocation}
+                  onChange={(facilityId) => {
+                    const selectedFacility = data?.records.find(
+                      (facility) => facility.id === facilityId
+                    );
+                    if (!selectedFacility) return;
+                    setSelectedFacility(selectedFacility);
+                  }}
+                />
+              )}
+            </>
             {selectedFacility && (
               <FacilityInfo
                 facility={selectedFacility}
-                onClose={() => setSelectedFacility(null)}
+                onClose={() => {
+                  setFacilityIdsAtLocation([]);
+                  setSelectedFacility(null);
+                }}
               />
             )}
           </Sidebar>
