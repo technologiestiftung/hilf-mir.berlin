@@ -1,5 +1,5 @@
 import { useEffect, FC, useRef } from "react";
-import maplibregl, { LngLatLike, Map } from "maplibre-gl";
+import maplibregl, { LngLatLike, Map, Marker } from "maplibre-gl";
 import { createGeoJsonStructure } from "../lib/createGeojsonStructure";
 import { TableRowType } from "../common/types/gristData";
 
@@ -7,6 +7,7 @@ interface MapType {
   center?: LngLatLike;
   markers?: TableRowType[];
   onMarkerClick?: (facilityIds: number[]) => void;
+  highlightedLocation?: [number, number];
 }
 
 const DEFAULT_CENTER = [13.404954, 52.520008] as LngLatLike;
@@ -15,8 +16,10 @@ export const FacilitiesMap: FC<MapType> = ({
   center,
   markers,
   onMarkerClick = () => undefined,
+  highlightedLocation,
 }) => {
   const map = useRef<Map>(null);
+  const highlightedMarker = useRef<Marker>(null);
 
   useEffect(() => {
     // @ts-ignore
@@ -145,6 +148,27 @@ export const FacilitiesMap: FC<MapType> = ({
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [center]);
+
+  useEffect(() => {
+    if (!map.current) return;
+    if (!highlightedLocation) {
+      // Without a highlightedLocation we want to remove any highlightedMarker:
+      highlightedMarker && highlightedMarker.current?.remove();
+      return;
+    } else {
+      // Remove possibly existent markers:
+      highlightedMarker.current?.remove();
+
+      const customMarker = document.createElement("div");
+      customMarker.className =
+        "rounded-full w-8 h-8 bg-blue-500 ring-4 ring-magenta-500";
+
+      // @ts-ignore
+      highlightedMarker.current = new maplibregl.Marker(customMarker)
+        .setLngLat(highlightedLocation as LngLatLike)
+        .addTo(map.current);
+    }
+  }, [highlightedLocation]);
 
   return <div id="map" className="w-full h-full bg-[#F8F4F0]"></div>;
 };

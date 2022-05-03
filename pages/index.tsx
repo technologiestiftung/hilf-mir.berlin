@@ -106,6 +106,15 @@ const Home: NextPage = () => {
               center={mapCenter}
               markers={data.records}
               onMarkerClick={handleMarkerClick}
+              highlightedLocation={
+                !!selectedFacility?.fields.long2 &&
+                !!selectedFacility?.fields.lat
+                  ? [
+                      selectedFacility?.fields.long2,
+                      selectedFacility?.fields.lat,
+                    ]
+                  : undefined
+              }
             />
           )}
         </div>
