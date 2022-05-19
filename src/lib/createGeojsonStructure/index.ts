@@ -1,13 +1,13 @@
-import { TableRowType } from "../../common/types/gristData";
+import { TableRowType } from '@common/types/gristData'
 
 export const createGeoJsonStructure = (markers: TableRowType[]) => {
   return {
-    type: "FeatureCollection",
+    type: 'FeatureCollection',
     features: markers.map((marker) => {
       return {
-        type: "Feature",
+        type: 'Feature',
         geometry: {
-          type: "Point",
+          type: 'Point',
           // It's curious that the Grist API returns the field long2, while actually in the spreadsheet the column is called long:
           coordinates: [marker.fields.long2, marker.fields.lat],
         },
@@ -15,7 +15,7 @@ export const createGeoJsonStructure = (markers: TableRowType[]) => {
           id: marker.id,
           ...marker.fields,
         },
-      };
+      }
     }),
-  };
-};
+  }
+}

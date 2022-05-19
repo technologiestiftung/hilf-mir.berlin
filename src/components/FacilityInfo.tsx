@@ -1,15 +1,15 @@
-import { FC } from "react";
-import { TableRowType as FacilityType } from "../common/types/gristData";
-const closeIcon = "images/icon_close.svg";
+import { FC } from 'react'
+import { TableRowType as FacilityType } from '@common/types/gristData'
+const closeIcon = 'images/icon_close.svg'
 
 interface FacilityInfoType {
-  facility: FacilityType;
-  onClose?: () => void;
+  facility: FacilityType
+  onClose?: () => void
 }
 
 interface FaqItemType {
-  question: string;
-  answers: string[];
+  question: string
+  answers: string[]
 }
 
 const FaqItem: FC<FaqItemType> = ({ question, answers }) => {
@@ -21,11 +21,11 @@ const FaqItem: FC<FaqItemType> = ({ question, answers }) => {
           <p key={r} className="mt-1 text-xl font-bold">
             → {r}
           </p>
-        );
+        )
       })}
     </div>
-  );
-};
+  )
+}
 
 export const FacilityInfo: FC<FacilityInfoType> = ({ facility, onClose }) => {
   return (
@@ -48,13 +48,13 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility, onClose }) => {
             {facility.fields.Zielgruppe && (
               <FaqItem
                 question="Für wen ist dieses Angebot besonders geeignet?"
-                answers={facility.fields.Zielgruppe.split(";")}
+                answers={facility.fields.Zielgruppe.split(';')}
               />
             )}
             {facility.fields.Leistung && (
               <FaqItem
                 question="Welche Leistungen gibt es hier?"
-                answers={facility.fields.Leistung.split(";")}
+                answers={facility.fields.Leistung.split(';')}
               />
             )}
           </div>
@@ -125,5 +125,5 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility, onClose }) => {
         </div>
       </div>
     </article>
-  );
-};
+  )
+}

@@ -1,23 +1,23 @@
-import { ChangeEvent, FC, useState } from "react";
-import { FeatureType, geocode } from "../lib/requests/geocode";
+import { ChangeEvent, FC, useState } from 'react'
+import { FeatureType, geocode } from '@lib/requests/geocode'
 
 interface SearchType {
-  onSelectResult?: (place: FeatureType) => void;
+  onSelectResult?: (place: FeatureType) => void
 }
 export const Search: FC<SearchType> = ({
   onSelectResult = () => undefined,
 }) => {
-  const [searchInput, setSearchInput] = useState("");
-  const [searchResults, setSearchResults] = useState<FeatureType[]>([]);
+  const [searchInput, setSearchInput] = useState('')
+  const [searchResults, setSearchResults] = useState<FeatureType[]>([])
   const onSearchInput = async (e: ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
-    setSearchInput(inputValue);
+    const inputValue = e.target.value
+    setSearchInput(inputValue)
 
-    if (inputValue.length <= 3) return;
-    const results = await geocode(inputValue);
-    if (!results) return;
-    setSearchResults(results.features);
-  };
+    if (inputValue.length <= 3) return
+    const results = await geocode(inputValue)
+    if (!results) return
+    setSearchResults(results.features)
+  }
   return (
     <div className="absolute top-20 right-3 w-72 z-10 bg-white">
       <div className="grid grid-cols-1">
@@ -45,17 +45,17 @@ export const Search: FC<SearchType> = ({
                 <button
                   className="text-left w-full py-2 px-3 transition-colors hover:bg-gray-50"
                   onClick={() => {
-                    setSearchInput("");
-                    setSearchResults([]);
-                    onSelectResult(searchResult);
+                    setSearchInput('')
+                    setSearchResults([])
+                    onSelectResult(searchResult)
                   }}
                 >
                   {searchResult.place_name}
                 </button>
               </li>
-            );
+            )
           })}
       </ul>
     </div>
-  );
-};
+  )
+}
