@@ -1,16 +1,19 @@
-import { useEffect, FC, useRef } from "react";
-import maplibregl, { LngLatLike, Map, Marker } from "maplibre-gl";
-import { createGeoJsonStructure } from "../lib/createGeojsonStructure";
-import { TableRowType } from "../common/types/gristData";
+import { useEffect, FC, useRef } from 'react'
+import maplibregl, { LngLatLike, Map, Marker } from 'maplibre-gl'
+import {
+  createGeoJsonStructure,
+  GeojsonFeatureType,
+} from '@lib/createGeojsonStructure'
+import { TableRowType } from '@common/types/gristData'
 
 interface MapType {
-  center?: LngLatLike;
-  markers?: TableRowType[];
-  onMarkerClick?: (facilityIds: number[]) => void;
-  highlightedLocation?: [number, number];
+  center?: LngLatLike
+  markers?: TableRowType[]
+  onMarkerClick?: (facilityIds: number[]) => void
+  highlightedLocation?: [number, number]
 }
 
-const DEFAULT_CENTER = [13.404954, 52.520008] as LngLatLike;
+const DEFAULT_CENTER = [13.404954, 52.520008] as LngLatLike
 
 export const FacilitiesMap: FC<MapType> = ({
   center,
@@ -18,42 +21,45 @@ export const FacilitiesMap: FC<MapType> = ({
   onMarkerClick = () => undefined,
   highlightedLocation,
 }) => {
-  const map = useRef<Map>(null);
-  const highlightedMarker = useRef<Marker>(null);
+  const map = useRef<Map>(null)
+  const highlightedMarker = useRef<Marker>(null)
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     map.current = new maplibregl.Map({
-      container: "map",
-      style: `https://api.maptiler.com/maps/bright/style.json?key=${process.env.NEXT_PUBLIC_MAPTILER_API_KEY}`,
+      container: 'map',
+      style: `https://api.maptiler.com/maps/bright/style.json?key=${
+        process.env.NEXT_PUBLIC_MAPTILER_API_KEY || ''
+      }`,
       center: DEFAULT_CENTER,
       zoom: 11,
-    });
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
   useEffect(() => {
-    if (!markers || !map.current) return;
+    if (!markers || !map.current) return
 
-    map.current.on("load", function () {
-      if (!map.current) return;
-      map.current.addSource("facilities", {
-        type: "geojson",
+    map.current.on('load', function () {
+      if (!map.current) return
+      map.current.addSource('facilities', {
+        type: 'geojson',
         data: createGeoJsonStructure(markers),
         cluster: true,
         clusterMaxZoom: 14, // Max zoom to cluster points on
         clusterRadius: 50, // Radius of each cluster when clustering points (defaults to 50)
-      });
+      })
 
       map.current.addLayer({
-        id: "clusters",
-        type: "circle",
-        source: "facilities",
+        id: 'clusters',
+        type: 'circle',
+        source: 'facilities',
         paint: {
-          "circle-color": "#2f2fa2",
-          "circle-radius": [
-            "step",
-            ["get", "point_count"],
+          'circle-color': '#2f2fa2',
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
             20,
             50,
             30,
@@ -61,107 +67,112 @@ export const FacilitiesMap: FC<MapType> = ({
             35,
           ],
         },
-      });
+      })
 
       map.current.addLayer({
-        id: "cluster-count",
-        type: "symbol",
-        source: "facilities",
+        id: 'cluster-count',
+        type: 'symbol',
+        source: 'facilities',
         layout: {
-          "text-field": "{point_count_abbreviated}",
-          "text-size": 16,
+          'text-field': '{point_count_abbreviated}',
+          'text-size': 16,
         },
         paint: {
-          "text-color": "#fff",
+          'text-color': '#fff',
         },
-      });
+      })
 
       map.current.addLayer({
-        id: "unclustered-point",
-        type: "circle",
-        source: "facilities",
-        filter: ["!", ["has", "point_count"]],
+        id: 'unclustered-point',
+        type: 'circle',
+        source: 'facilities',
+        filter: ['!', ['has', 'point_count']],
         paint: {
-          "circle-color": "#2f2fa2",
-          "circle-radius": 8,
-          "circle-stroke-width": 2,
-          "circle-stroke-color": "#fff",
+          'circle-color': '#2f2fa2',
+          'circle-radius': 8,
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#fff',
         },
-      });
+      })
 
-      map.current.on("click", "clusters", function (e) {
-        if (!map.current) return;
+      map.current.on('click', 'clusters', function (e) {
+        if (!map.current) return
         const features = map.current.queryRenderedFeatures(e.point, {
-          layers: ["clusters"],
-        });
-        const clusterId = features[0].properties.cluster_id;
+          layers: ['clusters'],
+        }) as GeojsonFeatureType[]
+        const clusterId = features[0].properties.cluster_id
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         map.current
-          .getSource("facilities")
+          .getSource('facilities')
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          .getClusterExpansionZoom(clusterId, function (err, zoom) {
-            if (err) return;
-            if (!zoom) return;
-            if (!map.current) return;
+          .getClusterExpansionZoom(clusterId, function (err, zoom: number) {
+            if (err) return
+            if (!zoom) return
+            if (!map.current) return
 
             map.current.easeTo({
               center: features[0].geometry.coordinates,
               zoom: zoom,
-            });
-          });
-      });
+            })
+          })
+      })
 
-      map.current.on("click", "unclustered-point", function (e) {
-        if (!e.features) return;
+      map.current.on('click', 'unclustered-point', function (e) {
+        if (!e.features) return
 
-        const clickedMarkerIds = e.features.map((f) => f.properties.id);
+        const features = e.features as GeojsonFeatureType[]
+        const clickedMarkerIds = features.map((f) => f.properties.id)
 
-        onMarkerClick(clickedMarkerIds);
-      });
+        onMarkerClick(clickedMarkerIds)
+      })
 
-      map.current.on("mouseenter", "clusters", function () {
-        if (!map.current) return;
-        map.current.getCanvas().style.cursor = "pointer";
-      });
-      map.current.on("mouseleave", "clusters", function () {
-        if (!map.current) return;
-        map.current.getCanvas().style.cursor = "";
-      });
-    });
+      map.current.on('mouseenter', 'clusters', function () {
+        if (!map.current) return
+        map.current.getCanvas().style.cursor = 'pointer'
+      })
+      map.current.on('mouseleave', 'clusters', function () {
+        if (!map.current) return
+        map.current.getCanvas().style.cursor = ''
+      })
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [markers]);
+  }, [markers])
 
   useEffect(() => {
-    if (!map.current || !center) return;
+    if (!map.current || !center) return
 
     map.current.flyTo({
       center: center,
       zoom: 15,
       essential: true,
-    });
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [center]);
+  }, [center])
 
   useEffect(() => {
-    if (!map.current) return;
+    if (!map.current) return
     if (!highlightedLocation) {
       // Without a highlightedLocation we want to remove any highlightedMarker:
-      highlightedMarker && highlightedMarker.current?.remove();
-      return;
+      highlightedMarker && highlightedMarker.current?.remove()
+      return
     } else {
       // Remove possibly existent markers:
-      highlightedMarker.current?.remove();
+      highlightedMarker.current?.remove()
 
-      const customMarker = document.createElement("div");
+      const customMarker = document.createElement('div')
       customMarker.className =
-        "rounded-full w-8 h-8 bg-blue-500 ring-4 ring-magenta-500";
+        'rounded-full w-8 h-8 bg-blue-500 ring-4 ring-magenta-500'
 
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       highlightedMarker.current = new maplibregl.Marker(customMarker)
         .setLngLat(highlightedLocation as LngLatLike)
-        .addTo(map.current);
+        .addTo(map.current)
     }
-  }, [highlightedLocation]);
+  }, [highlightedLocation])
 
-  return <div id="map" className="w-full h-full bg-[#F8F4F0]"></div>;
-};
+  return <div id="map" className="w-full h-full bg-[#F8F4F0]"></div>
+}

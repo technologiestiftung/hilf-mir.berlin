@@ -1,21 +1,19 @@
-import { FC, useEffect, useState } from "react";
-import { TableRowType as FacilityType } from "../common/types/gristData";
-const closeIcon = "images/icon_close.svg";
+import { FC, useEffect, useState } from 'react'
 
 interface FacilityPaginationType {
-  facilityIds: number[];
-  onChange?: (facilityId: number) => void;
+  facilityIds: number[]
+  onChange?: (facilityId: number) => void
 }
 
 export const FacilityPagination: FC<FacilityPaginationType> = ({
   facilityIds,
   onChange = () => undefined,
 }) => {
-  const [currentFacilityIndex, setCurrentFacilityIndex] = useState(0);
+  const [currentFacilityIndex, setCurrentFacilityIndex] = useState(0)
 
   useEffect(() => {
-    onChange(facilityIds[currentFacilityIndex]);
-  }, [facilityIds, currentFacilityIndex, onChange]);
+    onChange(facilityIds[currentFacilityIndex])
+  }, [facilityIds, currentFacilityIndex, onChange])
   return (
     <div className="flex gap-2 items-center mb-6">
       <p>
@@ -36,5 +34,5 @@ export const FacilityPagination: FC<FacilityPaginationType> = ({
         →
       </button>
     </div>
-  );
-};
+  )
+}

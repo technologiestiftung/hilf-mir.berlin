@@ -1,20 +1,55 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
+    "alwaysStrict": true,
     "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "jsx": "preserve",
+    "lib": [
+      "dom",
+      "es2019"
+    ],
+    "module": "esnext",
+    "noEmit": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "esnext",
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": [
+        "./src/components/*"
+      ],
+      "@lib/*": [
+        "./src/lib/*"
+      ],
+      "@common/*": [
+        "./src/common/*"
+      ]
+    },
+    "moduleResolution": "node",
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "./test/**/*.ts",
+    "./test/**/*.tsx",
+    "./src/**/*.ts",
+    "./src/**/*.tsx",
+    "./pages/**/*.ts",
+    "./pages/**/*.tsx",
+  ],
+  "exclude": [
+    "node_modules",
+    "*.setup.js",
+    ".eslintrc.js",
+    ".importjs.js",
+    "*.config.js",
+    ".prettierrc.js",
+    "i18n.js"
+  ]
 }

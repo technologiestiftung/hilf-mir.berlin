@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint --ext js,jsx,ts,tsx .",
+    "lint-fix": "npm run lint -- --fix",
+    "type-check": "tsc --project tsconfig.json --pretty --noEmit"
   },
   "dependencies": {
     "maplibre-gl": "2.1.6",
@@ -18,11 +20,21 @@
   "devDependencies": {
     "@types/node": "17.0.21",
     "@types/react": "17.0.45",
+    "@typescript-eslint/eslint-plugin": "5.25.0",
+    "@typescript-eslint/parser": "5.25.0",
     "autoprefixer": "10.4.7",
     "eslint": "8.15.0",
     "eslint-config-next": "12.1.6",
+    "eslint-config-prettier": "8.5.0",
+    "eslint-import-resolver-typescript": "2.7.1",
+    "eslint-plugin-import": "2.26.0",
+    "eslint-plugin-jsx-a11y": "6.5.1",
+    "eslint-plugin-prettier": "4.0.0",
+    "eslint-plugin-react": "7.30.0",
     "postcss": "8.4.13",
+    "prettier": "2.6.2",
     "tailwindcss": "3.0.24",
+    "tsconfig-paths-webpack-plugin": "3.5.2",
     "typescript": "4.6.4"
   }
 }
