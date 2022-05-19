@@ -1,6 +1,9 @@
 import { useEffect, FC, useRef } from 'react'
 import maplibregl, { LngLatLike, Map, Marker } from 'maplibre-gl'
-import { createGeoJsonStructure } from '@lib/createGeojsonStructure'
+import {
+  createGeoJsonStructure,
+  GeojsonFeatureType,
+} from '@lib/createGeojsonStructure'
 import { TableRowType } from '@common/types/gristData'
 
 interface MapType {
@@ -22,10 +25,13 @@ export const FacilitiesMap: FC<MapType> = ({
   const highlightedMarker = useRef<Marker>(null)
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     map.current = new maplibregl.Map({
       container: 'map',
-      style: `https://api.maptiler.com/maps/bright/style.json?key=${process.env.NEXT_PUBLIC_MAPTILER_API_KEY}`,
+      style: `https://api.maptiler.com/maps/bright/style.json?key=${
+        process.env.NEXT_PUBLIC_MAPTILER_API_KEY || ''
+      }`,
       center: DEFAULT_CENTER,
       zoom: 11,
     })
@@ -93,13 +99,16 @@ export const FacilitiesMap: FC<MapType> = ({
         if (!map.current) return
         const features = map.current.queryRenderedFeatures(e.point, {
           layers: ['clusters'],
-        })
+        }) as GeojsonFeatureType[]
         const clusterId = features[0].properties.cluster_id
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         map.current
           .getSource('facilities')
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          .getClusterExpansionZoom(clusterId, function (err, zoom) {
+          .getClusterExpansionZoom(clusterId, function (err, zoom: number) {
             if (err) return
             if (!zoom) return
             if (!map.current) return
@@ -114,7 +123,8 @@ export const FacilitiesMap: FC<MapType> = ({
       map.current.on('click', 'unclustered-point', function (e) {
         if (!e.features) return
 
-        const clickedMarkerIds = e.features.map((f) => f.properties.id)
+        const features = e.features as GeojsonFeatureType[]
+        const clickedMarkerIds = features.map((f) => f.properties.id)
 
         onMarkerClick(clickedMarkerIds)
       })
@@ -156,6 +166,7 @@ export const FacilitiesMap: FC<MapType> = ({
       customMarker.className =
         'rounded-full w-8 h-8 bg-blue-500 ring-4 ring-magenta-500'
 
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       highlightedMarker.current = new maplibregl.Marker(customMarker)
         .setLngLat(highlightedLocation as LngLatLike)

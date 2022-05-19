@@ -27,7 +27,9 @@ export const geocode = async (query: string): Promise<SearchResultType> => {
 
   try {
     const response = await fetch(
-      `https://api.maptiler.com/geocoding/${query}.json?bbox=${BBOX_BERLIN}&key=${process.env.NEXT_PUBLIC_MAPTILER_API_KEY}`
+      `https://api.maptiler.com/geocoding/${query}.json?bbox=${BBOX_BERLIN}&key=${
+        process.env.NEXT_PUBLIC_MAPTILER_API_KEY || ''
+      }`
     )
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`)

@@ -106,7 +106,6 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility, onClose }) => {
           aria-label="Schließen"
           className="absolute top-2 right-2 translate-y-1 p-1"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={closeIcon} alt="Schließen" aria-hidden={true} />
         </button>
       </div>

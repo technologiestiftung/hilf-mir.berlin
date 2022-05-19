@@ -9,7 +9,9 @@ export const Search: FC<SearchType> = ({
 }) => {
   const [searchInput, setSearchInput] = useState('')
   const [searchResults, setSearchResults] = useState<FeatureType[]>([])
-  const onSearchInput = async (e: ChangeEvent<HTMLInputElement>) => {
+  const onSearchInput = async (
+    e: ChangeEvent<HTMLInputElement>
+  ): Promise<void> => {
     const inputValue = e.target.value
     setSearchInput(inputValue)
 
@@ -31,6 +33,7 @@ export const Search: FC<SearchType> = ({
           className="border border-gray-100 px-3 py-2"
           placeholder="Adresssuche"
           value={searchInput}
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onChange={onSearchInput}
         />
       </div>
