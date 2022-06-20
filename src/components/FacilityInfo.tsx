@@ -32,12 +32,11 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility, onClose }) => {
     <article className="h-full flex flex-col gap-y-8 justify-between">
       <div className="grid gap-2 grid-cols-[1fr_auto] items-start">
         <div>
-          <h2 className="text-blue-500 text-3xl">{facility.fields.Einrichtung}</h2>
-          <h3 className="mt-1 text-base">
-            {facility.fields.Trager}
-          </h3>
+          <h2 className="text-blue-500 text-3xl">
+            {facility.fields.Einrichtung}
+          </h2>
+          <h3 className="mt-1 text-base">{facility.fields.Trager}</h3>
           <p className="mt-4">{facility.fields.Uber_uns}</p>
-          
           <div className="mt-4 grid grid-cols-1 gap-0 border-t border-gray-50">
             {facility.fields.Schlagworte && (
               <FaqItem
@@ -45,10 +44,10 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility, onClose }) => {
                 answers={facility.fields.Schlagworte.split(';')}
               />
             )}
-            {facility.fields.Leistung && (
+            {facility.fields.Sprachen && (
               <FaqItem
-                question="Welche Leistungen gibt es hier?"
-                answers={facility.fields.Leistung.split(';')}
+                question="Welche Sprachen werden angeboten?"
+                answers={facility.fields.Sprachen.split(';')}
               />
             )}
           </div>

@@ -46,8 +46,8 @@ export interface TableRowType {
     Sonntag_2: string
     Anmeldung_gewunscht: string
     Weitere_Offnungszeiten: string
-    lat: string
-    long2: string
+    lat: number
+    long2: number
   }
 }
 
