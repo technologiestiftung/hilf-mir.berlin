@@ -32,36 +32,29 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility, onClose }) => {
     <article className="h-full flex flex-col gap-y-8 justify-between">
       <div className="grid gap-2 grid-cols-[1fr_auto] items-start">
         <div>
-          <h2 className="text-blue-500 text-3xl">{facility.fields.Projekt}</h2>
-          <h3 className="mt-1 text-base">
-            {facility.fields.Zuwendungsempfanger}
-          </h3>
-          {facility.fields.EMail && (
-            <a
-              href={`mailto:${facility.fields.EMail}`}
-              className="mt-8 mb-4 w-full text-center inline-block p-2 bg-magenta-500 text-white"
-            >
-              E-Mail schreiben
-            </a>
-          )}
+          <h2 className="text-blue-500 text-3xl">
+            {facility.fields.Einrichtung}
+          </h2>
+          <h3 className="mt-1 text-base">{facility.fields.Trager}</h3>
+          <p className="mt-4">{facility.fields.Uber_uns}</p>
           <div className="mt-4 grid grid-cols-1 gap-0 border-t border-gray-50">
-            {facility.fields.Zielgruppe && (
+            {facility.fields.Schlagworte && (
               <FaqItem
-                question="Für wen ist dieses Angebot besonders geeignet?"
-                answers={facility.fields.Zielgruppe.split(';')}
+                question="Schlagworte"
+                answers={facility.fields.Schlagworte.split(';')}
               />
             )}
-            {facility.fields.Leistung && (
+            {facility.fields.Sprachen && (
               <FaqItem
-                question="Welche Leistungen gibt es hier?"
-                answers={facility.fields.Leistung.split(';')}
+                question="Welche Sprachen werden angeboten?"
+                answers={facility.fields.Sprachen.split(';')}
               />
             )}
           </div>
           {(facility.fields.Telefonnummer || facility.fields.EMail) && (
             <div className="my-4 grid grid-cols-[1fr] gap-0 items-center">
               {facility.fields.Website && (
-                <div className="grid grid-cols-[56px_auto] gap-4 py-2 border-b border-gray-50 first-of-type:border-t">
+                <div className="grid grid-cols-[56px_auto] gap-4 py-2 first-of-type:border-t">
                   <div>
                     <b>Website</b>
                   </div>
@@ -75,8 +68,16 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility, onClose }) => {
                   </a>
                 </div>
               )}
+              {facility.fields.Website && (
+                <a
+                  href={facility.fields.Website}
+                  className="mt-2 mb-4 w-full text-center inline-block p-2 bg-magenta-500 text-white"
+                >
+                  Website besuchen
+                </a>
+              )}
               {facility.fields.EMail && (
-                <div className="grid grid-cols-[56px_auto] gap-4 py-2 border-b border-gray-50">
+                <div className="grid grid-cols-[56px_auto] gap-4 py-2">
                   <div>
                     <b>E-Mail</b>
                   </div>
@@ -89,6 +90,14 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility, onClose }) => {
                     {facility.fields.EMail}
                   </a>
                 </div>
+              )}
+              {facility.fields.EMail && (
+                <a
+                  href={`mailto:${facility.fields.EMail}`}
+                  className="mt-2 mb-4 w-full text-center inline-block p-2 bg-magenta-500 text-white"
+                >
+                  E-Mail schreiben
+                </a>
               )}
               {facility.fields.Telefonnummer && (
                 <div className="grid grid-cols-[56px_auto] gap-4 py-2 border-b border-gray-50">
