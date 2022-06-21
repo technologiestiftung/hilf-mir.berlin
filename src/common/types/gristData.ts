@@ -13,7 +13,6 @@ export interface TableRowType {
     Beratungsmoglichkeiten: string
     Sprachen: string
     Barrierefreiheit: string
-    Weitere_Besonderheiten: string
     Uber_uns: string
     Reichweite: string
     Stadtteile_Regionen: string

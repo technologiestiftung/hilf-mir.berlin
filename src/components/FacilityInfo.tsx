@@ -12,6 +12,12 @@ interface FaqItemType {
   answers: string[]
 }
 
+
+interface TagItemType {
+  question: string
+  answers: string[]
+}
+
 const FaqItem: FC<FaqItemType> = ({ question, answers }) => {
   return (
     <div className="py-6 border-b last:border-0 border-gray-50">
@@ -27,6 +33,26 @@ const FaqItem: FC<FaqItemType> = ({ question, answers }) => {
   )
 }
 
+const TagItem: FC<TagItemType> = ({ question, answers }) => {
+  return (
+    <div className="py-6 border-b last:border-0 border-gray-50">
+      <p className="mb-2">{question}</p>
+      <p>
+        {answers.map((r) => {
+          return (
+            <span
+              key={r}
+              className="bg-blue-100 text-blue-800 mr-2 mb-2 px-2.5 py-0.5 rounded inline-block"
+            >
+              {r}
+            </span>
+          )
+        })}
+      </p>
+    </div>
+  )
+}
+
 export const FacilityInfo: FC<FacilityInfoType> = ({ facility, onClose }) => {
   return (
     <article className="h-full flex flex-col gap-y-8 justify-between">
@@ -35,17 +61,16 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility, onClose }) => {
           <h2 className="text-blue-500 text-3xl">
             {facility.fields.Einrichtung}
           </h2>
-          <h3 className="mt-1 text-base">{facility.fields.Trager}</h3>
           <p className="mt-4">{facility.fields.Uber_uns}</p>
           <div className="mt-4 grid grid-cols-1 gap-0 border-t border-gray-50">
             {facility.fields.Schlagworte && (
-              <FaqItem
+              <TagItem
                 question="Schlagworte"
                 answers={facility.fields.Schlagworte.split(';')}
               />
             )}
             {facility.fields.Sprachen && (
-              <FaqItem
+              <TagItem
                 question="Welche Sprachen werden angeboten?"
                 answers={facility.fields.Sprachen.split(';')}
               />
