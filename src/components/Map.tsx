@@ -48,7 +48,7 @@ export const FacilitiesMap: FC<MapType> = ({
         data: createGeoJsonStructure(markers),
         cluster: true,
         clusterMaxZoom: 14, // Max zoom to cluster points on
-        clusterRadius: 50, // Radius of each cluster when clustering points (defaults to 50)
+        clusterRadius: 20, // Radius of each cluster when clustering points (defaults to 50)
       })
 
       map.current.addLayer({
@@ -122,9 +122,14 @@ export const FacilitiesMap: FC<MapType> = ({
 
       map.current.on('click', 'unclustered-point', function (e) {
         if (!e.features) return
-
+        if (!map.current) return
         const features = e.features as GeojsonFeatureType[]
         const clickedMarkerIds = features.map((f) => f.properties.id)
+
+        map.current.easeTo({
+          center: features[0].geometry.coordinates,
+          zoom: 15,
+        })
 
         onMarkerClick(clickedMarkerIds)
       })
