@@ -7,11 +7,24 @@ interface FacilityInfoType {
   onClose?: () => void
 }
 
+/*
 interface FaqItemType {
   question: string
   answers: string[]
 }
+*/
 
+interface TagItemType {
+  question: string
+  answers: string[]
+}
+
+interface OpenDaysType {
+  day: string
+  hours: string
+}
+
+/*
 const FaqItem: FC<FaqItemType> = ({ question, answers }) => {
   return (
     <div className="py-6 border-b last:border-0 border-gray-50">
@@ -26,6 +39,36 @@ const FaqItem: FC<FaqItemType> = ({ question, answers }) => {
     </div>
   )
 }
+*/
+
+const TagItem: FC<TagItemType> = ({ question, answers }) => {
+  return (
+    <div className="py-2">
+      <p className="mb-2">{question}</p>
+      <p>
+        {answers.map((r) => {
+          return (
+            <span
+              key={r}
+              className="bg-blue-100 text-blue-800 mr-2 mb-2 px-2.5 py-0.5 rounded inline-block"
+            >
+              {r}
+            </span>
+          )
+        })}
+      </p>
+    </div>
+  )
+}
+
+const OpenDaysItem: FC<OpenDaysType> = ({ day, hours }) => {
+  return (
+    <div className="grid grid-cols-[80px_auto] gap-4 py-0">
+      <div>{day}</div>
+      {hours}
+    </div>
+  )
+}
 
 export const FacilityInfo: FC<FacilityInfoType> = ({ facility, onClose }) => {
   return (
@@ -35,17 +78,16 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility, onClose }) => {
           <h2 className="text-blue-500 text-3xl">
             {facility.fields.Einrichtung}
           </h2>
-          <h3 className="mt-1 text-base">{facility.fields.Trager}</h3>
           <p className="mt-4">{facility.fields.Uber_uns}</p>
           <div className="mt-4 grid grid-cols-1 gap-0 border-t border-gray-50">
             {facility.fields.Schlagworte && (
-              <FaqItem
+              <TagItem
                 question="Schlagworte"
                 answers={facility.fields.Schlagworte.split(';')}
               />
             )}
             {facility.fields.Sprachen && (
-              <FaqItem
+              <TagItem
                 question="Welche Sprachen werden angeboten?"
                 answers={facility.fields.Sprachen.split(';')}
               />
@@ -118,7 +160,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility, onClose }) => {
           <img src={closeIcon} alt="Schließen" aria-hidden={true} />
         </button>
       </div>
-      <div className="pb-4">
+      <div className="pb-1">
         <div className="bg-gray-25 px-3 py-2">
           <h4 className="font-bold">Adresse</h4>
           <address className="not-italic">
@@ -132,6 +174,20 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility, onClose }) => {
           </address>
         </div>
       </div>
+      {facility.fields.Montag && (
+        <div className="pb-4">
+          <div className="bg-gray-25 px-3 py-2">
+            <h4 className="font-bold">Öffnungszeiten</h4>
+            <OpenDaysItem day="Montag" hours={facility.fields.Montag} />
+            <OpenDaysItem day="Dienstag" hours={facility.fields.Dienstag} />
+            <OpenDaysItem day="Mittwoch" hours={facility.fields.Mittwoch} />
+            <OpenDaysItem day="Donnerstag" hours={facility.fields.Donnerstag} />
+            <OpenDaysItem day="Freitag" hours={facility.fields.Freitag} />
+            <OpenDaysItem day="Samstag" hours={facility.fields.Samstag} />
+            <OpenDaysItem day="Sonntag" hours={facility.fields.Sonntag} />
+          </div>
+        </div>
+      )}
     </article>
   )
 }

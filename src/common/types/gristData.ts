@@ -13,7 +13,6 @@ export interface TableRowType {
     Beratungsmoglichkeiten: string
     Sprachen: string
     Barrierefreiheit: string
-    Weitere_Besonderheiten: string
     Uber_uns: string
     Reichweite: string
     Stadtteile_Regionen: string
@@ -42,8 +41,7 @@ export interface TableRowType {
     Donnerstag: string
     Freitag: string
     Samstag: string
-    Sonntag_1: string
-    Sonntag_2: string
+    Sonntag: string
     Anmeldung_gewunscht: string
     Weitere_Offnungszeiten: string
     lat: number
