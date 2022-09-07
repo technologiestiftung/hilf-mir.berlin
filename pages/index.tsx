@@ -61,11 +61,15 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Psychologischer Wegweiser - Prototyp</title>
+        <title>
+          Digitaler Wegweiser Psychiatrie und Suchthilfe Berlin - Prototyp
+        </title>
       </Head>
       <div className="w-screen h-screen grid grid-cols-1 grid-rows-[auto_1fr]">
         <header className="h-16 pl-4 pr-3 py-3 flex flex-wrap gap-2 items-center justify-between border-b border-gray-50">
-          <h1 className="font-bold">Psychologischer Wegweiser</h1>
+          <h1 className="font-bold">
+            Digitaler Wegweiser Psychiatrie und Suchthilfe Berlin
+          </h1>
           <div className="hidden md:flex gap-4 items-center">
             <span className="text-sm">Eine Kooperation von</span>
             <img
