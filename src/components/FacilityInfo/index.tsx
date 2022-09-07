@@ -99,7 +99,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({
           </div>
           <div className="my-4 grid grid-cols-[1fr] gap-0 items-center">
             {facility.fields.Website && (
-              <div className="grid grid-cols-[56px_auto] gap-4 py-2 border-b border-gray-50 first-of-type:border-t">
+              <div className="grid grid-cols-[56px_auto] gap-4 py-2 first-of-type:border-t">
                 <div>
                   <b>Website</b>
                 </div>
@@ -113,8 +113,16 @@ export const FacilityInfo: FC<FacilityInfoType> = ({
                 </a>
               </div>
             )}
+            {facility.fields.Website && (
+              <a
+                href={facility.fields.Website}
+                className="mt-2 mb-4 w-full text-center inline-block p-2 bg-magenta-500 text-white"
+              >
+                Website besuchen
+              </a>
+            )}
             {facility.fields.EMail && (
-              <div className="grid grid-cols-[56px_auto] gap-4 py-2 border-b border-gray-50 first-of-type:border-t">
+              <div className="grid grid-cols-[56px_auto] gap-4 py-2">
                 <div>
                   <b>E-Mail</b>
                 </div>
@@ -127,6 +135,14 @@ export const FacilityInfo: FC<FacilityInfoType> = ({
                   {facility.fields.EMail}
                 </a>
               </div>
+            )}
+            {facility.fields.EMail && (
+              <a
+                href={`mailto:${facility.fields.EMail}`}
+                className="mt-2 mb-4 w-full text-center inline-block p-2 bg-magenta-500 text-white"
+              >
+                E-Mail schreiben
+              </a>
             )}
             {facility.fields.Telefonnummer && (
               <div className="grid grid-cols-[56px_auto] gap-4 py-2 border-b border-gray-50 first-of-type:border-t">
