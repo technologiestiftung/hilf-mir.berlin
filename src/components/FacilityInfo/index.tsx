@@ -27,7 +27,11 @@ const FaqItem: FC<FaqItemType> = ({ question, answers }) => {
   )
 }
 
-export const FacilityInfo: FC<FacilityInfoType> = ({ facility, onClose }) => {
+export const FacilityInfo: FC<FacilityInfoType> = ({
+  facility,
+  onClose,
+  children,
+}) => {
   return (
     <article className="h-full flex flex-col gap-y-8 justify-between">
       <div className="grid gap-2 grid-cols-[1fr_auto] items-start">
@@ -58,48 +62,47 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility, onClose }) => {
               />
             )}
           </div>
-          {(facility.fields.Telefonnummer || facility.fields.EMail) && (
-            <div className="my-4 grid grid-cols-[1fr] gap-0 items-center">
-              {facility.fields.Website && (
-                <div className="grid grid-cols-[56px_auto] gap-4 py-2 border-b border-gray-50 first-of-type:border-t">
-                  <div>
-                    <b>Website</b>
-                  </div>
-                  <a
-                    href={facility.fields.Website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block underline text-blue-500 break-all"
-                  >
-                    {facility.fields.Website}
-                  </a>
+          <div className="my-4 grid grid-cols-[1fr] gap-0 items-center">
+            {facility.fields.Website && (
+              <div className="grid grid-cols-[56px_auto] gap-4 py-2 border-b border-gray-50 first-of-type:border-t">
+                <div>
+                  <b>Website</b>
                 </div>
-              )}
-              {facility.fields.EMail && (
-                <div className="grid grid-cols-[56px_auto] gap-4 py-2 border-b border-gray-50">
-                  <div>
-                    <b>E-Mail</b>
-                  </div>
-                  <a
-                    href={`mailto:${facility.fields.EMail}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block underline text-blue-500 break-all"
-                  >
-                    {facility.fields.EMail}
-                  </a>
+                <a
+                  href={facility.fields.Website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block underline text-blue-500 break-all"
+                >
+                  {facility.fields.Website}
+                </a>
+              </div>
+            )}
+            {facility.fields.EMail && (
+              <div className="grid grid-cols-[56px_auto] gap-4 py-2 border-b border-gray-50 first-of-type:border-t">
+                <div>
+                  <b>E-Mail</b>
                 </div>
-              )}
-              {facility.fields.Telefonnummer && (
-                <div className="grid grid-cols-[56px_auto] gap-4 py-2 border-b border-gray-50">
-                  <div>
-                    <b>Tel.</b>
-                  </div>
-                  <div>{facility.fields.Telefonnummer}</div>
+                <a
+                  href={`mailto:${facility.fields.EMail}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block underline text-blue-500 break-all"
+                >
+                  {facility.fields.EMail}
+                </a>
+              </div>
+            )}
+            {facility.fields.Telefonnummer && (
+              <div className="grid grid-cols-[56px_auto] gap-4 py-2 border-b border-gray-50 first-of-type:border-t">
+                <div>
+                  <b>Tel.</b>
                 </div>
-              )}
-            </div>
-          )}
+                <div>{facility.fields.Telefonnummer}</div>
+              </div>
+            )}
+            {children}
+          </div>
         </div>
         <button
           onClick={onClose}
