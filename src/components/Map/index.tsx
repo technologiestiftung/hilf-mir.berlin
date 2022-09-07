@@ -179,5 +179,11 @@ export const FacilitiesMap: FC<MapType> = ({
     }
   }, [highlightedLocation])
 
-  return <div id="map" className="w-full h-full bg-[#F8F4F0]"></div>
+  return (
+    <div
+      id="map"
+      className="w-full h-full bg-[#F8F4F0]"
+      aria-label="Kartenansicht der Einrichtungen"
+    ></div>
+  )
 }

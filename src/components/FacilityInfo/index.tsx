@@ -70,7 +70,11 @@ const OpenDaysItem: FC<OpenDaysType> = ({ day, hours }) => {
   )
 }
 
-export const FacilityInfo: FC<FacilityInfoType> = ({ facility, onClose }) => {
+export const FacilityInfo: FC<FacilityInfoType> = ({
+  facility,
+  onClose,
+  children,
+}) => {
   return (
     <article className="h-full flex flex-col gap-y-8 justify-between">
       <div className="grid gap-2 grid-cols-[1fr_auto] items-start">
@@ -93,64 +97,63 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility, onClose }) => {
               />
             )}
           </div>
-          {(facility.fields.Telefonnummer || facility.fields.EMail) && (
-            <div className="my-4 grid grid-cols-[1fr] gap-0 items-center">
-              {facility.fields.Website && (
-                <div className="grid grid-cols-[56px_auto] gap-4 py-2 first-of-type:border-t">
-                  <div>
-                    <b>Website</b>
-                  </div>
-                  <a
-                    href={facility.fields.Website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block underline text-blue-500 break-all"
-                  >
-                    {facility.fields.Website}
-                  </a>
+          <div className="my-4 grid grid-cols-[1fr] gap-0 items-center">
+            {facility.fields.Website && (
+              <div className="grid grid-cols-[56px_auto] gap-4 py-2 first-of-type:border-t">
+                <div>
+                  <b>Website</b>
                 </div>
-              )}
-              {facility.fields.Website && (
                 <a
                   href={facility.fields.Website}
-                  className="mt-2 mb-4 w-full text-center inline-block p-2 bg-magenta-500 text-white"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block underline text-blue-500 break-all"
                 >
-                  Website besuchen
+                  {facility.fields.Website}
                 </a>
-              )}
-              {facility.fields.EMail && (
-                <div className="grid grid-cols-[56px_auto] gap-4 py-2">
-                  <div>
-                    <b>E-Mail</b>
-                  </div>
-                  <a
-                    href={`mailto:${facility.fields.EMail}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block underline text-blue-500 break-all"
-                  >
-                    {facility.fields.EMail}
-                  </a>
+              </div>
+            )}
+            {facility.fields.Website && (
+              <a
+                href={facility.fields.Website}
+                className="mt-2 mb-4 w-full text-center inline-block p-2 bg-magenta-500 text-white"
+              >
+                Website besuchen
+              </a>
+            )}
+            {facility.fields.EMail && (
+              <div className="grid grid-cols-[56px_auto] gap-4 py-2">
+                <div>
+                  <b>E-Mail</b>
                 </div>
-              )}
-              {facility.fields.EMail && (
                 <a
                   href={`mailto:${facility.fields.EMail}`}
-                  className="mt-2 mb-4 w-full text-center inline-block p-2 bg-magenta-500 text-white"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block underline text-blue-500 break-all"
                 >
-                  E-Mail schreiben
+                  {facility.fields.EMail}
                 </a>
-              )}
-              {facility.fields.Telefonnummer && (
-                <div className="grid grid-cols-[56px_auto] gap-4 py-2 border-b border-gray-50">
-                  <div>
-                    <b>Tel.</b>
-                  </div>
-                  <div>{facility.fields.Telefonnummer}</div>
+              </div>
+            )}
+            {facility.fields.EMail && (
+              <a
+                href={`mailto:${facility.fields.EMail}`}
+                className="mt-2 mb-4 w-full text-center inline-block p-2 bg-magenta-500 text-white"
+              >
+                E-Mail schreiben
+              </a>
+            )}
+            {facility.fields.Telefonnummer && (
+              <div className="grid grid-cols-[56px_auto] gap-4 py-2 border-b border-gray-50 first-of-type:border-t">
+                <div>
+                  <b>Tel.</b>
                 </div>
-              )}
-            </div>
-          )}
+                <div>{facility.fields.Telefonnummer}</div>
+              </div>
+            )}
+            {children}
+          </div>
         </div>
         <button
           onClick={onClose}

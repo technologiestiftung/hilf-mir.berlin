@@ -3,7 +3,8 @@ export interface FeatureType {
   center: [number, number]
   geometry: {
     type: string
-    coordinates: [number, number]
+    coordinates?: [number, number] | number[][][]
+    [key: string]: unknown
   }
   id: string
   place_name: string
@@ -12,14 +13,15 @@ export interface FeatureType {
   relevance: number
   text: string
   type: string
+  context?: unknown[]
 }
 
-interface SearchResultType {
+export interface SearchResultType {
   attribution: string
   features: FeatureType[]
   query: string[]
   type: string
-  waste: unknown
+  waste?: unknown
 }
 
 export const geocode = async (query: string): Promise<SearchResultType> => {
@@ -36,6 +38,8 @@ export const geocode = async (query: string): Promise<SearchResultType> => {
     }
 
     const data = (await response.json()) as SearchResultType
+    console.log(data)
+
     return data
   } catch (error: unknown) {
     throw error as Error

@@ -37,7 +37,10 @@ export const Search: FC<SearchType> = ({
           onChange={onSearchInput}
         />
       </div>
-      <ul className="border-x border-gray-100">
+      <ul
+        className="border-x border-gray-100"
+        aria-label="Ergebnisse der Standortsuche"
+      >
         {searchResults.length > 0 &&
           searchResults.map((searchResult) => {
             return (
