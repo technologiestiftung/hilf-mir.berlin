@@ -15,8 +15,8 @@ export interface TableRowType {
     Zusatz: string
     PLZ: string
     Bezirk: string
-    Telefonnummer: string
-    EMail: string
+    Telefonnummer?: string
+    EMail?: string
     long2: number
     Website: string
     lat: number
