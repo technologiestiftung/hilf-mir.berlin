@@ -42,6 +42,7 @@
     "./src/**/*.tsx",
     "./pages/**/*.ts",
     "./pages/**/*.tsx",
+    "./scripts/createFakeGristData.ts"
   ],
   "exclude": [
     "node_modules",
