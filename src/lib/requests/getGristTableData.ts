@@ -1,11 +1,11 @@
+import { getBaseUrl } from '@lib/getBaseUrl'
+
 export async function getGristTableData<ResponseType = unknown>(
   docId: string,
   table: string
 ): Promise<ResponseType> {
   const response = await fetch(
-    `${
-      process.env.NEXT_SECRET_GRIST_DOMAIN || ''
-    }/api/docs/${docId}/tables/${table}/records`,
+    `${getBaseUrl()}/api/docs/${docId}/tables/${table}/records`,
     {
       headers: {
         Authorization: `Bearer ${process.env.NEXT_SECRET_GRIST_API_KEY || ''}`,
