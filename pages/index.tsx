@@ -9,11 +9,10 @@ import { SecondaryButton } from '@components/SecondaryButton'
 import { Phone } from '@components/icons/Phone'
 import { Footer } from '@components/Footer'
 import { useTexts } from '@lib/TextsContext'
+import { getBaseUrl } from '@lib/getBaseUrl'
 
 export const getStaticProps: GetStaticProps = async () => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_FRONTEND_DOMAIN || ''}/api/grist-texts`
-  )
+  const res = await fetch(`${getBaseUrl()}/api/grist-texts`)
   const texts = (await res.json()) as TextsMapType
 
   if (res.status !== 200) {
