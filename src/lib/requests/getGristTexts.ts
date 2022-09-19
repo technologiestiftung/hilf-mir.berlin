@@ -1,3 +1,4 @@
+import { TextsMapType } from '@lib/TextsContext'
 import { getGristTableData } from './getGristTableData'
 
 export interface GristTextRecordType {
@@ -7,28 +8,6 @@ export interface GristTextRecordType {
     B: string
     C: string
   }
-}
-
-export interface TextsMapType {
-  homeWelcomeTitle: string
-  homeWelcomeText: string
-  findOffersButtonText: string
-  directHelpButtonText: string
-  moreOffersKVBLinkText: string
-  moreOffersKVBLinkUrl: string
-  footerInfoPageLinkText: string
-  footerImprintLinkText: string
-  footerImprintLinkUrl: string
-  footerPrivacyLinkText: string
-  footerPrivacyLinkUrl: string
-  footerProjectOwnerLabel: string
-  footerTSBLogoAltText: string
-  footerProjectExecutionerLabel: string
-  footerCityLABLogoAltText: string
-  footerCooperationLabel: string
-  footerSenWGPGLogoAltText: string
-  footerProjectSponsorLabel: string
-  footerSentatskanzleiLogoAltText: string
 }
 
 export async function getGristTexts(): Promise<TextsMapType> {

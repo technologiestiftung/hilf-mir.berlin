@@ -1,7 +1,6 @@
 import { createContext, useContext } from 'react'
-import { TextsMapType } from './requests/getGristTexts'
 
-const textsContext = createContext<TextsMapType>({
+const defaultValue = {
   homeWelcomeTitle: '',
   homeWelcomeText: '',
   findOffersButtonText: '',
@@ -10,8 +9,22 @@ const textsContext = createContext<TextsMapType>({
   moreOffersKVBLinkUrl: '',
   footerInfoPageLinkText: '',
   footerImprintLinkText: '',
+  footerImprintLinkUrl: '',
   footerPrivacyLinkText: '',
-})
+  footerPrivacyLinkUrl: '',
+  footerProjectOwnerLabel: '',
+  footerTSBLogoAltText: '',
+  footerProjectExecutionerLabel: '',
+  footerCityLABLogoAltText: '',
+  footerCooperationLabel: '',
+  footerSenWGPGLogoAltText: '',
+  footerProjectSponsorLabel: '',
+  footerSentatskanzleiLogoAltText: '',
+}
+
+export type TextsMapType = typeof defaultValue
+
+const textsContext = createContext<TextsMapType>(defaultValue)
 
 export const useTexts = (): TextsMapType => {
   const texts = useContext(textsContext)

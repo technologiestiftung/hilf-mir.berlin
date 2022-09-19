@@ -1,6 +1,6 @@
 import '../styles/globals.css'
 import { TextsProvider } from '@lib/TextsContext'
-import { TextsMapType } from '@lib/requests/getGristTexts'
+import { TextsMapType } from '@lib/TextsContext'
 import { NextComponentType, NextPageContext } from 'next'
 
 interface PagePropsType {
