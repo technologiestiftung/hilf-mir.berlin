@@ -1,10 +1,23 @@
 import '../styles/globals.css'
-import type { AppProps } from 'next/app'
+import { TextsProvider } from '@lib/TextsContext'
+import { TextsMapType } from '@lib/requests/getGristTexts'
+import { NextComponentType, NextPageContext } from 'next'
 
-// We ignore this because that line is provided by Next and untouched so far:
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const App = ({ Component, pageProps }: AppProps) => {
-  return <Component {...pageProps} />
+interface PagePropsType {
+  texts: TextsMapType
+}
+
+interface AppPropsType {
+  Component: NextComponentType<NextPageContext, unknown, PagePropsType>
+  pageProps: PagePropsType
+}
+
+const App = ({ Component, pageProps }: AppPropsType): JSX.Element => {
+  return (
+    <TextsProvider value={pageProps.texts}>
+      <Component {...pageProps} />
+    </TextsProvider>
+  )
 }
 
 export default App

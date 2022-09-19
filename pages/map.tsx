@@ -28,7 +28,7 @@ const fetcher = async (url: string): Promise<FetcherReturnType> => {
 
 const Home: NextPage = () => {
   const { data, error } = useSWR<FetcherReturnType, Error>(
-    `/api/grist`,
+    `/api/grist-records`,
     fetcher
   )
   const [selectedFacility, setSelectedFacility] = useState<TableRowType | null>(

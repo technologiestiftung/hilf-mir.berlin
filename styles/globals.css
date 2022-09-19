@@ -3,39 +3,21 @@
 @tailwind utilities;
 
 @layer base {
-  @font-face {
-    font-family: "National Regular";
-    font-style: normal;
-    font-weight: 400;
-    src: local("National Regular"),
-      url(/fonts/NationalWeb-Regular.woff2) format("woff2"),
-      url(/fonts/NationalWeb-Regular.woff) format("woff");
-  }
-  @font-face {
-    font-family: "National Regular";
-    font-style: italic;
-    font-weight: 400;
-    src: local("National Regular Italic"),
-      url(/fonts/NationalWeb-RegularItalic.woff2) format("woff2"),
-      url(/fonts/NationalWeb-RegularItalic.woff) format("woff");
-  }
-  @font-face {
-    font-family: "National Regular";
-    font-style: normal;
-    font-weight: 800;
-    src: local("National Extrabold"),
-      url(/fonts/NationalWeb-Extrabold.woff2) format("woff2"),
-      url(/fonts/NationalWeb-Extrabold.woff) format("woff");
-  }
-  @font-face {
-    font-family: "National Regular";
-    font-style: italic;
-    font-weight: 800;
-    src: local("National Extrabold Italic"),
-      url(/fonts/NationalWeb-ExtraboldItalic.woff2) format("woff2"),
-      url(/fonts/NationalWeb-ExtraboldItalic.woff) format("woff");
-  }
+	@font-face {
+		font-family: 'AlbertSans';
+		src: url('/fonts/AlbertSans-VariableFont_wght.woff2?v=3.18') format('woff2-variations');
+		font-weight: 100 900;
+		font-style: normal;
+		font-display: swap;
+	}
+	@font-face {
+		font-family: 'AlbertSans';
+		src: url('/fonts/AlbertSans-Italic-VariableFont_wght.woff2?v=3.18') format('woff2-variations');
+		font-weight: 100 900;
+		font-style: italic;
+		font-display: swap;
+	}
   html, body {
-    @apply antialiased text-gray-700;
+    @apply font-sans;
   }
 }

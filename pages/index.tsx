@@ -1,10 +1,35 @@
-import type { NextPage } from 'next'
+import type { GetStaticProps, NextPage } from 'next'
 import Head from 'next/head'
 import introImage from '../src/images/intro-header.png'
 import stripesPattern from '../src/images/stripe-pattern.svg'
 import Image from 'next/image'
+import { TextsMapType } from '@lib/requests/getGristTexts'
+import { PrimaryButton } from '@components/PrimaryButton'
+import { SecondaryButton } from '@components/SecondaryButton'
+import { Phone } from '@components/icons/Phone'
+import { Footer } from '@components/Footer'
+import { useTexts } from '@lib/TextsContext'
+
+export const getStaticProps: GetStaticProps = async () => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_FRONTEND_DOMAIN || ''}/api/grist-texts`
+  )
+  const texts = (await res.json()) as TextsMapType
+
+  if (res.status !== 200) {
+    console.error('There was a problem fetching the texts')
+    throw new Error(res.statusText)
+  }
+  return {
+    props: {
+      texts,
+    },
+    revalidate: 120,
+  }
+}
 
 const Home: NextPage = () => {
+  const texts = useTexts()
   return (
     <>
       <Head>
@@ -12,7 +37,7 @@ const Home: NextPage = () => {
           Willkommen - Digitaler Wegweiser Psychiatrie und Suchthilfe Berlin
         </title>
       </Head>
-      <div className="">
+      <div className="min-h-screen grid grid-cols-1 grid-rows-[auto,auto,1fr,auto,auto]">
         <div className="relative">
           <Image src={introImage} width={750} height={202} objectFit="cover" />
           <span className="absolute right-0 bottom-0">
@@ -23,16 +48,28 @@ const Home: NextPage = () => {
             />
           </span>
         </div>
-        <h1 className="p-5 pt-6 uppercase font-bold text-4xl leading-8">
-          Willkommen beim digitalen Wegweiser
+        <h1 className="p-5 pt-6 uppercase font-bold text-4xl leading-9">
+          {texts.homeWelcomeTitle}
         </h1>
-        <p className="px-5 bp-8">
-          Hier findest Du schnell und einfach Hilfe und eine Übersicht der
-          richtigen Ansprechpartner:innen sowie weiterführende Informationen zu
-          den Angeboten der psychosozialen Kontakt- und Beratungsstellen in
-          allen Berliner Bezirken.
+        <p className="px-5 bp-8 text-lg leading-snug">
+          {texts.homeWelcomeText}
         </p>
+        <div className="flex flex-col gap-2 p-5 pt-8">
+          <PrimaryButton>{texts.findOffersButtonText}</PrimaryButton>
+          <SecondaryButton icon={<Phone />}>
+            {texts.directHelpButtonText}
+          </SecondaryButton>
+          <a
+            href={texts.moreOffersKVBLinkUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline transition-colors hover:text-red pt-3"
+          >
+            {texts.moreOffersKVBLinkText}
+          </a>
+        </div>
       </div>
+      <Footer />
     </>
   )
 }
