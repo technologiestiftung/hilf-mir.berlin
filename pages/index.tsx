@@ -3,26 +3,17 @@ import Head from 'next/head'
 import introImage from '../src/images/intro-header.png'
 import stripesPattern from '../src/images/stripe-pattern.svg'
 import Image from 'next/image'
-import { TextsMapType } from '@lib/TextsContext'
 import { PrimaryButton } from '@components/PrimaryButton'
 import { SecondaryButton } from '@components/SecondaryButton'
 import { Phone } from '@components/icons/Phone'
 import { Footer } from '@components/Footer'
 import { useTexts } from '@lib/TextsContext'
-import { getBaseUrl } from '@lib/getBaseUrl'
+import { getGristTexts } from '@lib/requests/getGristTexts'
 
 export const getStaticProps: GetStaticProps = async () => {
-  const res = await fetch(`${getBaseUrl()}/api/grist-texts`)
-  const texts = (await res.json()) as TextsMapType
-
-  if (res.status !== 200) {
-    console.error('There was a problem fetching the texts')
-    throw new Error(res.statusText)
-  }
+  const texts = await getGristTexts()
   return {
-    props: {
-      texts,
-    },
+    props: { texts },
     revalidate: 120,
   }
 }

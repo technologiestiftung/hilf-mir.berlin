@@ -4,9 +4,9 @@ import { getGristTableData } from './getGristTableData'
 export interface GristTextRecordType {
   id: string
   fields: {
-    A: string
-    B: string
-    C: string
+    key: string
+    de: string
+    en: string
   }
 }
 
@@ -15,9 +15,8 @@ export async function getGristTexts(): Promise<TextsMapType> {
     process.env.NEXT_SECRET_GRIST_DOC_ID || '',
     process.env.NEXT_SECRET_GRIST_TEXTS_TABLE || ''
   )
-  const texts = data.records.slice(1)
-  return texts.reduce(
-    (acc, { fields: { A: key, B: de } }) => ({
+  return data.records.reduce(
+    (acc, { fields: { key, de } }) => ({
       ...acc,
       [key]: de,
     }),

@@ -1,7 +1,6 @@
-import type { NextPage } from 'next'
+import type { GetStaticProps, NextPage } from 'next'
 import Head from 'next/head'
 import { useState } from 'react'
-import useSWR from 'swr'
 import { TableRowType } from '@common/types/gristData'
 import { FacilityInfo } from '@components/FacilityInfo'
 import { FacilityPagination } from '@components/FacilityPagination'
@@ -9,28 +8,25 @@ import { FacilitiesMap } from '@components/Map'
 import { Search } from '@components/Search'
 import { Sidebar } from '@components/Sidebar'
 import { FeatureType } from '@lib/requests/geocode'
+import { getGristTexts } from '@lib/requests/getGristTexts'
+import { getGristRecords } from '@lib/requests/getGristRecords'
 const citylabLogo = 'images/citylab_logo.svg'
 const sengpgLogo = 'images/sengpg_logo.svg'
 
-interface FetcherReturnType {
-  records: TableRowType[]
-}
-const fetcher = async (url: string): Promise<FetcherReturnType> => {
-  const res = await fetch(url)
-  const data = (await res.json()) as FetcherReturnType
-
-  if (res.status !== 200) {
-    console.error('There was a problem fetching the data')
-    throw new Error(res.statusText)
+export const getStaticProps: GetStaticProps = async () => {
+  const [texts, records] = await Promise.all([
+    getGristTexts(),
+    getGristRecords(),
+  ])
+  return {
+    props: { texts, records },
+    revalidate: 120,
   }
-  return data
 }
 
-const Home: NextPage = () => {
-  const { data, error } = useSWR<FetcherReturnType, Error>(
-    `/api/grist-records`,
-    fetcher
-  )
+const Home: NextPage<{
+  records: TableRowType[]
+}> = ({ records }) => {
   const [selectedFacility, setSelectedFacility] = useState<TableRowType | null>(
     null
   )
@@ -41,10 +37,10 @@ const Home: NextPage = () => {
   const [mapCenter, setMapCenter] = useState<[number, number] | undefined>()
 
   const handleMarkerClick = (facilityIds: number[]): void => {
-    if (!data) return
+    if (!records) return
     setFacilityIdsAtLocation(facilityIds)
 
-    const selectedFacility = data?.records.find(
+    const selectedFacility = records.find(
       (facility) => facility.id === facilityIds[0]
     )
 
@@ -55,8 +51,6 @@ const Home: NextPage = () => {
   const handleSearchResult = (place: FeatureType): void => {
     setMapCenter(place.center)
   }
-
-  if (error) return <div>{error.message}</div>
 
   return (
     <>
@@ -91,7 +85,7 @@ const Home: NextPage = () => {
                 <FacilityPagination
                   facilityIds={facilityIdsAtLocation}
                   onChange={(facilityId) => {
-                    const selectedFacility = data?.records.find(
+                    const selectedFacility = records.find(
                       (facility) => facility.id === facilityId
                     )
                     if (!selectedFacility) return
@@ -111,11 +105,10 @@ const Home: NextPage = () => {
             )}
           </Sidebar>
           <Search onSelectResult={handleSearchResult} />
-          {!data && !error && <p>Lade ...</p>}
-          {data && (
+          {records && (
             <FacilitiesMap
               center={mapCenter}
-              markers={data.records}
+              markers={records}
               onMarkerClick={handleMarkerClick}
               highlightedLocation={
                 !!selectedFacility?.fields.long2 &&
