@@ -1,4 +1,5 @@
-import { getGristTexts, TextsMapType } from '@lib/requests/getGristTexts'
+import { getGristTexts } from '@lib/requests/getGristTexts'
+import { TextsMapType } from '@lib/TextsContext'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(
