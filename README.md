@@ -45,7 +45,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/dnsos"><img src="https://avatars.githubusercontent.com/u/15640196?v=4?s=64" width="64px;" alt=""/><br /><sub><b>Dennis Ostendorf</b></sub></a><br /><a href="https://github.com/technologiestiftung/grist-external-dashboard-poc/commits?author=dnsos" title="Code">💻</a> <a href="https://github.com/technologiestiftung/grist-external-dashboard-poc/commits?author=dnsos" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/dnsos"><img src="https://avatars.githubusercontent.com/u/15640196?v=4?s=64" width="64px;" alt=""/><br /><sub><b>Dennis Ostendorf</b></sub></a><br /><a href="https://github.com/technologiestiftung/wegweiser-frontend/commits?author=dnsos" title="Code">💻</a> <a href="https://github.com/technologiestiftung/wegweiser-frontend/commits?author=dnsos" title="Documentation">📖</a></td>
   </tr>
 </table>
 
