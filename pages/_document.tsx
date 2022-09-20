@@ -4,10 +4,7 @@ export default function Document(): JSX.Element {
   return (
     <Html>
       <Head>
-        <link
-          href="https://unpkg.com/maplibre-gl@2.1.6/dist/maplibre-gl.css"
-          rel="stylesheet"
-        />
+        <title>Digitaler Wegweiser Psychiatrie und Suchthilfe Berlin</title>
       </Head>
       <body>
         <Main />

@@ -6,9 +6,9 @@ import Image from 'next/image'
 import { PrimaryButton } from '@components/PrimaryButton'
 import { SecondaryButton } from '@components/SecondaryButton'
 import { Phone } from '@components/icons/Phone'
-import { Footer } from '@components/Footer'
 import { useTexts } from '@lib/TextsContext'
 import { getGristTexts } from '@lib/requests/getGristTexts'
+import { useRouter } from 'next/router'
 
 export const getStaticProps: GetStaticProps = async () => {
   const texts = await getGristTexts()
@@ -20,6 +20,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
 const Home: NextPage = () => {
   const texts = useTexts()
+  const { push } = useRouter()
   return (
     <>
       <Head>
@@ -29,7 +30,12 @@ const Home: NextPage = () => {
       </Head>
       <div className="min-h-screen grid grid-cols-1 grid-rows-[auto,auto,1fr,auto,auto]">
         <div className="relative">
-          <Image src={introImage} width={750} height={202} objectFit="cover" />
+          <Image
+            src={introImage}
+            height={202}
+            objectFit="fill"
+            className="w-full"
+          />
           <span className="absolute right-0 bottom-0">
             <Image
               {...stripesPattern}
@@ -38,15 +44,16 @@ const Home: NextPage = () => {
             />
           </span>
         </div>
-        <h1 className="p-5 pt-6 uppercase font-bold text-4xl leading-9">
-          {texts.homeWelcomeTitle}
-        </h1>
+        <h1 className="p-5 pt-6 ">{texts.homeWelcomeTitle}</h1>
         <p className="px-5 bp-8 text-lg leading-snug">
           {texts.homeWelcomeText}
         </p>
         <div className="flex flex-col gap-2 p-5 pt-8">
           <PrimaryButton>{texts.findOffersButtonText}</PrimaryButton>
-          <SecondaryButton icon={<Phone />}>
+          <SecondaryButton
+            onClick={() => void push(`/sofortige-hilfe`)}
+            icon={<Phone />}
+          >
             {texts.directHelpButtonText}
           </SecondaryButton>
           <a
@@ -59,7 +66,6 @@ const Home: NextPage = () => {
           </a>
         </div>
       </div>
-      <Footer />
     </>
   )
 }

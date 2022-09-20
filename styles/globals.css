@@ -20,4 +20,7 @@
   html, body {
     @apply font-sans;
   }
+	h1 {
+		@apply uppercase font-bold text-4xl leading-9;
+	}
 }

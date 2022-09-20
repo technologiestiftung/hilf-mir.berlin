@@ -58,6 +58,10 @@ const Home: NextPage<{
         <title>
           Digitaler Wegweiser Psychiatrie und Suchthilfe Berlin - Prototyp
         </title>
+        <link
+          href="https://unpkg.com/maplibre-gl@2.1.6/dist/maplibre-gl.css"
+          rel="stylesheet"
+        />
       </Head>
       <div className="w-screen h-screen grid grid-cols-1 grid-rows-[auto_1fr]">
         <header className="h-16 pl-4 pr-3 py-3 flex flex-wrap gap-2 items-center justify-between border-b border-gray-50">

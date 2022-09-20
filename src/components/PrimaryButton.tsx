@@ -1,10 +1,16 @@
 import classNames from '@lib/classNames'
-import { FC } from 'react'
+import { FC, HTMLAttributes } from 'react'
 import { Arrow } from './icons/Arrow'
 
-export const PrimaryButton: FC = ({ children }) => (
+export const PrimaryButton: FC<HTMLAttributes<HTMLButtonElement>> = ({
+  children,
+  className,
+  onClick = () => undefined,
+}) => (
   <button
+    onClick={onClick}
     className={classNames(
+      className,
       `border border-black`,
       `font-medium text-left text-2xl`,
       `grid grid-cols-[1fr,auto]`,

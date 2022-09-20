@@ -1,7 +1,14 @@
-import { FC } from 'react'
+import { FC, SVGAttributes } from 'react'
 
-export const Phone: FC = () => (
-  <svg width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+export const Phone: FC<{
+  className?: SVGAttributes<SVGSVGElement>['className']
+}> = ({ className = '' }) => (
+  <svg
+    width="28"
+    height="28"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
     <defs>
       <path
         d="m8.47 0 2.824 7.059-3.53 2.117a15.53 15.53 0 0 0 7.06 7.06l2.117-3.53L24 15.529v5.647A2.824 2.824 0 0 1 21.176 24C9.78 23.307.693 14.22 0 2.824A2.824 2.824 0 0 1 2.824 0H8.47Z"
