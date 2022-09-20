@@ -57,6 +57,9 @@ const defaultValue = {
   welcomeFiltersText: '',
   filtersButtonTextFiltered: '',
   filtersButtonTextAllFilters: '',
+  noTargetPreferenceButtonText: '',
+  orLabel: '',
+  filtersSearchTargetLabel: '',
 }
 
 export type TextsMapType = typeof defaultValue

@@ -1,25 +1,17 @@
+import { GristLabelType } from './../common/types/gristData'
 import { TableRowType } from '@common/types/gristData'
-import slugify from 'slugify'
-
-export interface FilterLabelType {
-  slug: string
-  text: string
-}
 
 export const getLabelsFromRecords = (
   records: TableRowType[]
-): FilterLabelType[] => {
+): GristLabelType['fields'][] => {
   const labelsSet = records.reduce((acc, record) => {
-    const labels = record.fields.Schlagworte.split(';')
+    const labels = record.fields.Schlagworte
+
+    console.log(labels)
     labels.forEach((label) => {
-      const slug = slugify(label, {
-        lower: true,
-        strict: true,
-        trim: true,
-      })
-      acc.set(slug, { slug, text: label })
+      // acc.set(label.fields.key, label.fields)
     })
     return acc
-  }, new Map<string, FilterLabelType>())
+  }, new Map<string, GristLabelType['fields']>())
   return Array.from(labelsSet.values())
 }

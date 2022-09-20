@@ -1,3 +1,13 @@
+export interface GristLabelType {
+  id: number
+  fields: {
+    key: string
+    text: string
+    icon: string
+    group: 'gruppe-1' | 'gruppe-2' | 'gruppe-3' | 'zielpublikum'
+  }
+}
+
 /**
  * This type corresponds to the table row of psychological and other help facilities in Berlin. Note that the keys are subject to change whenever the columns are updated in the spreadsheet.
  */
@@ -7,7 +17,7 @@ export interface TableRowType {
     Einrichtung: string
     Trager: string
     Kategorie: string
-    Schlagworte: string
+    Schlagworte: number[]
     Wichtige_Hinweise: string
     Beratungsmoglichkeiten: string
     Sprachen: string

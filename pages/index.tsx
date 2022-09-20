@@ -6,18 +6,15 @@ import { WelcomeScreen } from '@components/WelcomeScreen'
 import { WelcomeFilters } from '@components/WelcomeFilters'
 import { useState } from 'react'
 import { getGristRecords } from '@lib/requests/getGristRecords'
-import {
-  FilterLabelType,
-  getLabelsFromRecords,
-} from '@lib/getLabelsFromRecords'
-import { TableRowType } from '@common/types/gristData'
+import { GristLabelType, TableRowType } from '@common/types/gristData'
+import { getGristLabels } from '@lib/requests/getGristLabels'
 
 export const getStaticProps: GetStaticProps = async () => {
-  const [texts, records] = await Promise.all([
+  const [texts, records, labels] = await Promise.all([
     getGristTexts(),
     getGristRecords(),
+    getGristLabels(),
   ])
-  const labels = getLabelsFromRecords(records)
   return {
     props: { texts, records, labels },
     revalidate: 120,
@@ -26,7 +23,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
 const Home: NextPage<{
   records: TableRowType[]
-  labels: FilterLabelType[]
+  labels: GristLabelType['fields'][]
 }> = ({ labels, records }) => {
   const [showFilters, setShowFilters] = useState(false)
   return (
