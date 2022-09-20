@@ -21,6 +21,6 @@
     @apply font-sans;
   }
 	h1 {
-		@apply uppercase font-bold text-4xl leading-9;
+		@apply uppercase font-bold text-3xl md:text-4xl leading-8 md:leading-9;
 	}
 }

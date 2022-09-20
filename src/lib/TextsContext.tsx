@@ -53,6 +53,10 @@ const defaultValue = {
   neighborhoodTempelhofSchoenebergPhoneNumber: '',
   neighborhoodTrepotowKoepenickLabel: '',
   neighborhoodTrepotowKoepenickPhoneNumber: '',
+  welcomeFiltersHeadline: '',
+  welcomeFiltersText: '',
+  filtersButtonTextFiltered: '',
+  filtersButtonTextAllFilters: '',
 }
 
 export type TextsMapType = typeof defaultValue

@@ -2,12 +2,12 @@ import type { GetStaticProps, NextPage } from 'next'
 import Head from 'next/head'
 import { useTexts } from '@lib/TextsContext'
 import { getGristTexts } from '@lib/requests/getGristTexts'
-import { Arrow } from '@components/icons/Arrow'
 import { useRouter } from 'next/router'
 import classNames from '@lib/classNames'
 import { Phone } from '@components/icons/Phone'
 import { useState } from 'react'
 import { Chevron } from '@components/icons/Chevron'
+import { BackButton } from '@components/BackButton'
 
 export const getStaticProps: GetStaticProps = async () => {
   const texts = await getGristTexts()
@@ -39,21 +39,7 @@ const Home: NextPage = () => {
         </title>
       </Head>
       <div className="min-h-screen">
-        <div className="p-2">
-          <button
-            className={classNames(
-              `flex gap-2 p-3 md:p-8 items-center`,
-              `transition-colors hover:text-red`,
-              `focus:outline-none focus:ring-2 focus:ring-red`,
-              `focus:ring-offset-2 focus:ring-offset-white`
-            )}
-            onClick={() => back()}
-            aria-label={texts.backText}
-          >
-            <Arrow orientation="left" className="scale-75" />
-            <span className="font-bold text-lg">{texts.backText}</span>
-          </button>
-        </div>
+        <BackButton onClick={() => void back()} />
         <div className="p-5 md:p-8 flex flex-col gap-8">
           <h1 className="relative pr-16">
             {texts.directHelpButtonText}

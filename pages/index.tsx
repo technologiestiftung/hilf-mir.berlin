@@ -1,27 +1,34 @@
 import type { GetStaticProps, NextPage } from 'next'
 import Head from 'next/head'
-import introImage from '../src/images/intro-header.png'
-import stripesPattern from '../src/images/stripe-pattern.svg'
-import Image from 'next/image'
-import { PrimaryButton } from '@components/PrimaryButton'
-import { SecondaryButton } from '@components/SecondaryButton'
-import { Phone } from '@components/icons/Phone'
-import { useTexts } from '@lib/TextsContext'
 import { getGristTexts } from '@lib/requests/getGristTexts'
-import { useRouter } from 'next/router'
 import classNames from '@lib/classNames'
+import { WelcomeScreen } from '@components/WelcomeScreen'
+import { WelcomeFilters } from '@components/WelcomeFilters'
+import { useState } from 'react'
+import { getGristRecords } from '@lib/requests/getGristRecords'
+import {
+  FilterLabelType,
+  getLabelsFromRecords,
+} from '@lib/getLabelsFromRecords'
+import { TableRowType } from '@common/types/gristData'
 
 export const getStaticProps: GetStaticProps = async () => {
-  const texts = await getGristTexts()
+  const [texts, records] = await Promise.all([
+    getGristTexts(),
+    getGristRecords(),
+  ])
+  const labels = getLabelsFromRecords(records)
   return {
-    props: { texts },
+    props: { texts, records, labels },
     revalidate: 120,
   }
 }
 
-const Home: NextPage = () => {
-  const texts = useTexts()
-  const { push } = useRouter()
+const Home: NextPage<{
+  records: TableRowType[]
+  labels: FilterLabelType[]
+}> = ({ labels, records }) => {
+  const [showFilters, setShowFilters] = useState(false)
   return (
     <>
       <Head>
@@ -29,46 +36,19 @@ const Home: NextPage = () => {
           Willkommen - Digitaler Wegweiser Psychiatrie und Suchthilfe Berlin
         </title>
       </Head>
-      <div className="min-h-screen grid grid-cols-1 grid-rows-[auto,auto,1fr,auto,auto]">
-        <div className="relative">
-          <Image
-            src={introImage}
-            height={202}
-            objectFit="fill"
-            className="w-full"
+      <div className="overflow-hidden">
+        <div
+          className={classNames(
+            `grid grid-cols-2 w-[200vw] transition-transform`,
+            showFilters ? `-translate-x-[100vw]` : ``
+          )}
+        >
+          <WelcomeScreen onShowOffers={() => setShowFilters(true)} />
+          <WelcomeFilters
+            records={records}
+            onGoBack={() => setShowFilters(false)}
+            labels={labels}
           />
-          <span className="absolute right-0 bottom-0">
-            <Image
-              {...stripesPattern}
-              alt="decorative pattern"
-              aria-hidden="true"
-            />
-          </span>
-        </div>
-        <h1 className="p-5 pt-6 ">{texts.homeWelcomeTitle}</h1>
-        <p className="px-5 bp-8 text-lg leading-snug">
-          {texts.homeWelcomeText}
-        </p>
-        <div className="flex flex-col gap-2 p-5 pt-8">
-          <PrimaryButton>{texts.findOffersButtonText}</PrimaryButton>
-          <SecondaryButton
-            onClick={() => void push(`/sofortige-hilfe`)}
-            icon={<Phone />}
-          >
-            {texts.directHelpButtonText}
-          </SecondaryButton>
-          <a
-            href={texts.moreOffersKVBLinkUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={classNames(
-              `underline transition-colors hover:text-red pt-3`,
-              `focus:outline-none focus:ring-2 focus:ring-red`,
-              `focus:ring-offset-2 focus:ring-offset-white`
-            )}
-          >
-            {texts.moreOffersKVBLinkText}
-          </a>
         </div>
       </div>
     </>
