@@ -11,10 +11,12 @@ export const PrimaryButton: FC<HTMLAttributes<HTMLButtonElement>> = ({
     onClick={onClick}
     className={classNames(
       className,
-      `border border-black`,
+      `border border-black leading-7`,
       `font-medium text-left text-2xl`,
       `grid grid-cols-[1fr,auto]`,
-      `hover:bg-red hover:text-white transition-colors`
+      `hover:bg-red hover:text-white transition-colors`,
+      `focus:outline-none focus:ring-2 focus:ring-red`,
+      `focus:ring-offset-2 focus:ring-offset-white`
     )}
   >
     <span className="inline-block px-5 py-3">{children}</span>

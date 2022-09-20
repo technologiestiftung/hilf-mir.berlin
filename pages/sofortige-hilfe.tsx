@@ -26,6 +26,10 @@ const Home: NextPage = () => {
     neigborhoodKeys[0]
   )
   const { back } = useRouter()
+  const neighborhoodNumber =
+    texts[
+      selectedNeighborhood.replace('Label', 'PhoneNumber') as keyof typeof texts
+    ]
   return (
     <>
       <Head>
@@ -59,16 +63,16 @@ const Home: NextPage = () => {
             <h4 className="font-bold text-lg">
               {texts.suicidePreventionLabel}
             </h4>
-            <input
-              type="text"
+            <a
               className={classNames(
                 `p-0 text-3xl`,
                 `focus:outline-none focus:ring-2 focus:ring-red`,
                 `focus:ring-offset-2 focus:ring-offset-white`
               )}
-              value={texts.suicidePreventionPhoneNumber}
-              readOnly
-            />
+              href={`tel:${texts.suicidePreventionPhoneNumber}`}
+            >
+              {texts.suicidePreventionPhoneNumber}
+            </a>
           </section>
           <section className="flex flex-col gap-1">
             <h4 className="font-bold text-lg">
@@ -81,7 +85,7 @@ const Home: NextPage = () => {
                 value={selectedNeighborhood}
                 onChange={(evt) => setSelectedNeighborhood(evt.target.value)}
                 className={classNames(
-                  `border border-black p-3 text-lg`,
+                  `border border-black p-3 text-lg pr-12`,
                   `my-2 bg-white form-select appearance-none`,
                   `block w-full bg-white bg-clip-padding bg-no-repeat`,
                   `focus:outline-none focus:ring-2 focus:ring-red`,
@@ -99,38 +103,31 @@ const Home: NextPage = () => {
                 className="absolute top-1/2 right-4 -translate-y-1/2 scale-75"
               />
             </div>
-            <input
-              type="text"
+            <a
               className={classNames(
                 `p-0 text-3xl`,
                 `focus:outline-none focus:ring-2 focus:ring-red`,
                 `focus:ring-offset-2 focus:ring-offset-white`
               )}
-              value={
-                texts[
-                  `${selectedNeighborhood.replace(
-                    'Label',
-                    'PhoneNumber'
-                  )}` as keyof typeof texts
-                ]
-              }
-              readOnly
-            />
+              href={`tel:${neighborhoodNumber}`}
+            >
+              {neighborhoodNumber}
+            </a>
           </section>
           <section className="flex flex-col gap-1">
             <h4 className="font-bold text-lg">
               {texts.psychiatricServicesLabel}
             </h4>
-            <input
-              type="text"
+            <a
               className={classNames(
                 `p-0 text-3xl`,
                 `focus:outline-none focus:ring-2 focus:ring-red`,
                 `focus:ring-offset-2 focus:ring-offset-white`
               )}
-              value={texts.suicidePreventionPhoneNumber}
-              readOnly
-            />
+              href={`tel:texts.suicidePreventionPhoneNumber`}
+            >
+              {texts.suicidePreventionPhoneNumber}
+            </a>
           </section>
         </div>
       </div>

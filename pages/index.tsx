@@ -9,6 +9,7 @@ import { Phone } from '@components/icons/Phone'
 import { useTexts } from '@lib/TextsContext'
 import { getGristTexts } from '@lib/requests/getGristTexts'
 import { useRouter } from 'next/router'
+import classNames from '@lib/classNames'
 
 export const getStaticProps: GetStaticProps = async () => {
   const texts = await getGristTexts()
@@ -60,7 +61,11 @@ const Home: NextPage = () => {
             href={texts.moreOffersKVBLinkUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="underline transition-colors hover:text-red pt-3"
+            className={classNames(
+              `underline transition-colors hover:text-red pt-3`,
+              `focus:outline-none focus:ring-2 focus:ring-red`,
+              `focus:ring-offset-2 focus:ring-offset-white`
+            )}
           >
             {texts.moreOffersKVBLinkText}
           </a>

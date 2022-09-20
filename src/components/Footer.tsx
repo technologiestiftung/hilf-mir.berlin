@@ -19,32 +19,86 @@ export const Footer: FC = () => {
         <section className="flex flex-wrap gap-x-8 md:gap-x-16 gap-y-5">
           <div className="inline-flex flex-col gap-2">
             <h4>{texts.footerProjectOwnerLabel}</h4>
-            <img {...tsbLogo} alt={texts.footerTSBLogoAltText} />
+            <a
+              href={texts.footerTSBLogoLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={classNames(
+                `transition-opacity hover:opacity-50`,
+                `focus:outline-none focus:ring-2 focus:ring-red`,
+                `focus:ring-offset-2 focus:ring-offset-white`
+              )}
+            >
+              <img {...tsbLogo} alt={texts.footerTSBLogoAltText} />
+            </a>
           </div>
           <div className="inline-flex flex-col gap-2">
             <h4>{texts.footerProjectExecutionerLabel}</h4>
-            <img {...cityLabLogo} alt={texts.footerCityLABLogoAltText} />
+            <a
+              href={texts.footerCityLABLogoLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={classNames(
+                `transition-opacity hover:opacity-50`,
+                `focus:outline-none focus:ring-2 focus:ring-red`,
+                `focus:ring-offset-2 focus:ring-offset-white`
+              )}
+            >
+              <img {...cityLabLogo} alt={texts.footerCityLABLogoAltText} />
+            </a>
           </div>
           <div className="inline-flex flex-col gap-2">
             <h4>{texts.footerCooperationLabel}</h4>
-            <img {...senWGPGLogo} alt={texts.footerSenWGPGLogoAltText} />
+            <a
+              href={texts.footerSenWGPGLogoLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={classNames(
+                `transition-opacity hover:opacity-50`,
+                `focus:outline-none focus:ring-2 focus:ring-red`,
+                `focus:ring-offset-2 focus:ring-offset-white`
+              )}
+            >
+              <img {...senWGPGLogo} alt={texts.footerSenWGPGLogoAltText} />
+            </a>
           </div>
           <div className="inline-flex flex-col gap-2">
             <h4>{texts.footerProjectSponsorLabel}</h4>
-            <img
-              {...senatskanzleiLogo}
-              alt={texts.footerSentatskanzleiLogoAltText}
-            />
+            <a
+              href={texts.footerSentatskanzleiLogoLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={classNames(
+                `transition-opacity hover:opacity-50`,
+                `focus:outline-none focus:ring-2 focus:ring-red`,
+                `focus:ring-offset-2 focus:ring-offset-white`
+              )}
+            >
+              <img
+                {...senatskanzleiLogo}
+                alt={texts.footerSentatskanzleiLogoAltText}
+              />
+            </a>
           </div>
         </section>
-        <section className="flex gap-8 pt-8">
+        <section className="flex gap-x-8 gap-y-4 pt-8 flex-wrap">
           <Link href="/info">
-            <a className="underline transition-colors hover:text-red">
+            <a
+              className={classNames(
+                `underline transition-colors hover:text-red`,
+                `focus:outline-none focus:ring-2 focus:ring-red`,
+                `focus:ring-offset-2 focus:ring-offset-white`
+              )}
+            >
               {texts.footerInfoPageLinkText}
             </a>
           </Link>
           <a
-            className="underline transition-colors hover:text-red"
+            className={classNames(
+              `underline transition-colors hover:text-red`,
+              `focus:outline-none focus:ring-2 focus:ring-red`,
+              `focus:ring-offset-2 focus:ring-offset-white`
+            )}
             href={texts.footerImprintLinkUrl}
             target="_blank"
             rel="noopener noreferrer"
@@ -52,7 +106,11 @@ export const Footer: FC = () => {
             {texts.footerImprintLinkText}
           </a>
           <a
-            className="underline transition-colors hover:text-red"
+            className={classNames(
+              `underline transition-colors hover:text-red`,
+              `focus:outline-none focus:ring-2 focus:ring-red`,
+              `focus:ring-offset-2 focus:ring-offset-white`
+            )}
             href={texts.footerPrivacyLinkUrl}
             target="_blank"
             rel="noopener noreferrer"
