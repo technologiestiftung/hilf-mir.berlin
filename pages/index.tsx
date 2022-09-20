@@ -23,7 +23,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
 const Home: NextPage<{
   records: TableRowType[]
-  labels: GristLabelType['fields'][]
+  labels: GristLabelType[]
 }> = ({ labels, records }) => {
   const [showFilters, setShowFilters] = useState(false)
   return (
