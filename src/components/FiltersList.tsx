@@ -57,49 +57,59 @@ export const FiltersList: FC<{
     )
   }
   return (
-    <>
-      <ul className="flex flex-wrap gap-2 mb-5">{group1.map(renderLabels)}</ul>
-      <ul className="flex flex-wrap gap-2 mb-5">{group2.map(renderLabels)}</ul>
-      <ul className="flex flex-wrap gap-2 mb-8">{group3.map(renderLabels)}</ul>
-      <h3 className={classNames(`font-bold text-lg mb-3`)}>
-        {texts.filtersSearchTargetLabel}
-      </h3>
-      <button
-        onClick={() =>
-          setActiveFilters(
-            activeFilters.filter((f) => f.fields.group !== 'zielpublikum')
-          )
-        }
-        className={classNames(
-          `py-1.5 border text-lg leading-6 pl-2 w-full mb-3`,
-          !someTargetFiltersActive &&
-            `bg-red border-red text-white font-bold pr-2.5`,
-          someTargetFiltersActive && ` border-gray-20 pr-3`
-        )}
-      >
-        {texts.noTargetPreferenceButtonText}
-      </button>
-      <div
-        className={classNames(
-          `relative border-t border-gray-20 text-center uppercase text-lg`,
-          `font-medium tracking-widest text-gray-40 leading-4 mb-8 mt-5`
-        )}
-      >
-        <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-white px-3">
-          {texts.orLabel}
-        </span>
+    <div className="md:grid md:grid-cols-2 md:gap-16 md:mt-2">
+      <div className="md:pt-10">
+        <ul className="flex flex-wrap gap-2 mb-5 md:mb-7">
+          {group1.map(renderLabels)}
+        </ul>
+        <ul className="flex flex-wrap gap-2 mb-5 md:mb-7">
+          {group2.map(renderLabels)}
+        </ul>
+        <ul className="flex flex-wrap gap-2 mb-8">
+          {group3.map(renderLabels)}
+        </ul>
       </div>
-      <ul className="flex flex-wrap gap-2 mb-8">
-        {targetAudience.map(renderLabels)}
-      </ul>
-      <PrimaryButton onClick={() => void push(`/map`)}>
-        {activeFilters.length > 0
-          ? texts.filtersButtonTextFiltered.replace(
-              '#number',
-              `${filteredRecords.length}`
+      <div>
+        <h3 className={classNames(`font-bold text-lg mb-3`)}>
+          {texts.filtersSearchTargetLabel}
+        </h3>
+        <button
+          onClick={() =>
+            setActiveFilters(
+              activeFilters.filter((f) => f.fields.group !== 'zielpublikum')
             )
-          : texts.filtersButtonTextAllFilters}
-      </PrimaryButton>
-    </>
+          }
+          className={classNames(
+            `py-1.5 border text-lg leading-6 pl-2 w-full mb-3`,
+            !someTargetFiltersActive &&
+              `bg-red border-red text-white font-bold pr-2.5`,
+            someTargetFiltersActive && ` border-gray-20 pr-3`
+          )}
+        >
+          {texts.noTargetPreferenceButtonText}
+        </button>
+        <div
+          className={classNames(
+            `relative border-t border-gray-20 text-center uppercase text-lg`,
+            `font-medium tracking-widest text-gray-40 leading-4 mb-8 mt-5`
+          )}
+        >
+          <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-white px-3">
+            {texts.orLabel}
+          </span>
+        </div>
+        <ul className="flex flex-wrap gap-2 mb-8">
+          {targetAudience.map(renderLabels)}
+        </ul>
+        <PrimaryButton onClick={() => void push(`/map`)}>
+          {activeFilters.length > 0
+            ? texts.filtersButtonTextFiltered.replace(
+                '#number',
+                `${filteredRecords.length}`
+              )
+            : texts.filtersButtonTextAllFilters}
+        </PrimaryButton>
+      </div>
+    </div>
   )
 }

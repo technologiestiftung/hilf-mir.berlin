@@ -4,7 +4,6 @@ import tsbLogo from '../images/logos/tsb-logo.svg'
 import cityLabLogo from '../images/logos/citylab-logo.svg'
 import senWGPGLogo from '../images/logos/senWGPG-logo.svg'
 import senatskanzleiLogo from '../images/logos/senatskanzleiLogo-logo.svg'
-import Link from 'next/link'
 import classNames from '@lib/classNames'
 
 export const Footer: FC = () => {
@@ -16,7 +15,12 @@ export const Footer: FC = () => {
           `p-5 md:p-8 pt-10 md:pt-12 border-t border-gray-20`
         )}
       >
-        <section className="flex flex-wrap gap-x-8 md:gap-x-16 gap-y-5">
+        <section
+          className={classNames(
+            `flex flex-wrap gap-x-8 md:gap-x-16 gap-y-5`,
+            `md:container md:max-w-7xl md:mx-auto md:px-8`
+          )}
+        >
           <div className="inline-flex flex-col gap-2">
             <h4>{texts.footerProjectOwnerLabel}</h4>
             <a
@@ -80,43 +84,6 @@ export const Footer: FC = () => {
               />
             </a>
           </div>
-        </section>
-        <section className="flex gap-x-8 gap-y-4 pt-8 flex-wrap">
-          <Link href="/info">
-            <a
-              className={classNames(
-                `underline transition-colors hover:text-red`,
-                `focus:outline-none focus:ring-2 focus:ring-red`,
-                `focus:ring-offset-2 focus:ring-offset-white`
-              )}
-            >
-              {texts.footerInfoPageLinkText}
-            </a>
-          </Link>
-          <a
-            className={classNames(
-              `underline transition-colors hover:text-red`,
-              `focus:outline-none focus:ring-2 focus:ring-red`,
-              `focus:ring-offset-2 focus:ring-offset-white`
-            )}
-            href={texts.footerImprintLinkUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {texts.footerImprintLinkText}
-          </a>
-          <a
-            className={classNames(
-              `underline transition-colors hover:text-red`,
-              `focus:outline-none focus:ring-2 focus:ring-red`,
-              `focus:ring-offset-2 focus:ring-offset-white`
-            )}
-            href={texts.footerPrivacyLinkUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {texts.footerPrivacyLinkText}
-          </a>
         </section>
       </footer>
     </>

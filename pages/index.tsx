@@ -8,6 +8,8 @@ import { useState } from 'react'
 import { getGristRecords } from '@lib/requests/getGristRecords'
 import { GristLabelType, TableRowType } from '@common/types/gristData'
 import { getGristLabels } from '@lib/requests/getGristLabels'
+import { useIsMobile } from '@lib/hooks/useIsMobile'
+import { LegalFooter } from '@components/LegalFooter'
 
 export const getStaticProps: GetStaticProps = async () => {
   const [texts, records, labels] = await Promise.all([
@@ -26,6 +28,7 @@ const Home: NextPage<{
   labels: GristLabelType[]
 }> = ({ labels, records }) => {
   const [showFilters, setShowFilters] = useState(false)
+  const isMobile = useIsMobile()
   return (
     <>
       <Head>
@@ -36,8 +39,9 @@ const Home: NextPage<{
       <div className="overflow-hidden">
         <div
           className={classNames(
-            `grid grid-cols-2 w-[200vw] transition-transform`,
-            showFilters ? `-translate-x-[100vw]` : ``
+            isMobile && showFilters ? `-translate-x-[100vw]` : ``,
+            isMobile && `w-[200vw] transition-transform grid grid-cols-2`,
+            !isMobile && `container mx-auto md:max-w-7xl`
           )}
         >
           <WelcomeScreen onShowOffers={() => setShowFilters(true)} />
@@ -48,6 +52,7 @@ const Home: NextPage<{
           />
         </div>
       </div>
+      {!isMobile && <LegalFooter />}
     </>
   )
 }
