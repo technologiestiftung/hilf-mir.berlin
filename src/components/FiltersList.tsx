@@ -13,7 +13,7 @@ export const FiltersList: FC<{
   const [activeFilters, setActiveFilters] = useState<GristLabelType[]>([])
   const { push } = useRouter()
   const filteredRecords = records.filter((r) =>
-    activeFilters.find((f) => r.fields.Schlagworte.find((id) => id === f.id))
+    activeFilters.every((f) => r.fields.Schlagworte.find((id) => id === f.id))
   )
   const group1 = labels.filter(({ fields }) => fields.group === 'gruppe-1')
   const group2 = labels.filter(({ fields }) => fields.group === 'gruppe-2')
