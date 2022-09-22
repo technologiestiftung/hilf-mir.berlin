@@ -26,6 +26,7 @@ export const useNearFilter = (): {
         .catch(() => {
           setNearFilterOn(false)
           localStorage.setItem(LOCAL_STORAGE_KEY, 'false')
+          setGeolocationIsForbidden(true)
         })
     }
   }, [])
