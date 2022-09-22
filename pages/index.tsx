@@ -17,16 +17,19 @@ export const getStaticProps: GetStaticProps = async () => {
     getGristRecords(),
     getGristLabels(),
   ])
+  const recordsWithOnlyLabels = records.map(
+    (records) => records.fields.Schlagworte
+  )
   return {
-    props: { texts, records, labels },
+    props: { texts, recordsWithOnlyLabels, labels },
     revalidate: 120,
   }
 }
 
 const Home: NextPage<{
-  records: TableRowType[]
+  recordsWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
   labels: GristLabelType[]
-}> = ({ labels, records }) => {
+}> = ({ labels, recordsWithOnlyLabels }) => {
   const [showFilters, setShowFilters] = useState(false)
   const isMobile = useIsMobile()
   return (
@@ -46,7 +49,7 @@ const Home: NextPage<{
         >
           <WelcomeScreen onShowOffers={() => setShowFilters(true)} />
           <WelcomeFilters
-            records={records}
+            recordsWithOnlyLabels={recordsWithOnlyLabels}
             onGoBack={() => setShowFilters(false)}
             labels={labels}
           />

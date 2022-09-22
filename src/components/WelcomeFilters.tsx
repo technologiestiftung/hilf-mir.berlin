@@ -13,8 +13,8 @@ import classNames from '@lib/classNames'
 export const WelcomeFilters: FC<{
   onGoBack: () => void
   labels: GristLabelType[]
-  records: TableRowType[]
-}> = ({ onGoBack, labels, records }) => {
+  recordsWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
+}> = ({ onGoBack, labels, recordsWithOnlyLabels }) => {
   const texts = useTexts()
   const { push } = useRouter()
   const isMobile = useIsMobile()
@@ -45,7 +45,10 @@ export const WelcomeFilters: FC<{
           <p className="text-lg pb-6 leading-snug">
             {texts.welcomeFiltersText}
           </p>
-          <FiltersList records={records} labels={labels} />
+          <FiltersList
+            recordsWithOnlyLabels={recordsWithOnlyLabels}
+            labels={labels}
+          />
         </div>
         {isMobile && <LegalFooter />}
       </div>

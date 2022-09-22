@@ -8,16 +8,16 @@ import { PrimaryButton } from './PrimaryButton'
 import { SwitchButton } from './SwitchButton'
 
 export const FiltersList: FC<{
-  records: TableRowType[]
+  recordsWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
   labels: GristLabelType[]
-}> = ({ records, labels }) => {
+}> = ({ recordsWithOnlyLabels, labels }) => {
   const texts = useTexts()
   const [activeFilters, setActiveFilters] = useState<GristLabelType[]>([])
   const { push } = useRouter()
   const { nearFilterOn, setNearFilter, geolocationIsForbidden } =
     useNearFilter()
-  const filteredRecords = records.filter((r) =>
-    activeFilters.every((f) => r.fields.Schlagworte.find((id) => id === f.id))
+  const filteredRecords = recordsWithOnlyLabels.filter((r) =>
+    activeFilters.every((f) => r.find((id) => id === f.id))
   )
   const group1 = labels.filter(({ fields }) => fields.group === 'gruppe-1')
   const group2 = labels.filter(({ fields }) => fields.group === 'gruppe-2')
