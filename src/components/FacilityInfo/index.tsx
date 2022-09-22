@@ -87,7 +87,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({
             {facility.fields.Schlagworte && (
               <TagItem
                 question="Schlagworte"
-                answers={facility.fields.Schlagworte.split(';')}
+                answers={facility.fields.Schlagworte.map((n) => `${n}`)}
               />
             )}
             {facility.fields.Sprachen && (
