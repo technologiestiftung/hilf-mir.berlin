@@ -1,9 +1,11 @@
 import { GristLabelType, TableRowType } from '@common/types/gristData'
 import classNames from '@lib/classNames'
+import { useNearFilter } from '@lib/hooks/useNearFilter'
 import { useTexts } from '@lib/TextsContext'
 import { useRouter } from 'next/router'
 import { FC, useState } from 'react'
 import { PrimaryButton } from './PrimaryButton'
+import { SwitchButton } from './SwitchButton'
 
 export const FiltersList: FC<{
   records: TableRowType[]
@@ -12,6 +14,8 @@ export const FiltersList: FC<{
   const texts = useTexts()
   const [activeFilters, setActiveFilters] = useState<GristLabelType[]>([])
   const { push } = useRouter()
+  const { nearFilterOn, setNearFilter, geolocationIsForbidden } =
+    useNearFilter()
   const filteredRecords = records.filter((r) =>
     activeFilters.every((f) => r.fields.Schlagworte.find((id) => id === f.id))
   )
@@ -39,7 +43,9 @@ export const FiltersList: FC<{
           className={classNames(
             `py-1.5 border text-lg flex gap-2 text-left leading-6 pl-2 group`,
             isActive && `bg-red border-red text-white font-bold pr-2.5`,
-            !isActive && ` border-gray-20 pr-3`
+            !isActive && ` border-gray-20 pr-3`,
+            `focus:outline-none focus:ring-2 focus:ring-red`,
+            `focus:ring-offset-2 focus:ring-offset-white`
           )}
         >
           {label.fields.icon && (
@@ -83,7 +89,9 @@ export const FiltersList: FC<{
             `py-1.5 border text-lg leading-6 pl-2 w-full mb-3`,
             !someTargetFiltersActive &&
               `bg-red border-red text-white font-bold pr-2.5`,
-            someTargetFiltersActive && ` border-gray-20 pr-3`
+            someTargetFiltersActive && ` border-gray-20 pr-3`,
+            `focus:outline-none focus:ring-2 focus:ring-red`,
+            `focus:ring-offset-2 focus:ring-offset-white`
           )}
         >
           {texts.noTargetPreferenceButtonText}
@@ -101,13 +109,38 @@ export const FiltersList: FC<{
         <ul className="flex flex-wrap gap-2 mb-8">
           {targetAudience.map(renderLabels)}
         </ul>
-        <PrimaryButton onClick={() => void push(`/map`)}>
-          {activeFilters.length > 0
-            ? texts.filtersButtonTextFiltered.replace(
-                '#number',
-                `${filteredRecords.length}`
-              )
-            : texts.filtersButtonTextAllFilters}
+        <SwitchButton
+          value={nearFilterOn}
+          onToggle={setNearFilter}
+          disabled={geolocationIsForbidden}
+          tooltip={geolocationIsForbidden ? texts.geolocationForbidden : ``}
+        >
+          {texts.filtersGeoSearchLabel}
+        </SwitchButton>
+        <PrimaryButton
+          onClick={() => void push(`/map`)}
+          disabled={activeFilters.length > 0 && filteredRecords.length === 0}
+          tooltip={
+            activeFilters.length > 0 && filteredRecords.length === 0
+              ? texts.filtersButtonTextFilteredNoResultsHint
+              : ''
+          }
+        >
+          {(activeFilters.length === 0 ||
+            activeFilters.length === labels.length) &&
+            texts.filtersButtonTextAllFilters}
+          {activeFilters.length > 0 &&
+            filteredRecords.length === 1 &&
+            texts.filtersButtonTextFilteredSingular}
+          {activeFilters.length > 0 &&
+            filteredRecords.length > 1 &&
+            texts.filtersButtonTextFilteredPlural.replace(
+              '#number',
+              `${filteredRecords.length}`
+            )}
+          {activeFilters.length > 0 &&
+            filteredRecords.length === 0 &&
+            texts.filtersButtonTextFilteredNoResults}
         </PrimaryButton>
       </div>
     </div>

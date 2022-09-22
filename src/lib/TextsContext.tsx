@@ -55,11 +55,16 @@ const defaultValue = {
   neighborhoodTrepotowKoepenickPhoneNumber: '',
   welcomeFiltersHeadline: '',
   welcomeFiltersText: '',
-  filtersButtonTextFiltered: '',
+  filtersButtonTextFilteredSingular: '',
+  filtersButtonTextFilteredPlural: '',
+  filtersButtonTextFilteredNoResults: '',
+  filtersButtonTextFilteredNoResultsHint: '',
   filtersButtonTextAllFilters: '',
+  filtersGeoSearchLabel: '',
   noTargetPreferenceButtonText: '',
   orLabel: '',
   filtersSearchTargetLabel: '',
+  geolocationForbidden: '',
 }
 
 export type TextsMapType = typeof defaultValue

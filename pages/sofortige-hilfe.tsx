@@ -38,9 +38,9 @@ const Home: NextPage = () => {
           Suchthilfe Berlin
         </title>
       </Head>
-      <div className="min-h-screen">
+      <div className="min-h-screen mx-auto max-w-xl">
         <BackButton onClick={() => void back()} />
-        <div className="p-5 md:p-8 flex flex-col gap-8">
+        <div className="p-5 md:p-8 flex flex-col gap-8 md:pt-[5vmin]">
           <h1 className="relative pr-16">
             {texts.directHelpButtonText}
             <Phone className="absolute top-1/2 right-0 -translate-y-1/2 text-red" />
