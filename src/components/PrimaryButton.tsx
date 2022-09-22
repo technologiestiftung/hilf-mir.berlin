@@ -15,7 +15,7 @@ export const PrimaryButton: FC<ButtonPropsType> = ({
   tooltip,
 }) => (
   <button
-    onClick={onClick}
+    onClick={() => !disabled && onClick()}
     className={classNames(
       className,
       `border leading-7 transition-colors`,
