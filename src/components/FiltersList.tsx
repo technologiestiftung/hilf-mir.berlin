@@ -1,6 +1,6 @@
 import { GristLabelType, TableRowType } from '@common/types/gristData'
 import classNames from '@lib/classNames'
-import { useNearFilter } from '@lib/hooks/useNearFilter'
+import { useUserGeoplocation } from '@lib/hooks/useUserGeoplocation'
 import { useTexts } from '@lib/TextsContext'
 import { useRouter } from 'next/router'
 import { FC, useState } from 'react'
@@ -13,9 +13,14 @@ export const FiltersList: FC<{
 }> = ({ recordsWithOnlyLabels, labels }) => {
   const texts = useTexts()
   const [activeFilters, setActiveFilters] = useState<GristLabelType[]>([])
-  const { push } = useRouter()
-  const { nearFilterOn, setNearFilter, geolocationIsForbidden } =
-    useNearFilter()
+  const { push, query } = useRouter()
+  const {
+    useGeolocation,
+    setGeolocationUsage,
+    geolocationIsForbidden,
+    latitude,
+    longitude,
+  } = useUserGeoplocation()
   const filteredRecords = recordsWithOnlyLabels.filter((r) =>
     activeFilters.every((f) => r.find((id) => id === f.id))
   )
@@ -110,15 +115,23 @@ export const FiltersList: FC<{
           {targetAudience.map(renderLabels)}
         </ul>
         <SwitchButton
-          value={nearFilterOn}
-          onToggle={setNearFilter}
+          value={useGeolocation}
+          onToggle={setGeolocationUsage}
           disabled={geolocationIsForbidden}
           tooltip={geolocationIsForbidden ? texts.geolocationForbidden : ``}
         >
           {texts.filtersGeoSearchLabel}
         </SwitchButton>
         <PrimaryButton
-          onClick={() => void push(`/map`)}
+          onClick={() =>
+            void push({
+              pathname: `/map`,
+              query: {
+                ...query,
+                ...(latitude && longitude ? { latitude, longitude } : {}),
+              },
+            })
+          }
           disabled={activeFilters.length > 0 && filteredRecords.length === 0}
           tooltip={
             activeFilters.length > 0 && filteredRecords.length === 0
