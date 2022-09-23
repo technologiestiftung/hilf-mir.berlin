@@ -6,21 +6,12 @@ import { faker } from '@faker-js/faker/locale/de'
 const projectDir = process.cwd()
 loadEnvConfig(projectDir, true)
 
-// Taken from: https://stackoverflow.com/a/19270021
-const getRandomArray = (arr: string[], n: number): string[] => {
-  const result = new Array(n)
-  let len = arr.length
-  const taken = new Array(len)
-  if (n > len)
-    throw new RangeError('getRandom: more elements taken than available')
-  while (n--) {
-    const x = Math.floor(Math.random() * len)
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    result[n] = arr[x in taken ? taken[x] : x]
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    taken[x] = --len in taken ? taken[len] : len
-  }
-  return result as string[]
+const createRandomArrayFromArray = (
+  sourceArray: string[],
+  newArrayLength: number
+): string[] => {
+  const shuffledArray = [...sourceArray].sort(() => 0.5 - Math.random())
+  return shuffledArray.slice(0, newArrayLength)
 }
 
 const POST_RECORDS_URL = `${
@@ -43,7 +34,7 @@ const fakeData: Omit<TableRowType, 'id'>[] = Array.from(Array(300)).map(() => {
       Ansprechperson_2_Vorname: faker.name.firstName('male'),
       Ausschlie_lich_nach_Meldeadresse: 'ja',
       Barrierefreiheit: 'nein',
-      Beratungsmoglichkeiten: getRandomArray(
+      Beratungsmoglichkeiten: createRandomArrayFromArray(
         [
           'Vor Ort',
           'Telefonberatung',
@@ -75,7 +66,7 @@ const fakeData: Omit<TableRowType, 'id'>[] = Array.from(Array(300)).map(() => {
       ),
       PLZ: `${faker.datatype.number({ min: 10_000, max: 13_000 })}`,
       Reichweite: 'Bezirk',
-      Schlagworte: getRandomArray(
+      Schlagworte: createRandomArrayFromArray(
         [
           'Arbeit und Beschäftigung',
           'Erwachsene',
@@ -86,7 +77,7 @@ const fakeData: Omit<TableRowType, 'id'>[] = Array.from(Array(300)).map(() => {
         ],
         3
       ).join(';'),
-      Sprachen: getRandomArray(
+      Sprachen: createRandomArrayFromArray(
         ['Deutsch', 'Englisch', 'Türkisch', 'Polnisch', 'Arabisch', 'Spanisch'],
         3
       ).join(';'),
