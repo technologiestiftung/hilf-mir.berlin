@@ -22,12 +22,13 @@ For rendering the map, a combination of [MapLibre GL JS](https://maplibre.org/ma
 ### Steps
 
 1. Install dependencies via `npm install`
-2. Create a file `.env.development.local` and fill it according to `.env.example`. This will fetch data from a table with fake data for development.
+2. Create a file `.env.development.local` and fill it according to `.env.example`. The environment variables will connect to our development Grist instance which currently contains fake data instead of real facilities data. This is because in development mode we want to have the expected amount of records (~300) while the real dataset is currently being collected.
 3. Run `npm run dev` to get a development server running at [http://localhost:3000](http://localhost:3000)
 4. Explore the data on the map or make changes to the code
 
 > If you want to start the app with the production table data, please change the values of 
 `.env.development.local` to point to the production table.
+
 ## Notes
 
 ### Accessing the Grist API from a Next API route
