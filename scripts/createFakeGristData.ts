@@ -14,6 +14,9 @@ const createRandomArrayFromArray = (
   return shuffledArray.slice(0, newArrayLength)
 }
 
+const getRandomNumberInRange = (min: number, max: number): number =>
+  Math.floor(Math.random() * (max - min) + min)
+
 const POST_RECORDS_URL = `${
   process.env.NEXT_SECRET_GRIST_DOMAIN || ''
 }/api/docs/${process.env.NEXT_SECRET_GRIST_DOC_ID || ''}/tables/${
@@ -41,7 +44,7 @@ const fakeData: Omit<TableRowType, 'id'>[] = Array.from(Array(300)).map(() => {
           'Rückrufservice',
           'Außerhalb der Einrichtung',
         ],
-        3
+        getRandomNumberInRange(1, 4)
       ).join(';'),
       Bezirk: 'Lichtenberg',
       c24_h_7_Tage: 'nein',
@@ -75,11 +78,11 @@ const fakeData: Omit<TableRowType, 'id'>[] = Array.from(Array(300)).map(() => {
           'Geflüchtete',
           'LSTBIQ',
         ],
-        3
+        getRandomNumberInRange(1, 6)
       ).join(';'),
       Sprachen: createRandomArrayFromArray(
         ['Deutsch', 'Englisch', 'Türkisch', 'Polnisch', 'Arabisch', 'Spanisch'],
-        3
+        getRandomNumberInRange(1, 6)
       ).join(';'),
       Stadtteil: 'Lichtenberg',
       Stadtteile_Regionen: '',
