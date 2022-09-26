@@ -10,8 +10,7 @@ import { Sidebar } from '@components/Sidebar'
 import { FeatureType } from '@lib/requests/geocode'
 import { getGristTexts } from '@lib/requests/getGristTexts'
 import { getGristRecords } from '@lib/requests/getGristRecords'
-const citylabLogo = 'images/citylab_logo.svg'
-const sengpgLogo = 'images/sengpg_logo.svg'
+import { useTexts } from '@lib/TextsContext'
 
 export const getStaticProps: GetStaticProps = async () => {
   const [texts, records] = await Promise.all([
@@ -30,6 +29,7 @@ const Home: NextPage<{
   const [selectedFacility, setSelectedFacility] = useState<TableRowType | null>(
     null
   )
+  const texts = useTexts()
 
   const [facilityIdsAtLocation, setFacilityIdsAtLocation] = useState<number[]>(
     []
@@ -56,7 +56,7 @@ const Home: NextPage<{
     <>
       <Head>
         <title>
-          Digitaler Wegweiser Psychiatrie und Suchthilfe Berlin - Prototyp
+          {texts.mapPageTitle} – {texts.siteTitle}
         </title>
         <link
           href="https://unpkg.com/maplibre-gl@2.1.6/dist/maplibre-gl.css"
@@ -65,22 +65,7 @@ const Home: NextPage<{
       </Head>
       <div className="w-screen h-screen grid grid-cols-1 grid-rows-[auto_1fr]">
         <header className="h-16 pl-4 pr-3 py-3 flex flex-wrap gap-2 items-center justify-between border-b border-gray-50">
-          <h1 className="font-bold">
-            Digitaler Wegweiser Psychiatrie und Suchthilfe Berlin
-          </h1>
-          <div className="hidden md:flex gap-4 items-center">
-            <span className="text-sm">Eine Kooperation von</span>
-            <img
-              src={citylabLogo}
-              alt="Logo des CityLAB Berlin"
-              className="h-8 w-auto"
-            />
-            <img
-              src={sengpgLogo}
-              alt="Logo der Senatsverwaltung für Wissenschaft, Gesundheit, Pflege und Gleichstellung in Berlin"
-              className="h-9 w-auto"
-            />
-          </div>
+          <h1 className="font-bold">{texts.siteTitle}</h1>
         </header>
         <div className="w-full h-full">
           <Sidebar isOpen={!!selectedFacility}>

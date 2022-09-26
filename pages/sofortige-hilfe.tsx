@@ -34,8 +34,7 @@ const Home: NextPage = () => {
     <>
       <Head>
         <title>
-          {texts.directHelpButtonText} - Digitaler Wegweiser Psychiatrie und
-          Suchthilfe Berlin
+          {texts.directHelpButtonText} - {texts.siteTitle}
         </title>
       </Head>
       <div className="min-h-screen mx-auto max-w-xl">

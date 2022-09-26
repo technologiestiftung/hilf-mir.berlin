@@ -1,6 +1,7 @@
 import { createContext, useContext } from 'react'
 
 const defaultValue = {
+  siteTitle: '',
   homeWelcomeTitle: '',
   homeWelcomeText: '',
   findOffersButtonText: '',
@@ -65,6 +66,7 @@ const defaultValue = {
   orLabel: '',
   filtersSearchTargetLabel: '',
   geolocationForbidden: '',
+  mapPageTitle: '',
 }
 
 export type TextsMapType = typeof defaultValue
