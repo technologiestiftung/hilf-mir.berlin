@@ -17,7 +17,7 @@ const FACILITY: FacilityType = {
     Website: 'Website',
     Trager: 'string',
     Kategorie: 'string',
-    Schlagworte: 'string',
+    Schlagworte: [1, 2, 3],
     Wichtige_Hinweise: 'string',
     Beratungsmoglichkeiten: 'string',
     Sprachen: 'string',

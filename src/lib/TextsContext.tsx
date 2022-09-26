@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react'
-import { TextsMapType } from './requests/getGristTexts'
 
-const textsContext = createContext<TextsMapType>({
+const defaultValue = {
+  siteTitle: '',
   homeWelcomeTitle: '',
   homeWelcomeText: '',
   findOffersButtonText: '',
@@ -10,8 +10,68 @@ const textsContext = createContext<TextsMapType>({
   moreOffersKVBLinkUrl: '',
   footerInfoPageLinkText: '',
   footerImprintLinkText: '',
+  footerImprintLinkUrl: '',
   footerPrivacyLinkText: '',
-})
+  footerPrivacyLinkUrl: '',
+  footerProjectOwnerLabel: '',
+  footerTSBLogoAltText: '',
+  footerTSBLogoLink: '',
+  footerProjectExecutionerLabel: '',
+  footerCityLABLogoAltText: '',
+  footerCityLABLogoLink: '',
+  footerCooperationLabel: '',
+  footerSenWGPGLogoAltText: '',
+  footerSenWGPGLogoLink: '',
+  footerProjectSponsorLabel: '',
+  footerSentatskanzleiLogoAltText: '',
+  footerSentatskanzleiLogoLink: '',
+  suicidePreventionLabel: '',
+  suicidePreventionPhoneNumber: '',
+  psychiatricServicesLabel: '',
+  psychiatricServicesPhoneNumber: '',
+  backText: '',
+  neighborhoodCharlottenburgWilmersdorfLabel: '',
+  neighborhoodCharlottenburgWilmersdorfPhoneNumber: '',
+  neighborhoodFriedrichshainKreuzbergLabel: '',
+  neighborhoodFriedrichshainKreuzbergPhoneNumber: '',
+  neighborhoodLichtenbergLabel: '',
+  neighborhoodLichtenbergPhoneNumber: '',
+  neighborhoodMarzahnHellersdorfLabel: '',
+  neighborhoodMarzahnHellersdorfPhoneNumber: '',
+  neighborhoodMitteLabel: '',
+  neighborhoodMittePhoneNumber: '',
+  neighborhoodNeukoellnLabel: '',
+  neighborhoodNeukoellnPhoneNumber: '',
+  neighborhoodPankowLabel: '',
+  neighborhoodPankowPhoneNumber: '',
+  neighborhoodReinickendorfLabel: '',
+  neighborhoodReinickendorfPhoneNumber: '',
+  neighborhoodSpandauLabel: '',
+  neighborhoodSpandauPhoneNumber: '',
+  neighborhoodSteglitzZehlendorfLabel: '',
+  neighborhoodSteglitzZehlendorfPhoneNumber: '',
+  neighborhoodTempelhofSchoenebergLabel: '',
+  neighborhoodTempelhofSchoenebergPhoneNumber: '',
+  neighborhoodTrepotowKoepenickLabel: '',
+  neighborhoodTrepotowKoepenickPhoneNumber: '',
+  welcomeFiltersHeadline: '',
+  welcomeFiltersText: '',
+  filtersButtonTextFilteredSingular: '',
+  filtersButtonTextFilteredPlural: '',
+  filtersButtonTextFilteredNoResults: '',
+  filtersButtonTextFilteredNoResultsHint: '',
+  filtersButtonTextAllFilters: '',
+  filtersGeoSearchLabel: '',
+  noTargetPreferenceButtonText: '',
+  orLabel: '',
+  filtersSearchTargetLabel: '',
+  geolocationForbidden: '',
+  mapPageTitle: '',
+}
+
+export type TextsMapType = typeof defaultValue
+
+const textsContext = createContext<TextsMapType>(defaultValue)
 
 export const useTexts = (): TextsMapType => {
   const texts = useContext(textsContext)
