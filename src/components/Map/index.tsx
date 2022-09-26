@@ -9,7 +9,7 @@ import { TableRowType } from '@common/types/gristData'
 interface MapType {
   center?: LngLatLike
   markers?: TableRowType[]
-  onMarkerClick?: (facilityIds: number[]) => void
+  onMarkerClick?: (facilityId: number) => void
   highlightedLocation?: [number, number]
 }
 
@@ -131,7 +131,7 @@ export const FacilitiesMap: FC<MapType> = ({
           zoom: 15,
         })
 
-        onMarkerClick(clickedMarkerIds)
+        onMarkerClick(clickedMarkerIds[0])
       })
 
       map.current.on('mouseenter', 'clusters', function () {
