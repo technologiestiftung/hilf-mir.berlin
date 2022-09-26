@@ -30,10 +30,6 @@ const MapPage: Page<MapProps> = () => {
         <title>
           {texts.mapPageTitle} – {texts.siteTitle}
         </title>
-        <link
-          href="https://unpkg.com/maplibre-gl@2.1.6/dist/maplibre-gl.css"
-          rel="stylesheet"
-        />
       </Head>
     </>
   )
