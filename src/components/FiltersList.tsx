@@ -1,6 +1,6 @@
 import { GristLabelType, TableRowType } from '@common/types/gristData'
 import classNames from '@lib/classNames'
-import { useUserGeoplocation } from '@lib/hooks/useUserGeoplocation'
+import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
 import { useTexts } from '@lib/TextsContext'
 import { useRouter } from 'next/router'
 import { FC, useState } from 'react'
@@ -20,7 +20,7 @@ export const FiltersList: FC<{
     geolocationIsForbidden,
     latitude,
     longitude,
-  } = useUserGeoplocation()
+  } = useUserGeolocation()
   const filteredRecords = recordsWithOnlyLabels.filter((r) =>
     activeFilters.every((f) => r.find((id) => id === f.id))
   )

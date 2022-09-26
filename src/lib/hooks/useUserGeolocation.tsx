@@ -11,7 +11,7 @@ const requestUserGeolocation = (): Promise<GeolocationPosition> =>
     }
   })
 
-export const useUserGeoplocation = (): {
+export const useUserGeolocation = (): {
   useGeolocation: boolean
   setGeolocationUsage: (isOn: boolean) => void
   geolocationIsForbidden: boolean
