@@ -29,11 +29,8 @@ export const WelcomeScreen: FC<{
           <section className="w-full h-32 md:h-[202px] relative">
             <Image src={introImage} layout="fill" objectFit="cover" />
             <span className="absolute right-0 bottom-0 w-20 h-20">
-              <Image
-                {...stripesPattern}
-                alt="decorative pattern"
-                aria-hidden="true"
-              />
+              {/* eslint-disable-next-line prettier/prettier */}
+              <Image {...stripesPattern} aria-hidden="true" />
             </span>
           </section>
         </div>
