@@ -55,13 +55,13 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
             </h2>
             {(distance || isOpened) && (
               <div className="flex gap-4 text-lg">
-                {distance && <small>{distance} km</small>}
                 {isOpened && (
                   <small className="text-mittelgruen flex gap-2 items-center">
                     <span className="w-2 h-2 inline-block bg-mittelgruen rounded-full"></span>
                     {texts.opened}
                   </small>
                 )}
+                {distance && <small>{distance} km</small>}
               </div>
             )}
           </header>

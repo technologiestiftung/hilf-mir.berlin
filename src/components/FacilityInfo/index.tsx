@@ -93,13 +93,13 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
           <h1 className="mb-2">{facility.fields.Einrichtung}</h1>
           {(distance || isOpened) && (
             <div className="flex gap-4 text-lg">
-              {distance && <span>{distance} km</span>}
               {isOpened && (
                 <span className="text-mittelgruen flex gap-2 items-center">
                   <span className="w-2 h-2 inline-block bg-mittelgruen rounded-full"></span>
                   {texts.opened}
                 </span>
               )}
+              {distance && <span>{distance} km</span>}
             </div>
           )}
           <p className="mt-4">{facility.fields.Uber_uns}</p>
@@ -107,10 +107,8 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
         {allLabels.length > 0 && (
           <div className="w-full">
             {topicsLabels.length > 0 && (
-              <div className="w-full overflow-x-auto">
-                <div className="flex gap-x-2 p-5">
-                  {topicsLabels.map(renderLabel)}
-                </div>
+              <div className="flex gap-2 p-5 flex-wrap">
+                {topicsLabels.map(renderLabel)}
               </div>
             )}
             {targetAudienceLabels.length > 0 && (
@@ -118,10 +116,8 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
                 <h2 className="px-5 font-bold text-lg mt-2">
                   {texts.filtersSearchTargetLabelOnCard}
                 </h2>
-                <div className="w-full overflow-x-auto">
-                  <div className="flex gap-x-2 p-5 pt-2">
-                    {targetAudienceLabels.map(renderLabel)}
-                  </div>
+                <div className="flex gap-2 p-5 pt-1 flex-wrap">
+                  {targetAudienceLabels.map(renderLabel)}
                 </div>
               </>
             )}
@@ -161,37 +157,37 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
             </h4>
             <OpenDaysItem
               isActive={todayKey === 'Montag'}
-              day="Montag"
+              day={texts.weekdayMonday}
               hours={facility.fields.Montag}
             />
             <OpenDaysItem
               isActive={todayKey === 'Dienstag'}
-              day="Dienstag"
+              day={texts.weekdayTuesday}
               hours={facility.fields.Dienstag}
             />
             <OpenDaysItem
               isActive={todayKey === 'Mittwoch'}
-              day="Mittwoch"
+              day={texts.weekdayWednesday}
               hours={facility.fields.Mittwoch}
             />
             <OpenDaysItem
               isActive={todayKey === 'Donnerstag'}
-              day="Donnerstag"
+              day={texts.weekdayThursday}
               hours={facility.fields.Donnerstag}
             />
             <OpenDaysItem
               isActive={todayKey === 'Freitag'}
-              day="Freitag"
+              day={texts.weekdayFriday}
               hours={facility.fields.Freitag}
             />
             <OpenDaysItem
               isActive={todayKey === 'Samstag'}
-              day="Samstag"
+              day={texts.weekdaySaturday}
               hours={facility.fields.Samstag}
             />
             <OpenDaysItem
               isActive={todayKey === 'Sonntag'}
-              day="Sonntag"
+              day={texts.weekdaySunday}
               hours={facility.fields.Sonntag}
             />
           </div>
