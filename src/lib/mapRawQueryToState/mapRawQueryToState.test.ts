@@ -5,19 +5,19 @@ describe('mapRawQueryToState', () => {
     const testLat = 12.452632
     const testLng = 13.123456
     const testZoom = 10
-    const testFilters = [1, 2, 3, 4]
+    const testTags = [1, 2, 3, 4]
 
     const queryState = mapRawQueryToState({
       latitude: `${testLat}`,
       longitude: `${testLng}`,
       zoom: `${testZoom}`,
-      filters: testFilters.map((id) => id.toString()),
+      tags: testTags.map((id) => id.toString()),
     })
 
     expect(queryState.latitude).toBe(testLat)
     expect(queryState.longitude).toBe(testLng)
     expect(queryState.zoom).toBe(testZoom)
-    expect(queryState.filters).toMatchObject(testFilters)
+    expect(queryState.tags).toMatchObject(testTags)
   })
 
   test('should rerun undefined with invalid numbers', () => {
@@ -35,37 +35,37 @@ describe('mapRawQueryToState', () => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignoressss
         latitude: {},
-      }).filters
+      }).tags
     ).toBe(undefined)
   })
 
-  test('should return undefined when filters is not an array', () => {
+  test('should return undefined when tags is not an array', () => {
     expect(
       mapRawQueryToState({
-        filters: '{}',
-      }).filters
+        tags: '{}',
+      }).tags
     ).toBe(undefined)
   })
-  test('should return an array of numbers for filters', () => {
+  test('should return an array of numbers for tags', () => {
     expect(
       mapRawQueryToState({
-        filters: ['1', '2', '3', '4'],
-      }).filters
+        tags: ['1', '2', '3', '4'],
+      }).tags
     ).toMatchObject([1, 2, 3, 4])
   })
 
-  test('should return undefined if the filters array could not be parsed', () => {
+  test('should return undefined if the tags array could not be parsed', () => {
     expect(
       mapRawQueryToState({
-        filters: '[1,null,undefined,aa]',
-      }).filters
+        tags: '[1,null,undefined,aa]',
+      }).tags
     ).toBe(undefined)
   })
-  test('should filter out filter items that are not valid', () => {
+  test('should filter out tags that are not valid', () => {
     expect(
       mapRawQueryToState({
-        filters: ['1', 'null', 'aa'],
-      }).filters
+        tags: ['1', 'null', 'aa'],
+      }).tags
     ).toMatchObject([1])
   })
 })

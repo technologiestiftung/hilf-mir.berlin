@@ -2,7 +2,7 @@ export interface PageQueryType {
   latitude: number | null
   longitude: number | null
   zoom: number | null
-  filters: number[] | null
+  tags: number[] | null
 }
 
 const isNumber = (val: unknown): boolean =>
@@ -32,7 +32,7 @@ const parseNumbersArray = (
     return parsedJson.map(parseSingleNumber).filter(Boolean) as number[]
   } catch (err) {
     console.error(
-      'There was an error while parsing the query parameter "filters":',
+      'There was an error while parsing the query parameter "tags":',
       Error(err as string).message,
       Error(err as string).stack
     )
@@ -56,5 +56,5 @@ export const mapRawQueryToState = (
     latitude: parseSingleNumber(rawQuery.latitude),
     longitude: parseSingleNumber(rawQuery.longitude),
     zoom: parseSingleNumber(rawQuery.zoom),
-    filters: parseNumbersArray(rawQuery.filters),
+    tags: parseNumbersArray(rawQuery.tags),
   })
