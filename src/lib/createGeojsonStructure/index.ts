@@ -1,4 +1,4 @@
-import { TableRowType } from '@common/types/gristData'
+import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { LngLatLike } from 'maplibre-gl'
 
 export interface GeojsonType {
@@ -21,7 +21,7 @@ export interface GeojsonFeatureType {
 }
 
 export const createGeoJsonStructure = (
-  markers: TableRowType[]
+  markers: MinimalRecordType[]
 ): GeojsonType => {
   return {
     type: 'FeatureCollection',
@@ -30,13 +30,9 @@ export const createGeoJsonStructure = (
         type: 'Feature',
         geometry: {
           type: 'Point',
-          // It's curious that the Grist API returns the field long2, while actually in the spreadsheet the column is called long:
-          coordinates: [marker.fields.long2, marker.fields.lat],
+          coordinates: [marker.longitude, marker.latitude],
         },
-        properties: {
-          id: marker.id,
-          ...marker.fields,
-        },
+        properties: marker,
       }
     }),
   }

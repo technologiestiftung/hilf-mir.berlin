@@ -1,6 +1,8 @@
 import { GristLabelType, TableRowType } from '@common/types/gristData'
 import classNames from '@lib/classNames'
+import { getLabelRenderer } from '@lib/getLabelRenderer'
 import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
+import { useLabels } from '@lib/LabelsContext'
 import { useTexts } from '@lib/TextsContext'
 import { useRouter } from 'next/router'
 import { FC, useState } from 'react'
@@ -9,9 +11,9 @@ import { SwitchButton } from './SwitchButton'
 
 export const FiltersList: FC<{
   recordsWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
-  labels: GristLabelType[]
-}> = ({ recordsWithOnlyLabels, labels }) => {
+}> = ({ recordsWithOnlyLabels }) => {
   const texts = useTexts()
+  const labels = useLabels()
   const [activeFilters, setActiveFilters] = useState<GristLabelType[]>([])
   const { push, query } = useRouter()
   const {
@@ -34,51 +36,24 @@ export const FiltersList: FC<{
     activeFilters.find((l) => l.fields.key === f.fields.key)
   )
 
-  const renderLabels = (label: GristLabelType): JSX.Element => {
-    const isActive = !!activeFilters.find(
-      (activeFilter) => activeFilter.fields.key === label.fields.key
-    )
-    const newFilters = isActive
-      ? activeFilters.filter((f) => f.fields.key !== label.fields.key)
-      : [...activeFilters, label]
-    return (
-      <li key={label.fields.key} className="inline-block">
-        <button
-          onClick={() => setActiveFilters(newFilters)}
-          className={classNames(
-            `py-1.5 border text-lg flex gap-2 text-left leading-6 pl-2 group`,
-            isActive && `bg-red border-red text-white font-bold pr-2.5`,
-            !isActive && ` border-gray-20 pr-3`,
-            `focus:outline-none focus:ring-2 focus:ring-red`,
-            `focus:ring-offset-2 focus:ring-offset-white`
-          )}
-        >
-          {label.fields.icon && (
-            <img
-              src={`/images/icons/filters/${label.fields.icon}.svg`}
-              alt={`Icon for "${label.fields.text}" label`}
-              style={{
-                filter: isActive ? `invert(1)` : ``,
-              }}
-            />
-          )}
-          <span>{label.fields.text}</span>
-        </button>
-      </li>
-    )
-  }
+  const renderLabel = getLabelRenderer({
+    activeFilters,
+    onLabelClick: setActiveFilters,
+  })
+
   return (
     <div className="">
       <div className="md:pt-10 md:grid md:grid-cols-3 md:gap-x-8 md:pb-8">
         <ul className="flex flex-wrap gap-2 place-content-start mb-5">
-          {group1.map(renderLabels)}
+          {group1.map(renderLabel)}
         </ul>
         <ul className="flex flex-wrap gap-2 place-content-start mb-5">
-          {group2.map(renderLabels)}
+          {group2.map(renderLabel)}
         </ul>
         <ul className="flex flex-wrap gap-2 place-content-start mb-8">
-          {group3.map(renderLabels)}
+          {group3.map(renderLabel)}
         </ul>
+        <ul className="flex flex-wrap gap-2 mb-8">{group3.map(renderLabel)}</ul>
       </div>
       <div className="md:flex md:flex-wrap md:items-start md:gap-x-4">
         <h3 className={classNames(`font-bold text-lg mb-3 w-full`)}>
@@ -113,7 +88,7 @@ export const FiltersList: FC<{
           </span>
         </div>
         <ul className="flex flex-wrap gap-2 mb-8">
-          {targetAudience.map(renderLabels)}
+          {targetAudience.map(renderLabel)}
         </ul>
         <SwitchButton
           value={useGeolocation}

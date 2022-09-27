@@ -1,6 +1,5 @@
 import type { GetStaticProps } from 'next'
 import Head from 'next/head'
-import { TableRowType } from '@common/types/gristData'
 import { getGristTexts } from '@lib/requests/getGristTexts'
 import { getGristRecords } from '@lib/requests/getGristRecords'
 import { useTexts } from '@lib/TextsContext'
@@ -8,12 +7,17 @@ import { Page } from '@common/types/nextPage'
 import { MapLayout } from '@components/MapLayout'
 import classNames from '@lib/classNames'
 import { FacilityListItem } from '@components/FacilityListItem'
+import { mapRecordToMinimum, MinimalRecordType } from '@lib/mapRecordToMinimum'
+import { getGristLabels } from '@lib/requests/getGristLabels'
+import { GristLabelType } from '@common/types/gristData'
 
 export const getStaticProps: GetStaticProps = async () => {
-  const [texts, records] = await Promise.all([
+  const [texts, records, labels] = await Promise.all([
     getGristTexts(),
     getGristRecords(),
+    getGristLabels(),
   ])
+  const recordsWithOnlyMinimum = records.map(mapRecordToMinimum)
   return {
     props: {
       texts: {
@@ -23,14 +27,16 @@ export const getStaticProps: GetStaticProps = async () => {
           `${records.length}`
         ),
       },
-      records,
+      records: recordsWithOnlyMinimum,
+      labels,
     },
     revalidate: 120,
   }
 }
 
 interface MapProps {
-  records: TableRowType[]
+  records: MinimalRecordType[]
+  labels: GristLabelType[]
 }
 
 const MapPage: Page<MapProps> = ({ records }) => {
