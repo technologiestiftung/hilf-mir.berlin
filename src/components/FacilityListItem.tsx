@@ -27,10 +27,10 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
   const recordLabels = labels
     .map((lId) => labelsWithData.find((l) => l.id === lId))
     .filter(Boolean) as GristLabelType[]
-  const semanticLabels = recordLabels.filter(
+  const topicsLabels = recordLabels.filter(
     ({ fields }) => fields.group !== 'zielpublikum'
   )
-  const targetLabels = recordLabels.filter(
+  const targetAudienceLabels = recordLabels.filter(
     ({ fields }) => fields.group === 'zielpublikum'
   )
 
@@ -75,9 +75,9 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
           </header>
           {recordLabels.length > 0 && (
             <footer className="px-5 pt-4 pb-7">
-              {semanticLabels.length > 0 && (
+              {topicsLabels.length > 0 && (
                 <div className="flex gap-1 flex-wrap">
-                  {semanticLabels.map((label) => (
+                  {topicsLabels.map((label) => (
                     <span
                       className={classNames(
                         `inline-block px-1.5 py-0.5 border border-gray-20 leading-4`,
@@ -90,11 +90,13 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
                   ))}
                 </div>
               )}
-              {targetLabels.length > 0 && (
+              {targetAudienceLabels.length > 0 && (
                 <div className="text-sm mt-4 leading-4">
                   {texts.filtersSearchTargetLabelOnCard}:{' '}
                   <strong>
-                    {targetLabels.map(({ fields }) => fields.text).join(', ')}
+                    {targetAudienceLabels
+                      .map(({ fields }) => fields.text)
+                      .join(', ')}
                   </strong>
                 </div>
               )}
