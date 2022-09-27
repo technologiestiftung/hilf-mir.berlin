@@ -68,8 +68,8 @@ export const FiltersList: FC<{
     )
   }
   return (
-    <div className="md:grid md:grid-cols-2 md:gap-16 md:mt-2">
-      <div className="md:pt-10">
+    <div className="">
+      <div className="md:pt-10 md:flex md:gap-x-8 md:flex-wrap">
         <ul className="flex flex-wrap gap-2 mb-5 md:mb-7">
           {group1.map(renderLabels)}
         </ul>

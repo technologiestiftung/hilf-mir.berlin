@@ -1,14 +1,15 @@
 import { TableRowType } from '@common/types/gristData'
-import { useTexts } from '@lib/TextsContext'
 import { FeatureType } from '@lib/requests/geocode'
 import { FC, useState } from 'react'
 import { Search } from './Search'
 import { FacilitiesMap } from './Map'
+import classNames from '@lib/classNames'
+import { useRouter } from 'next/router'
 
 export const MapLayout: FC<{
   records: TableRowType[]
 }> = ({ children, records }) => {
-  const texts = useTexts()
+  const { pathname } = useRouter()
   const [mapCenter, setMapCenter] = useState<[number, number] | undefined>()
 
   const handleMarkerClick = (facilityId: number): void => {
@@ -20,11 +21,8 @@ export const MapLayout: FC<{
     setMapCenter(place.center)
   }
   return (
-    <div className="w-screen h-screen grid grid-cols-1 grid-rows-[auto_1fr]">
-      <header className="h-16 pl-4 pr-3 py-3 flex flex-wrap gap-2 items-center justify-between border-b border-gray-50">
-        <h1 className="font-bold">{texts.siteTitle}</h1>
-      </header>
-      <div className="w-full h-full">
+    <main>
+      <article className="fixed w-screen h-screen inset-0 lg:left-sidebarW lg:w-mapW">
         <Search onSelectResult={handleSearchResult} />
         {records && (
           <FacilitiesMap
@@ -33,8 +31,16 @@ export const MapLayout: FC<{
             onMarkerClick={handleMarkerClick}
           />
         )}
+      </article>
+      <aside
+        className={classNames(
+          `lg:w-sidebarW shadow-2xl lg:shadow-xl lg:h-screen lg:overflow-y-auto`,
+          `z-10 relative bg-white mt-[80vh] md:lg:mt-0 rounded-t-2xl border-t border-gray-20`,
+          pathname === '/map' && `mt-[50vh]`
+        )}
+      >
         {children}
-      </div>
-    </div>
+      </aside>
+    </main>
   )
 }
