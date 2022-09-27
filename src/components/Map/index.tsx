@@ -90,8 +90,6 @@ export const FacilitiesMap: FC<MapType> = ({
     1000
   )
 
-  console.log(debouncedViewportChange)
-
   useEffect(() => {
     if (!markers || !map.current) return
 
