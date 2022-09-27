@@ -27,6 +27,12 @@ export interface OpeningTimesBoundsType {
   end: string | undefined
 }
 
+export const getTodayKey = (): string => {
+  const today = new Date()
+  const dayIdx = today.getDay()
+  return openningTimesFields[dayIdx]
+}
+
 export const getRecordOpeningTimesBounds = (
   fields: TableRowType['fields']
 ): OpeningTimesBoundsType => {

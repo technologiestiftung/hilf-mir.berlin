@@ -1,8 +1,7 @@
-import { GristLabelType } from '@common/types/gristData'
 import classNames from '@lib/classNames'
 import { useDistanceToUser } from '@lib/hooks/useDistanceToUser'
 import { useIsFacilityOpened } from '@lib/hooks/useIsFacilityOpened'
-import { useLabels } from '@lib/LabelsContext'
+import { useRecordLabels } from '@lib/hooks/useRecordLabels'
 import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { useTexts } from '@lib/TextsContext'
 import Link from 'next/link'
@@ -23,16 +22,9 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
     longitude,
   })
   const isOpened = useIsFacilityOpened(record)
-  const labelsWithData = useLabels()
-  const recordLabels = labels
-    .map((lId) => labelsWithData.find((l) => l.id === lId))
-    .filter(Boolean) as GristLabelType[]
-  const topicsLabels = recordLabels.filter(
-    ({ fields }) => fields.group !== 'zielpublikum'
-  )
-  const targetAudienceLabels = recordLabels.filter(
-    ({ fields }) => fields.group === 'zielpublikum'
-  )
+
+  const { allLabels, topicsLabels, targetAudienceLabels } =
+    useRecordLabels(labels)
 
   return (
     <li className={classNames(className)}>
@@ -49,7 +41,7 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
           <header
             className={classNames(
               `border-b border-gray-10 p-5`,
-              recordLabels.length > 0 && `pb-3`
+              allLabels.length > 0 && `pb-3`
             )}
           >
             <h2
@@ -73,7 +65,7 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
               </div>
             )}
           </header>
-          {recordLabels.length > 0 && (
+          {allLabels.length > 0 && (
             <footer className="px-5 pt-4 pb-7">
               {topicsLabels.length > 0 && (
                 <div className="flex gap-1 flex-wrap">

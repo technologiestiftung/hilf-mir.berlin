@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import { FC, useState } from 'react'
 import { PrimaryButton } from './PrimaryButton'
 import { SwitchButton } from './SwitchButton'
+import { TextLink } from './TextLink'
 
 export const FiltersList: FC<{
   recordsWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
@@ -133,18 +134,9 @@ export const FiltersList: FC<{
             texts.filtersButtonTextFilteredNoResults}
         </PrimaryButton>
         <div className="hidden md:block w-full mt-6">
-          <a
-            href={texts.moreOffersKVBLinkUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={classNames(
-              `underline transition-colors hover:text-red pt-3`,
-              `focus:outline-none focus:ring-2 focus:ring-red`,
-              `focus:ring-offset-2 focus:ring-offset-white`
-            )}
-          >
+          <TextLink href={texts.moreOffersKVBLinkUrl}>
             {texts.moreOffersKVBLinkText}
-          </a>
+          </TextLink>
         </div>
       </div>
     </div>
