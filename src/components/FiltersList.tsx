@@ -43,17 +43,20 @@ export const FiltersList: FC<{
 
   return (
     <div className="">
-      <div className="md:pt-10 md:flex md:gap-x-8 md:flex-wrap">
-        <ul className="flex flex-wrap gap-2 mb-5 md:mb-7">
+      <div className="md:pt-10 md:grid md:grid-cols-3 md:gap-x-8 md:pb-8">
+        <ul className="flex flex-wrap gap-2 place-content-start mb-5">
           {group1.map(renderLabel)}
         </ul>
-        <ul className="flex flex-wrap gap-2 mb-5 md:mb-7">
+        <ul className="flex flex-wrap gap-2 place-content-start mb-5">
           {group2.map(renderLabel)}
+        </ul>
+        <ul className="flex flex-wrap gap-2 place-content-start mb-8">
+          {group3.map(renderLabel)}
         </ul>
         <ul className="flex flex-wrap gap-2 mb-8">{group3.map(renderLabel)}</ul>
       </div>
-      <div>
-        <h3 className={classNames(`font-bold text-lg mb-3`)}>
+      <div className="md:flex md:flex-wrap md:items-start md:gap-x-4">
+        <h3 className={classNames(`font-bold text-lg mb-3 w-full`)}>
           {texts.filtersSearchTargetLabel}
         </h3>
         <button
@@ -63,7 +66,7 @@ export const FiltersList: FC<{
             )
           }
           className={classNames(
-            `py-1.5 border text-lg leading-6 pl-2 w-full mb-3`,
+            `py-1.5 border text-lg leading-6 pl-2 w-full md:w-auto mb-3`,
             !someTargetFiltersActive &&
               `bg-red border-red text-white font-bold pr-2.5`,
             someTargetFiltersActive && ` border-gray-20 pr-3`,
@@ -76,7 +79,8 @@ export const FiltersList: FC<{
         <div
           className={classNames(
             `relative border-t border-gray-20 text-center uppercase text-lg`,
-            `font-medium tracking-widest text-gray-40 leading-4 mb-8 mt-5`
+            `font-medium tracking-widest text-gray-40 leading-4 mb-8 mt-5`,
+            `md:w-24`
           )}
         >
           <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-white px-3">
@@ -95,6 +99,7 @@ export const FiltersList: FC<{
           {texts.filtersGeoSearchLabel}
         </SwitchButton>
         <PrimaryButton
+          className="md:max-w-sm"
           onClick={() =>
             void push({
               pathname: `/map`,
@@ -127,6 +132,20 @@ export const FiltersList: FC<{
             filteredRecords.length === 0 &&
             texts.filtersButtonTextFilteredNoResults}
         </PrimaryButton>
+        <div className="hidden md:block w-full mt-6">
+          <a
+            href={texts.moreOffersKVBLinkUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={classNames(
+              `underline transition-colors hover:text-red pt-3`,
+              `focus:outline-none focus:ring-2 focus:ring-red`,
+              `focus:ring-offset-2 focus:ring-offset-white`
+            )}
+          >
+            {texts.moreOffersKVBLinkText}
+          </a>
+        </div>
       </div>
     </div>
   )

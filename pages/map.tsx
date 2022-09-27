@@ -19,7 +19,17 @@ export const getStaticProps: GetStaticProps = async () => {
   ])
   const recordsWithOnlyMinimum = records.map(mapRecordToMinimum)
   return {
-    props: { texts, records: recordsWithOnlyMinimum, labels },
+    props: {
+      texts: {
+        ...texts,
+        mapPageTitle: texts.mapPageTitle.replace(
+          '#number',
+          `${records.length}`
+        ),
+      },
+      records: recordsWithOnlyMinimum,
+      labels,
+    },
     revalidate: 120,
   }
 }
@@ -44,7 +54,7 @@ const MapPage: Page<MapProps> = ({ records }) => {
           `px-5 py-8 bg-white border-b border-gray-10`
         )}
       >
-        {texts.mapPageTitle.replace('#number', `${records.length}`)}
+        {texts.mapPageTitle}
       </h1>
       <ul>
         {records.map((record) => (
