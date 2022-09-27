@@ -30,7 +30,6 @@ export const createGeoJsonStructure = (
         type: 'Feature',
         geometry: {
           type: 'Point',
-          // It's curious that the Grist API returns the field long2, while actually in the spreadsheet the column is called long:
           coordinates: [marker.longitude, marker.latitude],
         },
         properties: marker,
