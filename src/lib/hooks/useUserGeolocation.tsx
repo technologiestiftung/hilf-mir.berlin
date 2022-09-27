@@ -24,26 +24,36 @@ export const useUserGeolocation = (): {
   const [geolocationIsForbidden, setGeolocationIsForbidden] = useState(false)
 
   const updateGeolocation = useCallback((newValue: boolean) => {
+    let shouldUpdate = true
     if (newValue) {
       requestUserGeolocation()
         .then((pos) => {
+          if (!shouldUpdate) return
           setGeolocationIsForbidden(false)
           setLatitude(pos.coords.latitude)
           setLongitude(pos.coords.longitude)
         })
         .catch(() => {
+          if (!shouldUpdate) return
           setUseGeolocation(false)
           localStorage.setItem(LOCAL_STORAGE_KEY, 'false')
           setGeolocationIsForbidden(true)
         })
     }
+    return () => {
+      shouldUpdate = false
+    }
   }, [])
 
   useEffect(() => {
+    let shouldUpdate = true
     const localStorageValue = window.localStorage.getItem(LOCAL_STORAGE_KEY)
-    if (localStorageValue && localStorageValue === 'true') {
+    if (localStorageValue && localStorageValue === 'true' && shouldUpdate) {
       setUseGeolocation(true)
       updateGeolocation(true)
+    }
+    return () => {
+      shouldUpdate = false
     }
   }, [setUseGeolocation, updateGeolocation])
 
