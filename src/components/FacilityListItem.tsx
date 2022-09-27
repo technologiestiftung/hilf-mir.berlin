@@ -1,26 +1,26 @@
-import { TableRowType } from '@common/types/gristData'
 import classNames from '@lib/classNames'
 import { useDistanceToUser } from '@lib/hooks/useDistanceToUser'
 import { useIsFacilityOpened } from '@lib/hooks/useIsFacilityOpened'
+import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { useTexts } from '@lib/TextsContext'
 import Link from 'next/link'
 import { FC } from 'react'
 
-interface FacilityListItemPropsType extends TableRowType {
+interface FacilityListItemPropsType extends MinimalRecordType {
   className?: string
 }
 
 export const FacilityListItem: FC<FacilityListItemPropsType> = ({
   className = ``,
-  id,
-  fields,
+  ...record
 }) => {
+  const { id, title, latitude, longitude, labels } = record
   const texts = useTexts()
   const distance = useDistanceToUser({
-    latitude: fields.lat,
-    longitude: fields.long2,
+    latitude,
+    longitude,
   })
-  const isOpened = useIsFacilityOpened(fields)
+  const isOpened = useIsFacilityOpened(record)
 
   return (
     <li className={classNames(className)}>
@@ -32,9 +32,7 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
           )}
         >
           <header className="border-b border-gray-10 p-5">
-            <h2 className={classNames(`font-bold text-xl`)}>
-              {fields.Einrichtung}
-            </h2>
+            <h2 className={classNames(`font-bold text-xl`)}>{title}</h2>
             {(distance || isOpened) && (
               <div className="flex gap-4 text-lg">
                 {distance && <small>{distance} km</small>}
@@ -48,7 +46,7 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
             )}
           </header>
           <footer className="p-5 flex gap-2">
-            {fields.Schlagworte.map((n) => `${n}`)}
+            {labels.map((n) => `${n}`)}
           </footer>
         </a>
       </Link>

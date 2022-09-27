@@ -1,4 +1,4 @@
-import type { GetStaticProps, NextPage } from 'next'
+import type { GetStaticProps } from 'next'
 import Head from 'next/head'
 import { getGristTexts } from '@lib/requests/getGristTexts'
 import classNames from '@lib/classNames'
@@ -10,6 +10,8 @@ import { GristLabelType, TableRowType } from '@common/types/gristData'
 import { getGristLabels } from '@lib/requests/getGristLabels'
 import { useIsMobile } from '@lib/hooks/useIsMobile'
 import { LegalFooter } from '@components/LegalFooter'
+import { Page } from '@common/types/nextPage'
+import { LabelsProvider } from '@lib/LabelsContext'
 
 export const getStaticProps: GetStaticProps = async () => {
   const [texts, records, labels] = await Promise.all([
@@ -26,14 +28,16 @@ export const getStaticProps: GetStaticProps = async () => {
   }
 }
 
-const Home: NextPage<{
+interface HomePropsType {
   recordsWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
   labels: GristLabelType[]
-}> = ({ labels, recordsWithOnlyLabels }) => {
+}
+
+const Home: Page<HomePropsType> = ({ labels, recordsWithOnlyLabels }) => {
   const [showFilters, setShowFilters] = useState(false)
   const isMobile = useIsMobile()
   return (
-    <>
+    <LabelsProvider value={labels}>
       <Head>
         <title>
           Willkommen - Digitaler Wegweiser Psychiatrie und Suchthilfe Berlin
@@ -51,12 +55,11 @@ const Home: NextPage<{
           <WelcomeFilters
             recordsWithOnlyLabels={recordsWithOnlyLabels}
             onGoBack={() => setShowFilters(false)}
-            labels={labels}
           />
         </div>
       </div>
       {!isMobile && <LegalFooter />}
-    </>
+    </LabelsProvider>
   )
 }
 

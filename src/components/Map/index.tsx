@@ -4,11 +4,11 @@ import {
   createGeoJsonStructure,
   GeojsonFeatureType,
 } from '@lib/createGeojsonStructure'
-import { TableRowType } from '@common/types/gristData'
+import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 
 interface MapType {
   center?: LngLatLike
-  markers?: TableRowType[]
+  markers?: MinimalRecordType[]
   onMarkerClick?: (facilityId: number) => void
   highlightedLocation?: [number, number]
 }

@@ -1,6 +1,7 @@
 import { GristLabelType, TableRowType } from '@common/types/gristData'
 import classNames from '@lib/classNames'
 import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
+import { useLabels } from '@lib/LabelsContext'
 import { useTexts } from '@lib/TextsContext'
 import { useRouter } from 'next/router'
 import { FC, useState } from 'react'
@@ -9,9 +10,9 @@ import { SwitchButton } from './SwitchButton'
 
 export const FiltersList: FC<{
   recordsWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
-  labels: GristLabelType[]
-}> = ({ recordsWithOnlyLabels, labels }) => {
+}> = ({ recordsWithOnlyLabels }) => {
   const texts = useTexts()
+  const labels = useLabels()
   const [activeFilters, setActiveFilters] = useState<GristLabelType[]>([])
   const { push, query } = useRouter()
   const {
