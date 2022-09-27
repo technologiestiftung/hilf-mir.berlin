@@ -9,6 +9,7 @@ import { TableRowType } from '@common/types/gristData'
 interface MapType {
   center?: LngLatLike
   markers?: TableRowType[]
+  activeTags?: number[] | null
   onMarkerClick?: (facilityId: number) => void
   highlightedLocation?: [number, number]
 }
@@ -18,6 +19,7 @@ const DEFAULT_CENTER = [13.404954, 52.520008] as LngLatLike
 export const FacilitiesMap: FC<MapType> = ({
   center,
   markers,
+  activeTags,
   onMarkerClick = () => undefined,
   highlightedLocation,
 }) => {
@@ -178,6 +180,11 @@ export const FacilitiesMap: FC<MapType> = ({
         .addTo(map.current)
     }
   }, [highlightedLocation])
+
+  useEffect(() => {
+    console.log(activeTags)
+    // TODO: Implement filtering of facilities according to activeTag here.
+  }, [activeTags])
 
   return (
     <div

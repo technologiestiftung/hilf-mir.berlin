@@ -4,12 +4,17 @@ import { FeatureType } from '@lib/requests/geocode'
 import { FC, useState } from 'react'
 import { Search } from './Search'
 import { FacilitiesMap } from './Map'
+import { useRouter } from 'next/router'
+import { mapRawQueryToState } from '@lib/mapRawQueryToState'
 
 export const MapLayout: FC<{
   records: TableRowType[]
 }> = ({ children, records }) => {
   const texts = useTexts()
   const [mapCenter, setMapCenter] = useState<[number, number] | undefined>()
+
+  const { query } = useRouter()
+  const mappedQuery = mapRawQueryToState(query)
 
   const handleMarkerClick = (facilityId: number): void => {
     console.log(facilityId)
@@ -30,6 +35,7 @@ export const MapLayout: FC<{
           <FacilitiesMap
             center={mapCenter}
             markers={records}
+            activeTags={mappedQuery.tags}
             onMarkerClick={handleMarkerClick}
           />
         )}
