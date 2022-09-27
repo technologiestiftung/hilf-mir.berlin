@@ -1,4 +1,4 @@
-import { useEffect, FC, useRef, useState } from 'react'
+import { useEffect, FC, useRef } from 'react'
 import maplibregl, { LngLatLike, Map, Marker } from 'maplibre-gl'
 import {
   createGeoJsonStructure,
@@ -8,7 +8,7 @@ import { TableRowType } from '@common/types/gristData'
 import { mapRawQueryToState } from '@lib/mapRawQueryToState'
 import { useRouter } from 'next/router'
 import { useDebouncedCallback } from 'use-debounce'
-import { URLViewportType, ViewportProps } from '@lib/types/map'
+import { URLViewportType } from '@lib/types/map'
 
 interface MapType {
   center?: LngLatLike
@@ -16,15 +16,6 @@ interface MapType {
   activeTags?: number[] | null
   onMarkerClick?: (facilityId: number) => void
   highlightedLocation?: [number, number]
-  staticViewportProps?: {
-    maxZoom: number
-    minZoom: number
-  }
-  initialViewportProps: {
-    latitude: number
-    longitude: number
-    zoom: number
-  }
 }
 
 const easeInOutQuad = (t: number): number =>
@@ -35,25 +26,46 @@ export const transitionProps = {
   transitionEasing: easeInOutQuad,
 }
 
+const MAP_CONFIG = {
+  defaultZoom: 11,
+  defaultLatitude: 52.520008,
+  defaultLongitude: 13.404954,
+  minZoom: 10,
+  maxZoom: 19,
+}
+
 export const FacilitiesMap: FC<MapType> = ({
   center,
   markers,
   activeTags,
   onMarkerClick = () => undefined,
   highlightedLocation,
-  staticViewportProps = { minZoom: 10, maxZoom: 22 },
-  initialViewportProps,
 }) => {
   const map = useRef<Map>(null)
   const highlightedMarker = useRef<Marker>(null)
 
   const { replace, query, pathname } = useRouter()
-  const mappedQuery = mapRawQueryToState(query)
+  const queryState = mapRawQueryToState(query)
 
-  const [viewport, setViewport] = useState<ViewportProps>({
-    ...staticViewportProps,
-    ...initialViewportProps,
-  })
+  useEffect(() => {
+    const mapLongitude = map.current?.transform._center.lng
+    const mapLatitude = map.current?.transform._center.lat
+    const mapZoom = map.current?.transform._zoom
+
+    if (
+      mapLongitude === queryState.longitude &&
+      mapLatitude == queryState.latitude &&
+      mapZoom === queryState.zoom
+    )
+      return
+
+    map.current &&
+      map.current.flyTo({
+        center: [queryState.longitude, queryState.latitude] as LngLatLike,
+        zoom: queryState.zoom || 15,
+        essential: true,
+      })
+  }, [queryState.latitude, queryState.longitude, queryState.zoom])
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -63,27 +75,21 @@ export const FacilitiesMap: FC<MapType> = ({
       style: `${process.env.NEXT_PUBLIC_MAPTILER_STYLE_URL || ''}?key=${
         process.env.NEXT_PUBLIC_MAPTILER_API_KEY || ''
       }`,
-      center: [viewport.longitude, viewport.latitude] as LngLatLike,
-      zoom: viewport.zoom,
+      center: [
+        MAP_CONFIG.defaultLongitude,
+        MAP_CONFIG.defaultLatitude,
+      ] as LngLatLike,
+      zoom: MAP_CONFIG.defaultZoom,
+      minZoom: MAP_CONFIG.minZoom,
+      maxZoom: MAP_CONFIG.maxZoom,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  useEffect(() => {
-    setViewport({
-      ...viewport,
-      ...transitionProps,
-      latitude: mappedQuery.latitude || viewport.latitude,
-      longitude: mappedQuery.longitude || viewport.longitude,
-      zoom: mappedQuery.zoom || viewport.zoom,
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mappedQuery.latitude, mappedQuery.longitude, mappedQuery.zoom])
-
   const debouncedViewportChange = useDebouncedCallback(
     (viewport: URLViewportType): void => {
       if (pathname !== '/map') return
-      const newQuery = { ...mappedQuery, ...viewport }
+      const newQuery = { ...queryState, ...viewport }
 
       void replace({ pathname, query: newQuery }, undefined, { shallow: true })
     },
@@ -207,6 +213,7 @@ export const FacilitiesMap: FC<MapType> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [markers])
 
+  // TODO: evaluate if center and this effect is still necessary
   useEffect(() => {
     if (!map.current || !center) return
 
@@ -241,7 +248,6 @@ export const FacilitiesMap: FC<MapType> = ({
   }, [highlightedLocation])
 
   useEffect(() => {
-    console.log(activeTags)
     // TODO: Implement filtering of facilities according to activeTag here.
   }, [activeTags])
 
