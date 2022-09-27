@@ -66,6 +66,7 @@ const defaultValue = {
   orLabel: '',
   filtersSearchTargetLabel: '',
   geolocationForbidden: '',
+  opened: '',
   mapPageTitle: '',
 }
 

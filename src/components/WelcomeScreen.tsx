@@ -63,8 +63,8 @@ export const WelcomeScreen: FC<{
             </a>
           </div>
         )}
+        {isMobile && <LegalFooter />}
       </div>
-      {isMobile && <LegalFooter />}
     </div>
   )
 }

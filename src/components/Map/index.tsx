@@ -60,7 +60,7 @@ export const FacilitiesMap: FC<MapType> = ({
     // @ts-ignore
     map.current = new maplibregl.Map({
       container: 'map',
-      style: `https://api.maptiler.com/maps/bright/style.json?key=${
+      style: `${process.env.NEXT_PUBLIC_MAPTILER_STYLE_URL || ''}?key=${
         process.env.NEXT_PUBLIC_MAPTILER_API_KEY || ''
       }`,
       center: [viewport.longitude, viewport.latitude] as LngLatLike,

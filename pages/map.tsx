@@ -6,6 +6,8 @@ import { getGristRecords } from '@lib/requests/getGristRecords'
 import { useTexts } from '@lib/TextsContext'
 import { Page } from '@common/types/nextPage'
 import { MapLayout } from '@components/MapLayout'
+import classNames from '@lib/classNames'
+import { FacilityListItem } from '@components/FacilityListItem'
 
 export const getStaticProps: GetStaticProps = async () => {
   const [texts, records] = await Promise.all([
@@ -22,7 +24,7 @@ interface MapProps {
   records: TableRowType[]
 }
 
-const MapPage: Page<MapProps> = () => {
+const MapPage: Page<MapProps> = ({ records }) => {
   const texts = useTexts()
   return (
     <>
@@ -30,11 +32,20 @@ const MapPage: Page<MapProps> = () => {
         <title>
           {texts.mapPageTitle} – {texts.siteTitle}
         </title>
-        <link
-          href="https://unpkg.com/maplibre-gl@2.1.6/dist/maplibre-gl.css"
-          rel="stylesheet"
-        />
       </Head>
+      <h1
+        className={classNames(
+          `hidden lg:block sticky top-0`,
+          `px-5 py-8 bg-white border-b border-gray-10`
+        )}
+      >
+        {texts.mapPageTitle.replace('#number', `${records.length}`)}
+      </h1>
+      <ul>
+        {records.map((record) => (
+          <FacilityListItem key={record.id} {...record} />
+        ))}
+      </ul>
     </>
   )
 }

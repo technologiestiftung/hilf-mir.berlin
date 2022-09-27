@@ -35,6 +35,10 @@ module.exports = {
           'sans-serif',
         ],
       },
+      spacing: {
+        sidebarW: `460px`,
+        mapW: `calc(100vw-460px)`,
+      },
     },
   },
   plugins: [],
