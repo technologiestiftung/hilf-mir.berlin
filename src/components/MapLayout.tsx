@@ -3,10 +3,13 @@ import { FeatureType } from '@lib/requests/geocode'
 import { FC, useState } from 'react'
 import { Search } from './Search'
 import { FacilitiesMap } from './Map'
+import classNames from '@lib/classNames'
+import { useRouter } from 'next/router'
 
 export const MapLayout: FC<{
   records: TableRowType[]
 }> = ({ children, records }) => {
+  const { pathname } = useRouter()
   const [mapCenter, setMapCenter] = useState<[number, number] | undefined>()
 
   const handleMarkerClick = (facilityId: number): void => {
@@ -18,8 +21,8 @@ export const MapLayout: FC<{
     setMapCenter(place.center)
   }
   return (
-    <section>
-      <div className="fixed w-screen h-screen inset-0 lg:left-sidebarW lg:w-mapW">
+    <main>
+      <article className="fixed w-screen h-screen inset-0 lg:left-sidebarW lg:w-mapW">
         <Search onSelectResult={handleSearchResult} />
         {records && (
           <FacilitiesMap
@@ -28,8 +31,16 @@ export const MapLayout: FC<{
             onMarkerClick={handleMarkerClick}
           />
         )}
-      </div>
-      <article>{children}</article>
-    </section>
+      </article>
+      <aside
+        className={classNames(
+          `lg:w-sidebarW shadow-2xl lg:shadow-xl lg:h-screen lg:overflow-y-auto`,
+          `z-10 relative bg-white mt-[80vh] md:lg:mt-0 rounded-t-2xl border-t border-gray-20`,
+          pathname === '/map' && `mt-[50vh]`
+        )}
+      >
+        {children}
+      </aside>
+    </main>
   )
 }
