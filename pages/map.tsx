@@ -15,7 +15,16 @@ export const getStaticProps: GetStaticProps = async () => {
     getGristRecords(),
   ])
   return {
-    props: { texts, records },
+    props: {
+      texts: {
+        ...texts,
+        mapPageTitle: texts.mapPageTitle.replace(
+          '#number',
+          `${records.length}`
+        ),
+      },
+      records,
+    },
     revalidate: 120,
   }
 }
