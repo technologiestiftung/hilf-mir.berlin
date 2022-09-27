@@ -1,10 +1,14 @@
-import { useEffect, FC, useRef } from 'react'
+import { useEffect, FC, useRef, useState } from 'react'
 import maplibregl, { LngLatLike, Map, Marker } from 'maplibre-gl'
 import {
   createGeoJsonStructure,
   GeojsonFeatureType,
 } from '@lib/createGeojsonStructure'
 import { TableRowType } from '@common/types/gristData'
+import { mapRawQueryToState } from '@lib/mapRawQueryToState'
+import { useRouter } from 'next/router'
+import { useDebouncedCallback } from 'use-debounce'
+import { URLViewportType, ViewportProps } from '@lib/types/map'
 
 interface MapType {
   center?: LngLatLike
@@ -12,9 +16,24 @@ interface MapType {
   activeTags?: number[] | null
   onMarkerClick?: (facilityId: number) => void
   highlightedLocation?: [number, number]
+  staticViewportProps?: {
+    maxZoom: number
+    minZoom: number
+  }
+  initialViewportProps: {
+    latitude: number
+    longitude: number
+    zoom: number
+  }
 }
 
-const DEFAULT_CENTER = [13.404954, 52.520008] as LngLatLike
+const easeInOutQuad = (t: number): number =>
+  t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1
+
+export const transitionProps = {
+  transitionDuration: 2000,
+  transitionEasing: easeInOutQuad,
+}
 
 export const FacilitiesMap: FC<MapType> = ({
   center,
@@ -22,9 +41,19 @@ export const FacilitiesMap: FC<MapType> = ({
   activeTags,
   onMarkerClick = () => undefined,
   highlightedLocation,
+  staticViewportProps = { minZoom: 10, maxZoom: 22 },
+  initialViewportProps,
 }) => {
   const map = useRef<Map>(null)
   const highlightedMarker = useRef<Marker>(null)
+
+  const { replace, query, pathname } = useRouter()
+  const mappedQuery = mapRawQueryToState(query)
+
+  const [viewport, setViewport] = useState<ViewportProps>({
+    ...staticViewportProps,
+    ...initialViewportProps,
+  })
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -34,17 +63,49 @@ export const FacilitiesMap: FC<MapType> = ({
       style: `https://api.maptiler.com/maps/bright/style.json?key=${
         process.env.NEXT_PUBLIC_MAPTILER_API_KEY || ''
       }`,
-      center: DEFAULT_CENTER,
-      zoom: 11,
+      center: [viewport.longitude, viewport.latitude] as LngLatLike,
+      zoom: viewport.zoom,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    setViewport({
+      ...viewport,
+      ...transitionProps,
+      latitude: mappedQuery.latitude || viewport.latitude,
+      longitude: mappedQuery.longitude || viewport.longitude,
+      zoom: mappedQuery.zoom || viewport.zoom,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mappedQuery.latitude, mappedQuery.longitude, mappedQuery.zoom])
+
+  const debouncedViewportChange = useDebouncedCallback(
+    (viewport: URLViewportType): void => {
+      if (pathname !== '/map') return
+      const newQuery = { ...mappedQuery, ...viewport }
+
+      void replace({ pathname, query: newQuery }, undefined, { shallow: true })
+    },
+    1000
+  )
+
+  console.log(debouncedViewportChange)
 
   useEffect(() => {
     if (!markers || !map.current) return
 
     map.current.on('load', function () {
       if (!map.current) return
+
+      map.current.on('moveend', (e) => {
+        debouncedViewportChange({
+          latitude: e.target.transform._center.lat,
+          longitude: e.target.transform._center.lng,
+          zoom: e.target.transform._zoom,
+        })
+      })
+
       map.current.addSource('facilities', {
         type: 'geojson',
         data: createGeoJsonStructure(markers),

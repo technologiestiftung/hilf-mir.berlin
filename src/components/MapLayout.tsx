@@ -7,6 +7,12 @@ import { FacilitiesMap } from './Map'
 import { useRouter } from 'next/router'
 import { mapRawQueryToState } from '@lib/mapRawQueryToState'
 
+export const MAP_CONFIG = {
+  defaultZoom: 11,
+  defaultLatitude: 52.520008,
+  defaultLongitude: 13.404954,
+}
+
 export const MapLayout: FC<{
   records: TableRowType[]
 }> = ({ children, records }) => {
@@ -37,6 +43,11 @@ export const MapLayout: FC<{
             markers={records}
             activeTags={mappedQuery.tags}
             onMarkerClick={handleMarkerClick}
+            initialViewportProps={{
+              latitude: MAP_CONFIG.defaultLatitude,
+              longitude: MAP_CONFIG.defaultLongitude,
+              zoom: MAP_CONFIG.defaultZoom,
+            }}
           />
         )}
         {children}
