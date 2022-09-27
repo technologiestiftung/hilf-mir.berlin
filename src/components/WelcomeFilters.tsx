@@ -42,7 +42,7 @@ export const WelcomeFilters: FC<{
               </SecondaryButton>
             </h2>
           )}
-          <p className="text-lg pb-6 leading-snug">
+          <p className="text-lg pb-6 md:pb-0 leading-snug md:max-w-[66%]">
             {texts.welcomeFiltersText}
           </p>
           <FiltersList

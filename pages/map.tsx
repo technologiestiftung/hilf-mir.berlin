@@ -15,7 +15,16 @@ export const getStaticProps: GetStaticProps = async () => {
     getGristRecords(),
   ])
   return {
-    props: { texts, records },
+    props: {
+      texts: {
+        ...texts,
+        mapPageTitle: texts.mapPageTitle.replace(
+          '#number',
+          `${records.length}`
+        ),
+      },
+      records,
+    },
     revalidate: 120,
   }
 }
@@ -39,7 +48,7 @@ const MapPage: Page<MapProps> = ({ records }) => {
           `px-5 py-8 bg-white border-b border-gray-10`
         )}
       >
-        {texts.mapPageTitle.replace('#number', `${records.length}`)}
+        {texts.mapPageTitle}
       </h1>
       <ul>
         {records.map((record) => (
