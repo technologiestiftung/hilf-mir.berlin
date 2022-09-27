@@ -13,7 +13,7 @@ import { Globe } from '@components/icons/Globe'
 import { Email } from '@components/icons/Email'
 import { TextLink } from '@components/TextLink'
 import { Geopin } from '@components/icons/Geopin'
-import { getTodayKey } from '@lib/getRecordOpeningTimesBounds'
+import { getTodayKey } from '@lib/getTodayKey'
 
 interface FacilityInfoType {
   facility: TableRowType
