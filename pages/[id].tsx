@@ -16,7 +16,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     getGristTexts(),
     getGristRecords(),
   ])
-  const record = records.find((record) => `${record.id}` === id)
+  const record = records.find((record) => `${record.id}` === `${id}`)
+
+  if (!record) return { notFound: true }
 
   return {
     props: { texts, records, record },
@@ -27,7 +29,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 export const getStaticPaths: GetStaticPaths = async () => {
   const records = await getGristRecords()
   return {
-    paths: records.map(({ id }) => ({ params: { id: String(id) } })),
+    paths: records
+      .filter((r) => r?.id && r?.fields)
+      .map(({ id }) => ({ params: { id: String(id) } })),
     fallback: true,
   }
 }
@@ -39,17 +43,23 @@ interface MapProps {
 
 const FacilityPage: Page<MapProps> = ({ record }) => {
   const texts = useTexts()
-  const { push } = useRouter()
+  const { push, isFallback } = useRouter()
+
   return (
     <>
       <Head>
         <title>
-          {record.fields.Einrichtung} – {texts.siteTitle}
+          {isFallback
+            ? `Loading...`
+            : `${record.fields.Einrichtung} - ${texts.siteTitle}`}
         </title>
       </Head>
-      <div className="p-5">
-        <FacilityInfo facility={record} onClose={() => void push('/map')} />
-      </div>
+      {isFallback && `Seite lädt...`}
+      {!isFallback && (
+        <div className="p-5">
+          <FacilityInfo facility={record} onClose={() => void push('/map')} />
+        </div>
+      )}
     </>
   )
 }
