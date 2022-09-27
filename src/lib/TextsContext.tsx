@@ -65,6 +65,7 @@ const defaultValue = {
   noTargetPreferenceButtonText: '',
   orLabel: '',
   filtersSearchTargetLabel: '',
+  filtersSearchTargetLabelOnCard: '',
   geolocationForbidden: '',
   opened: '',
   mapPageTitle: '',
