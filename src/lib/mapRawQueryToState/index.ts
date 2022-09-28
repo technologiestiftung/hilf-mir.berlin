@@ -26,6 +26,9 @@ const parseNumbersArray = (
   }
   if (typeof val !== 'string') return null
   try {
+    if (!val.startsWith('[') && !val.endsWith(']')) {
+      return val.split(',').map(parseSingleNumber).filter(Boolean) as number[]
+    }
     const parsedJson = JSON.parse(val) as unknown
     if (isNumber(parsedJson)) return [parsedJson] as number[]
     if (!Array.isArray(parsedJson)) return null

@@ -2,8 +2,8 @@ import { GristLabelType } from '@common/types/gristData'
 import classNames from './classNames'
 
 interface RenderLabelsArgsType {
-  activeFilters: GristLabelType[]
-  onLabelClick?: (activeFilters: GristLabelType[]) => void
+  activeFilters: number[]
+  onLabelClick?: (activeFilters: number[]) => void
   className?: string
 }
 
@@ -18,11 +18,11 @@ export const getLabelRenderer: GetLabelRendererType = ({
 }) =>
   function renderLabel(label) {
     const isActive = !!activeFilters.find(
-      (activeFilter) => activeFilter.fields.key === label.fields.key
+      (activeFilter) => `${activeFilter}` === label.fields.key
     )
     const newFilters = isActive
-      ? activeFilters.filter((f) => f.fields.key !== label.fields.key)
-      : [...activeFilters, label]
+      ? activeFilters.filter((f) => `${f}` !== label.fields.key)
+      : [...activeFilters, label.id]
     return (
       <li key={label.fields.key} className="inline-block">
         <button

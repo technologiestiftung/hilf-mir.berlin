@@ -14,6 +14,8 @@ import { Email } from '@components/icons/Email'
 import { TextLink } from '@components/TextLink'
 import { Geopin } from '@components/icons/Geopin'
 import { getTodayKey } from '@lib/getTodayKey'
+import { useRouter } from 'next/router'
+import { mapRawQueryToState } from '@lib/mapRawQueryToState'
 
 interface FacilityInfoType {
   facility: TableRowType
@@ -41,6 +43,8 @@ const OpenDaysItem: FC<OpenDaysType> = ({ day, hours, isActive }) => {
 }
 
 export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
+  const { query } = useRouter()
+  const mappedQuery = mapRawQueryToState(query)
   const texts = useTexts()
   const isOpened = useIsFacilityOpened(mapRecordToMinimum(facility))
   const distance = useDistanceToUser({
@@ -52,7 +56,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
   )
 
   const renderLabel = getLabelRenderer({
-    activeFilters: [],
+    activeFilters: (mappedQuery.tags as number[]) || [],
   })
 
   const { Strasse, Hausnummer, PLZ } = facility.fields
