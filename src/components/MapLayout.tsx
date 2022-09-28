@@ -28,28 +28,6 @@ export const MapLayout: FC<{
     setMapCenter(place.center)
   }
   return (
-    <main>
-      <article className="fixed w-screen h-screen inset-0 lg:left-sidebarW lg:w-mapW">
-        <Search onSelectResult={handleSearchResult} />
-        {records && (
-          <FacilitiesMap
-            center={mapCenter}
-            markers={records}
-            activeTags={mappedQuery.tags || []}
-            onMarkerClick={handleMarkerClick}
-          />
-        )}
-      </article>
-      <aside
-        className={classNames(
-          `lg:w-sidebarW shadow-2xl lg:shadow-xl lg:h-screen lg:overflow-y-auto`,
-          `z-10 relative bg-white mt-[80vh] md:lg:mt-0 rounded-t-2xl border-t border-gray-20`,
-          pathname === '/map' && `mt-[50vh]`
-        )}
-      >
-        {children}
-      </aside>
-    </main>
     <LabelsProvider value={labels}>
       <main>
         <article className="fixed w-screen h-screen inset-0 lg:left-sidebarW lg:w-mapW">

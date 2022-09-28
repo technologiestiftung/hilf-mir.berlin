@@ -4,7 +4,6 @@ import {
   createGeoJsonStructure,
   GeojsonFeatureType,
 } from '@lib/createGeojsonStructure'
-import { TableRowType } from '@common/types/gristData'
 import { mapRawQueryToState } from '@lib/mapRawQueryToState'
 import { useRouter } from 'next/router'
 import { useDebouncedCallback } from 'use-debounce'
@@ -145,9 +144,7 @@ export const FacilitiesMap: FC<MapType> = ({
             id: marker.id,
           },
           {
-            active: activeTags?.every((tag) =>
-              marker.fields.Schlagworte.includes(tag)
-            ),
+            active: activeTags?.every((tag) => marker.labels.includes(tag)),
           }
         )
       })
