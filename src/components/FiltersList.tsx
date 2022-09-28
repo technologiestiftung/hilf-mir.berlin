@@ -1,11 +1,12 @@
-import { GristLabelType, TableRowType } from '@common/types/gristData'
+import { TableRowType } from '@common/types/gristData'
 import classNames from '@lib/classNames'
 import { getLabelRenderer } from '@lib/getLabelRenderer'
 import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
 import { useLabels } from '@lib/LabelsContext'
+import { mapRawQueryToState } from '@lib/mapRawQueryToState'
 import { useTexts } from '@lib/TextsContext'
 import { useRouter } from 'next/router'
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { PrimaryButton } from './PrimaryButton'
 import { SwitchButton } from './SwitchButton'
 import { TextLink } from './TextLink'
@@ -15,8 +16,8 @@ export const FiltersList: FC<{
 }> = ({ recordsWithOnlyLabels }) => {
   const texts = useTexts()
   const labels = useLabels()
-  const [activeFilters, setActiveFilters] = useState<GristLabelType[]>([])
-  const { push, query } = useRouter()
+  const { pathname, push, query } = useRouter()
+  const mappedQuery = mapRawQueryToState(query)
   const {
     useGeolocation,
     setGeolocationUsage,
@@ -24,8 +25,9 @@ export const FiltersList: FC<{
     latitude,
     longitude,
   } = useUserGeolocation()
+  const [activeFilters, setActiveFilters] = useState(mappedQuery.tags || [])
   const filteredRecords = recordsWithOnlyLabels.filter((r) =>
-    activeFilters.every((f) => r.find((id) => id === f.id))
+    activeFilters.every((f) => r.find((id) => id === f))
   )
   const group1 = labels.filter(({ fields }) => fields.group === 'gruppe-1')
   const group2 = labels.filter(({ fields }) => fields.group === 'gruppe-2')
@@ -33,14 +35,34 @@ export const FiltersList: FC<{
   const targetAudience = labels.filter(
     ({ fields }) => fields.group === 'zielpublikum'
   )
-  const someTargetFiltersActive = targetAudience.some((f) =>
-    activeFilters.find((l) => l.fields.key === f.fields.key)
+  const someTargetFiltersActive = targetAudience.some((l) =>
+    activeFilters.find((f) => f === l.id)
   )
+  const onFiltersChange = (tags: number[]): void =>
+    void push(
+      {
+        pathname,
+        query: { ...mappedQuery, tags: tags.length === 0 ? undefined : tags },
+      },
+      {
+        pathname,
+        query: { ...mappedQuery, tags: tags.length === 0 ? undefined : tags },
+      },
+      {
+        shallow: true,
+      }
+    )
 
   const renderLabel = getLabelRenderer({
     activeFilters,
-    onLabelClick: setActiveFilters,
+    onLabelClick: onFiltersChange,
   })
+
+  useEffect(() => {
+    if (!mappedQuery.tags) return
+    setActiveFilters(mappedQuery.tags)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mappedQuery.tags?.join(',')])
 
   return (
     <div className="">
@@ -54,7 +76,6 @@ export const FiltersList: FC<{
         <ul className="flex flex-wrap gap-2 place-content-start mb-8">
           {group3.map(renderLabel)}
         </ul>
-        <ul className="flex flex-wrap gap-2 mb-8">{group3.map(renderLabel)}</ul>
       </div>
       <div className="md:flex md:flex-wrap md:items-start md:gap-x-4">
         <h3 className={classNames(`font-bold text-lg mb-3 w-full`)}>
@@ -62,8 +83,11 @@ export const FiltersList: FC<{
         </h3>
         <button
           onClick={() =>
-            setActiveFilters(
-              activeFilters.filter((f) => f.fields.group !== 'zielpublikum')
+            onFiltersChange(
+              activeFilters.filter((f) => {
+                const label = labels.find(({ id }) => id === f)
+                return label?.fields.group !== `zielpublikum`
+              })
             )
           }
           className={classNames(
@@ -103,10 +127,11 @@ export const FiltersList: FC<{
           className="md:max-w-sm"
           onClick={() =>
             void push({
-              pathname: `/map`,
+              pathname: '/map',
               query: {
                 ...query,
                 ...(latitude && longitude ? { latitude, longitude } : {}),
+                tags: activeFilters,
               },
             })
           }

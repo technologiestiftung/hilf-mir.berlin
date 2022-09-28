@@ -19,7 +19,6 @@ import { mapRawQueryToState } from '@lib/mapRawQueryToState'
 
 interface FacilityInfoType {
   facility: TableRowType
-  onClose?: () => void
 }
 
 interface OpenDaysType {

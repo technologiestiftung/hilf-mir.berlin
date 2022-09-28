@@ -76,6 +76,9 @@ const defaultValue = {
   weekdayFriday: '',
   weekdaySaturday: '',
   weekdaySunday: '',
+  filteredResultsAmountSingular: '',
+  filteredResultsAmountPlural: '',
+  resetFilters: '',
 }
 
 export type TextsMapType = typeof defaultValue

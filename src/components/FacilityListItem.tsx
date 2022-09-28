@@ -78,7 +78,7 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
                       className={classNames(
                         `inline-block px-1.5 py-0.5 border leading-4`,
                         mappedQuery.tags?.includes(label.id)
-                          ? `bg-red text-white`
+                          ? `bg-red text-white border-red`
                           : `text-sm border-gray-20 `
                       )}
                       key={label?.id}
