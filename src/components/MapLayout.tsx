@@ -32,7 +32,7 @@ export const MapLayout: FC<{
           <FacilitiesMap
             center={mapCenter}
             markers={records}
-            activeTags={mappedQuery.tags}
+            activeTags={mappedQuery.tags || []}
             onMarkerClick={handleMarkerClick}
           />
         )}

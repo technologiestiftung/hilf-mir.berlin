@@ -1,4 +1,4 @@
-import { useEffect, FC, useRef, useState } from 'react'
+import { useEffect, FC, useRef, useState, useCallback } from 'react'
 import maplibregl, { LngLatLike, Map, Marker } from 'maplibre-gl'
 import {
   createGeoJsonStructure,
@@ -74,7 +74,7 @@ export const FacilitiesMap: FC<MapType> = ({
     )
       return
 
-    // If all previous checks were passes, we need to set the initial viewport,
+    // If all previous checks were passed, we need to set the initial viewport,
     // which in the useEffect below will easeTo the desired location.
     setInitialViewport({
       longitude: queryState.longitude,
@@ -133,6 +133,27 @@ export const FacilitiesMap: FC<MapType> = ({
     1000
   )
 
+  const updateFilteredFacilities = useCallback(
+    (activeTags: number[]) => {
+      if (!map.current || !map.current.loaded()) return
+
+      markers?.forEach((marker) => {
+        map.current?.setFeatureState(
+          {
+            source: 'facilities',
+            id: marker.id,
+          },
+          {
+            active: activeTags?.every((tag) =>
+              marker.fields.Schlagworte.includes(tag)
+            ),
+          }
+        )
+      })
+    },
+    [markers]
+  )
+
   useEffect(() => {
     if (!markers || !map.current) return
 
@@ -150,93 +171,42 @@ export const FacilitiesMap: FC<MapType> = ({
       map.current.addSource('facilities', {
         type: 'geojson',
         data: createGeoJsonStructure(markers),
-        cluster: false,
-        clusterMaxZoom: 14,
-        clusterRadius: 20,
+        // We need to set an ID for making setFeatureState work.
+        // The ID comes from the markers dataset whoch contains
+        // a unique ID.
         promoteId: 'id',
       })
 
-      // map.current.addLayer({
-      //   id: 'clusters',
-      //   type: 'circle',
-      //   source: 'facilities',
-      //   paint: {
-      //     'circle-color': '#2f2fa2',
-      //     'circle-radius': [
-      //       'step',
-      //       ['get', 'point_count'],
-      //       20,
-      //       50,
-      //       30,
-      //       100,
-      //       35,
-      //     ],
-      //   },
-      // })
-
-      // map.current.addLayer({
-      //   id: 'cluster-count',
-      //   type: 'symbol',
-      //   source: 'facilities',
-      //   layout: {
-      //     'text-field': '{point_count_abbreviated}',
-      //     'text-size': 16,
-      //   },
-      //   paint: {
-      //     'text-color': '#fff',
-      //   },
-      // })
+      updateFilteredFacilities(activeTags as number[])
 
       map.current.addLayer({
         id: 'unclustered-point',
         type: 'circle',
         source: 'facilities',
-        // filter: ['!', ['has', 'point_count']],
         paint: {
-          'circle-color': '#2f2fa2',
           'circle-radius': 8,
-          'circle-stroke-width': 2,
-          'circle-stroke-color': '#fff',
-          'circle-opacity': [
+          'circle-stroke-width': 1,
+          'circle-stroke-color': [
             'case',
-            // By default we set it to false (while loading)
+            // While the feature state is still undefined, we prefer to
+            // show the facilities as not active, so that we don't create
+            // disappointment when first facilities flash and then they
+            // disappear.
             ['boolean', ['feature-state', 'active'], false],
-            1,
-            0,
+            '#fff',
+            '#E40422',
           ],
-          'circle-stroke-opacity': [
+          'circle-color': [
             'case',
-            // By default we set it to false (while loading)
+            // While the feature state is still undefined, we prefer to
+            // show the facilities as not active, so that we don't create
+            // disappointment when first facilities flash and then they
+            // disappear.
             ['boolean', ['feature-state', 'active'], false],
-            1,
-            0,
+            '#E40422',
+            '#fff',
           ],
         },
-      })
-
-      map.current.on('click', 'clusters', function (e) {
-        if (!map.current) return
-        const features = map.current.queryRenderedFeatures(e.point, {
-          layers: ['clusters'],
-        }) as GeojsonFeatureType[]
-        const clusterId = features[0].properties.cluster_id
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        map.current
-          .getSource('facilities')
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          .getClusterExpansionZoom(clusterId, function (err, zoom: number) {
-            if (err) return
-            if (!zoom) return
-            if (!map.current) return
-
-            map.current.easeTo({
-              center: features[0].geometry.coordinates,
-              zoom: zoom,
-            })
-          })
       })
 
       map.current.on('click', 'unclustered-point', function (e) {
@@ -252,31 +222,24 @@ export const FacilitiesMap: FC<MapType> = ({
 
         onMarkerClick(clickedMarkerIds[0])
       })
-
-      map.current.on('mouseenter', 'clusters', function () {
-        if (!map.current) return
-        map.current.getCanvas().style.cursor = 'pointer'
-      })
-      map.current.on('mouseleave', 'clusters', function () {
-        if (!map.current) return
-        map.current.getCanvas().style.cursor = ''
-      })
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [markers])
 
-  // TODO: evaluate if center and this effect is still necessary
+  // TODO: This effect must probably be used when setting the location on
+  // the individual facility page (where we need to grab the coordiantes from the static props):
   useEffect(() => {
     if (!map.current || !center) return
 
-    map.current.flyTo({
+    map.current.easeTo({
       center: center,
       zoom: 15,
-      essential: true,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [center])
 
+  // TODO: Evaluate if this effect ist still necessary (depending on how
+  // we implement the highlighting of selected facilities)
   useEffect(() => {
     if (!map.current) return
     if (!highlightedLocation) {
@@ -299,56 +262,10 @@ export const FacilitiesMap: FC<MapType> = ({
     }
   }, [highlightedLocation])
 
-  useEffect(() => {
-    console.log('active tags:', activeTags)
-    // if (!map.current || !map.current.loaded()) return
-    // if (!activeTags || activeTags.length === 0) {
-    //   markers?.forEach((marker) => {
-    //     map.current?.setFeatureState(
-    //       {
-    //         source: 'facilities',
-    //         id: marker.id,
-    //       },
-    //       {
-    //         active: true,
-    //       }
-    //     )
-    //   })
-    //   return
-    // }
-
-    // const markersToDisplay = markers?.filter((marker) => {
-    //   return activeTags?.every((tag) => marker.fields.Schlagworte.includes(tag))
-    // })
-
-    // const markersToHide = markers?.filter((marker) => {
-    //   return !markersToDisplay?.map(({ id }) => id).includes(marker.id)
-    // })
-
-    // markersToDisplay?.forEach((marker) => {
-    //   map.current?.setFeatureState(
-    //     {
-    //       source: 'facilities',
-    //       id: marker.id,
-    //     },
-    //     {
-    //       active: true,
-    //     }
-    //   )
-    // })
-
-    // markersToHide?.forEach((marker) => {
-    //   map.current?.setFeatureState(
-    //     {
-    //       source: 'facilities',
-    //       id: marker.id,
-    //     },
-    //     {
-    //       active: false,
-    //     }
-    //   )
-    // })
-  }, [activeTags, markers])
+  useEffect(
+    () => updateFilteredFacilities(activeTags as number[]),
+    [activeTags, markers, updateFilteredFacilities]
+  )
 
   return (
     <div
