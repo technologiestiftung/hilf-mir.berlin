@@ -16,7 +16,7 @@ export const FiltersList: FC<{
 }> = ({ recordsWithOnlyLabels }) => {
   const texts = useTexts()
   const labels = useLabels()
-  const { pathname, push, query } = useRouter()
+  const { push, query } = useRouter()
   const mappedQuery = mapRawQueryToState(query)
   const {
     useGeolocation,
@@ -38,24 +38,10 @@ export const FiltersList: FC<{
   const someTargetFiltersActive = targetAudience.some((l) =>
     activeFilters.find((f) => f === l.id)
   )
-  const onFiltersChange = (tags: number[]): void =>
-    void push(
-      {
-        pathname,
-        query: { ...mappedQuery, tags: tags.length === 0 ? undefined : tags },
-      },
-      {
-        pathname,
-        query: { ...mappedQuery, tags: tags.length === 0 ? undefined : tags },
-      },
-      {
-        shallow: true,
-      }
-    )
 
   const renderLabel = getLabelRenderer({
     activeFilters,
-    onLabelClick: onFiltersChange,
+    onLabelClick: setActiveFilters,
   })
 
   useEffect(() => {
@@ -83,7 +69,7 @@ export const FiltersList: FC<{
         </h3>
         <button
           onClick={() =>
-            onFiltersChange(
+            setActiveFilters(
               activeFilters.filter((f) => {
                 const label = labels.find(({ id }) => id === f)
                 return label?.fields.group !== `zielpublikum`
