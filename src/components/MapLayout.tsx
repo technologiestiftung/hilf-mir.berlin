@@ -4,6 +4,7 @@ import { Search } from './Search'
 import { FacilitiesMap } from './Map'
 import classNames from '@lib/classNames'
 import { useRouter } from 'next/router'
+import { mapRawQueryToState } from '@lib/mapRawQueryToState'
 import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { GristLabelType } from '@common/types/gristData'
 import { LabelsProvider } from '@lib/LabelsContext'
@@ -14,6 +15,9 @@ export const MapLayout: FC<{
 }> = ({ children, records, labels }) => {
   const { pathname } = useRouter()
   const [mapCenter, setMapCenter] = useState<[number, number] | undefined>()
+
+  const { query } = useRouter()
+  const mappedQuery = mapRawQueryToState(query)
 
   const handleMarkerClick = (facilityId: number): void => {
     console.log(facilityId)
@@ -32,6 +36,7 @@ export const MapLayout: FC<{
             <FacilitiesMap
               center={mapCenter}
               markers={records}
+              activeTags={mappedQuery.tags || []}
               onMarkerClick={handleMarkerClick}
             />
           )}
