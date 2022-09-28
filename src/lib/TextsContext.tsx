@@ -69,6 +69,13 @@ const defaultValue = {
   geolocationForbidden: '',
   opened: '',
   mapPageTitle: '',
+  weekdayMonday: '',
+  weekdayTuesday: '',
+  weekdayWednesday: '',
+  weekdayThursday: '',
+  weekdayFriday: '',
+  weekdaySaturday: '',
+  weekdaySunday: '',
 }
 
 export type TextsMapType = typeof defaultValue

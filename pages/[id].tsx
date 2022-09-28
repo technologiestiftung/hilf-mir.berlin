@@ -10,6 +10,7 @@ import { getGristRecords } from '@lib/requests/getGristRecords'
 import { useRouter } from 'next/router'
 import { mapRecordToMinimum, MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { getGristLabels } from '@lib/requests/getGristLabels'
+import { useEffect } from 'react'
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const id = params?.id
@@ -50,6 +51,10 @@ const FacilityPage: Page<MapProps> = ({ record }) => {
   const texts = useTexts()
   const { push, isFallback } = useRouter()
 
+  useEffect(() => {
+    document.querySelector(`main > aside`)?.scrollTo(0, 0)
+  }, [])
+
   return (
     <>
       <Head>
@@ -61,9 +66,7 @@ const FacilityPage: Page<MapProps> = ({ record }) => {
       </Head>
       {isFallback && `Seite lädt...`}
       {!isFallback && (
-        <div className="p-5">
-          <FacilityInfo facility={record} onClose={() => void push('/map')} />
-        </div>
+        <FacilityInfo facility={record} onClose={() => void push('/map')} />
       )}
     </>
   )
