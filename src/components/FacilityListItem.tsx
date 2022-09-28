@@ -2,9 +2,11 @@ import classNames from '@lib/classNames'
 import { useDistanceToUser } from '@lib/hooks/useDistanceToUser'
 import { useIsFacilityOpened } from '@lib/hooks/useIsFacilityOpened'
 import { useRecordLabels } from '@lib/hooks/useRecordLabels'
+import { mapRawQueryToState } from '@lib/mapRawQueryToState'
 import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { useTexts } from '@lib/TextsContext'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { FC } from 'react'
 
 interface FacilityListItemPropsType extends MinimalRecordType {
@@ -15,6 +17,8 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
   className = ``,
   ...record
 }) => {
+  const { query } = useRouter()
+  const mappedQuery = mapRawQueryToState(query)
   const { id, title, latitude, longitude, labels } = record
   const texts = useTexts()
   const distance = useDistanceToUser({
@@ -72,8 +76,10 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
                   {topicsLabels.map((label) => (
                     <span
                       className={classNames(
-                        `inline-block px-1.5 py-0.5 border border-gray-20 leading-4`,
-                        `text-sm bg-white`
+                        `inline-block px-1.5 py-0.5 border leading-4`,
+                        mappedQuery.tags?.includes(label.id)
+                          ? `bg-red text-white`
+                          : `text-sm border-gray-20 `
                       )}
                       key={label?.id}
                     >
@@ -86,9 +92,19 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
                 <div className="text-sm mt-4 leading-4">
                   {texts.filtersSearchTargetLabelOnCard}:{' '}
                   <strong>
-                    {targetAudienceLabels
-                      .map(({ fields }) => fields.text)
-                      .join(', ')}
+                    {targetAudienceLabels.map(({ id, fields }, idx) => (
+                      <span
+                        key={id}
+                        className={
+                          mappedQuery.tags?.includes(id)
+                            ? `text-red`
+                            : `text-black`
+                        }
+                      >
+                        {fields.text}
+                        {idx !== targetAudienceLabels.length - 1 && ', '}
+                      </span>
+                    ))}
                   </strong>
                 </div>
               )}
