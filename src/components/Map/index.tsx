@@ -9,10 +9,11 @@ import { mapRawQueryToState } from '@lib/mapRawQueryToState'
 import { useRouter } from 'next/router'
 import { useDebouncedCallback } from 'use-debounce'
 import { URLViewportType } from '@lib/types/map'
+import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 
 interface MapType {
   center?: LngLatLike
-  markers?: TableRowType[]
+  markers?: MinimalRecordType[]
   activeTags?: number[] | null
   onMarkerClick?: (facilityId: number) => void
   highlightedLocation?: [number, number]

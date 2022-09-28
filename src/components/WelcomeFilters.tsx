@@ -1,7 +1,7 @@
 import { useTexts } from '@lib/TextsContext'
 import { FC } from 'react'
 import { BackButton } from './BackButton'
-import { GristLabelType, TableRowType } from '@common/types/gristData'
+import { TableRowType } from '@common/types/gristData'
 import { FiltersList } from './FiltersList'
 import { useIsMobile } from '@lib/hooks/useIsMobile'
 import { LegalFooter } from './LegalFooter'
@@ -12,9 +12,8 @@ import classNames from '@lib/classNames'
 
 export const WelcomeFilters: FC<{
   onGoBack: () => void
-  labels: GristLabelType[]
   recordsWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
-}> = ({ onGoBack, labels, recordsWithOnlyLabels }) => {
+}> = ({ onGoBack, recordsWithOnlyLabels }) => {
   const texts = useTexts()
   const { push } = useRouter()
   const isMobile = useIsMobile()
@@ -42,13 +41,10 @@ export const WelcomeFilters: FC<{
               </SecondaryButton>
             </h2>
           )}
-          <p className="text-lg pb-6 leading-snug">
+          <p className="text-lg pb-6 md:pb-0 leading-snug md:max-w-[66%]">
             {texts.welcomeFiltersText}
           </p>
-          <FiltersList
-            recordsWithOnlyLabels={recordsWithOnlyLabels}
-            labels={labels}
-          />
+          <FiltersList recordsWithOnlyLabels={recordsWithOnlyLabels} />
         </div>
         {isMobile && <LegalFooter />}
       </div>
