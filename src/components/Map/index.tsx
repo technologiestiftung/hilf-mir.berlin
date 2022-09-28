@@ -1,4 +1,4 @@
-import { useEffect, FC, useRef } from 'react'
+import { useEffect, FC, useRef, useState } from 'react'
 import maplibregl, { LngLatLike, Map, Marker } from 'maplibre-gl'
 import {
   createGeoJsonStructure,
@@ -47,7 +47,22 @@ export const FacilitiesMap: FC<MapType> = ({
   const { replace, query, pathname } = useRouter()
   const queryState = mapRawQueryToState(query)
 
+  // The initial viewport will be available on 2nd render,
+  // because we get it from useRouter. First it has to be null.
+  const [initialViewport, setInitialViewport] = useState<{
+    latitude: number
+    longitude: number
+    zoom: number
+  } | null>(null)
+
   useEffect(() => {
+    // If we've already got an initial viewport, we can not redefine it
+    // anymore because something initial shoudl only be set once.
+    if (initialViewport) return
+
+    if (!queryState.latitude || !queryState.longitude || !queryState.zoom)
+      return
+
     const mapLongitude = map.current?.transform._center.lng
     const mapLatitude = map.current?.transform._center.lat
     const mapZoom = map.current?.transform._zoom
@@ -59,14 +74,35 @@ export const FacilitiesMap: FC<MapType> = ({
     )
       return
 
-    map.current &&
-      map.current.flyTo({
-        center: [queryState.longitude, queryState.latitude] as LngLatLike,
-        zoom: queryState.zoom || 15,
-        essential: true,
-      })
-  }, [queryState.latitude, queryState.longitude, queryState.zoom])
+    // If all previous checks were passes, we need to set the initial viewport,
+    // which in the useEffect below will easeTo the desired location.
+    setInitialViewport({
+      longitude: queryState.longitude,
+      latitude: queryState.latitude,
+      zoom: queryState.zoom,
+    })
+  }, [
+    queryState.latitude,
+    queryState.longitude,
+    queryState.zoom,
+    initialViewport,
+  ])
 
+  // After the initial viewport has been set ONCE (in the above useEffect),
+  // we ease the map to the location specified in the query state.
+  useEffect(() => {
+    if (!initialViewport) return
+    map.current &&
+      map.current.easeTo({
+        center: [
+          initialViewport.longitude,
+          initialViewport.latitude,
+        ] as LngLatLike,
+        zoom: initialViewport.zoom,
+      })
+  }, [initialViewport])
+
+  // Map setup (run only once on initial render)
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -86,6 +122,7 @@ export const FacilitiesMap: FC<MapType> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Debounced function that updates the URL query without triggering a rerender:
   const debouncedViewportChange = useDebouncedCallback(
     (viewport: URLViewportType): void => {
       if (pathname !== '/map') return
@@ -113,52 +150,67 @@ export const FacilitiesMap: FC<MapType> = ({
       map.current.addSource('facilities', {
         type: 'geojson',
         data: createGeoJsonStructure(markers),
-        cluster: true,
-        clusterMaxZoom: 14, // Max zoom to cluster points on
-        clusterRadius: 20, // Radius of each cluster when clustering points (defaults to 50)
+        cluster: false,
+        clusterMaxZoom: 14,
+        clusterRadius: 20,
+        promoteId: 'id',
       })
 
-      map.current.addLayer({
-        id: 'clusters',
-        type: 'circle',
-        source: 'facilities',
-        paint: {
-          'circle-color': '#2f2fa2',
-          'circle-radius': [
-            'step',
-            ['get', 'point_count'],
-            20,
-            50,
-            30,
-            100,
-            35,
-          ],
-        },
-      })
+      // map.current.addLayer({
+      //   id: 'clusters',
+      //   type: 'circle',
+      //   source: 'facilities',
+      //   paint: {
+      //     'circle-color': '#2f2fa2',
+      //     'circle-radius': [
+      //       'step',
+      //       ['get', 'point_count'],
+      //       20,
+      //       50,
+      //       30,
+      //       100,
+      //       35,
+      //     ],
+      //   },
+      // })
 
-      map.current.addLayer({
-        id: 'cluster-count',
-        type: 'symbol',
-        source: 'facilities',
-        layout: {
-          'text-field': '{point_count_abbreviated}',
-          'text-size': 16,
-        },
-        paint: {
-          'text-color': '#fff',
-        },
-      })
+      // map.current.addLayer({
+      //   id: 'cluster-count',
+      //   type: 'symbol',
+      //   source: 'facilities',
+      //   layout: {
+      //     'text-field': '{point_count_abbreviated}',
+      //     'text-size': 16,
+      //   },
+      //   paint: {
+      //     'text-color': '#fff',
+      //   },
+      // })
 
       map.current.addLayer({
         id: 'unclustered-point',
         type: 'circle',
         source: 'facilities',
-        filter: ['!', ['has', 'point_count']],
+        // filter: ['!', ['has', 'point_count']],
         paint: {
           'circle-color': '#2f2fa2',
           'circle-radius': 8,
           'circle-stroke-width': 2,
           'circle-stroke-color': '#fff',
+          'circle-opacity': [
+            'case',
+            // By default we set it to false (while loading)
+            ['boolean', ['feature-state', 'active'], false],
+            1,
+            0,
+          ],
+          'circle-stroke-opacity': [
+            'case',
+            // By default we set it to false (while loading)
+            ['boolean', ['feature-state', 'active'], false],
+            1,
+            0,
+          ],
         },
       })
 
@@ -248,8 +300,55 @@ export const FacilitiesMap: FC<MapType> = ({
   }, [highlightedLocation])
 
   useEffect(() => {
-    // TODO: Implement filtering of facilities according to activeTag here.
-  }, [activeTags])
+    console.log('active tags:', activeTags)
+    // if (!map.current || !map.current.loaded()) return
+    // if (!activeTags || activeTags.length === 0) {
+    //   markers?.forEach((marker) => {
+    //     map.current?.setFeatureState(
+    //       {
+    //         source: 'facilities',
+    //         id: marker.id,
+    //       },
+    //       {
+    //         active: true,
+    //       }
+    //     )
+    //   })
+    //   return
+    // }
+
+    // const markersToDisplay = markers?.filter((marker) => {
+    //   return activeTags?.every((tag) => marker.fields.Schlagworte.includes(tag))
+    // })
+
+    // const markersToHide = markers?.filter((marker) => {
+    //   return !markersToDisplay?.map(({ id }) => id).includes(marker.id)
+    // })
+
+    // markersToDisplay?.forEach((marker) => {
+    //   map.current?.setFeatureState(
+    //     {
+    //       source: 'facilities',
+    //       id: marker.id,
+    //     },
+    //     {
+    //       active: true,
+    //     }
+    //   )
+    // })
+
+    // markersToHide?.forEach((marker) => {
+    //   map.current?.setFeatureState(
+    //     {
+    //       source: 'facilities',
+    //       id: marker.id,
+    //     },
+    //     {
+    //       active: false,
+    //     }
+    //   )
+    // })
+  }, [activeTags, markers])
 
   return (
     <div
