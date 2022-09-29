@@ -79,6 +79,7 @@ const defaultValue = {
   filteredResultsAmountSingular: '',
   filteredResultsAmountPlural: '',
   resetFilters: '',
+  noResults: '',
 }
 
 export type TextsMapType = typeof defaultValue

@@ -21,7 +21,7 @@ export const Search: FC<SearchType> = ({
     setSearchResults(results.features)
   }
   return (
-    <div className="fixed top-4 right-3 w-72 z-10 bg-white">
+    <div className="absolute top-4 right-3 w-72 z-10 bg-white">
       <div className="grid grid-cols-1">
         <label htmlFor="geocoding-input" className="sr-only">
           Standortsuche

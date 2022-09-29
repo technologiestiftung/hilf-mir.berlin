@@ -4,6 +4,7 @@ import { TextsMapType } from '@lib/TextsContext'
 import { AppProps } from 'next/app'
 import { Page } from '@common/types/nextPage'
 import Head from 'next/head'
+import { UrlStateProvider } from '@lib/UrlStateContext'
 
 interface PagePropsType {
   texts: TextsMapType
@@ -18,29 +19,33 @@ const App = ({ Component, pageProps }: AppPropsType): JSX.Element => {
   const Layout = Component.layout ?? (({ children }) => <>{children}</>)
   return (
     <TextsProvider value={pageProps.texts}>
-      <Head>
-        <link
-          rel="apple-touch-icon"
-          sizes="180x180"
-          href="/apple-touch-icon.png"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="32x32"
-          href="/favicon-32x32.png"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="16x16"
-          href="/favicon-16x16.png"
-        />
-        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#e40422" />
-        <meta name="msapplication-TileColor" content="#e40422" />
-        <meta name="theme-color" content="#ffffff" />
-      </Head>
-      <Layout {...pageProps}>{getLayout(<Component {...pageProps} />)}</Layout>
+      <UrlStateProvider>
+        <Head>
+          <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="/apple-touch-icon.png"
+          />
+          <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="/favicon-32x32.png"
+          />
+          <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/favicon-16x16.png"
+          />
+          <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#e40422" />
+          <meta name="msapplication-TileColor" content="#e40422" />
+          <meta name="theme-color" content="#ffffff" />
+        </Head>
+        <Layout {...pageProps}>
+          {getLayout(<Component {...pageProps} />)}
+        </Layout>
+      </UrlStateProvider>
     </TextsProvider>
   )
 }

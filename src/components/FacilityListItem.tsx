@@ -2,11 +2,10 @@ import classNames from '@lib/classNames'
 import { useDistanceToUser } from '@lib/hooks/useDistanceToUser'
 import { useIsFacilityOpened } from '@lib/hooks/useIsFacilityOpened'
 import { useRecordLabels } from '@lib/hooks/useRecordLabels'
-import { mapRawQueryToState } from '@lib/mapRawQueryToState'
+import { useUrlState } from '@lib/UrlStateContext'
 import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { useTexts } from '@lib/TextsContext'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { FC } from 'react'
 
 interface FacilityListItemPropsType extends MinimalRecordType {
@@ -17,8 +16,7 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
   className = ``,
   ...record
 }) => {
-  const { query } = useRouter()
-  const mappedQuery = mapRawQueryToState(query)
+  const [urlState] = useUrlState()
   const { id, title, latitude, longitude, labels } = record
   const texts = useTexts()
   const distance = useDistanceToUser({
@@ -32,7 +30,7 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
 
   return (
     <li className={classNames(className)}>
-      <Link href={`/${id}`}>
+      <Link href={{ pathname: `/${id}`, query: urlState }}>
         <a
           className={classNames(
             `border-b border-b-black block`,
@@ -77,7 +75,7 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
                     <span
                       className={classNames(
                         `inline-block px-1.5 py-0.5 border leading-4`,
-                        mappedQuery.tags?.includes(label.id)
+                        urlState.tags.includes(label.id)
                           ? `bg-red text-white border-red`
                           : `text-sm border-gray-20 `
                       )}
@@ -96,9 +94,7 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
                       <span
                         key={id}
                         className={
-                          mappedQuery.tags?.includes(id)
-                            ? `text-red`
-                            : `text-black`
+                          urlState.tags.includes(id) ? `text-red` : `text-black`
                         }
                       >
                         {fields.text}

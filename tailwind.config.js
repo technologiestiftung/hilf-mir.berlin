@@ -37,7 +37,7 @@ module.exports = {
       },
       spacing: {
         sidebarW: `460px`,
-        mapW: `calc(100vw-460px)`,
+        mapW: `calc(100vw -460px)`,
       },
     },
   },

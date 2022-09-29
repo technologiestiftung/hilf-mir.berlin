@@ -4,10 +4,11 @@ import { Search } from './Search'
 import { FacilitiesMap } from './Map'
 import classNames from '@lib/classNames'
 import { useRouter } from 'next/router'
-import { mapRawQueryToState } from '@lib/mapRawQueryToState'
 import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { GristLabelType } from '@common/types/gristData'
 import { LabelsProvider } from '@lib/LabelsContext'
+import { FiltersList } from './FiltersList'
+import { useUrlState } from '@lib/UrlStateContext'
 
 export const MapLayout: FC<{
   records: MinimalRecordType[]
@@ -15,9 +16,8 @@ export const MapLayout: FC<{
 }> = ({ children, records, labels }) => {
   const { pathname } = useRouter()
   const [mapCenter, setMapCenter] = useState<[number, number] | undefined>()
-
-  const { query } = useRouter()
-  const mappedQuery = mapRawQueryToState(query)
+  const [filterSidebarIsOpened, setFilterSidebarIsOpened] = useState(true)
+  const [urlState, setUrlState] = useUrlState()
 
   const handleMarkerClick = (facilityId: number): void => {
     console.log(facilityId)
@@ -26,20 +26,34 @@ export const MapLayout: FC<{
 
   const handleSearchResult = (place: FeatureType): void => {
     setMapCenter(place.center)
+    setUrlState({
+      longitude: place.center[0],
+      latitude: place.center[1],
+    })
   }
+
   return (
     <LabelsProvider value={labels}>
       <main>
-        <article className="fixed w-screen h-screen inset-0 lg:left-sidebarW lg:w-mapW">
-          <Search onSelectResult={handleSearchResult} />
-          {records && (
-            <FacilitiesMap
-              center={mapCenter}
-              markers={records}
-              activeTags={mappedQuery.tags || []}
-              onMarkerClick={handleMarkerClick}
-            />
+        <article
+          className={classNames(
+            `fixed inset-0 lg:left-sidebarW transition-all`,
+            `overflow-hidden lg:w-mapW`
           )}
+        >
+          <div className="relative w-full h-full flex items-center justify-center place-items-center">
+            <div className="w-screen h-screen">
+              <Search onSelectResult={handleSearchResult} />
+              {records && (
+                <FacilitiesMap
+                  center={mapCenter}
+                  markers={records}
+                  activeTags={urlState.tags}
+                  onMarkerClick={handleMarkerClick}
+                />
+              )}
+            </div>
+          </div>
         </article>
         <aside
           className={classNames(
@@ -49,6 +63,18 @@ export const MapLayout: FC<{
           )}
         >
           {children}
+        </aside>
+        <aside
+          className={classNames(
+            `fixed inset-0 left-auto w-screen lg:w-sidebarW`,
+            `transition-transform bg-white p-5 overflow-y-auto`,
+            !filterSidebarIsOpened && `translate-x-full`
+          )}
+        >
+          <button onClick={() => setFilterSidebarIsOpened(false)}>
+            toggle
+          </button>
+          <FiltersList recordsWithOnlyLabels={records.map((r) => r.labels)} />
         </aside>
       </main>
     </LabelsProvider>

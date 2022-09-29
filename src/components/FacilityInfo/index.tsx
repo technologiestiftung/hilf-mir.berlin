@@ -90,7 +90,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
 
   return (
     <>
-      <BackButton href="/map" />
+      <BackButton href={{ pathname: `/map`, query: mappedQuery }} />
       <article className="h-full flex flex-col gap-8">
         <div className="px-5 pt-5">
           <h1 className="mb-2">{facility.fields.Einrichtung}</h1>

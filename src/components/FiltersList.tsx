@@ -1,12 +1,12 @@
 import { TableRowType } from '@common/types/gristData'
 import classNames from '@lib/classNames'
 import { getLabelRenderer } from '@lib/getLabelRenderer'
+import { useUrlState } from '@lib/UrlStateContext'
 import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
 import { useLabels } from '@lib/LabelsContext'
-import { mapRawQueryToState } from '@lib/mapRawQueryToState'
 import { useTexts } from '@lib/TextsContext'
 import { useRouter } from 'next/router'
-import { FC, useEffect, useState } from 'react'
+import { FC } from 'react'
 import { PrimaryButton } from './PrimaryButton'
 import { SwitchButton } from './SwitchButton'
 import { TextLink } from './TextLink'
@@ -16,8 +16,8 @@ export const FiltersList: FC<{
 }> = ({ recordsWithOnlyLabels }) => {
   const texts = useTexts()
   const labels = useLabels()
-  const { push, query } = useRouter()
-  const mappedQuery = mapRawQueryToState(query)
+  const { push } = useRouter()
+  const [urlState, updateUrlState] = useUrlState()
   const {
     useGeolocation,
     setGeolocationUsage,
@@ -25,9 +25,8 @@ export const FiltersList: FC<{
     latitude,
     longitude,
   } = useUserGeolocation()
-  const [activeFilters, setActiveFilters] = useState(mappedQuery.tags || [])
   const filteredRecords = recordsWithOnlyLabels.filter((r) =>
-    activeFilters.every((f) => r.find((id) => id === f))
+    urlState.tags.every((f) => r.find((id) => id === f))
   )
   const group1 = labels.filter(({ fields }) => fields.group === 'gruppe-1')
   const group2 = labels.filter(({ fields }) => fields.group === 'gruppe-2')
@@ -36,23 +35,21 @@ export const FiltersList: FC<{
     ({ fields }) => fields.group === 'zielpublikum'
   )
   const someTargetFiltersActive = targetAudience.some((l) =>
-    activeFilters.find((f) => f === l.id)
+    urlState.tags.find((f) => f === l.id)
   )
 
-  const renderLabel = getLabelRenderer({
-    activeFilters,
-    onLabelClick: setActiveFilters,
-  })
+  const updateFilters = (tags: number[]): void => {
+    updateUrlState({ tags })
+  }
 
-  useEffect(() => {
-    if (!mappedQuery.tags) return
-    setActiveFilters(mappedQuery.tags)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mappedQuery.tags?.join(',')])
+  const renderLabel = getLabelRenderer({
+    activeFilters: urlState.tags,
+    onLabelClick: updateFilters,
+  })
 
   return (
     <div className="">
-      <div className="md:pt-10 md:grid md:grid-cols-3 md:gap-x-8 md:pb-8">
+      <div className="md:pt-10 flex flex-wrap gap-x-8 md:pb-8">
         <ul className="flex flex-wrap gap-2 place-content-start mb-5">
           {group1.map(renderLabel)}
         </ul>
@@ -69,8 +66,8 @@ export const FiltersList: FC<{
         </h3>
         <button
           onClick={() =>
-            setActiveFilters(
-              activeFilters.filter((f) => {
+            updateFilters(
+              urlState.tags.filter((f) => {
                 const label = labels.find(({ id }) => id === f)
                 return label?.fields.group !== `zielpublikum`
               })
@@ -115,32 +112,31 @@ export const FiltersList: FC<{
             void push({
               pathname: '/map',
               query: {
-                ...query,
+                ...urlState,
                 ...(latitude && longitude ? { latitude, longitude } : {}),
-                tags: activeFilters,
               },
             })
           }
-          disabled={activeFilters.length > 0 && filteredRecords.length === 0}
+          disabled={urlState.tags.length > 0 && filteredRecords.length === 0}
           tooltip={
-            activeFilters.length > 0 && filteredRecords.length === 0
+            urlState.tags.length > 0 && filteredRecords.length === 0
               ? texts.filtersButtonTextFilteredNoResultsHint
               : ''
           }
         >
-          {(activeFilters.length === 0 ||
-            activeFilters.length === labels.length) &&
+          {(urlState.tags.length === 0 ||
+            urlState.tags.length === labels.length) &&
             texts.filtersButtonTextAllFilters}
-          {activeFilters.length > 0 &&
+          {urlState.tags.length > 0 &&
             filteredRecords.length === 1 &&
             texts.filtersButtonTextFilteredSingular}
-          {activeFilters.length > 0 &&
+          {urlState.tags.length > 0 &&
             filteredRecords.length > 1 &&
             texts.filtersButtonTextFilteredPlural.replace(
               '#number',
               `${filteredRecords.length}`
             )}
-          {activeFilters.length > 0 &&
+          {urlState.tags.length > 0 &&
             filteredRecords.length === 0 &&
             texts.filtersButtonTextFilteredNoResults}
         </PrimaryButton>
