@@ -18,6 +18,7 @@ export const FiltersList: FC<{
   const labels = useLabels()
   const { push } = useRouter()
   const [urlState, updateUrlState] = useUrlState()
+  const tags = urlState.tags || []
   const {
     useGeolocation,
     setGeolocationUsage,
@@ -25,8 +26,9 @@ export const FiltersList: FC<{
     latitude,
     longitude,
   } = useUserGeolocation()
+
   const filteredRecords = recordsWithOnlyLabels.filter((r) =>
-    urlState.tags.every((f) => r.find((id) => id === f))
+    tags.every((f) => r.find((id) => id === f))
   )
   const group1 = labels.filter(({ fields }) => fields.group === 'gruppe-1')
   const group2 = labels.filter(({ fields }) => fields.group === 'gruppe-2')
@@ -35,15 +37,15 @@ export const FiltersList: FC<{
     ({ fields }) => fields.group === 'zielpublikum'
   )
   const someTargetFiltersActive = targetAudience.some((l) =>
-    urlState.tags.find((f) => f === l.id)
+    tags.find((f) => f === l.id)
   )
 
-  const updateFilters = (tags: number[]): void => {
-    updateUrlState({ tags })
+  const updateFilters = (newTags: number[]): void => {
+    updateUrlState({ tags: newTags })
   }
 
   const renderLabel = getLabelRenderer({
-    activeFilters: urlState.tags,
+    activeFilters: tags,
     onLabelClick: updateFilters,
   })
 
@@ -67,10 +69,10 @@ export const FiltersList: FC<{
         <button
           onClick={() =>
             updateFilters(
-              urlState.tags.filter((f) => {
+              tags.filter((f) => {
                 const label = labels.find(({ id }) => id === f)
                 return label?.fields.group !== `zielpublikum`
-              })
+              }) || []
             )
           }
           className={classNames(
@@ -117,26 +119,25 @@ export const FiltersList: FC<{
               },
             })
           }
-          disabled={urlState.tags.length > 0 && filteredRecords.length === 0}
+          disabled={tags.length > 0 && filteredRecords.length === 0}
           tooltip={
-            urlState.tags.length > 0 && filteredRecords.length === 0
+            tags.length > 0 && filteredRecords.length === 0
               ? texts.filtersButtonTextFilteredNoResultsHint
               : ''
           }
         >
-          {(urlState.tags.length === 0 ||
-            urlState.tags.length === labels.length) &&
+          {(tags.length === 0 || tags.length === labels.length) &&
             texts.filtersButtonTextAllFilters}
-          {urlState.tags.length > 0 &&
+          {tags.length > 0 &&
             filteredRecords.length === 1 &&
             texts.filtersButtonTextFilteredSingular}
-          {urlState.tags.length > 0 &&
+          {tags.length > 0 &&
             filteredRecords.length > 1 &&
             texts.filtersButtonTextFilteredPlural.replace(
               '#number',
               `${filteredRecords.length}`
             )}
-          {urlState.tags.length > 0 &&
+          {tags.length > 0 &&
             filteredRecords.length === 0 &&
             texts.filtersButtonTextFilteredNoResults}
         </PrimaryButton>

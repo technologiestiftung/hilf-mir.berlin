@@ -30,7 +30,7 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
 
   return (
     <li className={classNames(className)}>
-      <Link href={{ pathname: `/${id}`, query: urlState }}>
+      <Link href={{ pathname: `/${id}`, query: { ...urlState } }}>
         <a
           className={classNames(
             `border-b border-b-black block`,
@@ -75,7 +75,7 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
                     <span
                       className={classNames(
                         `inline-block px-1.5 py-0.5 border leading-4`,
-                        urlState.tags.includes(label.id)
+                        urlState.tags?.includes(label.id)
                           ? `bg-red text-white border-red`
                           : `text-sm border-gray-20 `
                       )}
@@ -94,7 +94,9 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
                       <span
                         key={id}
                         className={
-                          urlState.tags.includes(id) ? `text-red` : `text-black`
+                          urlState.tags?.includes(id)
+                            ? `text-red`
+                            : `text-black`
                         }
                       >
                         {fields.text}

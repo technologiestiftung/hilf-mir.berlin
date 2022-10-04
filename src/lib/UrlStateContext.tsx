@@ -10,12 +10,13 @@ import {
 import { mapRawQueryToState, PageQueryType } from './mapRawQueryToState'
 import { removeNullAndUndefinedFromQuery } from './removeNullAndUndefinedFromQuery'
 
-type UrlStateType = Omit<PageQueryType, 'tags'> & { tags: number[] }
+type UrlStateType = PageQueryType
 type SetUrlStateHandlerType = (newState: Partial<PageQueryType>) => void
 
-const UrlStateContext = createContext<
-  [Partial<UrlStateType>, SetUrlStateHandlerType]
->([{}, () => undefined])
+const UrlStateContext = createContext<[UrlStateType, SetUrlStateHandlerType]>([
+  {},
+  () => undefined,
+])
 
 const Provider = UrlStateContext.Provider
 

@@ -53,7 +53,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
   )
 
   const renderLabel = getLabelRenderer({
-    activeFilters: urlState.tags,
+    activeFilters: urlState.tags || [],
   })
 
   const { Strasse, Hausnummer, PLZ } = facility.fields
@@ -88,7 +88,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
 
   return (
     <>
-      <BackButton href={{ pathname: `/map`, query: urlState }} />
+      <BackButton href={{ pathname: `/map`, query: { ...urlState } }} />
       <article className="h-full flex flex-col gap-8">
         <div className="px-5 pt-5">
           <h1 className="mb-2">{facility.fields.Einrichtung}</h1>

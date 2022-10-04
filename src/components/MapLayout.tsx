@@ -14,7 +14,7 @@ export const MapLayout: FC<{
   records: MinimalRecordType[]
   labels: GristLabelType[]
 }> = ({ children, records, labels }) => {
-  const { pathname } = useRouter()
+  const { pathname, isFallback } = useRouter()
   const [mapCenter, setMapCenter] = useState<[number, number] | undefined>()
   const [filterSidebarIsOpened, setFilterSidebarIsOpened] = useState(true)
   const [urlState, setUrlState] = useUrlState()
@@ -44,7 +44,7 @@ export const MapLayout: FC<{
           <div className="relative w-full h-full flex items-center justify-center place-items-center">
             <div className="w-screen h-screen">
               <Search onSelectResult={handleSearchResult} />
-              {records && (
+              {!isFallback && (
                 <FacilitiesMap
                   center={mapCenter}
                   markers={records}
@@ -74,7 +74,11 @@ export const MapLayout: FC<{
           <button onClick={() => setFilterSidebarIsOpened(false)}>
             toggle
           </button>
-          <FiltersList recordsWithOnlyLabels={records.map((r) => r.labels)} />
+          {!isFallback && (
+            <FiltersList
+              recordsWithOnlyLabels={(records || []).map((r) => r.labels)}
+            />
+          )}
         </aside>
       </main>
     </LabelsProvider>

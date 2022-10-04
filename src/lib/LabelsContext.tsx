@@ -5,7 +5,7 @@ const labelsContext = createContext<GristLabelType[]>([])
 
 export const useLabels = (): GristLabelType[] => {
   const labels = useContext(labelsContext)
-  return labels
+  return labels || []
 }
 
 export const LabelsProvider = labelsContext.Provider
