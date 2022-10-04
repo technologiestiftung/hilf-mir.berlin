@@ -5,31 +5,19 @@ import { useUrlState } from '@lib/UrlStateContext'
 import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
 import { useLabels } from '@lib/LabelsContext'
 import { useTexts } from '@lib/TextsContext'
-import { useRouter } from 'next/router'
 import { FC } from 'react'
-import { PrimaryButton } from './PrimaryButton'
 import { SwitchButton } from './SwitchButton'
-import { TextLink } from './TextLink'
 
 export const FiltersList: FC<{
   recordsWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
-}> = ({ recordsWithOnlyLabels }) => {
+}> = () => {
   const texts = useTexts()
   const labels = useLabels()
-  const { push } = useRouter()
   const [urlState, updateUrlState] = useUrlState()
   const tags = urlState.tags || []
-  const {
-    useGeolocation,
-    setGeolocationUsage,
-    geolocationIsForbidden,
-    latitude,
-    longitude,
-  } = useUserGeolocation()
+  const { useGeolocation, setGeolocationUsage, geolocationIsForbidden } =
+    useUserGeolocation()
 
-  const filteredRecords = recordsWithOnlyLabels.filter((r) =>
-    tags.every((f) => r.find((id) => id === f))
-  )
   const group1 = labels.filter(({ fields }) => fields.group === 'gruppe-1')
   const group2 = labels.filter(({ fields }) => fields.group === 'gruppe-2')
   const group3 = labels.filter(({ fields }) => fields.group === 'gruppe-3')
@@ -108,44 +96,6 @@ export const FiltersList: FC<{
         >
           {texts.filtersGeoSearchLabel}
         </SwitchButton>
-        <PrimaryButton
-          className="md:max-w-sm"
-          onClick={() =>
-            void push({
-              pathname: '/map',
-              query: {
-                ...urlState,
-                ...(latitude && longitude ? { latitude, longitude } : {}),
-              },
-            })
-          }
-          disabled={tags.length > 0 && filteredRecords.length === 0}
-          tooltip={
-            tags.length > 0 && filteredRecords.length === 0
-              ? texts.filtersButtonTextFilteredNoResultsHint
-              : ''
-          }
-        >
-          {(tags.length === 0 || tags.length === labels.length) &&
-            texts.filtersButtonTextAllFilters}
-          {tags.length > 0 &&
-            filteredRecords.length === 1 &&
-            texts.filtersButtonTextFilteredSingular}
-          {tags.length > 0 &&
-            filteredRecords.length > 1 &&
-            texts.filtersButtonTextFilteredPlural.replace(
-              '#number',
-              `${filteredRecords.length}`
-            )}
-          {tags.length > 0 &&
-            filteredRecords.length === 0 &&
-            texts.filtersButtonTextFilteredNoResults}
-        </PrimaryButton>
-        <div className="hidden md:block w-full mt-6">
-          <TextLink href={texts.moreOffersKVBLinkUrl}>
-            {texts.moreOffersKVBLinkText}
-          </TextLink>
-        </div>
       </div>
     </div>
   )

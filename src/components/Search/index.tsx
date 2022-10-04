@@ -1,5 +1,6 @@
 import { ChangeEvent, FC, useState } from 'react'
 import { FeatureType, geocode } from '@lib/requests/geocode'
+import classNames from '@lib/classNames'
 
 interface SearchType {
   onSelectResult?: (place: FeatureType) => void
@@ -21,8 +22,8 @@ export const Search: FC<SearchType> = ({
     setSearchResults(results.features)
   }
   return (
-    <div className="absolute top-4 right-3 w-72 z-10 bg-white">
-      <div className="grid grid-cols-1">
+    <div className={classNames(`max-w-72 w-full bg-white h-12`)}>
+      <div className="grid grid-cols-1 h-12">
         <label htmlFor="geocoding-input" className="sr-only">
           Standortsuche
         </label>
@@ -30,7 +31,12 @@ export const Search: FC<SearchType> = ({
           type="text"
           name="place"
           id="geocoding-input"
-          className="border border-gray-100 px-3 py-2"
+          className={classNames(
+            `border border-gray-100 px-3 py-2 h-12`,
+            `focus:outline-none focus:ring-2 focus:ring-red`,
+            `focus:ring-offset-2 focus:ring-offset-white`,
+            `relative focus:z-10`
+          )}
           placeholder="Adresssuche"
           value={searchInput}
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -46,7 +52,7 @@ export const Search: FC<SearchType> = ({
             return (
               <li
                 key={`${searchResult.id} ${searchResult.place_name}`}
-                className="border-b border-gray-100"
+                className="border-b border-gray-20 last-of-type:border-black bg-white"
               >
                 <button
                   className="text-left w-full py-2 px-3 transition-colors hover:bg-gray-50"

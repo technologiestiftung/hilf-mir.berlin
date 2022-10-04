@@ -1,6 +1,5 @@
 import { FeatureType } from '@lib/requests/geocode'
 import { FC, useState } from 'react'
-import { Search } from './Search'
 import { FacilitiesMap } from './Map'
 import classNames from '@lib/classNames'
 import { useRouter } from 'next/router'
@@ -9,14 +8,21 @@ import { GristLabelType } from '@common/types/gristData'
 import { LabelsProvider } from '@lib/LabelsContext'
 import { FiltersList } from './FiltersList'
 import { useUrlState } from '@lib/UrlStateContext'
+import { useTexts } from '@lib/TextsContext'
+import { Map } from './icons/Map'
+import { List } from './icons/List'
+import { MapUi } from './MapUi'
+import { Cross } from './icons/Cross'
 
 export const MapLayout: FC<{
   records: MinimalRecordType[]
   labels: GristLabelType[]
 }> = ({ children, records, labels }) => {
   const { pathname, isFallback } = useRouter()
+  const texts = useTexts()
+  const [listViewOpen, setListViewOpen] = useState<boolean>(false)
   const [mapCenter, setMapCenter] = useState<[number, number] | undefined>()
-  const [filterSidebarIsOpened, setFilterSidebarIsOpened] = useState(true)
+  const [filterSidebarIsOpened, setFilterSidebarIsOpened] = useState(false)
   const [urlState, setUrlState] = useUrlState()
 
   const handleMarkerClick = (facilityId: number): void => {
@@ -34,50 +40,74 @@ export const MapLayout: FC<{
 
   return (
     <LabelsProvider value={labels}>
-      <main>
-        <article
-          className={classNames(
-            `fixed inset-0 lg:left-sidebarW transition-all`,
-            `overflow-hidden lg:w-mapW`
-          )}
-        >
-          <div className="relative w-full h-full flex items-center justify-center place-items-center">
-            <div className="w-screen h-screen">
-              <Search onSelectResult={handleSearchResult} />
-              {!isFallback && (
-                <FacilitiesMap
-                  center={mapCenter}
-                  markers={records}
-                  activeTags={urlState.tags}
-                  onMarkerClick={handleMarkerClick}
-                />
-              )}
-            </div>
+      <main
+        className={classNames(
+          `inset-0 lg:left-sidebarW transition-all`,
+          `overflow-hidden lg:w-mapW`
+        )}
+      >
+        {!isFallback && (
+          <div className="fixed inset-0 z-10 lg:left-sidebarW">
+            <FacilitiesMap
+              center={mapCenter}
+              markers={records}
+              activeTags={urlState.tags}
+              onMarkerClick={handleMarkerClick}
+            />
           </div>
-        </article>
+        )}
         <aside
           className={classNames(
-            `lg:w-sidebarW shadow-2xl lg:shadow-xl lg:h-screen lg:overflow-y-auto`,
-            `z-10 relative bg-white mt-[80vh] md:lg:mt-0 rounded-t-2xl border-t border-gray-20`,
-            pathname === '/map' && `mt-[50vh]`
+            `fixed w-screen h-screen top-0 left-0 overflow-y-auto`,
+            `lg:w-sidebarW lg:shadow-xl`,
+            `z-20 relative bg-white min-h-screen transition-transform`,
+            pathname === '/map' && listViewOpen && `translate-y-0 pt-20`,
+            pathname === '/map' &&
+              !listViewOpen &&
+              `translate-y-[100vh] lg:translate-y-0`
           )}
         >
           {children}
         </aside>
+        {!isFallback && (
+          <MapUi
+            handleSearchResult={handleSearchResult}
+            filterSidebarIsOpened={filterSidebarIsOpened}
+            setFilterSidebarIsOpened={setFilterSidebarIsOpened}
+            listViewOpen={listViewOpen}
+            setListViewOpen={setListViewOpen}
+          />
+        )}
         <aside
           className={classNames(
-            `fixed inset-0 left-auto w-screen lg:w-sidebarW`,
-            `transition-transform bg-white p-5 overflow-y-auto`,
+            `fixed inset-0 left-auto w-screen lg:w-sidebarW z-20`,
+            `transition-transform bg-white overflow-y-auto`,
             !filterSidebarIsOpened && `translate-x-full`
           )}
         >
-          <button onClick={() => setFilterSidebarIsOpened(false)}>
-            toggle
-          </button>
           {!isFallback && (
-            <FiltersList
-              recordsWithOnlyLabels={(records || []).map((r) => r.labels)}
-            />
+            <>
+              <h3
+                className={classNames(
+                  `sticky top-0 flex justify-between`,
+                  `px-5 py-6 bg-white border-b border-gray-10`,
+                  `font-bold uppercase text-2xl items-center leading-tight`
+                )}
+              >
+                {texts.filterLabel}
+                <button
+                  className="text-red"
+                  onClick={() => setFilterSidebarIsOpened(false)}
+                >
+                  <Cross />
+                </button>
+              </h3>
+              <div className="p-5">
+                <FiltersList
+                  recordsWithOnlyLabels={(records || []).map((r) => r.labels)}
+                />
+              </div>
+            </>
           )}
         </aside>
       </main>
