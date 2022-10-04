@@ -9,8 +9,6 @@ import { LabelsProvider } from '@lib/LabelsContext'
 import { FiltersList } from './FiltersList'
 import { useUrlState } from '@lib/UrlStateContext'
 import { useTexts } from '@lib/TextsContext'
-import { Map } from './icons/Map'
-import { List } from './icons/List'
 import { MapUi } from './MapUi'
 import { Cross } from './icons/Cross'
 
@@ -67,7 +65,7 @@ export const MapLayout: FC<{
               `translate-y-[100vh] lg:translate-y-0`
           )}
         >
-          {children}
+          {!isFallback && children}
         </aside>
         {!isFallback && (
           <MapUi
