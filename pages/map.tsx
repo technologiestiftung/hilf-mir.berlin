@@ -1,24 +1,18 @@
 import type { GetStaticProps } from 'next'
 import Head from 'next/head'
-import { getGristTexts } from '@lib/requests/getGristTexts'
-import { getGristRecords } from '@lib/requests/getGristRecords'
 import { useTexts } from '@lib/TextsContext'
 import { Page } from '@common/types/nextPage'
 import { MapLayout } from '@components/MapLayout'
 import classNames from '@lib/classNames'
 import { FacilityListItem } from '@components/FacilityListItem'
 import { mapRecordToMinimum, MinimalRecordType } from '@lib/mapRecordToMinimum'
-import { getGristLabels } from '@lib/requests/getGristLabels'
 import { GristLabelType } from '@common/types/gristData'
 import { useUrlState } from '@lib/UrlStateContext'
 import { useRouter } from 'next/router'
+import { loadCacheData } from '@lib/loadCacheData'
 
 export const getStaticProps: GetStaticProps = async () => {
-  const [texts, records, labels] = await Promise.all([
-    getGristTexts(),
-    getGristRecords(),
-    getGristLabels(),
-  ])
+  const { texts, records, labels } = await loadCacheData()
   const recordsWithOnlyMinimum = records.map(mapRecordToMinimum)
   return {
     props: {
