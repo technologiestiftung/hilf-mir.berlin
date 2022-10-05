@@ -9,10 +9,10 @@ import { mapRecordToMinimum, MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { GristLabelType } from '@common/types/gristData'
 import { useUrlState } from '@lib/UrlStateContext'
 import { useRouter } from 'next/router'
-import { loadCacheData } from '@lib/loadCacheData'
+import { loadData } from '@lib/loadData'
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { texts, records, labels } = await loadCacheData()
+  const { texts, labels, records } = await loadData()
   const recordsWithOnlyMinimum = records.map(mapRecordToMinimum)
   return {
     props: {

@@ -9,23 +9,15 @@ import { useRouter } from 'next/router'
 import { mapRecordToMinimum, MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { useEffect } from 'react'
 import { loadCacheData } from '@lib/loadCacheData'
-import { downloadCacheData } from '@lib/cacheDownloader'
+import { loadData } from '@lib/loadData'
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const id = params?.id
   if (!id || Array.isArray(id)) return { notFound: true }
-  let { texts, records, labels } = await loadCacheData()
-  let record = records.find((r) => `${r.id}` === `${id}`)
+  const { texts, labels, records } = await loadData()
+  const record = records.find((r) => `${r.id}` === `${id}`)
 
-  if (!record) {
-    await downloadCacheData()
-    const newCacheData = await loadCacheData()
-    texts = newCacheData.texts
-    records = newCacheData.records
-    labels = newCacheData.labels
-    record = records.find((r) => `${r.id}` === `${id}`)
-    if (!record) return { notFound: true }
-  }
+  if (!record) return { notFound: true }
 
   const minimalRecords = records.map(mapRecordToMinimum)
 

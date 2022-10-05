@@ -9,10 +9,10 @@ import { useIsMobile } from '@lib/hooks/useIsMobile'
 import { LegalFooter } from '@components/LegalFooter'
 import { Page } from '@common/types/nextPage'
 import { LabelsProvider } from '@lib/LabelsContext'
-import { loadCacheData } from '@lib/loadCacheData'
+import { loadData } from '@lib/loadData'
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { texts, records, labels } = await loadCacheData()
+  const { texts, labels, records } = await loadData()
   const recordsWithOnlyLabels = records.map(
     (records) => records.fields.Schlagworte
   )

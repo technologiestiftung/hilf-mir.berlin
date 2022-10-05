@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run downloadCacheData && next build",
+    "build": "npm run downloadCacheData && IS_BUILDING=true next build",
     "start": "next start",
     "lint": "eslint --ext js,jsx,ts,tsx .",
     "lint-fix": "npm run lint -- --fix",
