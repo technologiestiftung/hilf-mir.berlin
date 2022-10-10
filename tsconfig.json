@@ -32,7 +32,7 @@
       ]
     },
     "moduleResolution": "node",
-    "incremental": true
+    "incremental": true,
   },
   "include": [
     "next-env.d.ts",
@@ -51,5 +51,12 @@
     "*.config.js",
     ".prettierrc.js",
     "i18n.js"
-  ]
+  ],
+  "ts-node": {
+    "compilerOptions": {
+      "target": "es2019",
+      "lib": ["es2019"],
+      "module": "Node16",
+    }
+  }
 }

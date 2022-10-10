@@ -1,24 +1,18 @@
 import type { GetStaticProps } from 'next'
 import Head from 'next/head'
-import { getGristTexts } from '@lib/requests/getGristTexts'
 import classNames from '@lib/classNames'
 import { WelcomeScreen } from '@components/WelcomeScreen'
 import { WelcomeFilters } from '@components/WelcomeFilters'
 import { useState } from 'react'
-import { getGristRecords } from '@lib/requests/getGristRecords'
 import { GristLabelType, TableRowType } from '@common/types/gristData'
-import { getGristLabels } from '@lib/requests/getGristLabels'
 import { useIsMobile } from '@lib/hooks/useIsMobile'
 import { LegalFooter } from '@components/LegalFooter'
 import { Page } from '@common/types/nextPage'
 import { LabelsProvider } from '@lib/LabelsContext'
+import { loadData } from '@lib/loadData'
 
 export const getStaticProps: GetStaticProps = async () => {
-  const [texts, records, labels] = await Promise.all([
-    getGristTexts(),
-    getGristRecords(),
-    getGristLabels(),
-  ])
+  const { texts, labels, records } = await loadData()
   const recordsWithOnlyLabels = records.map(
     (records) => records.fields.Schlagworte
   )

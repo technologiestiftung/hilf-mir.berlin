@@ -1,4 +1,4 @@
-export interface GristLabelType {
+export interface GristLabelType extends Record<string, unknown> {
   id: number
   fields: {
     key: string
@@ -11,7 +11,7 @@ export interface GristLabelType {
 /**
  * This type corresponds to the table row of psychological and other help facilities in Berlin. Note that the keys are subject to change whenever the columns are updated in the spreadsheet.
  */
-export interface TableRowType {
+export interface TableRowType extends Record<string, unknown> {
   id: number
   fields: {
     Einrichtung: string

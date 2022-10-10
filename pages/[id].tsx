@@ -1,29 +1,25 @@
 import type { GetStaticPaths, GetStaticProps } from 'next'
 import Head from 'next/head'
 import { GristLabelType, TableRowType } from '@common/types/gristData'
-import { getGristTexts } from '@lib/requests/getGristTexts'
 import { useTexts } from '@lib/TextsContext'
 import { Page } from '@common/types/nextPage'
 import { MapLayout } from '@components/MapLayout'
 import { FacilityInfo } from '@components/FacilityInfo'
-import { getGristRecords } from '@lib/requests/getGristRecords'
 import { useRouter } from 'next/router'
 import { mapRecordToMinimum, MinimalRecordType } from '@lib/mapRecordToMinimum'
-import { getGristLabels } from '@lib/requests/getGristLabels'
 import { useEffect } from 'react'
+import { loadCacheData } from '@lib/loadCacheData'
+import { loadData } from '@lib/loadData'
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const id = params?.id
   if (!id || Array.isArray(id)) return { notFound: true }
-  const [texts, records, labels] = await Promise.all([
-    getGristTexts(),
-    getGristRecords(),
-    getGristLabels(),
-  ])
-  const minimalRecords = records.map(mapRecordToMinimum)
-  const record = records.find((record) => `${record.id}` === `${id}`)
+  const { texts, labels, records } = await loadData()
+  const record = records.find((r) => `${r.id}` === `${id}`)
 
   if (!record) return { notFound: true }
+
+  const minimalRecords = records.map(mapRecordToMinimum)
 
   return {
     props: { texts, records: minimalRecords, record, labels },
@@ -32,7 +28,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const records = await getGristRecords()
+  const { records } = await loadCacheData()
   return {
     paths: records
       .filter((r) => r?.id && r?.fields)

@@ -22,7 +22,7 @@ For rendering the map, a combination of [MapLibre GL JS](https://maplibre.org/ma
 ### Steps
 
 1. Install dependencies via `npm install`
-2. Create a file `/.env.development.local` and fill it according to `/.env.example`
+2. Create a `/.env.development.local` and `/.env` file and fill them according to `/.env.example`
 3. Run `npm run dev` to get a development server running at [http://localhost:3000](http://localhost:3000)
 4. Explore the data on the map or make changes to the code
 
