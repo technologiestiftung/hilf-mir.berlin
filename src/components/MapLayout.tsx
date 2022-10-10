@@ -1,5 +1,5 @@
 import { FeatureType } from '@lib/requests/geocode'
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { FacilitiesMap } from './Map'
 import classNames from '@lib/classNames'
 import { useRouter } from 'next/router'
@@ -11,15 +11,17 @@ import { useUrlState } from '@lib/UrlStateContext'
 import { useTexts } from '@lib/TextsContext'
 import { MapUi } from './MapUi'
 import { Cross } from './icons/Cross'
+import { LngLatLike } from 'maplibre-gl'
 
 export const MapLayout: FC<{
   records: MinimalRecordType[]
   labels: GristLabelType[]
-}> = ({ children, records, labels }) => {
+  center?: LngLatLike
+}> = ({ children, records, labels, center }) => {
   const { pathname, isFallback } = useRouter()
   const texts = useTexts()
   const [listViewOpen, setListViewOpen] = useState<boolean>(false)
-  const [mapCenter, setMapCenter] = useState<[number, number] | undefined>()
+  const [mapCenter, setMapCenter] = useState<LngLatLike | undefined>(center)
   const [filterSidebarIsOpened, setFilterSidebarIsOpened] = useState(false)
   const [urlState, setUrlState] = useUrlState()
 
@@ -35,6 +37,10 @@ export const MapLayout: FC<{
       latitude: place.center[1],
     })
   }
+
+  useEffect(() => {
+    setMapCenter(center)
+  }, [center])
 
   return (
     <LabelsProvider value={labels}>

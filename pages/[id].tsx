@@ -10,6 +10,7 @@ import { mapRecordToMinimum, MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { useEffect } from 'react'
 import { loadCacheData } from '@lib/loadCacheData'
 import { loadData } from '@lib/loadData'
+import { LngLatLike } from 'maplibre-gl'
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const id = params?.id
@@ -22,7 +23,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const minimalRecords = records.map(mapRecordToMinimum)
 
   return {
-    props: { texts, records: minimalRecords, record, labels },
+    props: {
+      texts,
+      records: minimalRecords,
+      record,
+      labels,
+      center: [record.fields.long2, record.fields.lat],
+    },
     revalidate: 120,
   }
 }
@@ -41,6 +48,7 @@ interface MapProps {
   records: MinimalRecordType[]
   labels: GristLabelType[]
   record: TableRowType
+  center?: LngLatLike
 }
 
 const FacilityPage: Page<MapProps> = ({ record }) => {
