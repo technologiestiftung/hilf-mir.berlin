@@ -55,6 +55,8 @@ export const FacilitiesMap: FC<MapType> = ({
     zoom: number
   } | null>(null)
 
+  const [mapIsFullyLoaded, setMapIsFullyLoaded] = useState(false)
+
   useEffect(() => {
     // If we've already got an initial viewport, we can not redefine it
     // anymore because something initial shoudl only be set once.
@@ -135,7 +137,7 @@ export const FacilitiesMap: FC<MapType> = ({
 
   const updateFilteredFacilities = useCallback(
     (activeTags: number[]) => {
-      if (!map.current || !map.current.loaded()) return
+      if (!map.current || !mapIsFullyLoaded) return
 
       markers?.forEach((marker) => {
         map.current?.setFeatureState(
@@ -149,7 +151,7 @@ export const FacilitiesMap: FC<MapType> = ({
         )
       })
     },
-    [markers]
+    [markers, mapIsFullyLoaded]
   )
 
   useEffect(() => {
@@ -157,6 +159,17 @@ export const FacilitiesMap: FC<MapType> = ({
 
     map.current.on('load', function () {
       if (!map.current) return
+
+      const pollForMapLoaded = (): void => {
+        if (map.current?.loaded()) {
+          setMapIsFullyLoaded(true)
+          return
+        } else {
+          requestAnimationFrame(pollForMapLoaded)
+        }
+      }
+
+      pollForMapLoaded()
 
       map.current.on('moveend', (e) => {
         debouncedViewportChange({
