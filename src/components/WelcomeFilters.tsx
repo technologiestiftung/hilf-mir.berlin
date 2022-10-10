@@ -27,8 +27,8 @@ export const WelcomeFilters: FC<{
   const { latitude, longitude } = useUserGeolocation()
   const tags = urlState.tags || []
 
-  const filteredRecords = recordsWithOnlyLabels.filter((r) =>
-    tags.every((f) => r.find((id) => id === f))
+  const filteredRecords = recordsWithOnlyLabels.filter((recordLabels) =>
+    tags.every((tagId) => recordLabels.find((labelId) => labelId === tagId))
   )
   return (
     <>

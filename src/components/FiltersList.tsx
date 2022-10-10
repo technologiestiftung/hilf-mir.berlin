@@ -21,11 +21,11 @@ export const FiltersList: FC<{
   const group1 = labels.filter(({ fields }) => fields.group === 'gruppe-1')
   const group2 = labels.filter(({ fields }) => fields.group === 'gruppe-2')
   const group3 = labels.filter(({ fields }) => fields.group === 'gruppe-3')
-  const targetAudience = labels.filter(
+  const targetGroups = labels.filter(
     ({ fields }) => fields.group === 'zielpublikum'
   )
-  const someTargetFiltersActive = targetAudience.some((l) =>
-    tags.find((f) => f === l.id)
+  const someTargetFiltersActive = targetGroups.some((targetGroup) =>
+    tags.find((f) => f === targetGroup.id)
   )
 
   const updateFilters = (newTags: number[]): void => {
@@ -86,7 +86,7 @@ export const FiltersList: FC<{
           </span>
         </div>
         <ul className="flex flex-wrap gap-2 mb-8">
-          {targetAudience.map(renderLabel)}
+          {targetGroups.map(renderLabel)}
         </ul>
         <SwitchButton
           value={useGeolocation}
