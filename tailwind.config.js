@@ -1,7 +1,9 @@
+const { join } = require('path')
+
 module.exports = {
   content: [
-    './pages/**/*.{js,ts,jsx,tsx}',
-    './src/components/**/*.{js,ts,jsx,tsx}',
+    join(__dirname, './pages/**/*.{js,ts,jsx,tsx}'),
+    join(__dirname, './src/**/*.{js,ts,jsx,tsx}'),
   ],
   theme: {
     colors: {
@@ -20,7 +22,7 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: [
-          'Albert Sans',
+          'AlbertSans',
           'Calibri',
           'Segoe UI',
           'Roboto',
@@ -36,8 +38,8 @@ module.exports = {
         ],
       },
       spacing: {
-        sidebarW: `460px`,
-        mapW: `calc(100vw-460px)`,
+        sidebarW: `420px`,
+        mapW: `calc(100vw -420px)`,
       },
     },
   },

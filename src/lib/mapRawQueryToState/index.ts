@@ -1,8 +1,10 @@
+import { removeNullAndUndefinedFromQuery } from '@lib/removeNullAndUndefinedFromQuery'
+
 export interface PageQueryType {
-  latitude: number | null
-  longitude: number | null
-  zoom: number | null
-  tags: number[] | null
+  latitude?: number
+  longitude?: number
+  zoom?: number
+  tags?: number[]
 }
 
 const isNumber = (val: unknown): boolean =>
@@ -26,6 +28,9 @@ const parseNumbersArray = (
   }
   if (typeof val !== 'string') return null
   try {
+    if (!val.startsWith('[') && !val.endsWith(']')) {
+      return val.split(',').map(parseSingleNumber).filter(Boolean) as number[]
+    }
     const parsedJson = JSON.parse(val) as unknown
     if (isNumber(parsedJson)) return [parsedJson] as number[]
     if (!Array.isArray(parsedJson)) return null
@@ -40,19 +45,10 @@ const parseNumbersArray = (
   }
 }
 
-const removeNull = (
-  obj: Record<string, unknown | null>
-): Partial<PageQueryType> => {
-  Object.keys(obj).forEach(
-    (k) => (obj[k] === null || typeof obj[k] === 'undefined') && delete obj[k]
-  )
-  return obj
-}
-
 export const mapRawQueryToState = (
   rawQuery: Record<string, string | string[] | undefined>
-): Partial<PageQueryType> =>
-  removeNull({
+): PageQueryType =>
+  removeNullAndUndefinedFromQuery({
     latitude: parseSingleNumber(rawQuery.latitude),
     longitude: parseSingleNumber(rawQuery.longitude),
     zoom: parseSingleNumber(rawQuery.zoom),

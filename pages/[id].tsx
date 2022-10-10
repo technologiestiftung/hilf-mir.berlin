@@ -49,7 +49,7 @@ interface MapProps {
 
 const FacilityPage: Page<MapProps> = ({ record }) => {
   const texts = useTexts()
-  const { push, isFallback } = useRouter()
+  const { isFallback } = useRouter()
 
   useEffect(() => {
     document.querySelector(`main > aside`)?.scrollTo(0, 0)
@@ -65,9 +65,7 @@ const FacilityPage: Page<MapProps> = ({ record }) => {
         </title>
       </Head>
       {isFallback && `Seite lädt...`}
-      {!isFallback && (
-        <FacilityInfo facility={record} onClose={() => void push('/map')} />
-      )}
+      {!isFallback && <FacilityInfo facility={record} />}
     </>
   )
 }

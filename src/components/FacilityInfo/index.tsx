@@ -14,10 +14,10 @@ import { Email } from '@components/icons/Email'
 import { TextLink } from '@components/TextLink'
 import { Geopin } from '@components/icons/Geopin'
 import { getTodayKey } from '@lib/getTodayKey'
+import { useUrlState } from '@lib/UrlStateContext'
 
 interface FacilityInfoType {
   facility: TableRowType
-  onClose?: () => void
 }
 
 interface OpenDaysType {
@@ -41,6 +41,7 @@ const OpenDaysItem: FC<OpenDaysType> = ({ day, hours, isActive }) => {
 }
 
 export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
+  const [urlState] = useUrlState()
   const texts = useTexts()
   const isOpened = useIsFacilityOpened(mapRecordToMinimum(facility))
   const distance = useDistanceToUser({
@@ -52,7 +53,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
   )
 
   const renderLabel = getLabelRenderer({
-    activeFilters: [],
+    activeFilters: urlState.tags || [],
   })
 
   const { Strasse, Hausnummer, PLZ } = facility.fields
@@ -87,7 +88,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
 
   return (
     <>
-      <BackButton href="/map" />
+      <BackButton href={{ pathname: `/map`, query: { ...urlState } }} />
       <article className="h-full flex flex-col gap-8">
         <div className="px-5 pt-5">
           <h1 className="mb-2">{facility.fields.Einrichtung}</h1>

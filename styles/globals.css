@@ -17,10 +17,19 @@
 		font-style: italic;
 		font-display: swap;
 	}
+
   html, body {
     @apply font-sans;
   }
 	h1 {
 		@apply uppercase font-bold text-3xl md:text-4xl leading-8 md:leading-9;
+	}
+
+	.maplibregl-canvas-container canvas {
+		@apply focus:outline-none;
+	}
+
+	.maplibregl-canvas-container {
+		@apply relative w-full h-full focus-within:outline-none focus-within:border-2 focus-within:border-red;
 	}
 }

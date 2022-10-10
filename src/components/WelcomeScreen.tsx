@@ -2,7 +2,7 @@ import { useTexts } from '@lib/TextsContext'
 import Image from 'next/image'
 import { FC } from 'react'
 import introImage from '../images/intro-header.png'
-import stripesPattern from '../images/stripe-pattern.svg'
+import StripesPattern from '../images/stripe-pattern.svg'
 import { PrimaryButton } from '@components/PrimaryButton'
 import { SecondaryButton } from '@components/SecondaryButton'
 import { Phone } from '@components/icons/Phone'
@@ -30,7 +30,7 @@ export const WelcomeScreen: FC<{
             <Image src={introImage} layout="fill" objectFit="cover" />
             <span className="absolute right-0 bottom-0 w-20 h-20">
               {/* eslint-disable-next-line prettier/prettier */}
-              <Image {...stripesPattern} aria-hidden="true" />
+              <StripesPattern aria-hidden="true" />
             </span>
           </section>
         </div>
