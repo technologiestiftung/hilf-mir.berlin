@@ -53,10 +53,10 @@ export const MapLayout: FC<{
         {!isFallback && (
           <div className="fixed inset-0 z-10 lg:left-sidebarW">
             <FacilitiesMap
-              center={mapCenter}
               markers={records}
               activeTags={urlState.tags}
               onMarkerClick={handleMarkerClick}
+              highlightedCenter={mapCenter}
             />
           </div>
         )}
