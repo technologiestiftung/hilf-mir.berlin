@@ -30,7 +30,12 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
 
   return (
     <li className={classNames(className)}>
-      <Link href={{ pathname: `/${id}`, query: { ...urlState } }}>
+      <Link
+        href={{
+          pathname: `/${id}`,
+          query: { ...urlState, latitude: latitude, longitude: longitude },
+        }}
+      >
         <a
           className={classNames(
             `border-b border-b-black block`,
