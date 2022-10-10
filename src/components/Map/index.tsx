@@ -237,8 +237,6 @@ export const FacilitiesMap: FC<MapType> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [markers])
 
-  // TODO: This effect must probably be used when setting the location on
-  // the individual facility page (where we need to grab the coordiantes from the static props):
   useEffect(() => {
     if (!map.current || !center) return
 
