@@ -11,11 +11,14 @@ import { URLViewportType } from '@lib/types/map'
 import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 
 interface MapType {
-  center?: LngLatLike
   markers?: MinimalRecordType[]
   activeTags?: number[] | null
   onMarkerClick?: (facilityId: number) => void
-  highlightedLocation?: [number, number]
+  /** An optional array of [longitude, latitude].
+   * If provided, the map's center will be forced to this location.
+   * Also, a highlighted marker will be drawn to the map.
+   */
+  highlightedCenter?: LngLatLike
 }
 
 const easeInOutQuad = (t: number): number =>
@@ -35,11 +38,10 @@ const MAP_CONFIG = {
 }
 
 export const FacilitiesMap: FC<MapType> = ({
-  center,
   markers,
   activeTags,
   onMarkerClick = () => undefined,
-  highlightedLocation,
+  highlightedCenter,
 }) => {
   const map = useRef<Map>(null)
   const highlightedMarker = useRef<Marker>(null)
@@ -237,24 +239,20 @@ export const FacilitiesMap: FC<MapType> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [markers])
 
-  // TODO: This effect must probably be used when setting the location on
-  // the individual facility page (where we need to grab the coordiantes from the static props):
   useEffect(() => {
-    if (!map.current || !center) return
+    if (!map.current || !highlightedCenter) return
 
     map.current.easeTo({
-      center: center,
+      center: highlightedCenter,
       zoom: 15,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [center])
+  }, [highlightedCenter])
 
-  // TODO: Evaluate if this effect ist still necessary (depending on how
-  // we implement the highlighting of selected facilities)
   useEffect(() => {
     if (!map.current) return
-    if (!highlightedLocation) {
-      // Without a highlightedLocation we want to remove any highlightedMarker:
+    if (!highlightedCenter) {
+      // Without a highlightedCenter we want to remove any highlightedMarker:
       highlightedMarker && highlightedMarker.current?.remove()
       return
     } else {
@@ -263,15 +261,15 @@ export const FacilitiesMap: FC<MapType> = ({
 
       const customMarker = document.createElement('div')
       customMarker.className =
-        'rounded-full w-8 h-8 bg-blue-500 ring-4 ring-magenta-500'
+        'rounded-full w-8 h-8 bg-red border-2 border-white'
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       highlightedMarker.current = new maplibregl.Marker(customMarker)
-        .setLngLat(highlightedLocation as LngLatLike)
+        .setLngLat(highlightedCenter)
         .addTo(map.current)
     }
-  }, [highlightedLocation])
+  }, [highlightedCenter])
 
   useEffect(
     () => updateFilteredFacilities(activeTags as number[]),
