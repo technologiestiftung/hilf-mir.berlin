@@ -61,6 +61,12 @@ export const MapLayout: FC<{
               markers={records}
               activeTags={urlState.tags}
               onMarkerClick={handleMarkerClick}
+              onMoveStart={() => {
+                setSelectedFacilities([])
+              }}
+              onClickAnywhere={() => {
+                setSelectedFacilities([])
+              }}
               highlightedCenter={mapCenter}
             />
           </div>
