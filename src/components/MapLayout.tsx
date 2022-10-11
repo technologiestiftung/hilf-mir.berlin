@@ -65,7 +65,9 @@ export const MapLayout: FC<{
             />
           </div>
         )}
-        <FacilityCarousel facilities={selectedFacilities} />
+        {pathname === '/map' && (
+          <FacilityCarousel facilities={selectedFacilities} />
+        )}
         <aside
           className={classNames(
             `fixed w-screen h-screen top-0 left-0 overflow-y-auto`,

@@ -3,6 +3,7 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { FacilityCarouselSlide } from './FacilityCarouselSlide'
 
+// eslint-disable-next-line import/no-unresolved
 import 'swiper/css'
 import classNames from '@lib/classNames'
 
@@ -40,7 +41,7 @@ export const FacilityCarousel: FC<FacilityCarouselPropsType> = ({
             centeredSlides
           >
             {facilities.map((facility) => (
-              <SwiperSlide key={facility.id}>
+              <SwiperSlide key={facility.id} className="!shrink !h-auto">
                 <FacilityCarouselSlide {...facility} />
               </SwiperSlide>
             ))}
