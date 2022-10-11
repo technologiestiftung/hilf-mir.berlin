@@ -17,6 +17,7 @@ interface MapUiPropsType {
   setFilterSidebarIsOpened: (newState: boolean) => void
   setListViewOpen: (newState: boolean) => void
   handleSearchResult: ((place: FeatureType) => void) | undefined
+  hasSelectedFacilities?: boolean
 }
 
 interface IconButtonPropsType {
@@ -51,10 +52,17 @@ const IconButton: FC<IconButtonPropsType> = ({
   )
 }
 
-const OtherButtons: FC = () => {
+const OtherButtons: FC<{
+  hasSelectedFacilities?: boolean
+}> = ({ hasSelectedFacilities = false }) => {
   const texts = useTexts()
   return (
-    <div className="fixed flex flex-col right-4 bottom-8 z-10 focus-within:z-20">
+    <div
+      className={classNames(
+        `fixed flex flex-col right-4 z-10 focus-within:z-20`,
+        hasSelectedFacilities ? `bottom-32` : `bottom-8`
+      )}
+    >
       <IconButton
         pathName="/sofortige-hilfe"
         className="flex text-red border-b-0 focus:border-b"
@@ -79,6 +87,7 @@ export const MapUi: FC<MapUiPropsType> = ({
   setFilterSidebarIsOpened,
   handleSearchResult,
   listViewOpen,
+  hasSelectedFacilities = false,
 }) => {
   const texts = useTexts()
   const [urlState] = useUrlState()
@@ -156,10 +165,12 @@ export const MapUi: FC<MapUiPropsType> = ({
         onClick={() => setListViewOpen(!listViewOpen)}
         className={classNames(
           `lg:hidden max-w-[210px]`,
-          `fixed sm:left-1/2 sm:-translate-x-1/2 bottom-8 z-20 items-center`,
-          listViewOpen && `left-1/2 -translate-x-1/2`,
-          !listViewOpen &&
+          `fixed sm:left-1/2 sm:-translate-x-1/2 z-20 items-center`,
+          listViewOpen && `left-1/2 -translate-x-1/2 bottom-8`,
+          !listViewOpen && [
             `right-16 border-r-0 sm:border-r h-12 focus:border-r`,
+            hasSelectedFacilities ? `bottom-32` : `bottom-8`,
+          ],
           `border border-black px-4 py-2 text-xl font-bold`,
           `bg-white flex gap-3 text-left whitespace-nowrap`,
           `focus:outline-none focus:ring-2 focus:ring-red`,
@@ -169,7 +180,7 @@ export const MapUi: FC<MapUiPropsType> = ({
         {listViewOpen ? <Map /> : <List />}
         {listViewOpen ? texts.seeMap : texts.seeList}
       </button>
-      <OtherButtons />
+      <OtherButtons hasSelectedFacilities={hasSelectedFacilities} />
     </>
   )
 }

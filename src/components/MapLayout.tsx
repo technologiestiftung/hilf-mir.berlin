@@ -12,6 +12,7 @@ import { useTexts } from '@lib/TextsContext'
 import { MapUi } from './MapUi'
 import { Cross } from './icons/Cross'
 import { LngLatLike } from 'maplibre-gl'
+import { FacilityCarousel } from './FacilityCarousel'
 
 export const MapLayout: FC<{
   records: MinimalRecordType[]
@@ -22,11 +23,15 @@ export const MapLayout: FC<{
   const texts = useTexts()
   const [listViewOpen, setListViewOpen] = useState<boolean>(false)
   const [mapCenter, setMapCenter] = useState<LngLatLike | undefined>(center)
+  const [selectedFacilities, setSelectedFacilities] = useState<
+    MinimalRecordType[]
+  >([])
   const [filterSidebarIsOpened, setFilterSidebarIsOpened] = useState(false)
   const [urlState, setUrlState] = useUrlState()
 
-  const handleMarkerClick = (facilityId: number): void => {
-    console.log(facilityId)
+  const handleMarkerClick = (facilities: MinimalRecordType[]): void => {
+    console.log(facilities)
+    setSelectedFacilities(facilities)
     if (!records) return
   }
 
@@ -60,6 +65,7 @@ export const MapLayout: FC<{
             />
           </div>
         )}
+        <FacilityCarousel facilities={selectedFacilities} />
         <aside
           className={classNames(
             `fixed w-screen h-screen top-0 left-0 overflow-y-auto`,
@@ -80,6 +86,7 @@ export const MapLayout: FC<{
             setFilterSidebarIsOpened={setFilterSidebarIsOpened}
             listViewOpen={listViewOpen}
             setListViewOpen={setListViewOpen}
+            hasSelectedFacilities={selectedFacilities.length > 0}
           />
         )}
         <aside

@@ -13,7 +13,7 @@ import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 interface MapType {
   markers?: MinimalRecordType[]
   activeTags?: number[] | null
-  onMarkerClick?: (facilityId: number) => void
+  onMarkerClick?: (facilities: MinimalRecordType[]) => void
   /** An optional array of [longitude, latitude].
    * If provided, the map's center will be forced to this location.
    * Also, a highlighted marker will be drawn to the map.
@@ -233,7 +233,11 @@ export const FacilitiesMap: FC<MapType> = ({
           zoom: 15,
         })
 
-        onMarkerClick(clickedMarkerIds[0])
+        const clickedFacilities = markers.filter((marker) =>
+          clickedMarkerIds.includes(marker.id)
+        )
+
+        onMarkerClick(clickedFacilities)
       })
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
