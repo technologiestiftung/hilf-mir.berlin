@@ -4,11 +4,11 @@ import {
   createGeoJsonStructure,
   GeojsonFeatureType,
 } from '@lib/createGeojsonStructure'
-import { mapRawQueryToState } from '@lib/mapRawQueryToState'
 import { useRouter } from 'next/router'
 import { useDebouncedCallback } from 'use-debounce'
 import { URLViewportType } from '@lib/types/map'
 import { MinimalRecordType } from '@lib/mapRecordToMinimum'
+import { useUrlState } from '@lib/UrlStateContext'
 
 interface MapType {
   markers?: MinimalRecordType[]
@@ -46,8 +46,8 @@ export const FacilitiesMap: FC<MapType> = ({
   const map = useRef<Map>(null)
   const highlightedMarker = useRef<Marker>(null)
 
-  const { replace, query, pathname } = useRouter()
-  const queryState = mapRawQueryToState(query)
+  const { pathname } = useRouter()
+  const [urlState, setUrlState] = useUrlState()
 
   // The initial viewport will be available on 2nd render,
   // because we get it from useRouter. First it has to be null.
@@ -64,33 +64,27 @@ export const FacilitiesMap: FC<MapType> = ({
     // anymore because something initial shoudl only be set once.
     if (initialViewport) return
 
-    if (!queryState.latitude || !queryState.longitude || !queryState.zoom)
-      return
+    if (!urlState.latitude || !urlState.longitude || !urlState.zoom) return
 
     const mapLongitude = map.current?.transform._center.lng
     const mapLatitude = map.current?.transform._center.lat
     const mapZoom = map.current?.transform._zoom
 
     if (
-      mapLongitude === queryState.longitude &&
-      mapLatitude == queryState.latitude &&
-      mapZoom === queryState.zoom
+      mapLongitude === urlState.longitude &&
+      mapLatitude == urlState.latitude &&
+      mapZoom === urlState.zoom
     )
       return
 
     // If all previous checks were passed, we need to set the initial viewport,
     // which in the useEffect below will easeTo the desired location.
     setInitialViewport({
-      longitude: queryState.longitude,
-      latitude: queryState.latitude,
-      zoom: queryState.zoom,
+      longitude: urlState.longitude,
+      latitude: urlState.latitude,
+      zoom: urlState.zoom,
     })
-  }, [
-    queryState.latitude,
-    queryState.longitude,
-    queryState.zoom,
-    initialViewport,
-  ])
+  }, [urlState.latitude, urlState.longitude, urlState.zoom, initialViewport])
 
   // After the initial viewport has been set ONCE (in the above useEffect),
   // we ease the map to the location specified in the query state.
@@ -130,9 +124,11 @@ export const FacilitiesMap: FC<MapType> = ({
   const debouncedViewportChange = useDebouncedCallback(
     (viewport: URLViewportType): void => {
       if (pathname !== '/map') return
-      const newQuery = { ...queryState, ...viewport }
 
-      void replace({ pathname, query: newQuery }, undefined, { shallow: true })
+      setUrlState({
+        ...urlState,
+        ...viewport,
+      })
     },
     1000
   )
