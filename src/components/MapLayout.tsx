@@ -72,16 +72,14 @@ export const MapLayout: FC<{
             />
           </div>
         )}
-        {!isFallback && <MapButtons />}
+        {!isFallback && pathname === '/map' && <MapButtons />}
         {!isFallback && selectedFacilities.length === 0 && (
           <MapListSwitch
             listViewOpen={listViewOpen}
             setListViewOpen={setListViewOpen}
           />
         )}
-        {pathname === '/map' && (
-          <FacilityCarousel facilities={selectedFacilities} />
-        )}
+        <FacilityCarousel facilities={selectedFacilities} />
         <aside
           className={classNames(
             `fixed w-screen h-screen top-0 left-0 overflow-y-auto`,
