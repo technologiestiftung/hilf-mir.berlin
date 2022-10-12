@@ -242,7 +242,7 @@ export const FacilitiesMap: FC<MapType> = ({
 
         map.current.easeTo({
           center: features[0].geometry.coordinates,
-          zoom: 15,
+          zoom: 18,
         })
 
         const clickedFacilities = markers.filter((marker) =>
@@ -260,7 +260,7 @@ export const FacilitiesMap: FC<MapType> = ({
 
     map.current.easeTo({
       center: highlightedCenter,
-      zoom: 15,
+      zoom: 18,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [highlightedCenter])
