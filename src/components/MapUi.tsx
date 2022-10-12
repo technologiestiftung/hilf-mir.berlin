@@ -162,11 +162,7 @@ export const MapUi: FC<MapUiPropsType> = ({
         className={classNames(
           `lg:hidden max-w-[210px]`,
           `fixed sm:left-1/2 sm:-translate-x-1/2 z-20 items-center`,
-          listViewOpen && `left-1/2 -translate-x-1/2 bottom-8`,
-          !listViewOpen && [
-            `right-16 border-r-0 sm:border-r h-12 focus:border-r`,
-            `bottom-8`,
-          ],
+          `left-1/2 -translate-x-1/2 bottom-8`,
           `border border-black px-4 py-2 text-xl font-bold`,
           `bg-white flex gap-3 text-left whitespace-nowrap`,
           `focus:outline-none focus:ring-2 focus:ring-red`,
