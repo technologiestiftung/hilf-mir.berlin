@@ -77,7 +77,7 @@ export const MapLayout: FC<{
           className={classNames(
             `fixed w-screen h-screen top-0 left-0 overflow-y-auto`,
             `lg:w-sidebarW lg:shadow-xl`,
-            `z-20 relative bg-white min-h-screen transition-transform`,
+            `z-40 relative bg-white min-h-screen transition-transform`,
             pathname === '/map' && listViewOpen && `translate-y-0 pt-20`,
             pathname === '/map' &&
               !listViewOpen &&
