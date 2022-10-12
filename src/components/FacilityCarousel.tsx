@@ -19,7 +19,7 @@ export const FacilityCarousel: FC<FacilityCarouselPropsType> = ({
     <div
       className={classNames(
         `fixed bottom-0 left-0 lg:left-sidebarW `,
-        `w-full lg:w-mapW z-30 pb-8`
+        `w-full lg:w-mapW z-20 pb-8`
       )}
     >
       <div className="relative w-full">
