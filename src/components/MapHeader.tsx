@@ -54,12 +54,23 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
       >
         <IconButton
           pathName="/"
-          className="flex md:hidden border-r-0 md:border-r"
+          className={classNames(
+            'flex md:hidden border-r',
+            !listViewOpen && '!border-r-trasparent'
+          )}
           aria-label={texts.backToHome}
         >
           <House />
         </IconButton>
-        <Search onSelectResult={handleSearchResult} />
+        <div
+          className={classNames(
+            'w-full',
+            listViewOpen && 'opacity-0 lg:opacity-100'
+          )}
+        >
+          <Search onSelectResult={handleSearchResult} />
+        </div>
+
         <button
           onClick={() => setFilterSidebarIsOpened(!filterSidebarIsOpened)}
           className={classNames(
@@ -71,7 +82,8 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
         >
           <span
             className={classNames(
-              `border border-black border-l-0`,
+              `border-t border-b border-r border-black`,
+              listViewOpen && `border-l lg:border-l-0`,
               `px-4 py-2 h-12 text-xl font-bold`,
               `bg-white text-left whitespace-nowrap`,
               `transition-colors group-hover:bg-red group-hover:text-white`
