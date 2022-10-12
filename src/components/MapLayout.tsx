@@ -9,10 +9,12 @@ import { LabelsProvider } from '@lib/LabelsContext'
 import { FiltersList } from './FiltersList'
 import { useUrlState } from '@lib/UrlStateContext'
 import { useTexts } from '@lib/TextsContext'
-import { MapUi } from './MapUi'
+import { MapListSwitch } from './MapListSwitch'
 import { Cross } from './icons/Cross'
 import { LngLatLike } from 'maplibre-gl'
 import { FacilityCarousel } from './FacilityCarousel'
+import { MapHeader } from './MapHeader'
+import { MapButtons } from './MapButtons'
 
 export const MapLayout: FC<{
   records: MinimalRecordType[]
@@ -70,6 +72,13 @@ export const MapLayout: FC<{
             />
           </div>
         )}
+        {!isFallback && <MapButtons />}
+        {!isFallback && (
+          <MapListSwitch
+            listViewOpen={listViewOpen}
+            setListViewOpen={setListViewOpen}
+          />
+        )}
         {pathname === '/map' && (
           <FacilityCarousel facilities={selectedFacilities} />
         )}
@@ -77,7 +86,7 @@ export const MapLayout: FC<{
           className={classNames(
             `fixed w-screen h-screen top-0 left-0 overflow-y-auto`,
             `lg:w-sidebarW lg:shadow-xl`,
-            `z-40 relative bg-white min-h-screen transition-transform`,
+            `z-30 relative bg-white min-h-screen transition-transform`,
             pathname === '/map' && listViewOpen && `translate-y-0 pt-20`,
             pathname === '/map' &&
               !listViewOpen &&
@@ -86,15 +95,12 @@ export const MapLayout: FC<{
         >
           {!isFallback && children}
         </aside>
-        {!isFallback && (
-          <MapUi
-            handleSearchResult={handleSearchResult}
-            filterSidebarIsOpened={filterSidebarIsOpened}
-            setFilterSidebarIsOpened={setFilterSidebarIsOpened}
-            listViewOpen={listViewOpen}
-            setListViewOpen={setListViewOpen}
-          />
-        )}
+        <MapHeader
+          handleSearchResult={handleSearchResult}
+          filterSidebarIsOpened={filterSidebarIsOpened}
+          setFilterSidebarIsOpened={setFilterSidebarIsOpened}
+          listViewOpen={listViewOpen}
+        />
         <aside
           className={classNames(
             `fixed inset-0 left-auto w-screen lg:w-sidebarW z-20`,
