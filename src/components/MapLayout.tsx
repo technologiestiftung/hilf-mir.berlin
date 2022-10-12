@@ -30,7 +30,6 @@ export const MapLayout: FC<{
   const [urlState, setUrlState] = useUrlState()
 
   const handleMarkerClick = (facilities: MinimalRecordType[]): void => {
-    console.log(facilities)
     setSelectedFacilities(facilities)
     if (!records) return
   }
@@ -94,7 +93,6 @@ export const MapLayout: FC<{
             setFilterSidebarIsOpened={setFilterSidebarIsOpened}
             listViewOpen={listViewOpen}
             setListViewOpen={setListViewOpen}
-            hasSelectedFacilities={selectedFacilities.length > 0}
           />
         )}
         <aside

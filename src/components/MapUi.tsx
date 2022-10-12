@@ -17,7 +17,6 @@ interface MapUiPropsType {
   setFilterSidebarIsOpened: (newState: boolean) => void
   setListViewOpen: (newState: boolean) => void
   handleSearchResult: ((place: FeatureType) => void) | undefined
-  hasSelectedFacilities?: boolean
 }
 
 interface IconButtonPropsType {
@@ -52,15 +51,13 @@ const IconButton: FC<IconButtonPropsType> = ({
   )
 }
 
-const OtherButtons: FC<{
-  hasSelectedFacilities?: boolean
-}> = ({ hasSelectedFacilities = false }) => {
+const OtherButtons: FC = () => {
   const texts = useTexts()
   return (
     <div
       className={classNames(
-        `fixed flex flex-col right-4 z-10 focus-within:z-20`,
-        hasSelectedFacilities ? `bottom-32` : `bottom-8`
+        `fixed flex flex-col z-10 focus-within:z-20`,
+        `top-20 lg:left-sidebarW ml-4`
       )}
     >
       <IconButton
@@ -87,7 +84,6 @@ export const MapUi: FC<MapUiPropsType> = ({
   setFilterSidebarIsOpened,
   handleSearchResult,
   listViewOpen,
-  hasSelectedFacilities = false,
 }) => {
   const texts = useTexts()
   const [urlState] = useUrlState()
@@ -169,7 +165,7 @@ export const MapUi: FC<MapUiPropsType> = ({
           listViewOpen && `left-1/2 -translate-x-1/2 bottom-8`,
           !listViewOpen && [
             `right-16 border-r-0 sm:border-r h-12 focus:border-r`,
-            hasSelectedFacilities ? `bottom-32` : `bottom-8`,
+            `bottom-8`,
           ],
           `border border-black px-4 py-2 text-xl font-bold`,
           `bg-white flex gap-3 text-left whitespace-nowrap`,
@@ -180,7 +176,7 @@ export const MapUi: FC<MapUiPropsType> = ({
         {listViewOpen ? <Map /> : <List />}
         {listViewOpen ? texts.seeMap : texts.seeList}
       </button>
-      <OtherButtons hasSelectedFacilities={hasSelectedFacilities} />
+      <OtherButtons />
     </>
   )
 }
