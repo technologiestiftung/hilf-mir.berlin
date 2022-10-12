@@ -73,7 +73,7 @@ export const MapLayout: FC<{
           </div>
         )}
         {!isFallback && <MapButtons />}
-        {!isFallback && (
+        {!isFallback && selectedFacilities.length === 0 && (
           <MapListSwitch
             listViewOpen={listViewOpen}
             setListViewOpen={setListViewOpen}
@@ -86,7 +86,8 @@ export const MapLayout: FC<{
           className={classNames(
             `fixed w-screen h-screen top-0 left-0 overflow-y-auto`,
             `lg:w-sidebarW lg:shadow-xl`,
-            `z-30 relative bg-white min-h-screen transition-transform`,
+            pathname === '/map' ? 'z-20' : 'z-30',
+            `relative bg-white min-h-screen transition-transform`,
             pathname === '/map' && listViewOpen && `translate-y-0 pt-20`,
             pathname === '/map' &&
               !listViewOpen &&
@@ -95,15 +96,17 @@ export const MapLayout: FC<{
         >
           {!isFallback && children}
         </aside>
-        <MapHeader
-          handleSearchResult={handleSearchResult}
-          filterSidebarIsOpened={filterSidebarIsOpened}
-          setFilterSidebarIsOpened={setFilterSidebarIsOpened}
-          listViewOpen={listViewOpen}
-        />
+        {pathname === '/map' && (
+          <MapHeader
+            handleSearchResult={handleSearchResult}
+            filterSidebarIsOpened={filterSidebarIsOpened}
+            setFilterSidebarIsOpened={setFilterSidebarIsOpened}
+            listViewOpen={listViewOpen}
+          />
+        )}
         <aside
           className={classNames(
-            `fixed inset-0 left-auto w-screen lg:w-sidebarW z-20`,
+            `fixed inset-0 left-auto w-screen lg:w-sidebarW z-40`,
             `transition-transform bg-white overflow-y-auto`,
             !filterSidebarIsOpened && `translate-x-full`
           )}

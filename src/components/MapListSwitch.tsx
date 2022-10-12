@@ -20,12 +20,12 @@ export const MapListSwitch: FC<MapListSwitchPropsType> = ({
         onClick={() => setListViewOpen(!listViewOpen)}
         className={classNames(
           `lg:hidden max-w-[210px]`,
-          `fixed sm:left-1/2 sm:-translate-x-1/2 z-20 items-center`,
+          `fixed sm:left-1/2 sm:-translate-x-1/2 z-30 items-center`,
           `left-1/2 -translate-x-1/2 bottom-8`,
           `border border-black px-4 py-2 text-xl font-bold`,
           `bg-white flex gap-3 text-left whitespace-nowrap`,
           `focus:outline-none focus:ring-2 focus:ring-red`,
-          `focus:ring-offset-2 focus:ring-offset-white focus:z-30`
+          `focus:ring-offset-2 focus:ring-offset-white`
         )}
       >
         {listViewOpen ? <Map /> : <List />}

@@ -27,7 +27,7 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
     <>
       <div
         className={classNames(
-          `fixed inset-0 z-20 bottom-auto h-20`,
+          `fixed inset-0 z-30 bottom-auto h-20`,
           listViewOpen ? `opacity-100` : `opacity-0`,
           `lg:opacity-0 transition-opacity`,
           `bg-white border-b border-black`
@@ -37,7 +37,7 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
         pathName="/"
         className={classNames(
           'flex border-r-0 md:border-r',
-          `fixed lg:left-sidebarW ml-4 top-4 z-20`
+          `fixed lg:left-sidebarW ml-4 top-4 z-30`
         )}
         aria-label={texts.backToHome}
       >
@@ -45,7 +45,7 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
       </IconButton>
       <div
         className={classNames(
-          `flex fixed top-4 right-4 transition-transform z-20 sm:z-20`,
+          `flex fixed top-4 right-4 transition-transform z-30`,
           `w-full max-w-[calc(100vw-2rem)] md:max-w-xs lg:max-w-sm justify-between`,
           filterSidebarIsOpened
             ? `2xl:-translate-x-sidebarW`
