@@ -1,7 +1,7 @@
 import classNames from '@lib/classNames'
 import { useTexts } from '@lib/TextsContext'
 import { FC } from 'react'
-import { IconButton } from './IconButton'
+import { IconButtonLink } from './IconButton'
 import { Info } from './icons/Info'
 import { Phone } from './icons/Phone'
 
@@ -14,20 +14,20 @@ export const MapButtons: FC = () => {
         `top-20 lg:left-sidebarW ml-4`
       )}
     >
-      <IconButton
+      <IconButtonLink
         pathName="/sofortige-hilfe"
         className="flex text-red border-b-0 focus:border-b"
         aria-label={texts.directHelpButtonText}
       >
         <Phone />
-      </IconButton>
-      <IconButton
+      </IconButtonLink>
+      <IconButtonLink
         pathName="/info"
         className="flex"
         aria-label={texts.footerInfoPageLinkText}
       >
         <Info />
-      </IconButton>
+      </IconButtonLink>
     </div>
   )
 }
