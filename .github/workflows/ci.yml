@@ -6,6 +6,14 @@ on:
   pull_request:
     branches: [main, staging]
 
+env:
+  NEXT_SECRET_GRIST_DOMAIN: ${{ secrets.NEXT_SECRET_GRIST_DOMAIN }}
+  NEXT_SECRET_GRIST_DOC_ID: ${{ secrets.NEXT_SECRET_GRIST_DOC_ID }}
+  NEXT_SECRET_GRIST_RECORDS_TABLE: ${{ secrets.NEXT_SECRET_GRIST_RECORDS_TABLE }}
+  NEXT_SECRET_GRIST_LABELS_TABLE: ${{ secrets.NEXT_SECRET_GRIST_LABELS_TABLE }}
+  NEXT_SECRET_GRIST_TEXTS_TABLE: ${{ secrets.NEXT_SECRET_GRIST_TEXTS_TABLE }}
+  NEXT_SECRET_GRIST_API_KEY: ${{ secrets.NEXT_SECRET_GRIST_API_KEY }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
