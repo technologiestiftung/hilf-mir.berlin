@@ -46,7 +46,7 @@ const FACILITY: FacilityType = {
     Anmeldung_gewunscht: 'string',
     Weitere_Offnungszeiten: 'string',
     lat: 52.13245,
-    long2: 13.5123,
+    long: 13.5123,
   },
 }
 

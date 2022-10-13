@@ -18,11 +18,11 @@ export const FiltersList: FC<{
   const { useGeolocation, setGeolocationUsage, geolocationIsForbidden } =
     useUserGeolocation()
 
-  const group1 = labels.filter(({ fields }) => fields.group === 'gruppe-1')
-  const group2 = labels.filter(({ fields }) => fields.group === 'gruppe-2')
-  const group3 = labels.filter(({ fields }) => fields.group === 'gruppe-3')
+  const group1 = labels.filter(({ fields }) => fields.group2 === 'gruppe-1')
+  const group2 = labels.filter(({ fields }) => fields.group2 === 'gruppe-2')
+  const group3 = labels.filter(({ fields }) => fields.group2 === 'gruppe-3')
   const targetGroups = labels.filter(
-    ({ fields }) => fields.group === 'zielpublikum'
+    ({ fields }) => fields.group2 === 'zielpublikum'
   )
   const someTargetFiltersActive = targetGroups.some((targetGroup) =>
     tags.find((f) => f === targetGroup.id)
@@ -59,7 +59,7 @@ export const FiltersList: FC<{
             updateFilters(
               tags.filter((f) => {
                 const label = labels.find(({ id }) => id === f)
-                return label?.fields.group !== `zielpublikum`
+                return label?.fields.group2 !== `zielpublikum`
               }) || []
             )
           }

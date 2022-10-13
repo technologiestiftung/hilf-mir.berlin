@@ -20,7 +20,7 @@ export const mapRecordToMinimum = (record: TableRowType): MinimalRecordType => {
     id: record.id,
     title: record.fields.Einrichtung,
     latitude: record.fields.lat,
-    longitude: record.fields.long2,
+    longitude: record.fields.long,
     ...getRecordOpeningTimesBounds(record.fields),
     labels: record.fields.Schlagworte,
     open247: record.fields['c24_h_7_Tage'] === 'ja',
