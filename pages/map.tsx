@@ -18,13 +18,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const recordsWithOnlyMinimum = records.map(mapRecordToMinimum)
   return {
     props: {
-      texts: {
-        ...texts,
-        mapPageTitle: texts.mapPageTitle.replace(
-          '#number',
-          `${records.length}`
-        ),
-      },
+      texts,
       records: recordsWithOnlyMinimum,
       labels,
     },
@@ -82,7 +76,10 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
         <title>
           {isFallback
             ? 'Seite Lädt...'
-            : `${texts.mapPageTitle} – ${texts.siteTitle}`}
+            : `${texts.mapPageTitle.replace(
+                '#number',
+                `${filteredAndSortedRecords.length}`
+              )} – ${texts.siteTitle}`}
         </title>
       </Head>
       <h1
@@ -91,7 +88,12 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
           `px-5 py-8 bg-white border-b border-gray-10`
         )}
       >
-        {isFallback ? `Seite Lädt...` : texts.mapPageTitle}
+        {isFallback
+          ? `Seite Lädt...`
+          : texts.mapPageTitle.replace(
+              '#number',
+              `${filteredAndSortedRecords.length}`
+            )}
       </h1>
       <ul>
         {!isFallback &&
