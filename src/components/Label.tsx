@@ -8,7 +8,14 @@ export const Label: FC<{
   isActive: boolean
   className?: string
   onClick?: (id: number) => void
-}> = ({ label, onClick = () => undefined, isActive, className = '' }) => {
+  isInteractive?: boolean
+}> = ({
+  label,
+  onClick = () => undefined,
+  isActive,
+  className = '',
+  isInteractive = true,
+}) => {
   const Icon = icons[label.fields.icon as keyof typeof icons] || Fragment
   return (
     <li key={label.id} className="inline-block">
@@ -17,11 +24,16 @@ export const Label: FC<{
         className={classNames(
           className,
           `py-1.5 border text-lg flex gap-2 text-left leading-6 pl-2 pr-3 group`,
-          isActive && `bg-red border-red text-white`,
-          !isActive && ` border-gray-20`,
-          `focus:outline-none focus:ring-2 focus:ring-red`,
-          `focus:ring-offset-2 focus:ring-offset-white`
+          isActive && isInteractive && `bg-red border-red text-white`,
+          (!isActive || !isInteractive) && ` border-gray-20`,
+          isInteractive && [
+            `hover:bg-gray-10`,
+            `focus:outline-none focus:ring-2 focus:ring-red`,
+            `focus:ring-offset-2 focus:ring-offset-white`,
+          ],
+          !isInteractive && `cursor-default`
         )}
+        disabled={!isInteractive}
       >
         {label.fields.icon && (
           <Icon
