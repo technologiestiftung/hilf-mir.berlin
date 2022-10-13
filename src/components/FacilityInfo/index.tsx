@@ -54,6 +54,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
 
   const renderLabel = getLabelRenderer({
     activeFilters: urlState.tags || [],
+    withInteractiveLabels: false,
   })
 
   const { Strasse, Hausnummer, PLZ } = facility.fields
