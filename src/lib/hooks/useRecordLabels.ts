@@ -15,10 +15,10 @@ export const useRecordLabels = (
     .map((lId) => labelsWithData.find((l) => l.id === lId))
     .filter(Boolean) as GristLabelType[]
   const topicsLabels = recordLabels.filter(
-    ({ fields }) => fields.group !== 'zielpublikum'
+    ({ fields }) => fields.group2 !== 'zielpublikum'
   )
   const targetAudienceLabels = recordLabels.filter(
-    ({ fields }) => fields.group === 'zielpublikum'
+    ({ fields }) => fields.group2 === 'zielpublikum'
   )
 
   return {
