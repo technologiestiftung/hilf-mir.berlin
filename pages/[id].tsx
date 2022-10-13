@@ -28,7 +28,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       records: minimalRecords,
       record,
       labels,
-      center: [record.fields.long2, record.fields.lat],
+      center: [record.fields.long, record.fields.lat],
     },
     revalidate: 120,
   }
