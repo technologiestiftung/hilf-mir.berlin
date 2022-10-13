@@ -10,6 +10,8 @@ import { GristLabelType } from '@common/types/gristData'
 import { useUrlState } from '@lib/UrlStateContext'
 import { useRouter } from 'next/router'
 import { loadData } from '@lib/loadData'
+import { useDistanceToUser } from '@lib/hooks/useDistanceToUser'
+import { useCallback } from 'react'
 
 export const getStaticProps: GetStaticProps = async () => {
   const { texts, labels, records } = await loadData()
@@ -39,6 +41,30 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
   const [urlState, setUrlState] = useUrlState()
   const texts = useTexts()
   const { isFallback } = useRouter()
+  const { getDistanceToUser } = useDistanceToUser()
+
+  const sortFacilities = useCallback(
+    (facilities: MinimalRecordType[]): MinimalRecordType[] => {
+      return facilities.sort((a, b) => {
+        const distanceToUserFromFacilityA = getDistanceToUser({
+          latitude: a.latitude,
+          longitude: a.longitude,
+        })
+        const distanceToUserFromFacilityB = getDistanceToUser({
+          latitude: b.latitude,
+          longitude: b.longitude,
+        })
+
+        // When we don't have a user geolocation we simply skip the sorting:
+        if (!distanceToUserFromFacilityA || !distanceToUserFromFacilityB)
+          return 0
+
+        return distanceToUserFromFacilityA - distanceToUserFromFacilityB
+      })
+    },
+    [getDistanceToUser]
+  )
+
   const records = originalRecords || []
 
   const filteredRecords =
@@ -47,6 +73,9 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
           urlState.tags?.every((t) => record.labels.find((l) => l === t))
         )
       : records
+
+  const filteredAndSortedRecords = sortFacilities(filteredRecords)
+
   return (
     <>
       <Head>
@@ -66,18 +95,18 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
       </h1>
       <ul>
         {!isFallback &&
-          (filteredRecords.length !== records.length ||
-            filteredRecords.length === 0) && (
+          (filteredAndSortedRecords.length !== records.length ||
+            filteredAndSortedRecords.length === 0) && (
             <div className="text-lg p-5 border-y border-gray-20 bg-gray-10/50">
               <p>
-                {filteredRecords.length === 0 && texts.noResults}
-                {filteredRecords.length === 1 &&
+                {filteredAndSortedRecords.length === 0 && texts.noResults}
+                {filteredAndSortedRecords.length === 1 &&
                   texts.filteredResultsAmountSingular
-                    .replace('#number', `${filteredRecords.length}`)
+                    .replace('#number', `${filteredAndSortedRecords.length}`)
                     .replace('#total', `${records.length}`)}
-                {filteredRecords.length > 1 &&
+                {filteredAndSortedRecords.length > 1 &&
                   texts.filteredResultsAmountPlural
-                    .replace('#number', `${filteredRecords.length}`)
+                    .replace('#number', `${filteredAndSortedRecords.length}`)
                     .replace('#total', `${records.length}`)}
               </p>
               <button
@@ -93,7 +122,7 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
               </button>
             </div>
           )}
-        {filteredRecords.map((record) => (
+        {filteredAndSortedRecords.map((record) => (
           <FacilityListItem key={record.id} {...record} />
         ))}
       </ul>
