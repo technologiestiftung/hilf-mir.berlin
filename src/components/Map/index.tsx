@@ -13,7 +13,13 @@ import { useUrlState } from '@lib/UrlStateContext'
 interface MapType {
   markers?: MinimalRecordType[]
   activeTags?: number[] | null
-  onMarkerClick?: (facilityId: number) => void
+  onMarkerClick?: (facilities: MinimalRecordType[]) => void
+  onMoveStart?: () => void
+  /**
+   * Function that is called whenever a click on the map happens,
+   * that is anywhere except for a click on the facilities layer.
+   */
+  onClickAnywhere?: () => void
   /** An optional array of [longitude, latitude].
    * If provided, the map's center will be forced to this location.
    * Also, a highlighted marker will be drawn to the map.
@@ -41,6 +47,8 @@ export const FacilitiesMap: FC<MapType> = ({
   markers,
   activeTags,
   onMarkerClick = () => undefined,
+  onMoveStart = () => undefined,
+  onClickAnywhere = () => undefined,
   highlightedCenter,
 }) => {
   const map = useRef<Map>(null)
@@ -169,6 +177,10 @@ export const FacilitiesMap: FC<MapType> = ({
 
       pollForMapLoaded()
 
+      map.current.on('movestart', () => {
+        onMoveStart()
+      })
+
       map.current.on('moveend', (e) => {
         debouncedViewportChange({
           latitude: e.target.transform._center.lat,
@@ -218,6 +230,10 @@ export const FacilitiesMap: FC<MapType> = ({
         },
       })
 
+      map.current.on('click', () => {
+        onClickAnywhere()
+      })
+
       map.current.on('click', 'unclustered-point', function (e) {
         if (!e.features) return
         if (!map.current) return
@@ -226,10 +242,14 @@ export const FacilitiesMap: FC<MapType> = ({
 
         map.current.easeTo({
           center: features[0].geometry.coordinates,
-          zoom: 15,
+          zoom: 18,
         })
 
-        onMarkerClick(clickedMarkerIds[0])
+        const clickedFacilities = markers.filter((marker) =>
+          clickedMarkerIds.includes(marker.id)
+        )
+
+        onMarkerClick(clickedFacilities)
       })
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -240,7 +260,7 @@ export const FacilitiesMap: FC<MapType> = ({
 
     map.current.easeTo({
       center: highlightedCenter,
-      zoom: 15,
+      zoom: 18,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [highlightedCenter])

@@ -9,9 +9,12 @@ import { LabelsProvider } from '@lib/LabelsContext'
 import { FiltersList } from './FiltersList'
 import { useUrlState } from '@lib/UrlStateContext'
 import { useTexts } from '@lib/TextsContext'
-import { MapUi } from './MapUi'
+import { MapListSwitch } from './MapListSwitch'
 import { Cross } from './icons/Cross'
 import { LngLatLike } from 'maplibre-gl'
+import { FacilityCarousel } from './FacilityCarousel'
+import { MapHeader } from './MapHeader'
+import { MapButtons } from './MapButtons'
 
 export const MapLayout: FC<{
   records: MinimalRecordType[]
@@ -22,11 +25,14 @@ export const MapLayout: FC<{
   const texts = useTexts()
   const [listViewOpen, setListViewOpen] = useState<boolean>(false)
   const [mapCenter, setMapCenter] = useState<LngLatLike | undefined>(center)
+  const [selectedFacilities, setSelectedFacilities] = useState<
+    MinimalRecordType[]
+  >([])
   const [filterSidebarIsOpened, setFilterSidebarIsOpened] = useState(false)
   const [urlState, setUrlState] = useUrlState()
 
-  const handleMarkerClick = (facilityId: number): void => {
-    console.log(facilityId)
+  const handleMarkerClick = (facilities: MinimalRecordType[]): void => {
+    setSelectedFacilities(facilities)
     if (!records) return
   }
 
@@ -56,16 +62,33 @@ export const MapLayout: FC<{
               markers={records}
               activeTags={urlState.tags}
               onMarkerClick={handleMarkerClick}
+              onMoveStart={() => {
+                setSelectedFacilities([])
+              }}
+              onClickAnywhere={() => {
+                setSelectedFacilities([])
+              }}
               highlightedCenter={mapCenter}
             />
           </div>
         )}
+        {!isFallback && pathname === '/map' && <MapButtons />}
+        {!isFallback && selectedFacilities.length === 0 && (
+          <MapListSwitch
+            listViewOpen={listViewOpen}
+            setListViewOpen={setListViewOpen}
+          />
+        )}
+        <FacilityCarousel facilities={selectedFacilities} />
         <aside
           className={classNames(
             `fixed w-screen h-screen top-0 left-0 overflow-y-auto`,
             `lg:w-sidebarW lg:shadow-xl`,
-            `z-20 relative bg-white min-h-screen transition-transform`,
-            pathname === '/map' && listViewOpen && `translate-y-0 pt-20`,
+            pathname === '/map' ? 'z-20' : 'z-30',
+            `relative bg-white min-h-screen transition-transform`,
+            pathname === '/map' &&
+              listViewOpen &&
+              `translate-y-0 pt-20 lg:pt-0`,
             pathname === '/map' &&
               !listViewOpen &&
               `translate-y-[100vh] lg:translate-y-0`
@@ -73,18 +96,17 @@ export const MapLayout: FC<{
         >
           {!isFallback && children}
         </aside>
-        {!isFallback && (
-          <MapUi
+        {pathname === '/map' && (
+          <MapHeader
             handleSearchResult={handleSearchResult}
             filterSidebarIsOpened={filterSidebarIsOpened}
             setFilterSidebarIsOpened={setFilterSidebarIsOpened}
             listViewOpen={listViewOpen}
-            setListViewOpen={setListViewOpen}
           />
         )}
         <aside
           className={classNames(
-            `fixed inset-0 left-auto w-screen lg:w-sidebarW z-20`,
+            `fixed inset-0 left-auto w-screen lg:w-sidebarW z-40`,
             `transition-transform bg-white overflow-y-auto`,
             !filterSidebarIsOpened && `translate-x-full`
           )}

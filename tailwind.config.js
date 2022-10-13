@@ -39,7 +39,7 @@ module.exports = {
       },
       spacing: {
         sidebarW: `420px`,
-        mapW: `calc(100vw -420px)`,
+        mapW: `calc(100vw - 420px)`,
       },
     },
   },
