@@ -45,7 +45,7 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
       </IconButton>
       <div
         className={classNames(
-          `flex fixed top-4 right-4 transition-transform z-30`,
+          `flex fixed top-4 right-4 transition-transform z-30 md:gap-5`,
           `w-full max-w-[calc(100vw-2rem)] md:max-w-xs lg:max-w-sm justify-between`,
           filterSidebarIsOpened
             ? `2xl:-translate-x-sidebarW`
@@ -75,7 +75,7 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
           onClick={() => setFilterSidebarIsOpened(!filterSidebarIsOpened)}
           className={classNames(
             `flex items-center group relative`,
-            `focus:border-l focus:z-20`,
+            `focus:border-l focus:z-20 md:border-l`,
             `focus:outline-none focus:ring-2 focus:ring-red`,
             `focus:ring-offset-2 focus:ring-offset-white`
           )}
