@@ -46,7 +46,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
   const isOpened = useIsFacilityOpened(mapRecordToMinimum(facility))
   const distance = useDistanceToUser({
     latitude: facility.fields.lat,
-    longitude: facility.fields.long2,
+    longitude: facility.fields.long,
   })
   const { allLabels, topicsLabels, targetAudienceLabels } = useRecordLabels(
     facility.fields.Schlagworte
