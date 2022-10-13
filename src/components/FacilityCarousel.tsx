@@ -41,7 +41,7 @@ export const FacilityCarousel: FC<FacilityCarouselPropsType> = ({
             centeredSlides
           >
             {facilities.map((facility) => (
-              <SwiperSlide key={facility.id} className="!shrink !h-auto">
+              <SwiperSlide key={facility.id} className="!h-auto">
                 <FacilityCarouselSlide {...facility} />
               </SwiperSlide>
             ))}
