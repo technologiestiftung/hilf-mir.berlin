@@ -7,7 +7,9 @@ interface PointType {
   longitude?: number
 }
 
-export const useDistanceToUser = (pointA: PointType): number | undefined => {
+export const useDistanceToUser = (
+  pointA: PointType
+): { distance: number | undefined } => {
   const pointB = useUserGeolocation()
   const [distance, setDistance] = useState<number | undefined>()
   useEffect(() => {
@@ -21,5 +23,5 @@ export const useDistanceToUser = (pointA: PointType): number | undefined => {
     setDistance(Math.round(dist / 100) / 10)
   }, [pointA, pointB])
 
-  return distance
+  return { distance }
 }

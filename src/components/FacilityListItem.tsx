@@ -19,7 +19,7 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
   const [urlState] = useUrlState()
   const { id, title, latitude, longitude, labels } = record
   const texts = useTexts()
-  const distance = useDistanceToUser({
+  const { distance } = useDistanceToUser({
     latitude,
     longitude,
   })
