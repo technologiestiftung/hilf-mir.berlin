@@ -15,6 +15,10 @@ import { LngLatLike } from 'maplibre-gl'
 import { FacilityCarousel } from './FacilityCarousel'
 import { MapHeader } from './MapHeader'
 import { MapButtons } from './MapButtons'
+import { IconButton } from './IconButton'
+import { Arrow } from './icons/Arrow'
+
+const SCROLL_THRESHOLD = 300
 
 export const MapLayout: FC<{
   records: MinimalRecordType[]
@@ -30,6 +34,23 @@ export const MapLayout: FC<{
   >([])
   const [filterSidebarIsOpened, setFilterSidebarIsOpened] = useState(false)
   const [urlState, setUrlState] = useUrlState()
+  const [hasScrolled, setHasScrolled] = useState<boolean>(false)
+
+  useEffect(() => {
+    const scrollContainer = document.getElementById('main-sidebar')
+    if (!scrollContainer) return
+    const onScroll: EventListener = (evt) => {
+      if (!evt?.target) return
+      const container = evt.target as unknown as { scrollTop: number }
+      if (container.scrollTop > SCROLL_THRESHOLD) {
+        setHasScrolled(true)
+      } else {
+        setHasScrolled(false)
+      }
+    }
+    scrollContainer.addEventListener('scroll', onScroll)
+    return () => scrollContainer.removeEventListener('scroll', onScroll)
+  }, [setHasScrolled])
 
   const handleMarkerClick = (facilities: MinimalRecordType[]): void => {
     setSelectedFacilities(facilities)
@@ -79,8 +100,31 @@ export const MapLayout: FC<{
             setListViewOpen={setListViewOpen}
           />
         )}
+        {((pathname === '/map' && listViewOpen) ||
+          (pathname !== '/' && pathname !== '/map')) && (
+          <div
+            className={classNames(
+              `fixed left-full lg:left-sidebarW -translate-x-full z-40 pr-5`,
+              `top-full -translate-y-full pb-8 lg:pb-5 transition-opacity`,
+              hasScrolled ? 'opacity-100' : `opacity-0 pointer-events-none`
+            )}
+          >
+            <IconButton
+              className="flex"
+              onClick={() => {
+                const aside = document.getElementById(`main-sidebar`)
+                if (!aside) return
+                aside.scrollTo({ top: 0, behavior: 'smooth' })
+              }}
+              tabIndex={hasScrolled ? 0 : -1}
+            >
+              <Arrow orientation="up" />
+            </IconButton>
+          </div>
+        )}
         <FacilityCarousel facilities={selectedFacilities} />
         <aside
+          id="main-sidebar"
           className={classNames(
             `fixed w-screen h-screen top-0 left-0 overflow-y-auto`,
             `lg:w-sidebarW lg:shadow-xl`,
@@ -105,6 +149,7 @@ export const MapLayout: FC<{
           />
         )}
         <aside
+          id="main-sidebar"
           className={classNames(
             `fixed inset-0 left-auto w-screen lg:w-sidebarW z-40`,
             `transition-transform bg-white overflow-y-auto`,
