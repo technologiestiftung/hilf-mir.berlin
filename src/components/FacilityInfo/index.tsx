@@ -44,13 +44,15 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
   const [urlState] = useUrlState()
   const texts = useTexts()
   const isOpened = useIsFacilityOpened(mapRecordToMinimum(facility))
-  const { distance } = useDistanceToUser({
-    latitude: facility.fields.lat,
-    longitude: facility.fields.long2,
-  })
+  const { getDistanceToUser } = useDistanceToUser()
   const { allLabels, topicsLabels, targetAudienceLabels } = useRecordLabels(
     facility.fields.Schlagworte
   )
+
+  const distance = getDistanceToUser({
+    latitude: facility.fields.lat,
+    longitude: facility.fields.long2,
+  })
 
   const renderLabel = getLabelRenderer({
     activeFilters: urlState.tags || [],
