@@ -3,7 +3,7 @@ import { FeatureType } from '@lib/requests/geocode'
 import { useTexts } from '@lib/TextsContext'
 import { useUrlState } from '@lib/UrlStateContext'
 import { FC } from 'react'
-import { IconButton } from './IconButton'
+import { IconButtonLink } from './IconButton'
 import { House } from './icons/House'
 import { Search } from './Search'
 
@@ -33,7 +33,7 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
           `bg-white border-b border-black`
         )}
       ></div>
-      <IconButton
+      <IconButtonLink
         pathName="/"
         className={classNames(
           'flex border-r-0 md:border-r',
@@ -42,7 +42,7 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
         aria-label={texts.backToHome}
       >
         <House />
-      </IconButton>
+      </IconButtonLink>
       <div
         className={classNames(
           `flex fixed top-4 right-4 transition-transform z-30`,
@@ -52,7 +52,7 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
             : `2xl:translate-x-0`
         )}
       >
-        <IconButton
+        <IconButtonLink
           pathName="/"
           className={classNames(
             'flex md:hidden border-r',
@@ -61,7 +61,7 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
           aria-label={texts.backToHome}
         >
           <House />
-        </IconButton>
+        </IconButtonLink>
         <div
           className={classNames(
             'w-full',
