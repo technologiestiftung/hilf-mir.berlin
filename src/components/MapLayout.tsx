@@ -86,7 +86,9 @@ export const MapLayout: FC<{
             `lg:w-sidebarW lg:shadow-xl`,
             pathname === '/map' ? 'z-20' : 'z-30',
             `relative bg-white min-h-screen transition-transform`,
-            pathname === '/map' && listViewOpen && `translate-y-0 pt-20`,
+            pathname === '/map' &&
+              listViewOpen &&
+              `translate-y-0 pt-20 lg:pt-0`,
             pathname === '/map' &&
               !listViewOpen &&
               `translate-y-[100vh] lg:translate-y-0`
