@@ -8,6 +8,7 @@ import { Phone } from '@components/icons/Phone'
 import { useState } from 'react'
 import { Chevron } from '@components/icons/Chevron'
 import { BackButton } from '@components/BackButton'
+import { useIsEmergencyTime } from '@lib/hooks/useIsEmergencyTime'
 
 export const getStaticProps: GetStaticProps = async () => {
   const texts = await getGristTexts()
@@ -26,10 +27,22 @@ const Home: NextPage = () => {
     neigborhoodKeys[0]
   )
   const { back } = useRouter()
-  const neighborhoodNumber =
-    texts[
-      selectedNeighborhood.replace('Label', 'PhoneNumber') as keyof typeof texts
-    ]
+
+  const isEmergencyTime = useIsEmergencyTime()
+
+  const neighborhoodNumber = isEmergencyTime
+    ? texts[
+        selectedNeighborhood
+          .replace('Label', 'PhoneNumber')
+          .replace('neighborhood', 'emergency') as keyof typeof texts
+      ]
+    : texts[
+        selectedNeighborhood.replace(
+          'Label',
+          'PhoneNumber'
+        ) as keyof typeof texts
+      ]
+
   return (
     <>
       <Head>
@@ -61,7 +74,9 @@ const Home: NextPage = () => {
           </section>
           <section className="flex flex-col gap-1">
             <h4 className="font-bold text-lg">
-              {texts.psychiatricServicesLabel}
+              {isEmergencyTime
+                ? texts.emergencyServicesLabel
+                : texts.psychiatricServicesLabel}
             </h4>
             <div className="relative">
               <select
@@ -100,18 +115,16 @@ const Home: NextPage = () => {
             </a>
           </section>
           <section className="flex flex-col gap-1">
-            <h4 className="font-bold text-lg">
-              {texts.psychiatricServicesLabel}
-            </h4>
+            <h4 className="font-bold text-lg">{texts.seelsorgeLabel}</h4>
             <a
               className={classNames(
                 `p-0 text-3xl`,
                 `focus:outline-none focus:ring-2 focus:ring-red`,
                 `focus:ring-offset-2 focus:ring-offset-white`
               )}
-              href={`tel:texts.suicidePreventionPhoneNumber`}
+              href={`tel:${texts.seelsorgePhoneNumber}`}
             >
-              {texts.suicidePreventionPhoneNumber}
+              {texts.seelsorgePhoneNumber}
             </a>
           </section>
         </div>

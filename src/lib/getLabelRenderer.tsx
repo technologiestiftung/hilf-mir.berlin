@@ -5,6 +5,7 @@ interface RenderLabelsArgsType {
   onLabelClick?: (activeFilters: number[]) => void
   activeFilters: number[]
   className?: string
+  withInteractiveLabels?: boolean
 }
 
 type GetLabelRendererType = (
@@ -15,6 +16,7 @@ export const getLabelRenderer: GetLabelRendererType = ({
   onLabelClick = () => undefined,
   activeFilters,
   className = '',
+  withInteractiveLabels = true,
 }) =>
   function renderLabel(label) {
     const isActive = !!activeFilters.find((f) => f === label.id)
@@ -28,6 +30,7 @@ export const getLabelRenderer: GetLabelRendererType = ({
         isActive={isActive}
         onClick={() => onLabelClick(newFilters)}
         className={className}
+        isInteractive={withInteractiveLabels}
       />
     )
   }

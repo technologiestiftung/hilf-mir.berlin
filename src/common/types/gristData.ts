@@ -4,7 +4,7 @@ export interface GristLabelType extends Record<string, unknown> {
     key: string
     text: string
     icon: string
-    group: 'gruppe-1' | 'gruppe-2' | 'gruppe-3' | 'zielpublikum'
+    group2: 'gruppe-1' | 'gruppe-2' | 'gruppe-3' | 'zielpublikum'
   }
 }
 
@@ -54,6 +54,6 @@ export interface TableRowType extends Record<string, unknown> {
     Anmeldung_gewunscht: string
     Weitere_Offnungszeiten: string
     lat: number
-    long2: number
+    long: number
   }
 }
