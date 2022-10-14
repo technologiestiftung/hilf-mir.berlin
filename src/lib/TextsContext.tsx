@@ -29,6 +29,8 @@ const defaultValue = {
   suicidePreventionPhoneNumber: '',
   psychiatricServicesLabel: '',
   psychiatricServicesPhoneNumber: '',
+  seelsorgeLabel: '',
+  seelsorgePhoneNumber: '',
   backText: '',
   neighborhoodCharlottenburgWilmersdorfLabel: '',
   neighborhoodCharlottenburgWilmersdorfPhoneNumber: '',
