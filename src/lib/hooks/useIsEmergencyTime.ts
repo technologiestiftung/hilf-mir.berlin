@@ -99,8 +99,6 @@ export const useIsEmergencyTime = (): UseIsEmergencyTimeReturnType => {
         EMERGENCY_TIMES.friday.some(([starts_at, ends_at]) => {
           return isWithin(now.getHours(), starts_at, ends_at)
         }):
-        console.log('Its time')
-
         setIsEmergencyTime(true)
         break
       default:
