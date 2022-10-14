@@ -39,13 +39,6 @@ describe('mapRawQueryToState', () => {
     ).toBe(undefined)
   })
 
-  test('should return undefined when tags is not an array', () => {
-    expect(
-      mapRawQueryToState({
-        tags: '{}',
-      }).tags
-    ).toBe(undefined)
-  })
   test('should return an array of numbers for tags', () => {
     expect(
       mapRawQueryToState({
