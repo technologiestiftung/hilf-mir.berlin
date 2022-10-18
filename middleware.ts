@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-export const config = {
-  matcher: ['/*'],
-}
+// export const config = {
+//   matcher: ['/*'],
+// }
 
 export function middleware(req: NextRequest): NextResponse {
   const basicAuth = req.headers.get('authorization')
