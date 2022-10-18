@@ -1,123 +1,237 @@
-import { useEffect, FC, useRef } from 'react'
+import { useEffect, FC, useRef, useState, useCallback } from 'react'
 import maplibregl, { LngLatLike, Map, Marker } from 'maplibre-gl'
 import {
   createGeoJsonStructure,
   GeojsonFeatureType,
 } from '@lib/createGeojsonStructure'
-import { TableRowType } from '@common/types/gristData'
+import { useRouter } from 'next/router'
+import { useDebouncedCallback } from 'use-debounce'
+import { URLViewportType } from '@lib/types/map'
+import { MinimalRecordType } from '@lib/mapRecordToMinimum'
+import { useUrlState } from '@lib/UrlStateContext'
 
 interface MapType {
-  center?: LngLatLike
-  markers?: TableRowType[]
-  onMarkerClick?: (facilityIds: number[]) => void
-  highlightedLocation?: [number, number]
+  markers?: MinimalRecordType[]
+  activeTags?: number[] | null
+  onMarkerClick?: (facilities: MinimalRecordType[]) => void
+  onMoveStart?: () => void
+  /**
+   * Function that is called whenever a click on the map happens,
+   * that is anywhere except for a click on the facilities layer.
+   */
+  onClickAnywhere?: () => void
+  /** An optional array of [longitude, latitude].
+   * If provided, the map's center will be forced to this location.
+   * Also, a highlighted marker will be drawn to the map.
+   */
+  highlightedCenter?: LngLatLike
 }
 
-const DEFAULT_CENTER = [13.404954, 52.520008] as LngLatLike
+const easeInOutQuad = (t: number): number =>
+  t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1
+
+export const transitionProps = {
+  transitionDuration: 2000,
+  transitionEasing: easeInOutQuad,
+}
+
+const MAP_CONFIG = {
+  defaultZoom: 11,
+  defaultLatitude: 52.520008,
+  defaultLongitude: 13.404954,
+  minZoom: 10,
+  maxZoom: 19,
+}
 
 export const FacilitiesMap: FC<MapType> = ({
-  center,
   markers,
+  activeTags,
   onMarkerClick = () => undefined,
-  highlightedLocation,
+  onMoveStart = () => undefined,
+  onClickAnywhere = () => undefined,
+  highlightedCenter,
 }) => {
   const map = useRef<Map>(null)
   const highlightedMarker = useRef<Marker>(null)
 
+  const { pathname } = useRouter()
+  const [urlState, setUrlState] = useUrlState()
+
+  // The initial viewport will be available on 2nd render,
+  // because we get it from useRouter. First it has to be null.
+  const [initialViewport, setInitialViewport] = useState<{
+    latitude: number
+    longitude: number
+    zoom: number
+  } | null>(null)
+
+  const [mapIsFullyLoaded, setMapIsFullyLoaded] = useState(false)
+
+  useEffect(() => {
+    // If we've already got an initial viewport, we can not redefine it
+    // anymore because something initial shoudl only be set once.
+    if (initialViewport) return
+
+    if (!urlState.latitude || !urlState.longitude || !urlState.zoom) return
+
+    const mapLongitude = map.current?.transform._center.lng
+    const mapLatitude = map.current?.transform._center.lat
+    const mapZoom = map.current?.transform._zoom
+
+    if (
+      mapLongitude === urlState.longitude &&
+      mapLatitude == urlState.latitude &&
+      mapZoom === urlState.zoom
+    )
+      return
+
+    // If all previous checks were passed, we need to set the initial viewport,
+    // which in the useEffect below will easeTo the desired location.
+    setInitialViewport({
+      longitude: urlState.longitude,
+      latitude: urlState.latitude,
+      zoom: urlState.zoom,
+    })
+  }, [urlState.latitude, urlState.longitude, urlState.zoom, initialViewport])
+
+  // After the initial viewport has been set ONCE (in the above useEffect),
+  // we ease the map to the location specified in the query state.
+  useEffect(() => {
+    if (!initialViewport) return
+    map.current &&
+      map.current.easeTo({
+        center: [
+          initialViewport.longitude,
+          initialViewport.latitude,
+        ] as LngLatLike,
+        zoom: initialViewport.zoom,
+      })
+  }, [initialViewport])
+
+  // Map setup (run only once on initial render)
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     map.current = new maplibregl.Map({
       container: 'map',
-      style: `https://api.maptiler.com/maps/bright/style.json?key=${
+      style: `${process.env.NEXT_PUBLIC_MAPTILER_STYLE_URL || ''}?key=${
         process.env.NEXT_PUBLIC_MAPTILER_API_KEY || ''
       }`,
-      center: DEFAULT_CENTER,
-      zoom: 11,
+      center: [
+        MAP_CONFIG.defaultLongitude,
+        MAP_CONFIG.defaultLatitude,
+      ] as LngLatLike,
+      zoom: MAP_CONFIG.defaultZoom,
+      minZoom: MAP_CONFIG.minZoom,
+      maxZoom: MAP_CONFIG.maxZoom,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Debounced function that updates the URL query without triggering a rerender:
+  const debouncedViewportChange = useDebouncedCallback(
+    (viewport: URLViewportType): void => {
+      if (pathname !== '/map') return
+
+      setUrlState({
+        ...urlState,
+        ...viewport,
+      })
+    },
+    1000
+  )
+
+  const updateFilteredFacilities = useCallback(
+    (activeTags: number[]) => {
+      if (!map.current || !mapIsFullyLoaded) return
+
+      markers?.forEach((marker) => {
+        map.current?.setFeatureState(
+          {
+            source: 'facilities',
+            id: marker.id,
+          },
+          {
+            active: activeTags?.every((tag) => marker.labels.includes(tag)),
+          }
+        )
+      })
+    },
+    [markers, mapIsFullyLoaded]
+  )
 
   useEffect(() => {
     if (!markers || !map.current) return
 
     map.current.on('load', function () {
       if (!map.current) return
+
+      const pollForMapLoaded = (): void => {
+        if (map.current?.loaded()) {
+          setMapIsFullyLoaded(true)
+          return
+        } else {
+          requestAnimationFrame(pollForMapLoaded)
+        }
+      }
+
+      pollForMapLoaded()
+
+      map.current.on('movestart', () => {
+        onMoveStart()
+      })
+
+      map.current.on('moveend', (e) => {
+        debouncedViewportChange({
+          latitude: e.target.transform._center.lat,
+          longitude: e.target.transform._center.lng,
+          zoom: e.target.transform._zoom,
+        })
+      })
+
       map.current.addSource('facilities', {
         type: 'geojson',
         data: createGeoJsonStructure(markers),
-        cluster: true,
-        clusterMaxZoom: 14, // Max zoom to cluster points on
-        clusterRadius: 20, // Radius of each cluster when clustering points (defaults to 50)
+        // We need to set an ID for making setFeatureState work.
+        // The ID comes from the markers dataset whoch contains
+        // a unique ID.
+        promoteId: 'id',
       })
 
-      map.current.addLayer({
-        id: 'clusters',
-        type: 'circle',
-        source: 'facilities',
-        paint: {
-          'circle-color': '#2f2fa2',
-          'circle-radius': [
-            'step',
-            ['get', 'point_count'],
-            20,
-            50,
-            30,
-            100,
-            35,
-          ],
-        },
-      })
-
-      map.current.addLayer({
-        id: 'cluster-count',
-        type: 'symbol',
-        source: 'facilities',
-        layout: {
-          'text-field': '{point_count_abbreviated}',
-          'text-size': 16,
-        },
-        paint: {
-          'text-color': '#fff',
-        },
-      })
+      updateFilteredFacilities(activeTags as number[])
 
       map.current.addLayer({
         id: 'unclustered-point',
         type: 'circle',
         source: 'facilities',
-        filter: ['!', ['has', 'point_count']],
         paint: {
-          'circle-color': '#2f2fa2',
           'circle-radius': 8,
-          'circle-stroke-width': 2,
-          'circle-stroke-color': '#fff',
+          'circle-stroke-width': 1,
+          'circle-stroke-color': [
+            'case',
+            // While the feature state is still undefined, we prefer to
+            // show the facilities as not active, so that we don't create
+            // disappointment when first facilities flash and then they
+            // disappear.
+            ['boolean', ['feature-state', 'active'], false],
+            '#fff',
+            '#E40422',
+          ],
+          'circle-color': [
+            'case',
+            // While the feature state is still undefined, we prefer to
+            // show the facilities as not active, so that we don't create
+            // disappointment when first facilities flash and then they
+            // disappear.
+            ['boolean', ['feature-state', 'active'], false],
+            '#E40422',
+            '#fff',
+          ],
         },
       })
 
-      map.current.on('click', 'clusters', function (e) {
-        if (!map.current) return
-        const features = map.current.queryRenderedFeatures(e.point, {
-          layers: ['clusters'],
-        }) as GeojsonFeatureType[]
-        const clusterId = features[0].properties.cluster_id
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        map.current
-          .getSource('facilities')
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          .getClusterExpansionZoom(clusterId, function (err, zoom: number) {
-            if (err) return
-            if (!zoom) return
-            if (!map.current) return
-
-            map.current.easeTo({
-              center: features[0].geometry.coordinates,
-              zoom: zoom,
-            })
-          })
+      map.current.on('click', () => {
+        onClickAnywhere()
       })
 
       map.current.on('click', 'unclustered-point', function (e) {
@@ -128,39 +242,33 @@ export const FacilitiesMap: FC<MapType> = ({
 
         map.current.easeTo({
           center: features[0].geometry.coordinates,
-          zoom: 15,
+          zoom: 18,
         })
 
-        onMarkerClick(clickedMarkerIds)
-      })
+        const clickedFacilities = markers.filter((marker) =>
+          clickedMarkerIds.includes(marker.id)
+        )
 
-      map.current.on('mouseenter', 'clusters', function () {
-        if (!map.current) return
-        map.current.getCanvas().style.cursor = 'pointer'
-      })
-      map.current.on('mouseleave', 'clusters', function () {
-        if (!map.current) return
-        map.current.getCanvas().style.cursor = ''
+        onMarkerClick(clickedFacilities)
       })
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [markers])
 
   useEffect(() => {
-    if (!map.current || !center) return
+    if (!map.current || !highlightedCenter) return
 
-    map.current.flyTo({
-      center: center,
-      zoom: 15,
-      essential: true,
+    map.current.easeTo({
+      center: highlightedCenter,
+      zoom: 18,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [center])
+  }, [highlightedCenter])
 
   useEffect(() => {
     if (!map.current) return
-    if (!highlightedLocation) {
-      // Without a highlightedLocation we want to remove any highlightedMarker:
+    if (!highlightedCenter) {
+      // Without a highlightedCenter we want to remove any highlightedMarker:
       highlightedMarker && highlightedMarker.current?.remove()
       return
     } else {
@@ -169,15 +277,20 @@ export const FacilitiesMap: FC<MapType> = ({
 
       const customMarker = document.createElement('div')
       customMarker.className =
-        'rounded-full w-8 h-8 bg-blue-500 ring-4 ring-magenta-500'
+        'rounded-full w-8 h-8 bg-red border-2 border-white'
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       highlightedMarker.current = new maplibregl.Marker(customMarker)
-        .setLngLat(highlightedLocation as LngLatLike)
+        .setLngLat(highlightedCenter)
         .addTo(map.current)
     }
-  }, [highlightedLocation])
+  }, [highlightedCenter])
+
+  useEffect(
+    () => updateFilteredFacilities(activeTags as number[]),
+    [activeTags, markers, updateFilteredFacilities]
+  )
 
   return (
     <div

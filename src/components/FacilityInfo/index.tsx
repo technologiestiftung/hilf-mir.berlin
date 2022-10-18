@@ -1,196 +1,200 @@
 import { FC } from 'react'
-import { TableRowType as FacilityType } from '@common/types/gristData'
-const closeIcon = 'images/icon_close.svg'
+import { TableRowType } from '@common/types/gristData'
+import { useDistanceToUser } from '@lib/hooks/useDistanceToUser'
+import { useIsFacilityOpened } from '@lib/hooks/useIsFacilityOpened'
+import { useTexts } from '@lib/TextsContext'
+import { mapRecordToMinimum } from '@lib/mapRecordToMinimum'
+import { BackButton } from '@components/BackButton'
+import { useRecordLabels } from '@lib/hooks/useRecordLabels'
+import { getLabelRenderer } from '@lib/getLabelRenderer'
+import { Phone } from '@components/icons/Phone'
+import classNames from '@lib/classNames'
+import { Globe } from '@components/icons/Globe'
+import { Email } from '@components/icons/Email'
+import { TextLink } from '@components/TextLink'
+import { Geopin } from '@components/icons/Geopin'
+import { getTodayKey } from '@lib/getTodayKey'
+import { useUrlState } from '@lib/UrlStateContext'
 
 interface FacilityInfoType {
-  facility: FacilityType
-  onClose?: () => void
-}
-
-/*
-interface FaqItemType {
-  question: string
-  answers: string[]
-}
-*/
-
-interface TagItemType {
-  question: string
-  answers: string[]
+  facility: TableRowType
 }
 
 interface OpenDaysType {
   day: string
   hours: string
+  isActive: boolean
 }
 
-/*
-const FaqItem: FC<FaqItemType> = ({ question, answers }) => {
+const OpenDaysItem: FC<OpenDaysType> = ({ day, hours, isActive }) => {
   return (
-    <div className="py-6 border-b last:border-0 border-gray-50">
-      <p>{question}</p>
-      {answers.map((r) => {
-        return (
-          <p key={r} className="mt-1 text-xl font-bold">
-            → {r}
-          </p>
-        )
-      })}
-    </div>
-  )
-}
-*/
-
-const TagItem: FC<TagItemType> = ({ question, answers }) => {
-  return (
-    <div className="py-2">
-      <p className="mb-2">{question}</p>
-      <p>
-        {answers.map((r) => {
-          return (
-            <span
-              key={r}
-              className="bg-blue-100 text-blue-800 mr-2 mb-2 px-2.5 py-0.5 rounded inline-block"
-            >
-              {r}
-            </span>
-          )
-        })}
-      </p>
-    </div>
-  )
-}
-
-const OpenDaysItem: FC<OpenDaysType> = ({ day, hours }) => {
-  return (
-    <div className="grid grid-cols-[80px_auto] gap-4 py-0">
+    <div
+      className={classNames(
+        `flex justify-between gap-4 py-2 px-5 -mt-1`,
+        isActive && `bg-red text-white`
+      )}
+    >
       <div>{day}</div>
       {hours}
     </div>
   )
 }
 
-export const FacilityInfo: FC<FacilityInfoType> = ({
-  facility,
-  onClose,
-  children,
-}) => {
+export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
+  const [urlState] = useUrlState()
+  const texts = useTexts()
+  const isOpened = useIsFacilityOpened(mapRecordToMinimum(facility))
+  const distance = useDistanceToUser({
+    latitude: facility.fields.lat,
+    longitude: facility.fields.long,
+  })
+  const { allLabels, topicsLabels, targetAudienceLabels } = useRecordLabels(
+    facility.fields.Schlagworte
+  )
+
+  const renderLabel = getLabelRenderer({
+    activeFilters: urlState.tags || [],
+    withInteractiveLabels: false,
+  })
+
+  const { Strasse, Hausnummer, PLZ } = facility.fields
+  const addressOneLiner =
+    Strasse && Hausnummer && PLZ
+      ? `${Strasse} ${Hausnummer}, ${PLZ} Berlin`
+      : undefined
+
+  const infoList = [
+    {
+      icon: <Geopin />,
+      text: addressOneLiner,
+    },
+    {
+      icon: <Globe />,
+      text: facility.fields.Website,
+      href: facility.fields.Website,
+    },
+    {
+      icon: <Email />,
+      text: facility.fields.EMail,
+      href: `mailto:${facility.fields.EMail}`,
+    },
+    {
+      icon: <Phone />,
+      text: facility.fields.Telefonnummer,
+      href: `tel:${facility.fields.Telefonnummer}`,
+    },
+  ].filter(({ text }) => !!text)
+
+  const todayKey = getTodayKey()
+
   return (
-    <article className="h-full flex flex-col gap-y-8 justify-between">
-      <div className="grid gap-2 grid-cols-[1fr_auto] items-start">
-        <div>
-          <h2 className="text-blue-500 text-3xl">
-            {facility.fields.Einrichtung}
-          </h2>
+    <>
+      <BackButton href={{ pathname: `/map`, query: { ...urlState } }} />
+      <article className="h-full flex flex-col gap-8">
+        <div className="px-5 pt-5">
+          <h1 className="mb-2">{facility.fields.Einrichtung}</h1>
+          {(distance || isOpened) && (
+            <div className="flex gap-4 text-lg">
+              {isOpened && (
+                <span className="text-mittelgruen flex gap-2 items-center">
+                  <span className="w-2 h-2 inline-block bg-mittelgruen rounded-full"></span>
+                  {texts.opened}
+                </span>
+              )}
+              {distance && <span>{distance} km</span>}
+            </div>
+          )}
           <p className="mt-4">{facility.fields.Uber_uns}</p>
-          <div className="mt-4 grid grid-cols-1 gap-0 border-t border-gray-50">
-            {facility.fields.Schlagworte && (
-              <TagItem
-                question="Schlagworte"
-                answers={facility.fields.Schlagworte.split(';')}
-              />
-            )}
-            {facility.fields.Sprachen && (
-              <TagItem
-                question="Welche Sprachen werden angeboten?"
-                answers={facility.fields.Sprachen.split(';')}
-              />
-            )}
-          </div>
-          <div className="my-4 grid grid-cols-[1fr] gap-0 items-center">
-            {facility.fields.Website && (
-              <div className="grid grid-cols-[56px_auto] gap-4 py-2 first-of-type:border-t">
-                <div>
-                  <b>Website</b>
-                </div>
-                <a
-                  href={facility.fields.Website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block underline text-blue-500 break-all"
-                >
-                  {facility.fields.Website}
-                </a>
+        </div>
+        {allLabels.length > 0 && (
+          <div className="w-full">
+            {topicsLabels.length > 0 && (
+              <div className="flex gap-2 p-5 flex-wrap">
+                {topicsLabels.map(renderLabel)}
               </div>
             )}
-            {facility.fields.Website && (
-              <a
-                href={facility.fields.Website}
-                className="mt-2 mb-4 w-full text-center inline-block p-2 bg-magenta-500 text-white"
+            {targetAudienceLabels.length > 0 && (
+              <>
+                <h2 className="px-5 font-bold text-lg mt-2">
+                  {texts.filtersSearchTargetLabelOnCard}
+                </h2>
+                <div className="flex gap-2 p-5 pt-1 flex-wrap">
+                  {targetAudienceLabels.map(renderLabel)}
+                </div>
+              </>
+            )}
+          </div>
+        )}
+        {infoList.length > 0 && (
+          <ul className="text-lg">
+            {infoList.map(({ icon, text, href }, idx) => (
+              <li
+                key={idx}
+                className={classNames(
+                  `flex gap-4 px-5 py-3 odd:bg-gray-10`,
+                  `items-center`
+                )}
               >
-                Website besuchen
-              </a>
-            )}
-            {facility.fields.EMail && (
-              <div className="grid grid-cols-[56px_auto] gap-4 py-2">
-                <div>
-                  <b>E-Mail</b>
-                </div>
-                <a
-                  href={`mailto:${facility.fields.EMail}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block underline text-blue-500 break-all"
-                >
-                  {facility.fields.EMail}
-                </a>
-              </div>
-            )}
-            {facility.fields.EMail && (
-              <a
-                href={`mailto:${facility.fields.EMail}`}
-                className="mt-2 mb-4 w-full text-center inline-block p-2 bg-magenta-500 text-white"
-              >
-                E-Mail schreiben
-              </a>
-            )}
-            {facility.fields.Telefonnummer && (
-              <div className="grid grid-cols-[56px_auto] gap-4 py-2 border-b border-gray-50 first-of-type:border-t">
-                <div>
-                  <b>Tel.</b>
-                </div>
-                <div>{facility.fields.Telefonnummer}</div>
-              </div>
-            )}
-            {children}
+                <span className="text-red">{icon}</span>
+                {href && (
+                  <TextLink className="no-underline" href={href}>
+                    {text}
+                  </TextLink>
+                )}
+                {!href && <span>{text}</span>}
+              </li>
+            ))}
+          </ul>
+        )}
+        {facility.fields.Montag && (
+          <div className="pb-8">
+            <h4 className="px-5 text-lg font-bold flex justify-between mb-5">
+              Öffnungszeiten
+              {isOpened && (
+                <span className="text-mittelgruen flex gap-2 items-center font-normal">
+                  <span className="w-2 h-2 inline-block bg-mittelgruen rounded-full"></span>
+                  {texts.opened}
+                </span>
+              )}
+            </h4>
+            <OpenDaysItem
+              isActive={todayKey === 'Montag'}
+              day={texts.weekdayMonday}
+              hours={facility.fields.Montag}
+            />
+            <OpenDaysItem
+              isActive={todayKey === 'Dienstag'}
+              day={texts.weekdayTuesday}
+              hours={facility.fields.Dienstag}
+            />
+            <OpenDaysItem
+              isActive={todayKey === 'Mittwoch'}
+              day={texts.weekdayWednesday}
+              hours={facility.fields.Mittwoch}
+            />
+            <OpenDaysItem
+              isActive={todayKey === 'Donnerstag'}
+              day={texts.weekdayThursday}
+              hours={facility.fields.Donnerstag}
+            />
+            <OpenDaysItem
+              isActive={todayKey === 'Freitag'}
+              day={texts.weekdayFriday}
+              hours={facility.fields.Freitag}
+            />
+            <OpenDaysItem
+              isActive={todayKey === 'Samstag'}
+              day={texts.weekdaySaturday}
+              hours={facility.fields.Samstag}
+            />
+            <OpenDaysItem
+              isActive={todayKey === 'Sonntag'}
+              day={texts.weekdaySunday}
+              hours={facility.fields.Sonntag}
+            />
           </div>
-        </div>
-        <button
-          onClick={onClose}
-          aria-label="Schließen"
-          className="absolute top-2 right-2 translate-y-1 p-1"
-        >
-          <img src={closeIcon} alt="Schließen" aria-hidden={true} />
-        </button>
-      </div>
-      <div className="pb-1">
-        <div className="bg-gray-25 px-3 py-2">
-          <h4 className="font-bold">Adresse</h4>
-          <address className="not-italic">
-            {facility.fields.Strasse && facility.fields.Hausnummer && (
-              <p>
-                {facility.fields.Strasse} {facility.fields.Hausnummer}
-              </p>
-            )}
-            {facility.fields.PLZ && <p>{facility.fields.PLZ} Berlin</p>}
-            {facility.fields.Bezirk && <p>{facility.fields.Bezirk}</p>}
-          </address>
-        </div>
-      </div>
-      {facility.fields.Montag && (
-        <div className="pb-4">
-          <div className="bg-gray-25 px-3 py-2">
-            <h4 className="font-bold">Öffnungszeiten</h4>
-            <OpenDaysItem day="Montag" hours={facility.fields.Montag} />
-            <OpenDaysItem day="Dienstag" hours={facility.fields.Dienstag} />
-            <OpenDaysItem day="Mittwoch" hours={facility.fields.Mittwoch} />
-            <OpenDaysItem day="Donnerstag" hours={facility.fields.Donnerstag} />
-            <OpenDaysItem day="Freitag" hours={facility.fields.Freitag} />
-            <OpenDaysItem day="Samstag" hours={facility.fields.Samstag} />
-            <OpenDaysItem day="Sonntag" hours={facility.fields.Sonntag} />
-          </div>
-        </div>
-      )}
-    </article>
+        )}
+      </article>
+    </>
   )
 }

@@ -1,13 +1,23 @@
+export interface GristLabelType extends Record<string, unknown> {
+  id: number
+  fields: {
+    key: string
+    text: string
+    icon: string
+    group2: 'gruppe-1' | 'gruppe-2' | 'gruppe-3' | 'zielpublikum'
+  }
+}
+
 /**
  * This type corresponds to the table row of psychological and other help facilities in Berlin. Note that the keys are subject to change whenever the columns are updated in the spreadsheet.
  */
-export interface TableRowType {
+export interface TableRowType extends Record<string, unknown> {
   id: number
   fields: {
     Einrichtung: string
     Trager: string
     Kategorie: string
-    Schlagworte: string
+    Schlagworte: number[]
     Wichtige_Hinweise: string
     Beratungsmoglichkeiten: string
     Sprachen: string
@@ -44,7 +54,7 @@ export interface TableRowType {
     Anmeldung_gewunscht: string
     Weitere_Offnungszeiten: string
     lat: number
-    long2: number
+    long: number
     // The following columns are available in the development table, not currently in the production table (all strings that are semicolon-separated):
     Themen_Gruppe_1?: string // topics for psychological problems
     Themen_Gruppe_2?: string // topics for addiction-related problems

@@ -24,7 +24,7 @@ In addition to Grist you need:
 ### Developing
 
 1. Install dependencies via `npm install`
-2. Create a file `.env.development.local` and fill it according to `.env.example`. The environment variables will connect to our development Grist instance which currently contains fake data instead of real facilities data. This is because in development mode we want to have the expected amount of records (~300) while the real dataset is currently being collected.
+2. Create a file `.env.development.local` and `.env` and fill it according to `.env.example`. The environment variables will connect to our development Grist instance which currently contains fake data instead of real facilities data. This is because in development mode we want to have the expected amount of records (~300) while the real dataset is currently being collected.
 3. Run `npm run dev` to get a development server running at [http://localhost:3000](http://localhost:3000)
 
 > If you want to start the app with the production table data, please change the values of 

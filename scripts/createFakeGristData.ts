@@ -64,22 +64,15 @@ const fakeData: Omit<TableRowType, 'id'>[] = Array.from(Array(300)).map(() => {
         faker.address.latitude(52.645919276537, 52.54470760200334, 6)
       ),
       // TODO: Fakers latitude produces weird, nor really random-looking results. Improve that.
-      long2: parseFloat(
+      long: parseFloat(
         faker.address.longitude(13.381266029328117, 13.349337606247445, 6)
       ),
       PLZ: `${faker.datatype.number({ min: 10_000, max: 13_000 })}`,
       Reichweite: 'Bezirk',
       Schlagworte: createRandomArrayFromArray(
-        [
-          'Arbeit und Beschäftigung',
-          'Erwachsene',
-          'Alkohol und Medikamente',
-          'Sucht',
-          'Geflüchtete',
-          'LSTBIQ',
-        ],
+        ['1', '2', '3', '4', '5', '6'],
         getRandomNumberInRange(1, 6)
-      ).join(';'),
+      ).map((id) => parseInt(id)),
       Sprachen: createRandomArrayFromArray(
         ['Deutsch', 'Englisch', 'Türkisch', 'Polnisch', 'Arabisch', 'Spanisch'],
         getRandomNumberInRange(1, 6)
