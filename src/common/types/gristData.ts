@@ -55,5 +55,10 @@ export interface TableRowType extends Record<string, unknown> {
     Weitere_Offnungszeiten: string
     lat: number
     long: number
+    // The following columns are available in the development table, not currently in the production table (all strings that are semicolon-separated):
+    Themen_Gruppe_1?: string // topics for psychological problems
+    Themen_Gruppe_2?: string // topics for addiction-related problems
+    Themen_Gruppe_3?: string // topics for health and identity-related problems
+    Zielgruppen?: string
   }
 }

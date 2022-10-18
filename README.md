@@ -1,6 +1,38 @@
-# Proof of concept: How to use Grist as a backend for an external service
+# Wegweiser Berlin - frontend
 
-> **Note:** There are two relevant branches in this repository. `kitas` has the initial POC of displaying lots of facilities. `main` is the branch for continued work which uses a different, smaller dataset and a more nuanced UI. Neither branch shall be deleted.
+This repo hosts the code for the Wegweiser Berlin - a website for finding psychological and health-related facilities in Berlin.
+
+## Tech stack
+
+The project is built using the React framework [Next.js](https://nextjs.org/) and [TypeScript](https://www.typescriptlang.org/).
+
+The data of the facilities is stored in a [self-hosted Grist instance](https://github.com/technologiestiftung/grist-core).
+
+## Getting started
+
+### Requirements
+
+If you are contributing to this repository, you can simply fill in the required environment variables as per `.env.example` and you are connected to our (development) Grist instance.
+
+If you want to re-deploy the project, you will need an account at [getgrist.com](https://www.getgrist.com/) or your own self-hosted Grist instance. In this case make sure your table schema(s) in Grist and the calls to the Grist API are adjusted to your data.
+
+In addition to Grist you need:
+
+- [Node.js](https://nodejs.org)
+- An account at [maptiler.com](https://www.maptiler.com/) along with a personal API key. This is because we display our basemaps using Maptiler. If you are re-deploying this project, you can change your basemap provider according to your preference.
+
+### Developing
+
+1. Install dependencies via `npm install`
+2. Create a file `.env.development.local` and `.env` and fill it according to `.env.example`. The environment variables will connect to our development Grist instance which currently contains fake data instead of real facilities data. This is because in development mode we want to have the expected amount of records (~300) while the real dataset is currently being collected.
+3. Run `npm run dev` to get a development server running at [http://localhost:3000](http://localhost:3000)
+
+> If you want to start the app with the production table data, please change the values of 
+`.env.development.local` to point to the production table.
+
+## Deprecated (but still relevant) README
+
+> This repo started out as a small proof of concept, but is now hosting the code for the actual Wegweiser Berlin project. We are in the process of adjusting the README to this. Below you find the parts that are still referring to the proof of concept and havce not been updated yet.
 
 This project is a small proof-of-concept on how to use a [Grist](https://www.getgrist.com/) table and display its records in an external service, in this case a Next.js app. The table holds information about ~2700 _Kindertagesstätten_ in Berlin and is used an exemplary set of data.
 
@@ -9,22 +41,6 @@ The main goal of this project was to be able to edit the data in the Grist backe
 For rendering the map, a combination of [MapLibre GL JS](https://maplibre.org/maplibre-gl-js-docs/api/) (for the map, the markers and the interactions) and [maptiler](https://www.maptiler.com/) (for vector tiles) is used.
 
 > Note that you don't need to use maptiler if you prefer to not create an account. Open Street Maps provides free (raster) tiles that can be used instead.
-
-## Getting started
-
-### Requirements
-
-- An account at [getgrist.com](https://www.getgrist.com/) or for your self-hosted Grist instance. In this specific case we use out own hosted instance.
-- A Grist table with geo information. In this case we use a table called "Kindertagesstatten" that includes ~2700 Kitas in Berlin.
-- An account at [maptiler.com](https://www.maptiler.com/) along with a personal API key.
-- [Node.js](https://nodejs.org) installed on your computer.
-
-### Steps
-
-1. Install dependencies via `npm install`
-2. Create a `/.env.development.local` and `/.env` file and fill them according to `/.env.example`
-3. Run `npm run dev` to get a development server running at [http://localhost:3000](http://localhost:3000)
-4. Explore the data on the map or make changes to the code
 
 ## Notes
 
