@@ -1,3 +1,16 @@
+# [1.1.0-rc.1](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.0.0...v1.1.0-rc.1) (2022-10-19)
+
+
+### Bug Fixes
+
+* remove matcher from middleware ([5eb0309](https://github.com/technologiestiftung/wegweiser-frontend/commit/5eb0309c7a346e058981f41be278d002f562fb35))
+* Remove matcher to run on all routes ([d601bc3](https://github.com/technologiestiftung/wegweiser-frontend/commit/d601bc301d634723146bdf949a17146dddf80a09))
+
+
+### Features
+
+* **auth:** Add basic auth to the proto ([9405c2a](https://github.com/technologiestiftung/wegweiser-frontend/commit/9405c2a4aba2af139b4937d32833b21a60c1ff8a))
+
 # 1.0.0 (2022-10-18)
 
 
