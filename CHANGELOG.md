@@ -1,3 +1,10 @@
+# [1.1.0-rc.2](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.1.0-rc.1...v1.1.0-rc.2) (2022-10-27)
+
+
+### Bug Fixes
+
+* **WEG-88:** handle if closed opening specified ([4db2062](https://github.com/technologiestiftung/wegweiser-frontend/commit/4db2062c9abc96eec0b43765ac87264bb7786a45))
+
 # [1.1.0](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.0.0...v1.1.0) (2022-10-19)
 
 
