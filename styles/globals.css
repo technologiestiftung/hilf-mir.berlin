@@ -33,3 +33,9 @@
 		@apply relative w-full h-full focus-within:outline-none focus-within:border-2 focus-within:border-red;
 	}
 }
+
+@layer utilities {
+  .hyphens-auto {
+    hyphens: auto;
+  }
+}

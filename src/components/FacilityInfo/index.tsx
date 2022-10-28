@@ -92,7 +92,9 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
       <BackButton href={{ pathname: `/map`, query: { ...urlState } }} />
       <article className="h-full flex flex-col gap-8">
         <div className="px-5 pt-5">
-          <h1 className="mb-2">{facility.fields.Einrichtung}</h1>
+          <h1 className="mb-2 text-3xl normal-case break-words hyphens-auto">
+            {facility.fields.Einrichtung}
+          </h1>
           {(distance || isOpened) && (
             <div className="flex gap-4 text-lg">
               {isOpened && (
