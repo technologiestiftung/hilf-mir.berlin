@@ -14,18 +14,21 @@ export interface GristLabelType extends Record<string, unknown> {
 export interface TableRowType extends Record<string, unknown> {
   id: number
   fields: {
+    /** Self-provided ID (not the one from Grist itself) */
+    ID2: number
     Einrichtung: string
     Trager: string
-    Kategorie: string
+    /** Array of ID's referencing the "Labels" table in Grist.
+     * Note that for some reason the array also contains a "L" for every record (bug?)
+     */
     Schlagworte: number[]
+    /** Zielgruppen is a) still unused and b) currently a text column, which will soon become a reference list like Schlagworte */
+    Zielgruppen: string
     Wichtige_Hinweise: string
     Beratungsmoglichkeiten: string
     Sprachen: string
     Barrierefreiheit: string
     Uber_uns: string
-    Reichweite: string
-    Stadtteile_Regionen: string
-    Ausschlie_lich_nach_Meldeadresse: string
     Strasse: string
     Hausnummer: string
     Zusatz: string
@@ -35,14 +38,6 @@ export interface TableRowType extends Record<string, unknown> {
     Telefonnummer: string
     EMail: string
     Website: string
-    Ansprechperson_1_Anrede: string
-    Ansprechperson_1_Titel: string
-    Ansprechperson_1_Vorname: string
-    Ansprechperson_1_Nachname: string
-    Ansprechperson_2_Anrede: string
-    Ansprechperson_2_Titel: string
-    Ansprechperson_2_Vorname: string
-    Ansprechperson_2_Nachname: string
     c24_h_7_Tage: string
     Montag: string
     Dienstag: string
@@ -52,13 +47,11 @@ export interface TableRowType extends Record<string, unknown> {
     Samstag: string
     Sonntag: string
     Anmeldung_gewunscht: string
+    Art_der_Anmeldung: string
     Weitere_Offnungszeiten: string
+    /** The facility's latitude */
     lat: number
+    /** The facility's longitude */
     long: number
-    // The following columns are available in the development table, not currently in the production table (all strings that are semicolon-separated):
-    Themen_Gruppe_1?: string // topics for psychological problems
-    Themen_Gruppe_2?: string // topics for addiction-related problems
-    Themen_Gruppe_3?: string // topics for health and identity-related problems
-    Zielgruppen?: string
   }
 }

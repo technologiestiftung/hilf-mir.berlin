@@ -10,6 +10,7 @@ import { GristLabelType } from '@common/types/gristData'
 import { useUrlState } from '@lib/UrlStateContext'
 import { useRouter } from 'next/router'
 import { loadData } from '@lib/loadData'
+import { useEffect, useState } from 'react'
 
 export const getStaticProps: GetStaticProps = async () => {
   const { texts, labels, records } = await loadData()
@@ -39,21 +40,33 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
   const [urlState, setUrlState] = useUrlState()
   const texts = useTexts()
   const { isFallback } = useRouter()
-  const records = originalRecords || []
 
-  const filteredRecords =
-    urlState.tags && urlState.tags?.length > 0
-      ? records.filter((record) =>
-          urlState.tags?.every((t) => record.labels.find((l) => l === t))
-        )
-      : records
+  const [filteredRecords, setFilteredRecords] =
+    useState<MinimalRecordType[]>(originalRecords)
+
+  useEffect(() => {
+    if (!urlState.tags || urlState.tags?.length < 0) return
+    const newFilteredRecords = originalRecords.filter((record) =>
+      urlState.tags?.every((t) => record.labels.find((l) => l === t))
+    )
+    return setFilteredRecords(newFilteredRecords)
+  }, [urlState.tags, originalRecords])
+
+  const [pageTitle, setPageTitle] = useState(texts.mapPageTitle)
+
+  useEffect(() => {
+    console.log(filteredRecords.length)
+
+    setPageTitle(
+      texts.mapPageTitle.replace(/^\d\d?\d?/g, `${filteredRecords.length}`)
+    )
+  }, [filteredRecords, texts.mapPageTitle])
+
   return (
     <>
       <Head>
         <title>
-          {isFallback
-            ? 'Seite Lädt...'
-            : `${texts.mapPageTitle} – ${texts.siteTitle}`}
+          {isFallback ? 'Seite Lädt...' : `${pageTitle} – ${texts.siteTitle}`}
         </title>
       </Head>
       <h1
@@ -62,11 +75,11 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
           `px-5 py-8 bg-white border-b border-gray-10`
         )}
       >
-        {isFallback ? `Seite Lädt...` : texts.mapPageTitle}
+        {isFallback ? `Seite Lädt...` : `${pageTitle}`}
       </h1>
       <ul>
         {!isFallback &&
-          (filteredRecords.length !== records.length ||
+          (filteredRecords.length !== originalRecords.length ||
             filteredRecords.length === 0) && (
             <div className="text-lg p-5 border-y border-gray-20 bg-gray-10/50">
               <p>
@@ -74,11 +87,11 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
                 {filteredRecords.length === 1 &&
                   texts.filteredResultsAmountSingular
                     .replace('#number', `${filteredRecords.length}`)
-                    .replace('#total', `${records.length}`)}
+                    .replace('#total', `${originalRecords.length}`)}
                 {filteredRecords.length > 1 &&
                   texts.filteredResultsAmountPlural
                     .replace('#number', `${filteredRecords.length}`)
-                    .replace('#total', `${records.length}`)}
+                    .replace('#total', `${originalRecords.length}`)}
               </p>
               <button
                 onClick={() => setUrlState({ tags: [] })}

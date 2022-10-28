@@ -1,3 +1,59 @@
+# [1.2.0-rc.6](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.2.0-rc.5...v1.2.0-rc.6) (2022-10-28)
+
+
+### Bug Fixes
+
+* **WEG-92:** let facility count update ([bb05fd0](https://github.com/technologiestiftung/wegweiser-frontend/commit/bb05fd096941ee25ce7c125e5505579eb4236b25))
+
+# [1.2.0-rc.5](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.2.0-rc.4...v1.2.0-rc.5) (2022-10-28)
+
+
+### Features
+
+* **FacilityInfo:** break long titles with German hyphens ([3ea2c39](https://github.com/technologiestiftung/wegweiser-frontend/commit/3ea2c399f02dc489a38f0e74b436421efc6379aa))
+
+# [1.2.0-rc.4](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.2.0-rc.3...v1.2.0-rc.4) (2022-10-28)
+
+
+### Bug Fixes
+
+* **WEG-94:** darken hover state of active tags ([a8d00d9](https://github.com/technologiestiftung/wegweiser-frontend/commit/a8d00d97f98e6cafb533a95c17dc8a9ba305c4be))
+
+# [1.2.0-rc.3](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.2.0-rc.2...v1.2.0-rc.3) (2022-10-28)
+
+
+### Features
+
+* **WEG-55:** add basic about/info page ([fb2f920](https://github.com/technologiestiftung/wegweiser-frontend/commit/fb2f9204834ac886d8918a2a83868cf271c78f0d))
+
+# [1.2.0-rc.2](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.2.0-rc.1...v1.2.0-rc.2) (2022-10-28)
+
+
+### Features
+
+* **WEG-95:** display actual facility description ([c3a3272](https://github.com/technologiestiftung/wegweiser-frontend/commit/c3a3272bc597be1818166cd33923ab8780da536a))
+* **WEG-95:** line-clamp description texts ([88c9417](https://github.com/technologiestiftung/wegweiser-frontend/commit/88c941758b8dff47cebffadf90baeee9ddc4ca60))
+
+# [1.2.0-rc.1](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.1.0...v1.2.0-rc.1) (2022-10-28)
+
+
+### Bug Fixes
+
+* **WEG-88:** handle if closed opening specified ([4db2062](https://github.com/technologiestiftung/wegweiser-frontend/commit/4db2062c9abc96eec0b43765ac87264bb7786a45))
+
+
+### Features
+
+* **Icons:** add icon for "Gewalterfahrung" ([ca39c5f](https://github.com/technologiestiftung/wegweiser-frontend/commit/ca39c5f574405063c88e825fa022485db8664e67))
+* **Icons:** use new icon for "Schwangerschaft" ([dd2b6ed](https://github.com/technologiestiftung/wegweiser-frontend/commit/dd2b6edd49e938da90ef9129141c619f3e262b7d))
+
+# [1.1.0-rc.2](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.1.0-rc.1...v1.1.0-rc.2) (2022-10-27)
+
+
+### Bug Fixes
+
+* **WEG-88:** handle if closed opening specified ([4db2062](https://github.com/technologiestiftung/wegweiser-frontend/commit/4db2062c9abc96eec0b43765ac87264bb7786a45))
+
 # [1.1.0](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.0.0...v1.1.0) (2022-10-19)
 
 

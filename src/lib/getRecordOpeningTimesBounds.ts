@@ -23,8 +23,8 @@ const getTodayAtTime = (timeString: string, today: Date): Date => {
 }
 
 export interface OpeningTimesBoundsType {
-  start: string | undefined
-  end: string | undefined
+  start: string | null
+  end: string | null
 }
 
 export const getRecordOpeningTimesBounds = (
@@ -34,8 +34,13 @@ export const getRecordOpeningTimesBounds = (
   const dayIdx = new Date().getDay()
   const dayKey = openningTimesFields[dayIdx] as keyof typeof fields
   if (!dayKey || typeof fields[dayKey] === 'undefined')
-    return { start: undefined, end: undefined }
+    return { start: null, end: null }
   const openningTimesForToday = fields[dayKey] as string
+  const closedRegex = new RegExp('Geschlossen', 'i')
+  const isClosed = closedRegex.test(openningTimesForToday)
+  if (isClosed) {
+    return { start: null, end: null }
+  }
   const [from, to] = openningTimesForToday.split('-').map((s) => s.trim())
   const start = getTodayAtTime(from, today).toISOString()
   const end = getTodayAtTime(to, today).toISOString()
