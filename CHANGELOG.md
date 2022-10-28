@@ -1,3 +1,10 @@
+# [1.2.0-rc.3](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.2.0-rc.2...v1.2.0-rc.3) (2022-10-28)
+
+
+### Features
+
+* **WEG-55:** add basic about/info page ([fb2f920](https://github.com/technologiestiftung/wegweiser-frontend/commit/fb2f9204834ac886d8918a2a83868cf271c78f0d))
+
 # [1.2.0-rc.2](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.2.0-rc.1...v1.2.0-rc.2) (2022-10-28)
 
 
