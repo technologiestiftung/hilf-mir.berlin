@@ -1,3 +1,10 @@
+# [1.2.0-rc.5](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.2.0-rc.4...v1.2.0-rc.5) (2022-10-28)
+
+
+### Features
+
+* **FacilityInfo:** break long titles with German hyphens ([3ea2c39](https://github.com/technologiestiftung/wegweiser-frontend/commit/3ea2c399f02dc489a38f0e74b436421efc6379aa))
+
 # [1.2.0-rc.4](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.2.0-rc.3...v1.2.0-rc.4) (2022-10-28)
 
 
