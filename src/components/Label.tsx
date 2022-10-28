@@ -24,10 +24,12 @@ export const Label: FC<{
         className={classNames(
           className,
           `py-1.5 border text-lg flex gap-2 text-left leading-6 pl-2 pr-3 group`,
-          isActive && isInteractive && `bg-red border-red text-white`,
+          isActive &&
+            isInteractive &&
+            `bg-red border-red text-white hover:bg-gray-60 hover:border-gray-60`,
           (!isActive || !isInteractive) && ` border-gray-20`,
+          !isActive && isInteractive && 'hover:bg-gray-10',
           isInteractive && [
-            `hover:bg-gray-10`,
             `focus:outline-none focus:ring-2 focus:ring-red`,
             `focus:ring-offset-2 focus:ring-offset-white`,
           ],

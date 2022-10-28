@@ -14,6 +14,8 @@ module.exports = {
         '10': '#EFEFEF',
         '20': '#CCCCCC',
         '40': '#999999',
+        '60': '#666666',
+        '80': '#333333',
       },
       white: '#fff',
       trasparent: 'transparent',
@@ -43,5 +45,8 @@ module.exports = {
       },
     },
   },
-  plugins: [require('@tailwindcss/line-clamp'), require('@tailwindcss/typography')],
+  plugins: [
+    require('@tailwindcss/line-clamp'),
+    require('@tailwindcss/typography'),
+  ],
 }
