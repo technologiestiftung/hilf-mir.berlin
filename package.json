@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "7.6.0",
+    "@tailwindcss/typography": "0.5.7",
     "@technologiestiftung/semantic-release-config": "1.1.0",
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "12.1.5",
