@@ -72,6 +72,12 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
               </div>
             )}
           </header>
+          <p className="px-5 pt-3 line-clamp-3">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita
+            suscipit dolorem accusamus assumenda delectus mollitia? Ullam ipsam,
+            numquam corporis, sed illo incidunt, maxime porro autem id
+            voluptates asperiores quod officiis.
+          </p>
           {allLabels.length > 0 && (
             <footer className="px-5 pt-4 pb-7">
               {topicsLabels.length > 0 && (
