@@ -1,3 +1,10 @@
+# [1.2.0-rc.6](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.2.0-rc.5...v1.2.0-rc.6) (2022-10-28)
+
+
+### Bug Fixes
+
+* **WEG-92:** let facility count update ([bb05fd0](https://github.com/technologiestiftung/wegweiser-frontend/commit/bb05fd096941ee25ce7c125e5505579eb4236b25))
+
 # [1.2.0-rc.5](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.2.0-rc.4...v1.2.0-rc.5) (2022-10-28)
 
 
