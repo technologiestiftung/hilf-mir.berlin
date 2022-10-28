@@ -13,6 +13,7 @@ export interface MinimalRecordType
   longitude: number
   labels: number[]
   open247: boolean
+  description: string
 }
 
 export const mapRecordToMinimum = (record: TableRowType): MinimalRecordType => {
@@ -24,5 +25,6 @@ export const mapRecordToMinimum = (record: TableRowType): MinimalRecordType => {
     ...getRecordOpeningTimesBounds(record.fields),
     labels: record.fields.Schlagworte,
     open247: record.fields['c24_h_7_Tage'] === 'ja',
+    description: record.fields.Uber_uns,
   }
 }
