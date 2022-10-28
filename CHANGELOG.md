@@ -1,3 +1,10 @@
+# [1.2.0-rc.4](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.2.0-rc.3...v1.2.0-rc.4) (2022-10-28)
+
+
+### Bug Fixes
+
+* **WEG-94:** darken hover state of active tags ([a8d00d9](https://github.com/technologiestiftung/wegweiser-frontend/commit/a8d00d97f98e6cafb533a95c17dc8a9ba305c4be))
+
 # [1.2.0-rc.3](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.2.0-rc.2...v1.2.0-rc.3) (2022-10-28)
 
 
