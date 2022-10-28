@@ -15,6 +15,7 @@ import Stetoscope from '../../images/filter-icons/stetoscope.svg'
 import Transgender from '../../images/filter-icons/transgender.svg'
 import Wind from '../../images/filter-icons/wind.svg'
 import WineGlas from '../../images/filter-icons/wine-glas.svg'
+import Fist from '../../images/filter-icons/fist.svg'
 
 type IconElement = FC<{
   className?: string
@@ -38,4 +39,5 @@ export default {
   transgender: Transgender as IconElement,
   wind: Wind as IconElement,
   'wine-glas': WineGlas as IconElement,
+  fist: Fist as IconElement,
 }
