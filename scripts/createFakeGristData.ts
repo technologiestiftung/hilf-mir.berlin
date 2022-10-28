@@ -26,16 +26,9 @@ const POST_RECORDS_URL = `${
 const fakeData: Omit<TableRowType, 'id'>[] = Array.from(Array(300)).map(() => {
   return {
     fields: {
+      ID2: 1,
       Anmeldung_gewunscht: 'ja',
-      Ansprechperson_1_Anrede: 'Frau',
-      Ansprechperson_1_Nachname: faker.name.lastName(),
-      Ansprechperson_1_Titel: 'Dr.',
-      Ansprechperson_1_Vorname: faker.name.firstName('female'),
-      Ansprechperson_2_Anrede: 'Herr',
-      Ansprechperson_2_Nachname: faker.name.lastName(),
-      Ansprechperson_2_Titel: '',
-      Ansprechperson_2_Vorname: faker.name.firstName('male'),
-      Ausschlie_lich_nach_Meldeadresse: 'ja',
+      Art_der_Anmeldung: 'telefonisch',
       Barrierefreiheit: 'nein',
       Beratungsmoglichkeiten: createRandomArrayFromArray(
         [
@@ -58,7 +51,6 @@ const fakeData: Omit<TableRowType, 'id'>[] = Array.from(Array(300)).map(() => {
       Einrichtung: faker.company.name(),
       EMail: faker.internet.email(),
       Hausnummer: `${faker.datatype.number({ max: 350 })}`,
-      Kategorie: 'Kontakt-und Beratungsstellen',
       // TODO: Fakers latitude produces weird, nor really random-looking results. Improve that.
       lat: parseFloat(
         faker.address.latitude(52.645919276537, 52.54470760200334, 6)
@@ -68,11 +60,11 @@ const fakeData: Omit<TableRowType, 'id'>[] = Array.from(Array(300)).map(() => {
         faker.address.longitude(13.381266029328117, 13.349337606247445, 6)
       ),
       PLZ: `${faker.datatype.number({ min: 10_000, max: 13_000 })}`,
-      Reichweite: 'Bezirk',
       Schlagworte: createRandomArrayFromArray(
         ['1', '2', '3', '4', '5', '6'],
         getRandomNumberInRange(1, 6)
       ).map((id) => parseInt(id)),
+      Zielgruppen: 'Familien;Senioren',
       Sprachen: createRandomArrayFromArray(
         ['Deutsch', 'Englisch', 'Türkisch', 'Polnisch', 'Arabisch', 'Spanisch'],
         getRandomNumberInRange(1, 6)
