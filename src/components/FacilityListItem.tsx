@@ -72,6 +72,7 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
               </div>
             )}
           </header>
+          <p className="px-5 pt-3 line-clamp-3">{record.description}</p>
           {allLabels.length > 0 && (
             <footer className="px-5 pt-4 pb-7">
               {topicsLabels.length > 0 && (
