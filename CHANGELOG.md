@@ -1,3 +1,16 @@
+# [1.2.0-rc.1](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.1.0...v1.2.0-rc.1) (2022-10-28)
+
+
+### Bug Fixes
+
+* **WEG-88:** handle if closed opening specified ([4db2062](https://github.com/technologiestiftung/wegweiser-frontend/commit/4db2062c9abc96eec0b43765ac87264bb7786a45))
+
+
+### Features
+
+* **Icons:** add icon for "Gewalterfahrung" ([ca39c5f](https://github.com/technologiestiftung/wegweiser-frontend/commit/ca39c5f574405063c88e825fa022485db8664e67))
+* **Icons:** use new icon for "Schwangerschaft" ([dd2b6ed](https://github.com/technologiestiftung/wegweiser-frontend/commit/dd2b6edd49e938da90ef9129141c619f3e262b7d))
+
 # [1.1.0-rc.2](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.1.0-rc.1...v1.1.0-rc.2) (2022-10-27)
 
 
