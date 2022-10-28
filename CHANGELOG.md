@@ -1,3 +1,11 @@
+# [1.2.0-rc.2](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.2.0-rc.1...v1.2.0-rc.2) (2022-10-28)
+
+
+### Features
+
+* **WEG-95:** display actual facility description ([c3a3272](https://github.com/technologiestiftung/wegweiser-frontend/commit/c3a3272bc597be1818166cd33923ab8780da536a))
+* **WEG-95:** line-clamp description texts ([88c9417](https://github.com/technologiestiftung/wegweiser-frontend/commit/88c941758b8dff47cebffadf90baeee9ddc4ca60))
+
 # [1.2.0-rc.1](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.1.0...v1.2.0-rc.1) (2022-10-28)
 
 
