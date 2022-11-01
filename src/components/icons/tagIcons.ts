@@ -5,7 +5,6 @@ import Drop from '../../images/filter-icons/drop.svg'
 import DrugPill from '../../images/filter-icons/drug-pill.svg'
 import DrugPills from '../../images/filter-icons/drug-pills.svg'
 import Ear from '../../images/filter-icons/ear.svg'
-import Fist from '../../images/filter-icons/fist.svg'
 import GameController from '../../images/filter-icons/game-controller.svg'
 import Heartbeat from '../../images/filter-icons/heartbeat.svg'
 import Hiv from '../../images/filter-icons/hiv.svg'
@@ -16,6 +15,7 @@ import Stetoscope from '../../images/filter-icons/stetoscope.svg'
 import Transgender from '../../images/filter-icons/transgender.svg'
 import Wind from '../../images/filter-icons/wind.svg'
 import WineGlas from '../../images/filter-icons/wine-glas.svg'
+import { Blast } from './Blast'
 
 type IconElement = FC<{
   className?: string
@@ -29,7 +29,7 @@ export default {
   'drug-pill': DrugPill as IconElement,
   'drug-pills': DrugPills as IconElement,
   ear: Ear as IconElement,
-  fist: Fist as IconElement,
+  blast: Blast as IconElement,
   'game-controller': GameController as IconElement,
   heartbeat: Heartbeat as IconElement,
   hiv: Hiv as IconElement,
