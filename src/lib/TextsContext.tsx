@@ -32,6 +32,8 @@ const defaultValue = {
   emergencyServicesLabel: '',
   seelsorgeLabel: '',
   seelsorgePhoneNumber: '',
+  muslimSeelsorgeLabel: '',
+  muslimSeelsorgePhoneNumber: '',
   backText: '',
   neighborhoodCharlottenburgWilmersdorfLabel: '',
   neighborhoodCharlottenburgWilmersdorfPhoneNumber: '',
