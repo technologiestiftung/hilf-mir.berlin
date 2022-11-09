@@ -25,8 +25,6 @@ const defaultValue = {
   footerProjectSponsorLabel: '',
   footerSentatskanzleiLogoAltText: '',
   footerSentatskanzleiLogoLink: '',
-  suicidePreventionLabel: '',
-  suicidePreventionPhoneNumber: '',
   psychiatricServicesLabel: '',
   psychiatricServicesPhoneNumber: '',
   emergencyServicesLabel: '',

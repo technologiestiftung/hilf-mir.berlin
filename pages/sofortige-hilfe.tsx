@@ -59,21 +59,6 @@ const Home: NextPage = () => {
           </h1>
           <section className="flex flex-col gap-1">
             <h4 className="font-bold text-lg">
-              {texts.suicidePreventionLabel}
-            </h4>
-            <a
-              className={classNames(
-                `p-0 text-3xl`,
-                `focus:outline-none focus:ring-2 focus:ring-red`,
-                `focus:ring-offset-2 focus:ring-offset-white`
-              )}
-              href={`tel:${texts.suicidePreventionPhoneNumber}`}
-            >
-              {texts.suicidePreventionPhoneNumber}
-            </a>
-          </section>
-          <section className="flex flex-col gap-1">
-            <h4 className="font-bold text-lg">
               {isEmergencyTime
                 ? texts.emergencyServicesLabel
                 : texts.psychiatricServicesLabel}
