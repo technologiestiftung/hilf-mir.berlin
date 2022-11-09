@@ -91,7 +91,11 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
       text: facility.fields.Telefonnummer,
       href: `tel:${facility.fields.Telefonnummer}`,
     },
-  ].filter((info) => typeof info === 'object' && !!info.text)
+  ].filter((info) => typeof info === 'object' && !!info.text) as {
+    icon: JSX.Element
+    text: string
+    href?: string
+  }[]
 
   const todayKey = getTodayKey()
 
