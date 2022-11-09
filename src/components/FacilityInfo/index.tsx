@@ -64,11 +64,18 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
       ? `${Strasse} ${Hausnummer}, ${PLZ} Berlin`
       : undefined
 
+  const accessibility = facility.fields.Barrierefreiheit.trim().toLowerCase()
+
   const infoList = [
     {
       icon: <Geopin />,
       text: addressOneLiner,
     },
+    accessibility !== 'nein' &&
+      accessibility !== 'keine angabe' && {
+        icon: <Accessible />,
+        text: facility.fields.Barrierefreiheit.trim().split(';').join(', '),
+      },
     {
       icon: <Globe />,
       text: facility.fields.Website,
@@ -84,14 +91,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
       text: facility.fields.Telefonnummer,
       href: `tel:${facility.fields.Telefonnummer}`,
     },
-  ].filter(({ text }) => !!text)
-
-  if (facility.fields.Barrierefreiheit.trim().toLowerCase() === 'ja') {
-    infoList.push({
-      icon: <Accessible />,
-      text: texts.accessibleLabel,
-    })
-  }
+  ].filter((info) => typeof info === 'object' && !!info.text)
 
   const todayKey = getTodayKey()
 
