@@ -15,6 +15,7 @@ import { TextLink } from '@components/TextLink'
 import { Geopin } from '@components/icons/Geopin'
 import { getTodayKey } from '@lib/getTodayKey'
 import { useUrlState } from '@lib/UrlStateContext'
+import { Accessible } from '@components/icons/Accessible'
 
 interface FacilityInfoType {
   facility: TableRowType
@@ -84,6 +85,13 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
       href: `tel:${facility.fields.Telefonnummer}`,
     },
   ].filter(({ text }) => !!text)
+
+  if (facility.fields.Barrierefreiheit.trim().toLowerCase() === 'ja') {
+    infoList.push({
+      icon: <Accessible />,
+      text: texts.accessibleLabel,
+    })
+  }
 
   const todayKey = getTodayKey()
 
