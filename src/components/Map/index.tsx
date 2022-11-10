@@ -205,7 +205,7 @@ export const FacilitiesMap: FC<MapType> = ({
         type: 'circle',
         source: 'facilities',
         paint: {
-          'circle-radius': 8,
+          'circle-radius': 10,
           'circle-stroke-width': 1,
           'circle-stroke-color': [
             'case',
@@ -277,7 +277,7 @@ export const FacilitiesMap: FC<MapType> = ({
 
       const customMarker = document.createElement('div')
       customMarker.className =
-        'w-8 h-8 border-2 border-white rounded-full bg-red'
+        'w-10 h-10 border-2 border-white rounded-full bg-red ring-2 ring-red ring-offset-2 ring-offset-white'
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore

@@ -25,13 +25,14 @@ const defaultValue = {
   footerProjectSponsorLabel: '',
   footerSentatskanzleiLogoAltText: '',
   footerSentatskanzleiLogoLink: '',
-  suicidePreventionLabel: '',
-  suicidePreventionPhoneNumber: '',
   psychiatricServicesLabel: '',
   psychiatricServicesPhoneNumber: '',
   emergencyServicesLabel: '',
   seelsorgeLabel: '',
-  seelsorgePhoneNumber: '',
+  muslimSeelsorgeLabel: '',
+  muslimSeelsorgePhoneNumber: '',
+  seelsorgePhoneNumber1: '',
+  seelsorgePhoneNumber2: '',
   backText: '',
   neighborhoodCharlottenburgWilmersdorfLabel: '',
   neighborhoodCharlottenburgWilmersdorfPhoneNumber: '',
@@ -99,6 +100,7 @@ const defaultValue = {
   seeList: '',
   filterLabel: '',
   backToHome: '',
+  accessibleLabel: '',
 }
 
 export type TextsMapType = typeof defaultValue

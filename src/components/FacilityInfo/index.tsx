@@ -15,6 +15,7 @@ import { TextLink } from '@components/TextLink'
 import { Geopin } from '@components/icons/Geopin'
 import { getTodayKey } from '@lib/getTodayKey'
 import { useUrlState } from '@lib/UrlStateContext'
+import { Accessible } from '@components/icons/Accessible'
 
 interface FacilityInfoType {
   facility: TableRowType
@@ -63,11 +64,18 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
       ? `${Strasse} ${Hausnummer}, ${PLZ} Berlin`
       : undefined
 
+  const accessibility = facility.fields.Barrierefreiheit.trim().toLowerCase()
+
   const infoList = [
     {
       icon: <Geopin />,
       text: addressOneLiner,
     },
+    accessibility !== 'nein' &&
+      accessibility !== 'keine angabe' && {
+        icon: <Accessible />,
+        text: facility.fields.Barrierefreiheit.trim().split(';').join(', '),
+      },
     {
       icon: <Globe />,
       text: facility.fields.Website,
@@ -83,7 +91,11 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
       text: facility.fields.Telefonnummer,
       href: `tel:${facility.fields.Telefonnummer}`,
     },
-  ].filter(({ text }) => !!text)
+  ].filter((info) => typeof info === 'object' && !!info.text) as {
+    icon: JSX.Element
+    text: string
+    href?: string
+  }[]
 
   const todayKey = getTodayKey()
 
