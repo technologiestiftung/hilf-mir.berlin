@@ -46,7 +46,7 @@ export const FacilityCarouselSlide: FC<MinimalRecordType> = (facility) => {
             {facility.title}
           </h2>
           <ul className={classNames('overflow-x-auto')}>
-            <div className="float-left py-3 flex gap-1 mx-5">
+            <div className="float-left py-3 flex gap-1 mx-5 swiper-no-swiping">
               {topicsLabels.sort(getLabelsSort(urlState)).map((label) => {
                 return (
                   <li
@@ -65,7 +65,7 @@ export const FacilityCarouselSlide: FC<MinimalRecordType> = (facility) => {
             </div>
           </ul>
           {targetAudienceLabels.length > 0 && (
-            <div className="text-sm leading-4 px-5">
+            <div className="text-sm leading-4 px-5 ">
               {texts.filtersSearchTargetLabelOnCard}:{' '}
               <strong>
                 {targetAudienceLabels.map(({ id, fields }, idx) => (
