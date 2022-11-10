@@ -200,6 +200,13 @@ export const FacilitiesMap: FC<MapType> = ({
 
       updateFilteredFacilities(activeTags as number[])
 
+      const opacityGlCondition = [
+        'case',
+        ['boolean', ['feature-state', 'active'], false],
+        1,
+        0,
+      ]
+
       map.current.addLayer({
         id: 'unclustered-point',
         type: 'circle',
@@ -207,26 +214,10 @@ export const FacilitiesMap: FC<MapType> = ({
         paint: {
           'circle-radius': 10,
           'circle-stroke-width': 1,
-          'circle-stroke-color': [
-            'case',
-            // While the feature state is still undefined, we prefer to
-            // show the facilities as not active, so that we don't create
-            // disappointment when first facilities flash and then they
-            // disappear.
-            ['boolean', ['feature-state', 'active'], false],
-            '#fff',
-            '#E40422',
-          ],
-          'circle-color': [
-            'case',
-            // While the feature state is still undefined, we prefer to
-            // show the facilities as not active, so that we don't create
-            // disappointment when first facilities flash and then they
-            // disappear.
-            ['boolean', ['feature-state', 'active'], false],
-            '#E40422',
-            '#fff',
-          ],
+          'circle-stroke-color': '#fff',
+          'circle-color': '#E40422',
+          'circle-stroke-opacity': opacityGlCondition,
+          'circle-opacity': opacityGlCondition,
         },
       })
 
