@@ -1,3 +1,10 @@
+# [1.3.0-rc.1](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.2.0...v1.3.0-rc.1) (2022-11-10)
+
+
+### Features
+
+* **WEG-109:** Add Accessibility indicator ([4d92f63](https://github.com/technologiestiftung/wegweiser-frontend/commit/4d92f634aefdcfaa8425bf8b966fe76c0301532f))
+
 # [1.2.0](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.1.0...v1.2.0) (2022-10-28)
 
 
