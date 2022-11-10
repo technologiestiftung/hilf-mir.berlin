@@ -122,9 +122,19 @@ const Home: NextPage = () => {
                 `focus:outline-none focus:ring-2 focus:ring-red`,
                 `focus:ring-offset-2 focus:ring-offset-white`
               )}
-              href={`tel:${texts.seelsorgePhoneNumber}`}
+              href={`tel:${texts.seelsorgePhoneNumber1}`}
             >
-              {texts.seelsorgePhoneNumber}
+              {texts.seelsorgePhoneNumber1}
+            </a>
+            <a
+              className={classNames(
+                `p-0 text-3xl`,
+                `focus:outline-none focus:ring-2 focus:ring-red`,
+                `focus:ring-offset-2 focus:ring-offset-white`
+              )}
+              href={`tel:${texts.seelsorgePhoneNumber2}`}
+            >
+              {texts.seelsorgePhoneNumber2}
             </a>
           </section>
           <section className="flex flex-col gap-1">
