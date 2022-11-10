@@ -31,6 +31,8 @@ const defaultValue = {
   psychiatricServicesPhoneNumber: '',
   emergencyServicesLabel: '',
   seelsorgeLabel: '',
+  muslimSeelsorgeLabel: '',
+  muslimSeelsorgePhoneNumber: '',
   seelsorgePhoneNumber1: '',
   seelsorgePhoneNumber2: '',
   backText: '',
