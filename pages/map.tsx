@@ -55,8 +55,6 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
   const [pageTitle, setPageTitle] = useState(texts.mapPageTitle)
 
   useEffect(() => {
-    console.log(filteredRecords.length)
-
     setPageTitle(
       texts.mapPageTitle.replace(/^\d\d?\d?/g, `${filteredRecords.length}`)
     )

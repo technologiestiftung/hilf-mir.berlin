@@ -100,6 +100,7 @@ const defaultValue = {
   seeList: '',
   filterLabel: '',
   backToHome: '',
+  accessibleLabel: '',
 }
 
 export type TextsMapType = typeof defaultValue
