@@ -7,6 +7,7 @@ import { useRecordLabels } from '@lib/hooks/useRecordLabels'
 import { useTexts } from '@lib/TextsContext'
 import { PrimaryButton } from './PrimaryButton'
 import { useRouter } from 'next/router'
+import { Arrow } from './icons/Arrow'
 
 export const FacilityCarouselSlide: FC<MinimalRecordType> = (facility) => {
   const { push } = useRouter()
@@ -29,15 +30,15 @@ export const FacilityCarouselSlide: FC<MinimalRecordType> = (facility) => {
     >
       <a
         className={classNames(
-          `p-5 block h-full`,
+          `block h-full`,
           `flex flex-col gap-1 bg-white group`,
           `border border-black`,
-          `transition-colors`,
+          `transition-colors hover:bg-gray-10`,
           `focus:ring-inset focus:ring-2 focus:ring-red`,
           `focus:outline-none focus:border-red`
         )}
       >
-        <div className="max-w-[calc(100vw-40px)]">
+        <div className="max-w-[calc(100vw-40px)] p-5">
           <h2
             className={classNames(
               'font-bold text-xl',
@@ -82,13 +83,16 @@ export const FacilityCarouselSlide: FC<MinimalRecordType> = (facility) => {
               </strong>
             </div>
           )}
-          <PrimaryButton
-            onClick={() => void push(`/${facility.id}`)}
-            className="mt-3"
-          >
-            Einrichtung ansehen
-          </PrimaryButton>
         </div>
+        <span
+          className={classNames(
+            'font-bold text-red py-4 flex gap-2 justify-end text-right',
+            'border-t border-gray-10 px-5'
+          )}
+        >
+          {texts.openFacilityLinkText}
+          <Arrow orientation="right" className="scale-75" />
+        </span>
       </a>
     </Link>
   )
