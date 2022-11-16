@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useUrlState } from '@lib/UrlStateContext'
 import { useRecordLabels } from '@lib/hooks/useRecordLabels'
 import { useTexts } from '@lib/TextsContext'
+import { getLabelsSort } from '@lib/getLabelsSort'
 import { Arrow } from './icons/Arrow'
 
 export const FacilityCarouselSlide: FC<MinimalRecordType> = (facility) => {
@@ -27,7 +28,7 @@ export const FacilityCarouselSlide: FC<MinimalRecordType> = (facility) => {
     >
       <a
         className={classNames(
-          `block h-full`,
+          `pb-5 block h-full`,
           `flex flex-col gap-1 bg-white group`,
           `border border-black`,
           `transition-colors hover:bg-gray-10`,
@@ -38,32 +39,34 @@ export const FacilityCarouselSlide: FC<MinimalRecordType> = (facility) => {
         <div className="max-w-[calc(100vw-40px)] p-5">
           <h2
             className={classNames(
-              'font-bold text-xl',
+              'font-bold text-xl px-5 pt-5',
               `group-hover:text-red transition-colors`,
               `group-focus:text-red`
             )}
           >
             {facility.title}
           </h2>
-          <ul className={classNames('mt-3', 'flex gap-1 flex-wrap')}>
-            {topicsLabels.map((label) => {
-              return (
-                <li
-                  key={label.id}
-                  className={classNames(
-                    `inline-block px-1.5 py-0.5 border leading-4`,
-                    urlState.tags?.includes(label.id)
-                      ? `bg-red text-white border-red`
-                      : `text-sm border-gray-20 `
-                  )}
-                >
-                  {label.fields.text}
-                </li>
-              )
-            })}
+          <ul className={classNames('overflow-x-auto mb-2')}>
+            <div className="float-left pt-3 pb-0.5 mb-1 flex gap-1 mx-5 swiper-no-swiping">
+              {topicsLabels.sort(getLabelsSort(urlState)).map((label) => {
+                return (
+                  <li
+                    key={label.id}
+                    className={classNames(
+                      `inline-block px-1.5 py-0.5 border leading-4 whitespace-nowrap`,
+                      urlState.tags?.includes(label.id)
+                        ? `bg-red text-white border-red`
+                        : `text-sm border-gray-20 `
+                    )}
+                  >
+                    {label.fields.text}
+                  </li>
+                )
+              })}
+            </div>
           </ul>
           {targetAudienceLabels.length > 0 && (
-            <div className="text-sm mt-3 leading-4">
+            <div className="text-sm leading-4 px-5 ">
               {texts.filtersSearchTargetLabelOnCard}:{' '}
               <strong>
                 {targetAudienceLabels.map(({ id, fields }, idx) => (

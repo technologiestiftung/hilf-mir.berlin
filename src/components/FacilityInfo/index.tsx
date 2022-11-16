@@ -123,18 +123,22 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
         </div>
         {allLabels.length > 0 && (
           <div className="w-full">
-            {topicsLabels.length > 0 && (
-              <div className="flex flex-wrap p-5 gap-2">
-                {topicsLabels.map(renderLabel)}
-              </div>
-            )}
+            <div className="overflow-x-auto">
+              {topicsLabels.length > 0 && (
+                <div className="float-left flex gap-2 p-5 whitespace-nowrap">
+                  {topicsLabels.map(renderLabel)}
+                </div>
+              )}
+            </div>
             {targetAudienceLabels.length > 0 && (
               <>
                 <h2 className="px-5 mt-2 text-lg font-bold">
                   {texts.filtersSearchTargetLabelOnCard}
                 </h2>
-                <div className="flex flex-wrap p-5 pt-1 gap-2">
-                  {targetAudienceLabels.map(renderLabel)}
+                <div className="overflow-x-auto">
+                  <div className="float-left flex gap-2 p-5 gap-2 pt-1 whitespace-nowrap">
+                    {targetAudienceLabels.map(renderLabel)}
+                  </div>
                 </div>
               </>
             )}
