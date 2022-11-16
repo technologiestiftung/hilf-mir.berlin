@@ -200,33 +200,24 @@ export const FacilitiesMap: FC<MapType> = ({
 
       updateFilteredFacilities(activeTags as number[])
 
+      const opacityGlCondition = [
+        'case',
+        ['boolean', ['feature-state', 'active'], false],
+        1,
+        0,
+      ]
+
       map.current.addLayer({
         id: 'unclustered-point',
         type: 'circle',
         source: 'facilities',
         paint: {
-          'circle-radius': 8,
+          'circle-radius': 10,
           'circle-stroke-width': 1,
-          'circle-stroke-color': [
-            'case',
-            // While the feature state is still undefined, we prefer to
-            // show the facilities as not active, so that we don't create
-            // disappointment when first facilities flash and then they
-            // disappear.
-            ['boolean', ['feature-state', 'active'], false],
-            '#fff',
-            '#E40422',
-          ],
-          'circle-color': [
-            'case',
-            // While the feature state is still undefined, we prefer to
-            // show the facilities as not active, so that we don't create
-            // disappointment when first facilities flash and then they
-            // disappear.
-            ['boolean', ['feature-state', 'active'], false],
-            '#E40422',
-            '#fff',
-          ],
+          'circle-stroke-color': '#fff',
+          'circle-color': '#E40422',
+          'circle-stroke-opacity': opacityGlCondition,
+          'circle-opacity': opacityGlCondition,
         },
       })
 
@@ -277,7 +268,7 @@ export const FacilitiesMap: FC<MapType> = ({
 
       const customMarker = document.createElement('div')
       customMarker.className =
-        'w-8 h-8 border-2 border-white rounded-full bg-red'
+        'w-10 h-10 border-2 border-white rounded-full bg-red ring-2 ring-red ring-offset-2 ring-offset-white'
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore

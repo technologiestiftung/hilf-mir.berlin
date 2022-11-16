@@ -38,7 +38,6 @@ export const geocode = async (query: string): Promise<SearchResultType> => {
     }
 
     const data = (await response.json()) as SearchResultType
-    console.log(data)
 
     return data
   } catch (error: unknown) {

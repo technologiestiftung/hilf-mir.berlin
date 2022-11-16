@@ -8,6 +8,7 @@ import { useTexts } from '@lib/TextsContext'
 import Link from 'next/link'
 import { FC } from 'react'
 import { getLabelsSort } from '@lib/getLabelsSort'
+import { Arrow } from './icons/Arrow'
 
 interface FacilityListItemPropsType extends MinimalRecordType {
   className?: string
@@ -77,8 +78,8 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
           {allLabels.length > 0 && (
             <footer className="pb-7">
               {topicsLabels.length > 0 && (
-                <div className="overflow-x-auto">
-                  <div className="float-left mx-5 flex gap-1 py-4">
+                <div className={classNames('overflow-x-auto mb-2')}>
+                  <div className="float-left pt-3 pb-0.5 mb-1 flex gap-1 mx-5">
                     {topicsLabels.sort(getLabelsSort(urlState)).map((label) => (
                       <span
                         className={classNames(
@@ -118,6 +119,15 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
               )}
             </footer>
           )}
+          <span
+            className={classNames(
+              'font-bold text-red py-4 flex gap-2 justify-end text-right',
+              'border-t border-gray-10 px-5'
+            )}
+          >
+            {texts.openFacilityLinkText}
+            <Arrow orientation="right" className="scale-75" />
+          </span>
         </a>
       </Link>
     </li>

@@ -6,6 +6,7 @@ import { useUrlState } from '@lib/UrlStateContext'
 import { useRecordLabels } from '@lib/hooks/useRecordLabels'
 import { useTexts } from '@lib/TextsContext'
 import { getLabelsSort } from '@lib/getLabelsSort'
+import { Arrow } from './icons/Arrow'
 
 export const FacilityCarouselSlide: FC<MinimalRecordType> = (facility) => {
   const [urlState] = useUrlState()
@@ -30,12 +31,12 @@ export const FacilityCarouselSlide: FC<MinimalRecordType> = (facility) => {
           `pb-5 block h-full`,
           `flex flex-col gap-1 bg-white group`,
           `border border-black`,
-          `transition-colors`,
+          `transition-colors hover:bg-gray-10`,
           `focus:ring-inset focus:ring-2 focus:ring-red`,
           `focus:outline-none focus:border-red`
         )}
       >
-        <div className="max-w-[calc(100vw-40px)]">
+        <div className="max-w-[calc(100vw-40px)] p-5">
           <h2
             className={classNames(
               'font-bold text-xl px-5 pt-5',
@@ -45,8 +46,8 @@ export const FacilityCarouselSlide: FC<MinimalRecordType> = (facility) => {
           >
             {facility.title}
           </h2>
-          <ul className={classNames('overflow-x-auto')}>
-            <div className="float-left py-3 flex gap-1 mx-5 swiper-no-swiping">
+          <ul className={classNames('overflow-x-auto mb-2')}>
+            <div className="float-left pt-3 pb-0.5 mb-1 flex gap-1 mx-5 swiper-no-swiping">
               {topicsLabels.sort(getLabelsSort(urlState)).map((label) => {
                 return (
                   <li
@@ -83,6 +84,15 @@ export const FacilityCarouselSlide: FC<MinimalRecordType> = (facility) => {
             </div>
           )}
         </div>
+        <span
+          className={classNames(
+            'font-bold text-red py-4 flex gap-2 justify-end text-right',
+            'border-t border-gray-10 px-5'
+          )}
+        >
+          {texts.openFacilityLinkText}
+          <Arrow orientation="right" className="scale-75" />
+        </span>
       </a>
     </Link>
   )
