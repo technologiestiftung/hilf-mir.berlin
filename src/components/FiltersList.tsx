@@ -7,16 +7,25 @@ import { useLabels } from '@lib/LabelsContext'
 import { useTexts } from '@lib/TextsContext'
 import { FC } from 'react'
 import { SwitchButton } from './SwitchButton'
+import { PrimaryButton } from './PrimaryButton'
+import { useRouter } from 'next/router'
 
 export const FiltersList: FC<{
   recordsWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
-}> = () => {
+  onSubmit?: () => void
+}> = ({ recordsWithOnlyLabels, onSubmit = () => undefined }) => {
+  const { push } = useRouter()
   const texts = useTexts()
   const labels = useLabels()
   const [urlState, updateUrlState] = useUrlState()
   const tags = urlState.tags || []
-  const { useGeolocation, setGeolocationUsage, geolocationIsForbidden } =
-    useUserGeolocation()
+  const {
+    latitude,
+    longitude,
+    useGeolocation,
+    setGeolocationUsage,
+    geolocationIsForbidden,
+  } = useUserGeolocation()
 
   const group1 = labels.filter(({ fields }) => fields.group2 === 'gruppe-1')
   const group2 = labels.filter(({ fields }) => fields.group2 === 'gruppe-2')
@@ -26,6 +35,10 @@ export const FiltersList: FC<{
   )
   const someTargetFiltersActive = targetGroups.some((targetGroup) =>
     tags.find((f) => f === targetGroup.id)
+  )
+
+  const filteredRecords = recordsWithOnlyLabels.filter((recordLabels) =>
+    tags.every((tagId) => recordLabels.find((labelId) => labelId === tagId))
   )
 
   const updateFilters = (newTags: number[]): void => {
@@ -96,6 +109,40 @@ export const FiltersList: FC<{
         >
           {texts.filtersGeoSearchLabel}
         </SwitchButton>
+        <PrimaryButton
+          className="md:max-w-sm"
+          onClick={() => {
+            onSubmit()
+            void push({
+              pathname: '/map',
+              query: {
+                ...urlState,
+                ...(latitude && longitude ? { latitude, longitude } : {}),
+              },
+            })
+          }}
+          disabled={tags.length > 0 && filteredRecords.length === 0}
+          tooltip={
+            tags.length > 0 && filteredRecords.length === 0
+              ? texts.filtersButtonTextFilteredNoResultsHint
+              : ''
+          }
+        >
+          {(tags.length === 0 || tags.length === labels.length) &&
+            texts.filtersButtonTextAllFilters}
+          {tags.length > 0 &&
+            filteredRecords.length === 1 &&
+            texts.filtersButtonTextFilteredSingular}
+          {tags.length > 0 &&
+            filteredRecords.length > 1 &&
+            texts.filtersButtonTextFilteredPlural.replace(
+              '#number',
+              `${filteredRecords.length}`
+            )}
+          {tags.length > 0 &&
+            filteredRecords.length === 0 &&
+            texts.filtersButtonTextFilteredNoResults}
+        </PrimaryButton>
       </div>
     </div>
   )
