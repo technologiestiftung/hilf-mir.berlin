@@ -1,3 +1,11 @@
+# [1.3.0-rc.2](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.3.0-rc.1...v1.3.0-rc.2) (2022-11-16)
+
+
+### Features
+
+* **WEG-61:** always sort facilities when new filters are applied ([afa9915](https://github.com/technologiestiftung/wegweiser-frontend/commit/afa9915f9e88f81a9420ca0e590ca40e3b450fa1))
+* **WEG-61:** don't sort facilities without permission ([5cdd4c0](https://github.com/technologiestiftung/wegweiser-frontend/commit/5cdd4c0aba4d315192f7b37e3eec8e89edee249e))
+
 # [1.3.0-rc.1](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.2.0...v1.3.0-rc.1) (2022-11-10)
 
 
