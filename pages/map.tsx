@@ -10,7 +10,8 @@ import { GristLabelType } from '@common/types/gristData'
 import { useUrlState } from '@lib/UrlStateContext'
 import { useRouter } from 'next/router'
 import { loadData } from '@lib/loadData'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { useDistanceToUser } from '@lib/hooks/useDistanceToUser'
 
 export const getStaticProps: GetStaticProps = async () => {
   const { texts, labels, records } = await loadData()
@@ -40,17 +41,40 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
   const [urlState, setUrlState] = useUrlState()
   const texts = useTexts()
   const { isFallback } = useRouter()
+  const { getDistanceToUser } = useDistanceToUser()
 
   const [filteredRecords, setFilteredRecords] =
     useState<MinimalRecordType[]>(originalRecords)
+
+  const sortFacilities = useCallback(
+    (facilities: MinimalRecordType[]) => {
+      return facilities.sort((a, b) => {
+        const distanceToUserFromFacilityA = getDistanceToUser({
+          latitude: a.latitude,
+          longitude: a.longitude,
+        })
+        const distanceToUserFromFacilityB = getDistanceToUser({
+          latitude: b.latitude,
+          longitude: b.longitude,
+        })
+
+        // When we don't have a user geolocation we simply skip the sorting:
+        if (!distanceToUserFromFacilityA || !distanceToUserFromFacilityB)
+          return 0
+
+        return distanceToUserFromFacilityA - distanceToUserFromFacilityB
+      })
+    },
+    [getDistanceToUser]
+  )
 
   useEffect(() => {
     if (!urlState.tags || urlState.tags?.length < 0) return
     const newFilteredRecords = originalRecords.filter((record) =>
       urlState.tags?.every((t) => record.labels.find((l) => l === t))
     )
-    return setFilteredRecords(newFilteredRecords)
-  }, [urlState.tags, originalRecords])
+    return setFilteredRecords(sortFacilities(newFilteredRecords))
+  }, [urlState.tags, originalRecords, sortFacilities])
 
   const [pageTitle, setPageTitle] = useState(texts.mapPageTitle)
 
