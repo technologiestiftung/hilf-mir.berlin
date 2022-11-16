@@ -12,6 +12,7 @@ import { useRouter } from 'next/router'
 import { loadData } from '@lib/loadData'
 import { useCallback, useEffect, useState } from 'react'
 import { useDistanceToUser } from '@lib/hooks/useDistanceToUser'
+import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
 
 export const getStaticProps: GetStaticProps = async () => {
   const { texts, labels, records } = await loadData()
@@ -42,12 +43,14 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
   const texts = useTexts()
   const { isFallback } = useRouter()
   const { getDistanceToUser } = useDistanceToUser()
+  const { useGeolocation } = useUserGeolocation()
 
   const [filteredRecords, setFilteredRecords] =
     useState<MinimalRecordType[]>(originalRecords)
 
   const sortFacilities = useCallback(
     (facilities: MinimalRecordType[]) => {
+      if (!useGeolocation) return facilities
       return facilities.sort((a, b) => {
         const distanceToUserFromFacilityA = getDistanceToUser({
           latitude: a.latitude,
@@ -65,7 +68,7 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
         return distanceToUserFromFacilityA - distanceToUserFromFacilityB
       })
     },
-    [getDistanceToUser]
+    [getDistanceToUser, useGeolocation]
   )
 
   useEffect(() => {
