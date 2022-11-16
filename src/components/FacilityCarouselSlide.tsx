@@ -5,12 +5,9 @@ import Link from 'next/link'
 import { useUrlState } from '@lib/UrlStateContext'
 import { useRecordLabels } from '@lib/hooks/useRecordLabels'
 import { useTexts } from '@lib/TextsContext'
-import { PrimaryButton } from './PrimaryButton'
-import { useRouter } from 'next/router'
 import { Arrow } from './icons/Arrow'
 
 export const FacilityCarouselSlide: FC<MinimalRecordType> = (facility) => {
-  const { push } = useRouter()
   const [urlState] = useUrlState()
   const texts = useTexts()
   const { topicsLabels, targetAudienceLabels } = useRecordLabels(
