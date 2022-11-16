@@ -79,18 +79,7 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
         {!isFallback &&
           (filteredRecords.length !== originalRecords.length ||
             filteredRecords.length === 0) && (
-            <div className="text-lg p-5 border-y border-gray-20 bg-gray-10/50">
-              <p>
-                {filteredRecords.length === 0 && texts.noResults}
-                {filteredRecords.length === 1 &&
-                  texts.filteredResultsAmountSingular
-                    .replace('#number', `${filteredRecords.length}`)
-                    .replace('#total', `${originalRecords.length}`)}
-                {filteredRecords.length > 1 &&
-                  texts.filteredResultsAmountPlural
-                    .replace('#number', `${filteredRecords.length}`)
-                    .replace('#total', `${originalRecords.length}`)}
-              </p>
+            <div className="p-5 text-lg border-y border-gray-20 bg-gray-10/50">
               <button
                 onClick={() => setUrlState({ tags: [] })}
                 className={classNames(
