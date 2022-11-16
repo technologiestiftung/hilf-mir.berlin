@@ -7,6 +7,7 @@ import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { useTexts } from '@lib/TextsContext'
 import Link from 'next/link'
 import { FC } from 'react'
+import { Arrow } from './icons/Arrow'
 
 interface FacilityListItemPropsType extends MinimalRecordType {
   className?: string
@@ -114,6 +115,15 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
               )}
             </footer>
           )}
+          <span
+            className={classNames(
+              'font-bold text-red py-4 flex gap-2 justify-end text-right',
+              'border-t border-gray-10 px-5'
+            )}
+          >
+            {texts.openFacilityLinkText}
+            <Arrow orientation="right" className="scale-75" />
+          </span>
         </a>
       </Link>
     </li>
