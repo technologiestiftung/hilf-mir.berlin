@@ -84,6 +84,7 @@ const defaultValue = {
   filtersSearchTargetLabelOnCard: '',
   geolocationForbidden: '',
   opened: '',
+  alwaysOpened: '',
   mapPageTitle: '',
   weekdayMonday: '',
   weekdayTuesday: '',

@@ -44,7 +44,8 @@ const OpenDaysItem: FC<OpenDaysType> = ({ day, hours, isActive }) => {
 export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
   const [urlState] = useUrlState()
   const texts = useTexts()
-  const isOpened = useIsFacilityOpened(mapRecordToMinimum(facility))
+  const parsedFacilty = mapRecordToMinimum(facility)
+  const isOpened = useIsFacilityOpened(parsedFacilty)
   const distance = useDistanceToUser({
     latitude: facility.fields.lat,
     longitude: facility.fields.long,
@@ -102,16 +103,16 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
   return (
     <>
       <BackButton href={{ pathname: `/map`, query: { ...urlState } }} />
-      <article className="h-full flex flex-col gap-8">
+      <article className="flex flex-col h-full gap-8">
         <div className="px-5 pt-5">
           <h1 className="mb-2 text-3xl normal-case break-words hyphens-auto">
             {facility.fields.Einrichtung}
           </h1>
           {(distance || isOpened) && (
-            <div className="flex gap-4 text-lg">
+            <div className="flex text-lg gap-4">
               {isOpened && (
-                <span className="text-mittelgruen flex gap-2 items-center">
-                  <span className="w-2 h-2 inline-block bg-mittelgruen rounded-full"></span>
+                <span className="flex items-center text-mittelgruen gap-2">
+                  <span className="inline-block w-2 h-2 rounded-full bg-mittelgruen"></span>
                   {texts.opened}
                 </span>
               )}
@@ -123,16 +124,16 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
         {allLabels.length > 0 && (
           <div className="w-full">
             {topicsLabels.length > 0 && (
-              <div className="flex gap-2 p-5 flex-wrap">
+              <div className="flex flex-wrap p-5 gap-2">
                 {topicsLabels.map(renderLabel)}
               </div>
             )}
             {targetAudienceLabels.length > 0 && (
               <>
-                <h2 className="px-5 font-bold text-lg mt-2">
+                <h2 className="px-5 mt-2 text-lg font-bold">
                   {texts.filtersSearchTargetLabelOnCard}
                 </h2>
-                <div className="flex gap-2 p-5 pt-1 flex-wrap">
+                <div className="flex flex-wrap p-5 pt-1 gap-2">
                   {targetAudienceLabels.map(renderLabel)}
                 </div>
               </>
@@ -162,50 +163,72 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
         )}
         {facility.fields.Montag && (
           <div className="pb-8">
-            <h4 className="px-5 text-lg font-bold flex justify-between mb-5">
+            <h4 className="flex justify-between px-5 mb-5 text-lg font-bold">
               Öffnungszeiten
-              {isOpened && (
-                <span className="text-mittelgruen flex gap-2 items-center font-normal">
-                  <span className="w-2 h-2 inline-block bg-mittelgruen rounded-full"></span>
+              {isOpened && !parsedFacilty.open247 && (
+                <span className="flex items-center font-normal text-mittelgruen gap-2">
+                  <span className="inline-block w-2 h-2 rounded-full bg-mittelgruen"></span>
                   {texts.opened}
                 </span>
               )}
             </h4>
-            <OpenDaysItem
-              isActive={todayKey === 'Montag'}
-              day={texts.weekdayMonday}
-              hours={facility.fields.Montag}
-            />
-            <OpenDaysItem
-              isActive={todayKey === 'Dienstag'}
-              day={texts.weekdayTuesday}
-              hours={facility.fields.Dienstag}
-            />
-            <OpenDaysItem
-              isActive={todayKey === 'Mittwoch'}
-              day={texts.weekdayWednesday}
-              hours={facility.fields.Mittwoch}
-            />
-            <OpenDaysItem
-              isActive={todayKey === 'Donnerstag'}
-              day={texts.weekdayThursday}
-              hours={facility.fields.Donnerstag}
-            />
-            <OpenDaysItem
-              isActive={todayKey === 'Freitag'}
-              day={texts.weekdayFriday}
-              hours={facility.fields.Freitag}
-            />
-            <OpenDaysItem
-              isActive={todayKey === 'Samstag'}
-              day={texts.weekdaySaturday}
-              hours={facility.fields.Samstag}
-            />
-            <OpenDaysItem
-              isActive={todayKey === 'Sonntag'}
-              day={texts.weekdaySunday}
-              hours={facility.fields.Sonntag}
-            />
+            {parsedFacilty.open247 && (
+              <div className="px-5">
+                <p
+                  className={classNames(
+                    'flex items-center gap-2 justify-center',
+                    'border border-mittelgruen text-mittelgruen font-bold ',
+                    'px-5 py-2'
+                  )}
+                >
+                  <span
+                    className={classNames(
+                      'inline-block w-2 h-2 rounded-full bg-mittelgruen'
+                    )}
+                  ></span>
+                  {texts.alwaysOpened}
+                </p>
+              </div>
+            )}
+            {!parsedFacilty.open247 && (
+              <>
+                <OpenDaysItem
+                  isActive={todayKey === 'Montag'}
+                  day={texts.weekdayMonday}
+                  hours={facility.fields.Montag}
+                />
+                <OpenDaysItem
+                  isActive={todayKey === 'Dienstag'}
+                  day={texts.weekdayTuesday}
+                  hours={facility.fields.Dienstag}
+                />
+                <OpenDaysItem
+                  isActive={todayKey === 'Mittwoch'}
+                  day={texts.weekdayWednesday}
+                  hours={facility.fields.Mittwoch}
+                />
+                <OpenDaysItem
+                  isActive={todayKey === 'Donnerstag'}
+                  day={texts.weekdayThursday}
+                  hours={facility.fields.Donnerstag}
+                />
+                <OpenDaysItem
+                  isActive={todayKey === 'Freitag'}
+                  day={texts.weekdayFriday}
+                  hours={facility.fields.Freitag}
+                />
+                <OpenDaysItem
+                  isActive={todayKey === 'Samstag'}
+                  day={texts.weekdaySaturday}
+                  hours={facility.fields.Samstag}
+                />
+                <OpenDaysItem
+                  isActive={todayKey === 'Sonntag'}
+                  day={texts.weekdaySunday}
+                  hours={facility.fields.Sonntag}
+                />
+              </>
+            )}
           </div>
         )}
       </article>
