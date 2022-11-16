@@ -46,7 +46,8 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
   const texts = useTexts()
   const parsedFacilty = mapRecordToMinimum(facility)
   const isOpened = useIsFacilityOpened(parsedFacilty)
-  const distance = useDistanceToUser({
+  const { getDistanceToUser } = useDistanceToUser()
+  const distance = getDistanceToUser({
     latitude: facility.fields.lat,
     longitude: facility.fields.long,
   })
