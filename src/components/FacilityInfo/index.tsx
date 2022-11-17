@@ -16,6 +16,7 @@ import { Geopin } from '@components/icons/Geopin'
 import { getTodayKey } from '@lib/getTodayKey'
 import { useUrlState } from '@lib/UrlStateContext'
 import { Accessible } from '@components/icons/Accessible'
+import Link from 'next/link'
 
 interface FacilityInfoType {
   facility: TableRowType
@@ -147,23 +148,35 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
         )}
         {infoList.length > 0 && (
           <ul className="text-lg">
-            {infoList.map(({ icon, text, href }, idx) => (
-              <li
-                key={idx}
-                className={classNames(
-                  `flex gap-4 px-5 py-3 odd:bg-gray-10`,
-                  `items-center`
-                )}
-              >
-                <span className="text-red">{icon}</span>
-                {href && (
-                  <TextLink className="no-underline" href={href}>
-                    {text}
-                  </TextLink>
-                )}
-                {!href && <span>{text}</span>}
-              </li>
-            ))}
+            {infoList.map(({ icon, text, href }, idx) => {
+              const containerClass = classNames(
+                `flex gap-4 px-5 py-3 group-odd:bg-gray-10`,
+                `items-center`
+              )
+              const content = (
+                <>
+                  <span className="text-red">{icon}</span>
+                  <span>{text}</span>
+                </>
+              )
+              return (
+                <li key={idx} className="group">
+                  {href && (
+                    <Link href={href}>
+                      <a
+                        className={classNames(
+                          containerClass,
+                          `hover:text-red transition-colors`
+                        )}
+                      >
+                        {content}
+                      </a>
+                    </Link>
+                  )}
+                  {!href && <div className={containerClass}>{content}</div>}
+                </li>
+              )
+            })}
           </ul>
         )}
         {facility.fields.Montag && (
