@@ -32,10 +32,10 @@ export const Search: FC<SearchType> = ({
           name="place"
           id="geocoding-input"
           className={classNames(
-            `border border-gray-100 px-3 py-2 h-12`,
+            `border border-gray-100 px-3 py-2 h-12 rounded-none`,
             `focus:outline-none focus:ring-2 focus:ring-red`,
             `focus:ring-offset-2 focus:ring-offset-white`,
-            `relative focus:z-10`
+            `relative focus:z-10 shadow-none`
           )}
           placeholder="Adresssuche"
           value={searchInput}
