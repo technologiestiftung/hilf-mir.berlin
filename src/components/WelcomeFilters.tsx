@@ -23,7 +23,7 @@ export const WelcomeFilters: FC<{
     <>
       <div
         className={classNames(
-          'h-screen md:h-auto flex flex-col overflow-y-auto',
+          'h-full md:h-auto flex flex-col overflow-y-auto',
           isMobile && `w-1/2 float-left`
         )}
       >

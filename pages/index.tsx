@@ -37,11 +37,13 @@ const Home: Page<HomePropsType> = ({ labels, recordsWithOnlyLabels }) => {
           Willkommen - Digitaler Wegweiser Psychiatrie und Suchthilfe Berlin
         </title>
       </Head>
-      <div className="overflow-hidden">
+      <div
+        className={classNames('overflow-hidden', isMobile && 'fixed inset-0')}
+      >
         <div
           className={classNames(
             isMobile && showFilters ? `-translate-x-[100vw]` : ``,
-            isMobile && `w-[200vw] transition-transform`,
+            isMobile && `w-[200vw] transition-transform h-full`,
             !isMobile && `container mx-auto md:max-w-7xl`
           )}
         >
