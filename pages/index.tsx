@@ -41,7 +41,7 @@ const Home: Page<HomePropsType> = ({ labels, recordsWithOnlyLabels }) => {
         <div
           className={classNames(
             isMobile && showFilters ? `-translate-x-[100vw]` : ``,
-            isMobile && `w-[200vw] transition-transform grid grid-cols-2`,
+            isMobile && `w-[200vw] transition-transform`,
             !isMobile && `container mx-auto md:max-w-7xl`
           )}
         >

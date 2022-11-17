@@ -18,7 +18,7 @@ export const WelcomeScreen: FC<{
   const { push } = useRouter()
   const isMobile = useIsMobile()
   return (
-    <div>
+    <div className={classNames(isMobile && `w-1/2 float-left`)}>
       <div
         className={classNames(
           `grid grid-cols-1 grid-rows-[auto,auto,1fr,auto,auto,auto]`,
