@@ -23,8 +23,8 @@ export const WelcomeFilters: FC<{
     <>
       <div
         className={classNames(
-          'h-full md:h-auto flex flex-col overflow-y-auto',
-          isMobile && `w-1/2 float-left`
+          'h-full md:h-auto flex flex-col overflow-y-auto overflow-x-auto',
+          isMobile && `w-screen float-left`
         )}
       >
         {isMobile && <BackButton onClick={onGoBack} />}

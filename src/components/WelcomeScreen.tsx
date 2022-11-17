@@ -20,7 +20,8 @@ export const WelcomeScreen: FC<{
   return (
     <div
       className={classNames(
-        isMobile && `w-1/2 float-left overflow-y-auto h-full`
+        isMobile &&
+          `w-screen float-left overflow-y-auto h-full overflow-x-hidden`
       )}
     >
       <div
