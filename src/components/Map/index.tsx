@@ -277,8 +277,8 @@ export const FacilitiesMap: FC<MapType> = ({
 
       const customMarker = document.createElement('div')
       customMarker.className = classNames(
-        'w-8 h-8 border-2 border-white rounded-full bg-gray-60 ring-2',
-        'ring-gray-60 ring-offset-2 ring-offset-white'
+        'w-8 h-8 border-2 border-white rounded-full bg-blau ring-2',
+        'ring-blau ring-offset-2 ring-offset-white'
       )
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -286,6 +286,11 @@ export const FacilitiesMap: FC<MapType> = ({
       highlightedUserGeoposition.current = new maplibregl.Marker(customMarker)
         .setLngLat([userLongitude, userLatitude])
         .addTo(map.current)
+
+      map.current.easeTo({
+        center: [userLongitude, userLatitude],
+        zoom: 17,
+      })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapIsFullyLoaded, userGeolocationIsLoading, useGeolocation])
