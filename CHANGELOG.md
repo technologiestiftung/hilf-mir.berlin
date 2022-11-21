@@ -1,3 +1,18 @@
+# [1.3.0-rc.4](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.3.0-rc.3...v1.3.0-rc.4) (2022-11-21)
+
+
+### Bug Fixes
+
+* **WEG-100:** Fix rounded corners of search input in IOS ([bad1463](https://github.com/technologiestiftung/wegweiser-frontend/commit/bad1463420270d9a62ca96c5ed09c8abceab2b9c))
+
+# [1.3.0-rc.3](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.3.0-rc.2...v1.3.0-rc.3) (2022-11-21)
+
+
+### Bug Fixes
+
+* **WEG-124:** Fix scroll container wrongly sized on mobile ([d7e52a3](https://github.com/technologiestiftung/wegweiser-frontend/commit/d7e52a369e15229382a3c45c16dac9b72af37e35))
+* **WEG-124:** Use fixed position for the scroll container on mobile ([09d0884](https://github.com/technologiestiftung/wegweiser-frontend/commit/09d088449d13299c81354e862e0b917380cc8ed1))
+
 # [1.3.0-rc.2](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.3.0-rc.1...v1.3.0-rc.2) (2022-11-16)
 
 

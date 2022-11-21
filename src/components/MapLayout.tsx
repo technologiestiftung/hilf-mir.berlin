@@ -117,7 +117,7 @@ export const MapLayout: FC<{
             )}
           >
             <IconButton
-              className="flex"
+              className="flex drop-shadow-lg"
               onClick={() => {
                 const aside = document.getElementById(`main-sidebar`)
                 if (!aside) return
