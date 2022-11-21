@@ -1,3 +1,10 @@
+# [1.3.0-rc.4](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.3.0-rc.3...v1.3.0-rc.4) (2022-11-21)
+
+
+### Bug Fixes
+
+* **WEG-100:** Fix rounded corners of search input in IOS ([bad1463](https://github.com/technologiestiftung/wegweiser-frontend/commit/bad1463420270d9a62ca96c5ed09c8abceab2b9c))
+
 # [1.3.0-rc.3](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.3.0-rc.2...v1.3.0-rc.3) (2022-11-21)
 
 
