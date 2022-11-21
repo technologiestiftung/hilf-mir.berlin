@@ -25,7 +25,8 @@ export const MapListSwitch: FC<MapListSwitchPropsType> = ({
           `border border-black px-4 py-2 text-xl font-bold`,
           `bg-white flex gap-3 text-left whitespace-nowrap`,
           `focus:outline-none focus:ring-2 focus:ring-red`,
-          `focus:ring-offset-2 focus:ring-offset-white`
+          `focus:ring-offset-2 focus:ring-offset-white`,
+          `drop-shadow-lg`
         )}
       >
         {listViewOpen ? <Map /> : <List />}
