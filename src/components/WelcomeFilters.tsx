@@ -48,9 +48,10 @@ export const WelcomeFilters: FC<{
               </SecondaryButton>
             </h2>
           )}
-          <p className="text-lg pb-6 md:pb-0 leading-snug md:max-w-[66%]">
-            {texts.welcomeFiltersText}
-          </p>
+          <p
+            className="text-lg pb-6 md:pb-0 leading-snug md:max-w-[66%]"
+            dangerouslySetInnerHTML={{ __html: texts.welcomeFiltersText }}
+          />
           <FiltersList recordsWithOnlyLabels={recordsWithOnlyLabels} />
           <div className="hidden md:block w-full mt-6">
             <TextLink href={texts.moreOffersKVBLinkUrl}>
