@@ -85,23 +85,18 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
               `border-t border-b border-r border-black`,
               listViewOpen && `border-l lg:border-l-0`,
               `px-4 py-2 h-12 text-xl font-bold`,
-              `bg-white text-left whitespace-nowrap`,
-              `transition-colors group-hover:bg-red group-hover:text-white`
+              `text-left whitespace-nowrap`,
+              `transition-colors group-hover:bg-red group-hover:text-white`,
+              urlState.tags && urlState.tags.length > 0
+                ? `bg-red text-white`
+                : `bg-white`
             )}
           >
+            {urlState.tags && urlState.tags.length > 0
+              ? `${urlState.tags.length} `
+              : ''}
             {texts.filterLabel}
           </span>
-          {urlState.tags && urlState.tags.length > 0 && (
-            <span
-              className={classNames(
-                `border border-black border-l-0`,
-                `flex items-center h-12 w-12 text-lg justify-center`,
-                `bg-red text-white font-bold text-center leading-4`
-              )}
-            >
-              {urlState.tags.length}
-            </span>
-          )}
         </button>
       </div>
     </>
