@@ -1,3 +1,10 @@
+# [1.3.0-rc.5](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.3.0-rc.4...v1.3.0-rc.5) (2022-11-21)
+
+
+### Bug Fixes
+
+* **WEG-134:** Show selected item as well as user location ([3c1114e](https://github.com/technologiestiftung/wegweiser-frontend/commit/3c1114e88869bcb48762711191d6787d977d1348))
+
 # [1.3.0-rc.4](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.3.0-rc.3...v1.3.0-rc.4) (2022-11-21)
 
 
