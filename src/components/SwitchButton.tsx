@@ -22,7 +22,7 @@ export const SwitchButton: FC<SwitchButtonPropsType> = ({
     className={classNames(
       className,
       `mb-8 flex w-full gap-5 text-lg items-center`,
-      `transition-colors relative`,
+      `transition-colors relative text-left`,
       `focus:outline-none group`,
       !disabled && `hover:text-red`,
       disabled && `cursor-not-allowed text-gray-40`
@@ -30,26 +30,28 @@ export const SwitchButton: FC<SwitchButtonPropsType> = ({
   >
     <span
       className={classNames(
-        `border flex relative w-[54px]`,
+        `rounded-full p-1 flex relative w-[61px]`,
         !disabled && [
-          `border-black bg-gray-10 `,
+          `border-black`,
           `group-focus:outline-none group-focus:ring-2 group-focus:ring-red`,
           `group-focus:ring-offset-2 group-focus:ring-offset-white`,
         ],
-        disabled && [`border-gray-20 bg-white`]
+        value ? 'bg-mittelgruen' : `bg-gray-10`
       )}
     >
       <span className="w-6 h-6 inline-block" />
       <span className="w-6 h-6 inline-block" />
       <span
         className={classNames(
-          `absolute top-0 left-0 w-6 h-6 inline-block`,
-          `transition`,
+          `absolute top-0 left-0 m-1 w-6 h-6 inline-block`,
+          `transition rounded-full`,
           value && 'translate-x-[28px]',
           !disabled && [
-            !disabled && value ? `bg-red` : `bg-gray-20 group-hover:bg-gray-40`,
+            !disabled && value
+              ? `bg-white`
+              : `bg-gray-20 group-hover:bg-gray-40`,
           ],
-          disabled && `bg-gray-10`
+          disabled && `bg-gray-20`
         )}
       />
     </span>
