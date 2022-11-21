@@ -3,7 +3,7 @@ import Head from 'next/head'
 import classNames from '@lib/classNames'
 import { WelcomeScreen } from '@components/WelcomeScreen'
 import { WelcomeFilters } from '@components/WelcomeFilters'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { GristLabelType, TableRowType } from '@common/types/gristData'
 import { useIsMobile } from '@lib/hooks/useIsMobile'
 import { LegalFooter } from '@components/LegalFooter'
@@ -30,6 +30,14 @@ interface HomePropsType {
 const Home: Page<HomePropsType> = ({ labels, recordsWithOnlyLabels }) => {
   const [showFilters, setShowFilters] = useState(false)
   const isMobile = useIsMobile()
+
+  useEffect(() => {
+    document.body.classList.add('overflow-hidden')
+    return () => {
+      document.body.classList.remove('overflow-hidden')
+    }
+  }, [])
+
   return (
     <LabelsProvider value={labels}>
       <Head>
@@ -37,11 +45,13 @@ const Home: Page<HomePropsType> = ({ labels, recordsWithOnlyLabels }) => {
           Willkommen - Digitaler Wegweiser Psychiatrie und Suchthilfe Berlin
         </title>
       </Head>
-      <div className="overflow-hidden">
+      <div
+        className={classNames('overflow-hidden', isMobile && 'fixed inset-0')}
+      >
         <div
           className={classNames(
             isMobile && showFilters ? `-translate-x-[100vw]` : ``,
-            isMobile && `w-[200vw] transition-transform grid grid-cols-2`,
+            isMobile && `w-[200vw] transition-transform h-full`,
             !isMobile && `container mx-auto md:max-w-7xl`
           )}
         >

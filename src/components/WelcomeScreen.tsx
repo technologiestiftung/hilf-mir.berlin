@@ -18,28 +18,33 @@ export const WelcomeScreen: FC<{
   const { push } = useRouter()
   const isMobile = useIsMobile()
   return (
-    <div>
+    <div
+      className={classNames(
+        isMobile &&
+          `w-screen float-left overflow-y-auto h-full overflow-x-hidden`
+      )}
+    >
       <div
         className={classNames(
           `grid grid-cols-1 grid-rows-[auto,auto,1fr,auto,auto,auto]`,
-          isMobile && `min-h-screen`
+          isMobile && `min-h-full`
         )}
       >
         <div>
           <section className="w-full h-32 md:h-[202px] relative">
             <Image src={introImage} layout="fill" objectFit="cover" />
-            <span className="absolute right-0 bottom-0 w-20 h-20">
+            <span className="absolute bottom-0 right-0 w-20 h-20">
               {/* eslint-disable-next-line prettier/prettier */}
               <StripesPattern aria-hidden="true" />
             </span>
           </section>
         </div>
-        <h1 className="p-5 md:px-8 pt-6 md:pt-12">{texts.homeWelcomeTitle}</h1>
-        <p className="px-5 md:px-8 bp-8 text-lg leading-snug max-w-prose md:mb-8">
+        <h1 className="p-5 pt-6 md:px-8 md:pt-12">{texts.homeWelcomeTitle}</h1>
+        <p className="px-5 text-lg leading-snug md:px-8 bp-8 max-w-prose md:mb-8">
           {texts.homeWelcomeText}
         </p>
         {isMobile && (
-          <div className="flex flex-col gap-2 p-5 pt-8">
+          <div className="flex flex-col p-5 pt-8 gap-2">
             <PrimaryButton onClick={onShowOffers}>
               {texts.findOffersButtonText}
             </PrimaryButton>
