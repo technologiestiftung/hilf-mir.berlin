@@ -27,6 +27,7 @@ interface MapType {
    * Also, a highlighted marker will be drawn to the map.
    */
   highlightedCenter?: LngLatLike
+  searchCenter?: LngLatLike
 }
 
 const easeInOutQuad = (t: number): number =>
@@ -52,9 +53,11 @@ export const FacilitiesMap: FC<MapType> = ({
   onMoveStart = () => undefined,
   onClickAnywhere = () => undefined,
   highlightedCenter,
+  searchCenter,
 }) => {
   const map = useRef<Map>(null)
   const highlightedMarker = useRef<Marker>(null)
+  const highlightedSearchMarker = useRef<Marker>(null)
   const highlightedUserGeoposition = useRef<Marker>(null)
 
   const { pathname } = useRouter()
@@ -256,16 +259,6 @@ export const FacilitiesMap: FC<MapType> = ({
   }, [markers])
 
   useEffect(() => {
-    if (!map.current || !highlightedCenter) return
-
-    map.current.easeTo({
-      center: highlightedCenter,
-      zoom: 17,
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [highlightedCenter])
-
-  useEffect(() => {
     if (!map.current) return
     if (!useGeolocation || !userLatitude || !userLongitude) {
       // Without a userGeolocation we want to remove any highlightedUserGeoposition:
@@ -297,6 +290,33 @@ export const FacilitiesMap: FC<MapType> = ({
 
   useEffect(() => {
     if (!map.current) return
+    if (!searchCenter) {
+      // Without a searchCenter we want to remove any highlightedSearchMarker:
+      highlightedSearchMarker && highlightedSearchMarker.current?.remove()
+      return
+    } else {
+      // Remove possibly existent markers:
+      highlightedSearchMarker.current?.remove()
+
+      const customMarker = document.createElement('div')
+      customMarker.className = classNames('w-8 h-8 bg-norepeat')
+      customMarker.style.backgroundImage = 'url("/images/search_geopin.svg")'
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      highlightedSearchMarker.current = new maplibregl.Marker(customMarker)
+        .setLngLat(searchCenter)
+        .addTo(map.current)
+
+      map.current.easeTo({
+        center: searchCenter,
+        zoom: 17,
+      })
+    }
+  }, [searchCenter])
+
+  useEffect(() => {
+    if (!map.current) return
     if (!highlightedCenter) {
       // Without a highlightedCenter we want to remove any highlightedMarker:
       highlightedMarker && highlightedMarker.current?.remove()
@@ -306,14 +326,21 @@ export const FacilitiesMap: FC<MapType> = ({
       highlightedMarker.current?.remove()
 
       const customMarker = document.createElement('div')
-      customMarker.className = classNames('w-8 h-8 bg-norepeat')
-      customMarker.style.backgroundImage = 'url("/images/search_geopin.svg")'
+      customMarker.className = classNames(
+        'w-10 h-10 bg-red rounded-full ring-2',
+        'ring-offset-white ring-offset-2 ring-red'
+      )
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       highlightedMarker.current = new maplibregl.Marker(customMarker)
         .setLngLat(highlightedCenter)
         .addTo(map.current)
+
+      map.current.easeTo({
+        center: highlightedCenter,
+        zoom: 17,
+      })
     }
   }, [highlightedCenter])
 
