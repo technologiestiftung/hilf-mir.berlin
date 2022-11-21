@@ -9,6 +9,8 @@ import { useDebouncedCallback } from 'use-debounce'
 import { URLViewportType } from '@lib/types/map'
 import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { useUrlState } from '@lib/UrlStateContext'
+import classNames from '@lib/classNames'
+import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
 
 interface MapType {
   markers?: MinimalRecordType[]
@@ -53,9 +55,16 @@ export const FacilitiesMap: FC<MapType> = ({
 }) => {
   const map = useRef<Map>(null)
   const highlightedMarker = useRef<Marker>(null)
+  const highlightedUserGeoposition = useRef<Marker>(null)
 
   const { pathname } = useRouter()
   const [urlState, setUrlState] = useUrlState()
+  const {
+    isLoading: userGeolocationIsLoading,
+    latitude: userLatitude,
+    longitude: userLongitude,
+    useGeolocation,
+  } = useUserGeolocation()
 
   // The initial viewport will be available on 2nd render,
   // because we get it from useRouter. First it has to be null.
@@ -80,7 +89,7 @@ export const FacilitiesMap: FC<MapType> = ({
 
     if (
       mapLongitude === urlState.longitude &&
-      mapLatitude == urlState.latitude &&
+      mapLatitude === urlState.latitude &&
       mapZoom === urlState.zoom
     )
       return
@@ -258,6 +267,31 @@ export const FacilitiesMap: FC<MapType> = ({
 
   useEffect(() => {
     if (!map.current) return
+    if (!useGeolocation || !userLatitude || !userLongitude) {
+      // Without a userGeolocation we want to remove any highlightedUserGeoposition:
+      highlightedUserGeoposition && highlightedUserGeoposition.current?.remove()
+      return
+    } else {
+      // Remove possibly existent user geoposition marker:
+      highlightedUserGeoposition.current?.remove()
+
+      const customMarker = document.createElement('div')
+      customMarker.className = classNames(
+        'w-8 h-8 border-2 border-white rounded-full bg-gray-60 ring-2',
+        'ring-gray-60 ring-offset-2 ring-offset-white'
+      )
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      highlightedUserGeoposition.current = new maplibregl.Marker(customMarker)
+        .setLngLat([userLongitude, userLatitude])
+        .addTo(map.current)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mapIsFullyLoaded, userGeolocationIsLoading, useGeolocation])
+
+  useEffect(() => {
+    if (!map.current) return
     if (!highlightedCenter) {
       // Without a highlightedCenter we want to remove any highlightedMarker:
       highlightedMarker && highlightedMarker.current?.remove()
@@ -267,8 +301,10 @@ export const FacilitiesMap: FC<MapType> = ({
       highlightedMarker.current?.remove()
 
       const customMarker = document.createElement('div')
-      customMarker.className =
-        'w-10 h-10 border-2 border-white rounded-full bg-red ring-2 ring-red ring-offset-2 ring-offset-white'
+      customMarker.className = classNames(
+        'w-10 h-10 border-2 border-white rounded-full bg-red ring-2',
+        'ring-red ring-offset-2 ring-offset-white'
+      )
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore

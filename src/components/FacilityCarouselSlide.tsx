@@ -28,15 +28,15 @@ export const FacilityCarouselSlide: FC<MinimalRecordType> = (facility) => {
     >
       <a
         className={classNames(
-          `pb-5 block h-full`,
-          `flex flex-col gap-1 bg-white group`,
-          `border border-black`,
+          `block h-full`,
+          `flex flex-col bg-white group`,
+          `border border-black justify-between`,
           `transition-colors hover:bg-gray-10`,
           `focus:ring-inset focus:ring-2 focus:ring-red`,
           `focus:outline-none focus:border-red`
         )}
       >
-        <div className="max-w-[calc(100vw-40px)] p-5">
+        <div className="max-w-[calc(100vw-40px)]">
           <h2
             className={classNames(
               'font-bold text-xl px-5 pt-5',
@@ -66,7 +66,7 @@ export const FacilityCarouselSlide: FC<MinimalRecordType> = (facility) => {
             </div>
           </ul>
           {targetAudienceLabels.length > 0 && (
-            <div className="text-sm leading-4 px-5 ">
+            <div className="text-sm leading-4 px-5 pb-5">
               {texts.filtersSearchTargetLabelOnCard}:{' '}
               <strong>
                 {targetAudienceLabels.map(({ id, fields }, idx) => (

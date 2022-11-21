@@ -23,12 +23,11 @@ const SCROLL_THRESHOLD = 300
 export const MapLayout: FC<{
   records: MinimalRecordType[]
   labels: GristLabelType[]
-  center?: LngLatLike
-}> = ({ children, records, labels, center }) => {
-  const { pathname, isFallback } = useRouter()
+}> = ({ children, records, labels }) => {
+  const { query, pathname, isFallback } = useRouter()
   const texts = useTexts()
   const [listViewOpen, setListViewOpen] = useState<boolean>(false)
-  const [mapCenter, setMapCenter] = useState<LngLatLike | undefined>(center)
+  const [mapCenter, setMapCenter] = useState<LngLatLike | undefined>()
   const [selectedFacilities, setSelectedFacilities] = useState<
     MinimalRecordType[]
   >([])
@@ -66,8 +65,16 @@ export const MapLayout: FC<{
   }
 
   useEffect(() => {
-    setMapCenter(center)
-  }, [center])
+    setSelectedFacilities([])
+    if (!query.id || typeof query.id !== 'string') {
+      setMapCenter(undefined)
+      return
+    }
+    const currentId = parseInt(`${query.id}`, 10)
+    const currentRecord = records.find(({ id }) => id === currentId)
+    if (!currentRecord) return
+    setMapCenter([currentRecord.longitude, currentRecord.latitude])
+  }, [query.id, records])
 
   return (
     <LabelsProvider value={labels}>
