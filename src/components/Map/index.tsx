@@ -306,10 +306,8 @@ export const FacilitiesMap: FC<MapType> = ({
       highlightedMarker.current?.remove()
 
       const customMarker = document.createElement('div')
-      customMarker.className = classNames(
-        'w-10 h-10 border-2 border-white rounded-full bg-red ring-2',
-        'ring-red ring-offset-2 ring-offset-white'
-      )
+      customMarker.className = classNames('w-8 h-8 bg-norepeat')
+      customMarker.style.backgroundImage = 'url("/images/search_geopin.svg")'
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
