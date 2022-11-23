@@ -3,17 +3,20 @@ import { FC } from 'react'
 import classNames from '@lib/classNames'
 import Link from 'next/link'
 import { useUrlState } from '@lib/UrlStateContext'
-import { useRecordLabels } from '@lib/hooks/useRecordLabels'
 import { useTexts } from '@lib/TextsContext'
-import { getLabelsSort } from '@lib/getLabelsSort'
 import { Arrow } from './icons/Arrow'
+import { useDistanceToUser } from '@lib/hooks/useDistanceToUser'
+import { useIsFacilityOpened } from '@lib/hooks/useIsFacilityOpened'
 
 export const FacilityCarouselSlide: FC<MinimalRecordType> = (facility) => {
   const [urlState] = useUrlState()
   const texts = useTexts()
-  const { topicsLabels, targetAudienceLabels } = useRecordLabels(
-    facility.labels
-  )
+  const { getDistanceToUser } = useDistanceToUser()
+  const distance = getDistanceToUser({
+    latitude: facility.latitude,
+    longitude: facility.longitude,
+  })
+  const isOpened = useIsFacilityOpened(facility)
 
   return (
     <Link
@@ -41,47 +44,26 @@ export const FacilityCarouselSlide: FC<MinimalRecordType> = (facility) => {
             className={classNames(
               'font-bold text-xl px-5 pt-5',
               `group-hover:text-red transition-colors`,
-              `group-focus:text-red`
+              `group-focus:text-red inline-flex gap-x-4 flex-wrap`
             )}
           >
             {facility.title}
+            {(distance || isOpened) && (
+              <div className="inline-flex text-lg font-normal gap-4">
+                {isOpened && (
+                  <small className="inline-flex items-center font-normal text-mittelgruen gap-2">
+                    <span className="inline-block w-2 h-2 rounded-full bg-mittelgruen" />
+                    {texts.opened}
+                  </small>
+                )}
+                {distance && <small>{distance} km</small>}
+              </div>
+            )}
           </h2>
-          <ul className={classNames('overflow-x-auto mb-2')}>
-            <div className="float-left pt-3 pb-0.5 mb-1 flex gap-1 mx-5 swiper-no-swiping">
-              {topicsLabels.sort(getLabelsSort(urlState)).map((label) => {
-                return (
-                  <li
-                    key={label.id}
-                    className={classNames(
-                      `inline-block px-1.5 py-0.5 border leading-4 whitespace-nowrap`,
-                      urlState.tags?.includes(label.id)
-                        ? `bg-red text-white border-red`
-                        : `text-sm border-gray-20 `
-                    )}
-                  >
-                    {label.fields.text}
-                  </li>
-                )
-              })}
-            </div>
-          </ul>
-          {targetAudienceLabels.length > 0 && (
-            <div className="text-sm leading-4 px-5 pb-5">
-              {texts.filtersSearchTargetLabelOnCard}:{' '}
-              <strong>
-                {targetAudienceLabels.map(({ id, fields }, idx) => (
-                  <span
-                    key={id}
-                    className={
-                      urlState.tags?.includes(id) ? `text-red` : `text-black`
-                    }
-                  >
-                    {fields.text}
-                    {idx !== targetAudienceLabels.length - 1 && ', '}
-                  </span>
-                ))}
-              </strong>
-            </div>
+          {facility.description?.length > 1 && (
+            <p className="px-5 pt-1 mb-5 line-clamp-2">
+              {facility.description}
+            </p>
           )}
         </div>
         <span

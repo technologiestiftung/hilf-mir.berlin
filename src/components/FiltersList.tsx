@@ -1,14 +1,14 @@
 import { TableRowType } from '@common/types/gristData'
 import classNames from '@lib/classNames'
-import { getLabelRenderer } from '@lib/getLabelRenderer'
 import { useUrlState } from '@lib/UrlStateContext'
 import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
-import { useLabels } from '@lib/LabelsContext'
 import { useTexts } from '@lib/TextsContext'
 import { FC } from 'react'
 import { SwitchButton } from './SwitchButton'
 import { PrimaryButton } from './PrimaryButton'
 import { useRouter } from 'next/router'
+import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
+import { FiltersTagsList } from './FiltersTagsList'
 
 export const FiltersList: FC<{
   recordsWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
@@ -16,7 +16,7 @@ export const FiltersList: FC<{
 }> = ({ recordsWithOnlyLabels, onSubmit = () => undefined }) => {
   const { push } = useRouter()
   const texts = useTexts()
-  const labels = useLabels()
+  const labels = useFiltersWithActiveProp()
   const [urlState, updateUrlState] = useUrlState()
   const tags = urlState.tags || []
   const {
@@ -49,22 +49,17 @@ export const FiltersList: FC<{
     updateUrlState({ tags: newTags })
   }
 
-  const renderLabel = getLabelRenderer({
-    activeFilters: tags,
-    onLabelClick: updateFilters,
-  })
-
   return (
     <div className="">
       <div className="md:pt-10 flex flex-wrap gap-x-8 md:pb-8">
         <ul className="flex flex-wrap gap-2 place-content-start mb-5">
-          {group1.map(renderLabel)}
+          <FiltersTagsList filters={group1} onLabelClick={updateFilters} />
         </ul>
         <ul className="flex flex-wrap gap-2 place-content-start mb-5">
-          {group2.map(renderLabel)}
+          <FiltersTagsList filters={group2} onLabelClick={updateFilters} />
         </ul>
         <ul className="flex flex-wrap gap-2 place-content-start mb-5">
-          {group3.map(renderLabel)}
+          <FiltersTagsList filters={group3} onLabelClick={updateFilters} />
         </ul>
         {someGroupFiltersActive && (
           <button
@@ -96,7 +91,10 @@ export const FiltersList: FC<{
           {texts.filtersSearchTargetLabel}
         </h3>
         <ul className="flex flex-wrap gap-2 mb-5">
-          {targetGroups.map(renderLabel)}
+          <FiltersTagsList
+            filters={targetGroups}
+            onLabelClick={updateFilters}
+          />
         </ul>
         {someTargetFiltersActive && (
           <button

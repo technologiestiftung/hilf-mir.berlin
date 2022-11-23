@@ -102,6 +102,8 @@ const defaultValue = {
   backToHome: '',
   accessibleLabel: '',
   openFacilityLinkText: '',
+  filtersTagsLabelOnCard: '',
+  andAllOtherFiltersLabel: '',
 }
 
 export type TextsMapType = typeof defaultValue
