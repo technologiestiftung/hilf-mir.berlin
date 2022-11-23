@@ -40,9 +40,10 @@ export const WelcomeScreen: FC<{
           </section>
         </div>
         <h1 className="p-5 pt-6 md:px-8 md:pt-12">{texts.homeWelcomeTitle}</h1>
-        <p className="px-5 text-lg leading-snug md:px-8 bp-8 max-w-prose md:mb-8">
-          {texts.homeWelcomeText}
-        </p>
+        <p
+          className="px-5 text-lg leading-snug md:px-8 bp-8 max-w-prose md:mb-8"
+          dangerouslySetInnerHTML={{ __html: texts.homeWelcomeText }}
+        />
         {isMobile && (
           <div className="flex flex-col p-5 pt-8 gap-2">
             <PrimaryButton onClick={onShowOffers}>

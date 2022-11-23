@@ -96,7 +96,7 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
       </Head>
       <h1
         className={classNames(
-          `hidden lg:block sticky top-0`,
+          `hidden lg:block sticky top-0 z-10`,
           `px-5 py-8 bg-white border-b border-gray-10`
         )}
       >

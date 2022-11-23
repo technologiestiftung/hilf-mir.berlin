@@ -11,6 +11,7 @@ import { useEffect } from 'react'
 import { loadCacheData } from '@lib/loadCacheData'
 import { loadData } from '@lib/loadData'
 import { LngLatLike } from 'maplibre-gl'
+import sanitizeHtml from 'sanitize-html'
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const id = params?.id
@@ -26,7 +27,16 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     props: {
       texts,
       records: minimalRecords,
-      record,
+      record: {
+        ...record,
+        Uber_uns: sanitizeHtml(record.fields.Uber_uns, {
+          allowedTags: ['a', 'b', 'i', 'em', 'strong', 'u', 'sup', 'sub'],
+          allowedAttributes: {
+            a: ['href', 'title'],
+          },
+          disallowedTagsMode: 'discard',
+        }),
+      },
       labels,
       center: [record.fields.long, record.fields.lat],
     },
