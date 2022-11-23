@@ -1,4 +1,5 @@
 import { TableRowType } from '@common/types/gristData'
+import sanitizeHtml from 'sanitize-html'
 import {
   getRecordOpeningTimesBounds,
   OpeningTimesBoundsType,
@@ -25,6 +26,10 @@ export const mapRecordToMinimum = (record: TableRowType): MinimalRecordType => {
     ...getRecordOpeningTimesBounds(record.fields),
     labels: record.fields.Schlagworte,
     open247: record.fields['c24_h_7_Tage'].trim() === 'ja',
-    description: record.fields.Uber_uns,
+    description: sanitizeHtml(record.fields.Uber_uns, {
+      allowedTags: [],
+      allowedAttributes: {},
+      disallowedTagsMode: 'discard',
+    }),
   }
 }

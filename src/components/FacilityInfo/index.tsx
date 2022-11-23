@@ -120,13 +120,16 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
               {distance && <span>{distance} km</span>}
             </div>
           )}
-          <p className="mt-4">{facility.fields.Uber_uns}</p>
+          <p
+            className="mt-4"
+            dangerouslySetInnerHTML={{ __html: facility.fields.Uber_uns }}
+          />
         </div>
         {allLabels.length > 0 && (
           <div className="w-full">
             <div className="overflow-x-auto">
               {topicsLabels.length > 0 && (
-                <div className="float-left flex gap-2 p-5 whitespace-nowrap">
+                <div className="flex float-left p-5 gap-2 whitespace-nowrap">
                   {topicsLabels.map(renderLabel)}
                 </div>
               )}
@@ -137,7 +140,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
                   {texts.filtersSearchTargetLabelOnCard}
                 </h2>
                 <div className="overflow-x-auto">
-                  <div className="float-left flex gap-2 p-5 gap-2 pt-1 whitespace-nowrap">
+                  <div className="flex float-left p-5 pt-1 gap-2 whitespace-nowrap">
                     {targetAudienceLabels.map(renderLabel)}
                   </div>
                 </div>
