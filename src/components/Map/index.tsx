@@ -11,6 +11,7 @@ import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { useUrlState } from '@lib/UrlStateContext'
 import classNames from '@lib/classNames'
 import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
+import { MapTilerLogo } from '@components/MaptilerLogo'
 
 interface MapType {
   markers?: MinimalRecordType[]
@@ -350,10 +351,13 @@ export const FacilitiesMap: FC<MapType> = ({
   )
 
   return (
-    <div
-      id="map"
-      className="w-full h-full bg-[#F8F4F0]"
-      aria-label="Kartenansicht der Einrichtungen"
-    ></div>
+    <>
+      <div
+        id="map"
+        className="w-full h-full bg-[#F8F4F0]"
+        aria-label="Kartenansicht der Einrichtungen"
+      />
+      <MapTilerLogo />
+    </>
   )
 }
