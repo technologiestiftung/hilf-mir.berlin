@@ -28,6 +28,7 @@ export const MapLayout: FC<{
   const texts = useTexts()
   const [listViewOpen, setListViewOpen] = useState<boolean>(false)
   const [mapCenter, setMapCenter] = useState<LngLatLike | undefined>()
+  const [searchCenter, setSearchCenter] = useState<LngLatLike | undefined>()
   const [selectedFacilities, setSelectedFacilities] = useState<
     MinimalRecordType[]
   >([])
@@ -57,7 +58,7 @@ export const MapLayout: FC<{
   }
 
   const handleSearchResult = (place: FeatureType): void => {
-    setMapCenter(place.center)
+    setSearchCenter(place.center)
     setUrlState({
       longitude: place.center[0],
       latitude: place.center[1],
@@ -97,6 +98,7 @@ export const MapLayout: FC<{
                 setSelectedFacilities([])
               }}
               highlightedCenter={mapCenter}
+              searchCenter={searchCenter}
             />
           </div>
         )}

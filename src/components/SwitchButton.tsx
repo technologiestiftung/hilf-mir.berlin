@@ -36,7 +36,7 @@ export const SwitchButton: FC<SwitchButtonPropsType> = ({
           `group-focus:outline-none group-focus:ring-2 group-focus:ring-red`,
           `group-focus:ring-offset-2 group-focus:ring-offset-white`,
         ],
-        value ? 'bg-mittelgruen' : `bg-gray-10`
+        value ? 'bg-blau' : `bg-gray-10`
       )}
     >
       <span className="w-6 h-6 inline-block" />
