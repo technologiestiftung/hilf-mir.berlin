@@ -1,3 +1,11 @@
+# [1.3.0-rc.6](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.3.0-rc.5...v1.3.0-rc.6) (2022-11-23)
+
+
+### Features
+
+* **WEG-97:** Allow htmls tags in particular texts ([051a9dd](https://github.com/technologiestiftung/wegweiser-frontend/commit/051a9dd52697420ebbb9b412cd58962042955673))
+* **WEG-97:** Allow specific html tags in facility info ([9f9d0e0](https://github.com/technologiestiftung/wegweiser-frontend/commit/9f9d0e0e0ae6b3c66d322a4dc9b891c18c1ec0b5))
+
 # [1.3.0-rc.5](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.3.0-rc.4...v1.3.0-rc.5) (2022-11-21)
 
 
