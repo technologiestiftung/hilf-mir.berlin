@@ -23,6 +23,10 @@ export const FiltersTextList: FC<FiltersTextListPropType> = ({
   const includesAllFilters = filters.length === tagsFilters.length
   const activeFilters = filters.filter(({ isActive }) => isActive)
   const filtersToRender = includesAllFilters ? activeFilters : filters
+  const allTopicsLabel =
+    filtersToRender.length === 0
+      ? texts.allOtherFiltersLabel
+      : texts.andAllOtherFiltersLabel
   return (
     <>
       {filtersToRender.map((filter, idx) => (
@@ -38,7 +42,7 @@ export const FiltersTextList: FC<FiltersTextListPropType> = ({
           {idx !== filtersToRender.length - 1 && ', '}
         </Fragment>
       ))}
-      {includesAllFilters && <span>&nbsp;{texts.andAllOtherFiltersLabel}</span>}
+      {includesAllFilters && <span>&nbsp;{allTopicsLabel}</span>}
     </>
   )
 }

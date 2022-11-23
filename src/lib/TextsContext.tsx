@@ -104,6 +104,7 @@ const defaultValue = {
   openFacilityLinkText: '',
   filtersTagsLabelOnCard: '',
   andAllOtherFiltersLabel: '',
+  allOtherFiltersLabel: '',
 }
 
 export type TextsMapType = typeof defaultValue
