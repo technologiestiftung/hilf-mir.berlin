@@ -21,6 +21,7 @@ export const FiltersTextList: FC<FiltersTextListPropType> = ({
     filtersToRender.length === 0
       ? texts.allOtherFiltersLabel
       : texts.andAllOtherFiltersLabel
+  const allFiltersAreSelected = activeFilters.length === filters.length
   return (
     <span className="font-bold">
       {filtersToRender.map((filter, idx) => (
@@ -33,7 +34,9 @@ export const FiltersTextList: FC<FiltersTextListPropType> = ({
           {idx !== filtersToRender.length - 1 && ', '}
         </Fragment>
       ))}
-      {includesAllFilters && <span>&nbsp;{allTopicsLabel}</span>}
+      {includesAllFilters && !allFiltersAreSelected && (
+        <span>&nbsp;{allTopicsLabel}</span>
+      )}
     </span>
   )
 }
