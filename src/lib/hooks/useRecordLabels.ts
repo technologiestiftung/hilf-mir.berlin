@@ -1,19 +1,21 @@
-import { GristLabelType } from '@common/types/gristData'
-import { useLabels } from '@lib/LabelsContext'
+import {
+  FiltersWithActivePropType,
+  useFiltersWithActiveProp,
+} from './useFiltersWithActiveProp'
 
 interface UseRecordLabelsReturnType {
-  allLabels: GristLabelType[]
-  topicsLabels: GristLabelType[]
-  targetAudienceLabels: GristLabelType[]
+  allLabels: FiltersWithActivePropType[]
+  topicsLabels: FiltersWithActivePropType[]
+  targetAudienceLabels: FiltersWithActivePropType[]
 }
 
 export const useRecordLabels = (
   labels: number[]
 ): UseRecordLabelsReturnType => {
-  const labelsWithData = useLabels()
+  const filters = useFiltersWithActiveProp()
   const recordLabels = labels
-    .map((lId) => labelsWithData.find((l) => l.id === lId))
-    .filter(Boolean) as GristLabelType[]
+    .map((lId) => filters.find((l) => l.id === lId))
+    .filter(Boolean) as FiltersWithActivePropType[]
   const topicsLabels = recordLabels.filter(
     ({ fields }) => fields.group2 !== 'zielpublikum'
   )

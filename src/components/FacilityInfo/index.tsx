@@ -6,7 +6,6 @@ import { useTexts } from '@lib/TextsContext'
 import { mapRecordToMinimum } from '@lib/mapRecordToMinimum'
 import { BackButton } from '@components/BackButton'
 import { useRecordLabels } from '@lib/hooks/useRecordLabels'
-import { getLabelRenderer } from '@lib/getLabelRenderer'
 import { Phone } from '@components/icons/Phone'
 import classNames from '@lib/classNames'
 import { Globe } from '@components/icons/Globe'
@@ -16,6 +15,7 @@ import { getTodayKey } from '@lib/getTodayKey'
 import { useUrlState } from '@lib/UrlStateContext'
 import { Accessible } from '@components/icons/Accessible'
 import Link from 'next/link'
+import { FacilityLabels } from '@components/FacilityLabels'
 
 interface FacilityInfoType {
   facility: TableRowType
@@ -51,14 +51,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
     latitude: facility.fields.lat,
     longitude: facility.fields.long,
   })
-  const { allLabels, topicsLabels, targetAudienceLabels } = useRecordLabels(
-    facility.fields.Schlagworte
-  )
-
-  const renderLabel = getLabelRenderer({
-    activeFilters: urlState.tags || [],
-    withInteractiveLabels: false,
-  })
+  const { allLabels } = useRecordLabels(facility.fields.Schlagworte)
 
   const { Strasse, Hausnummer, PLZ } = facility.fields
   const addressOneLiner =
@@ -120,32 +113,16 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
               {distance && <span>{distance} km</span>}
             </div>
           )}
-          <p
-            className="mt-4"
-            dangerouslySetInnerHTML={{ __html: facility.fields.Uber_uns }}
-          />
+          {facility.fields.Uber_uns.length > 1 && (
+            <p
+              className="mt-4"
+              dangerouslySetInnerHTML={{ __html: facility.fields.Uber_uns }}
+            />
+          )}
         </div>
         {allLabels.length > 0 && (
           <div className="w-full">
-            <div className="overflow-x-auto">
-              {topicsLabels.length > 0 && (
-                <div className="flex float-left p-5 gap-2 whitespace-nowrap">
-                  {topicsLabels.map(renderLabel)}
-                </div>
-              )}
-            </div>
-            {targetAudienceLabels.length > 0 && (
-              <>
-                <h2 className="px-5 mt-2 text-lg font-bold">
-                  {texts.filtersSearchTargetLabelOnCard}
-                </h2>
-                <div className="overflow-x-auto">
-                  <div className="flex float-left p-5 pt-1 gap-2 whitespace-nowrap">
-                    {targetAudienceLabels.map(renderLabel)}
-                  </div>
-                </div>
-              </>
-            )}
+            <FacilityLabels labels={facility.fields.Schlagworte} />
           </div>
         )}
         {infoList.length > 0 && (
