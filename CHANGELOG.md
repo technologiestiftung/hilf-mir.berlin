@@ -1,3 +1,10 @@
+# [1.3.0-rc.7](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.3.0-rc.6...v1.3.0-rc.7) (2022-11-24)
+
+
+### Bug Fixes
+
+* **WEG-82:** Close search on click outside ([cf647b3](https://github.com/technologiestiftung/wegweiser-frontend/commit/cf647b3e960780afeaeb75450990bc364c2c3b66))
+
 # [1.3.0-rc.6](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.3.0-rc.5...v1.3.0-rc.6) (2022-11-23)
 
 
