@@ -51,9 +51,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
     latitude: facility.fields.lat,
     longitude: facility.fields.long,
   })
-  const { allLabels, topicsLabels, targetAudienceLabels } = useRecordLabels(
-    facility.fields.Schlagworte
-  )
+  const { allLabels } = useRecordLabels(facility.fields.Schlagworte)
 
   const { Strasse, Hausnummer, PLZ } = facility.fields
   const addressOneLiner =
