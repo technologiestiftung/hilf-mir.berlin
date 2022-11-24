@@ -15,7 +15,7 @@ import { getTodayKey } from '@lib/getTodayKey'
 import { useUrlState } from '@lib/UrlStateContext'
 import { Accessible } from '@components/icons/Accessible'
 import Link from 'next/link'
-import { FiltersTextList } from '@components/FiltersTextList'
+import { FacilityLabels } from '@components/FacilityLabels'
 
 interface FacilityInfoType {
   facility: TableRowType
@@ -124,26 +124,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
         </div>
         {allLabels.length > 0 && (
           <div className="w-full">
-            {topicsLabels.length > 0 && (
-              <>
-                <h2 className="px-5 mt-2 text-lg font-bold">
-                  {texts.filtersTagsLabelOnCard}
-                </h2>
-                <div className="px-5">
-                  <FiltersTextList filters={topicsLabels} />
-                </div>
-              </>
-            )}
-            {targetAudienceLabels.length > 0 && (
-              <>
-                <h2 className="px-5 mt-2 text-lg font-bold">
-                  {texts.filtersSearchTargetLabelOnCard}
-                </h2>
-                <div className="px-5">
-                  <FiltersTextList filters={targetAudienceLabels} />
-                </div>
-              </>
-            )}
+            <FacilityLabels labels={facility.fields.Schlagworte} />
           </div>
         )}
         {infoList.length > 0 && (
