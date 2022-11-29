@@ -1,5 +1,5 @@
 import { useEffect, FC, useRef, useState, useCallback } from 'react'
-import maplibregl, { LngLatLike, Map, Marker } from 'maplibre-gl'
+import maplibregl, { LngLatLike, Map, Marker, Popup } from 'maplibre-gl'
 import {
   createGeoJsonStructure,
   GeojsonFeatureType,
@@ -12,17 +12,13 @@ import { useUrlState } from '@lib/UrlStateContext'
 import classNames from '@lib/classNames'
 import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
 import { MapTilerLogo } from '@components/MaptilerLogo'
+import MaplibreglSpiderifier from '@lib/MaplibreglSpiderifier'
 
 interface MapType {
   markers?: MinimalRecordType[]
   activeTags?: number[] | null
   onMarkerClick?: (facilities: MinimalRecordType[]) => void
   onMoveStart?: () => void
-  /**
-   * Function that is called whenever a click on the map happens,
-   * that is anywhere except for a click on the facilities layer.
-   */
-  onClickAnywhere?: () => void
   /** An optional array of [longitude, latitude].
    * If provided, the map's center will be forced to this location.
    * Also, a highlighted marker will be drawn to the map.
@@ -52,7 +48,6 @@ export const FacilitiesMap: FC<MapType> = ({
   activeTags,
   onMarkerClick = () => undefined,
   onMoveStart = () => undefined,
-  onClickAnywhere = () => undefined,
   highlightedCenter,
   searchCenter,
 }) => {
@@ -60,6 +55,10 @@ export const FacilitiesMap: FC<MapType> = ({
   const highlightedMarker = useRef<Marker>(null)
   const highlightedSearchMarker = useRef<Marker>(null)
   const highlightedUserGeoposition = useRef<Marker>(null)
+  const spiderifier =
+    useRef<InstanceType<typeof MaplibreglSpiderifier<Record<string, unknown>>>>(
+      null
+    )
 
   const { pathname } = useRouter()
   const [urlState, setUrlState] = useUrlState()
@@ -234,23 +233,40 @@ export const FacilitiesMap: FC<MapType> = ({
         },
       })
 
-      map.current.on('click', () => {
-        onClickAnywhere()
-      })
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      spiderifier.current = new MaplibreglSpiderifier<MinimalRecordType>(
+        map.current,
+        {
+          onClick(_e, markerObject) {
+            console.log('Clicked on ', markerObject.marker.title)
+          },
+          onMouseenter(_e, markerObject) {
+            console.log('Hovered over', markerObject.marker.title)
+          },
+          onMouseleave(_e, markerObject) {
+            console.log('Hovered out', markerObject.marker.title)
+          },
+        }
+      )
 
       map.current.on('click', 'unclustered-point', function (e) {
+        spiderifier.current?.unspiderfy()
         if (!e.features) return
-        if (!map.current) return
+        if (!map.current || !spiderifier.current) return
         const features = e.features as GeojsonFeatureType[]
         const clickedMarkerIds = features.map((f) => f.properties.id)
 
-        map.current.easeTo({
-          center: features[0].geometry.coordinates,
-          zoom: 17,
-        })
+        if (features.length === 0 || !features[0].geometry.coordinates) return
+        map.current.easeTo({ center: features[0].geometry.coordinates })
 
         const clickedFacilities = markers.filter((marker) =>
           clickedMarkerIds.includes(marker.id)
+        )
+
+        spiderifier.current.spiderfy(
+          features[0].geometry.coordinates,
+          clickedFacilities
         )
 
         onMarkerClick(clickedFacilities)
