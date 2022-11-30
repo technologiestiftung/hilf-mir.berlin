@@ -1,5 +1,5 @@
 import { useEffect, FC, useRef, useState, useCallback } from 'react'
-import maplibregl, { LngLatLike, Map, Marker, Popup } from 'maplibre-gl'
+import maplibregl, { LngLat, LngLatLike, Map, Marker } from 'maplibre-gl'
 import {
   createGeoJsonStructure,
   GeojsonFeatureType,
@@ -13,11 +13,13 @@ import classNames from '@lib/classNames'
 import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
 import { MapTilerLogo } from '@components/MaptilerLogo'
 import MaplibreglSpiderifier from '@lib/MaplibreglSpiderifier'
+import { useIsMobile } from '@lib/hooks/useIsMobile'
 
 interface MapType {
   markers?: MinimalRecordType[]
   activeTags?: number[] | null
   onMarkerClick?: (facilities: MinimalRecordType[]) => void
+  onClickAnywhere?: () => void
   onMoveStart?: () => void
   /** An optional array of [longitude, latitude].
    * If provided, the map's center will be forced to this location.
@@ -35,6 +37,7 @@ export const transitionProps = {
   transitionEasing: easeInOutQuad,
 }
 
+const MAX_ZOOM = 17
 const MAP_CONFIG = {
   defaultZoom: 11,
   defaultLatitude: 52.520008,
@@ -47,10 +50,13 @@ export const FacilitiesMap: FC<MapType> = ({
   markers,
   activeTags,
   onMarkerClick = () => undefined,
+  onClickAnywhere = () => undefined,
   onMoveStart = () => undefined,
   highlightedCenter,
   searchCenter,
 }) => {
+  const isMobile = useIsMobile()
+  const { push } = useRouter()
   const map = useRef<Map>(null)
   const highlightedMarker = useRef<Marker>(null)
   const highlightedSearchMarker = useRef<Marker>(null)
@@ -240,6 +246,14 @@ export const FacilitiesMap: FC<MapType> = ({
         {
           onClick(_e, markerObject) {
             console.log('Clicked on ', markerObject.marker.title)
+            void push(`/${markerObject.marker.id}`)
+            map.current?.easeTo({
+              center: [
+                markerObject.marker.longitude,
+                markerObject.marker.latitude,
+              ],
+              zoom: MAX_ZOOM,
+            })
           },
           onMouseenter(_e, markerObject) {
             console.log('Hovered over', markerObject.marker.title)
@@ -250,26 +264,54 @@ export const FacilitiesMap: FC<MapType> = ({
         }
       )
 
-      map.current.on('click', 'unclustered-point', function (e) {
+      map.current.on('click', function () {
+        spiderifier.current?.unspiderfy()
+        onClickAnywhere()
+      })
+
+      map.current.on('click', 'unclustered-point', (e) => {
         spiderifier.current?.unspiderfy()
         if (!e.features) return
         if (!map.current || !spiderifier.current) return
+
         const features = e.features as GeojsonFeatureType[]
-        const clickedMarkerIds = features.map((f) => f.properties.id)
-
         if (features.length === 0 || !features[0].geometry.coordinates) return
-        map.current.easeTo({ center: features[0].geometry.coordinates })
 
+        const featuresOnSameCoords =
+          getFeaturesOnSameCoordsThanFirstOne(features)
+
+        const isClusterOfVeryNearButNotOverlappingPoints =
+          featuresOnSameCoords.length !== features.length
+        if (isClusterOfVeryNearButNotOverlappingPoints) {
+          zoomInBy1(map.current, featuresOnSameCoords[0].geometry.coordinates)
+          return
+        }
+
+        const clickedMarkerIds = featuresOnSameCoords.map(
+          (f) => f.properties.id
+        )
         const clickedFacilities = markers.filter((marker) =>
           clickedMarkerIds.includes(marker.id)
         )
 
+        map.current.easeTo({ center: features[0].geometry.coordinates })
+
+        if (isMobile) {
+          onMarkerClick(clickedFacilities)
+          return
+        }
+        if (clickedFacilities.length === 1) {
+          void push(`/${clickedFacilities[0].id}`)
+          map.current.easeTo({
+            center: featuresOnSameCoords[0].geometry.coordinates,
+            zoom: MAX_ZOOM,
+          })
+          return
+        }
         spiderifier.current.spiderfy(
           features[0].geometry.coordinates,
           clickedFacilities
         )
-
-        onMarkerClick(clickedFacilities)
       })
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -299,7 +341,7 @@ export const FacilitiesMap: FC<MapType> = ({
 
       map.current.easeTo({
         center: [userLongitude, userLatitude],
-        zoom: 17,
+        zoom: MAX_ZOOM,
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -327,7 +369,7 @@ export const FacilitiesMap: FC<MapType> = ({
 
       map.current.easeTo({
         center: searchCenter,
-        zoom: 17,
+        zoom: MAX_ZOOM,
       })
     }
   }, [searchCenter])
@@ -356,7 +398,7 @@ export const FacilitiesMap: FC<MapType> = ({
 
       map.current.easeTo({
         center: highlightedCenter,
-        zoom: 17,
+        zoom: MAX_ZOOM,
       })
     }
   }, [highlightedCenter])
@@ -376,4 +418,27 @@ export const FacilitiesMap: FC<MapType> = ({
       <MapTilerLogo />
     </>
   )
+}
+
+function getFeaturesOnSameCoordsThanFirstOne(
+  features: GeojsonFeatureType[]
+): GeojsonFeatureType[] {
+  const pointA = new LngLat(
+    ...(features[0].geometry.coordinates as [number, number])
+  )
+  return features.filter((feat) => {
+    const pointB = new LngLat(
+      ...(feat.geometry.coordinates as [number, number])
+    )
+    const dist = pointA.distanceTo(pointB)
+    const distance = Math.round(dist / 100) / 10
+    return distance < 0.1
+  })
+}
+
+function zoomInBy1(map: Map, coordinates?: LngLatLike): void {
+  map.easeTo({
+    center: coordinates,
+    zoom: Math.min(MAX_ZOOM, map.getZoom() + 1),
+  })
 }

@@ -62,9 +62,9 @@ export default class MaplibreglSpiderifier<MarkerType> {
     this.options = {
       circleSpiralSwitchover: 9, // show spiral instead of circle from this marker count upwards
       // 0 -> always spiral; Infinity -> always circle
-      circleFootSeparation: 25, // related to circumference of circle
+      circleFootSeparation: 40, // related to circumference of circle
       spiralFootSeparation: 28, // related to size of spiral (experiment!)
-      spiralLengthStart: 32, // ditto
+      spiralLengthStart: 24, // ditto
       spiralLengthFactor: 4, // ditto
       onClick: NULL_FUNCTION,
       onMouseenter: NULL_FUNCTION,
