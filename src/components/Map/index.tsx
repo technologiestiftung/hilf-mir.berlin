@@ -1,5 +1,12 @@
 import { useEffect, FC, useRef, useState, useCallback } from 'react'
-import maplibregl, { LngLat, LngLatLike, Map, Marker } from 'maplibre-gl'
+import maplibregl, {
+  LngLat,
+  LngLatLike,
+  Map,
+  Marker,
+  Offset,
+  Popup,
+} from 'maplibre-gl'
 import {
   createGeoJsonStructure,
   GeojsonFeatureType,
@@ -12,7 +19,9 @@ import { useUrlState } from '@lib/UrlStateContext'
 import classNames from '@lib/classNames'
 import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
 import { MapTilerLogo } from '@components/MaptilerLogo'
-import MaplibreglSpiderifier from '@lib/MaplibreglSpiderifier'
+import MaplibreglSpiderifier, {
+  popupOffsetForSpiderLeg,
+} from '@lib/MaplibreglSpiderifier'
 import { useIsMobile } from '@lib/hooks/useIsMobile'
 
 interface MapType {
@@ -59,6 +68,7 @@ export const FacilitiesMap: FC<MapType> = ({
   const { push } = useRouter()
   const map = useRef<Map>(null)
   const highlightedMarker = useRef<Marker>(null)
+  const popup = useRef<Popup>(null)
   const hoveredStateIds = useRef<number[]>(null)
   const spideredFeatureIds = useRef<number[]>(null)
   const highlightedSearchMarker = useRef<Marker>(null)
@@ -267,10 +277,26 @@ export const FacilitiesMap: FC<MapType> = ({
             })
           },
           onMouseenter(_e, markerObject) {
+            if (!map.current) return
             console.log('Hovered over', markerObject.marker.title)
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            popup.current = new Popup({
+              closeButton: true,
+              closeOnClick: false,
+              offset: popupOffsetForSpiderLeg(
+                markerObject.spiderParam
+              ) as Offset,
+            })
+
+            popup.current.setHTML(markerObject.marker.title).addTo(map.current)
+
+            markerObject.maplibreMarker.setPopup(popup.current)
           },
           onMouseleave(_e, markerObject) {
             console.log('Hovered out', markerObject.marker.title)
+
+            popup.current?.remove()
           },
         }
       )
@@ -359,10 +385,8 @@ export const FacilitiesMap: FC<MapType> = ({
       if (!map.current) return
       if (!e.features || e.features.length === 0) return
 
-      const container$ = document.querySelector<HTMLDivElement>(
-        '.mapboxgl-canvas-container.mapboxgl-interactive'
-      )
-      if (container$) container$.style.cursor = 'pointer'
+      setCursor('pointer')
+
       const features = e.features as GeojsonFeatureType[]
       if (hoveredStateIds.current && hoveredStateIds.current?.length > 0) {
         hoveredStateIds.current?.forEach((id) => {
@@ -385,10 +409,9 @@ export const FacilitiesMap: FC<MapType> = ({
 
     map.current.on('mouseleave', 'unclustered-point', () => {
       if (!map.current) return
-      const container$ = document.querySelector<HTMLDivElement>(
-        '.mapboxgl-canvas-container.mapboxgl-interactive'
-      )
-      if (container$) container$.style.cursor = 'grab'
+
+      setCursor('inherit')
+
       if (hoveredStateIds.current && hoveredStateIds.current.length > 0) {
         hoveredStateIds.current?.forEach((id) => {
           map.current?.setFeatureState(
@@ -528,4 +551,11 @@ function zoomIn(map: Map, coordinates?: LngLatLike, zoomIncrease = 1): void {
     center: coordinates,
     zoom: Math.min(MAX_ZOOM, map.getZoom() + zoomIncrease),
   })
+}
+
+function setCursor(cursor = 'grab'): void {
+  const container$ = document.querySelector<HTMLDivElement>(
+    '.mapboxgl-canvas-container.mapboxgl-interactive'
+  )
+  if (container$) container$.style.cursor = cursor
 }

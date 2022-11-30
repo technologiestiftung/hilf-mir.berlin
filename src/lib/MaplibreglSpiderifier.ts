@@ -1,4 +1,4 @@
-import { Marker, Map, LngLatLike } from 'maplibre-gl'
+import { Marker, Map, LngLatLike, Offset } from 'maplibre-gl'
 
 interface SpiderParamType {
   x: number
@@ -209,7 +209,35 @@ export default class MaplibreglSpiderifier<MarkerType> {
   }
 }
 
+export function popupOffsetForSpiderLeg(
+  spiderParam: SpiderParamType,
+  offset = 0
+): Offset {
+  const pinOffsetX = spiderParam.x
+  const pinOffsetY = spiderParam.y
+
+  offset = offset || 0
+  return {
+    top: offsetVariant([0, offset], pinOffsetX, pinOffsetY),
+    'top-left': offsetVariant([offset, offset], pinOffsetX, pinOffsetY),
+    'top-right': offsetVariant([-offset, offset], pinOffsetX, pinOffsetY),
+    bottom: offsetVariant([0, -offset], pinOffsetX, pinOffsetY),
+    'bottom-left': offsetVariant([offset, -offset], pinOffsetX, pinOffsetY),
+    'bottom-right': offsetVariant([-offset, -offset], pinOffsetX, pinOffsetY),
+    left: offsetVariant([offset, -offset], pinOffsetX, pinOffsetY),
+    right: offsetVariant([-offset, -offset], pinOffsetX, pinOffsetY),
+  }
+}
+
 // Utility
+function offsetVariant(
+  offset: [number, number],
+  variantX?: number,
+  variantY?: number
+): [number, number] {
+  return [offset[0] + (variantX || 0), offset[1] + (variantY || 0)]
+}
+
 function eachFn<ItemType = unknown>(
   array: ItemType[],
   iterator: (item: ItemType, idx: number) => unknown
