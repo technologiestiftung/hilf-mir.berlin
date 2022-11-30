@@ -59,6 +59,8 @@ export const FacilitiesMap: FC<MapType> = ({
   const { push } = useRouter()
   const map = useRef<Map>(null)
   const highlightedMarker = useRef<Marker>(null)
+  const hoveredStateIds = useRef<number[]>(null)
+  const spideredFeatureIds = useRef<number[]>(null)
   const highlightedSearchMarker = useRef<Marker>(null)
   const highlightedUserGeoposition = useRef<Marker>(null)
   const spiderifier =
@@ -220,7 +222,11 @@ export const FacilitiesMap: FC<MapType> = ({
 
       const opacityGlCondition = [
         'case',
-        ['boolean', ['feature-state', 'active'], false],
+        [
+          'all',
+          ['boolean', ['feature-state', 'active'], false],
+          ['!', ['boolean', ['feature-state', 'spidered'], false]],
+        ],
         1,
         0,
       ]
@@ -233,7 +239,12 @@ export const FacilitiesMap: FC<MapType> = ({
           'circle-radius': 10,
           'circle-stroke-width': 1,
           'circle-stroke-color': '#fff',
-          'circle-color': '#E40422',
+          'circle-color': [
+            'case',
+            ['boolean', ['feature-state', 'hover'], false],
+            '#999999',
+            '#E40422',
+          ],
           'circle-stroke-opacity': opacityGlCondition,
           'circle-opacity': opacityGlCondition,
         },
@@ -264,13 +275,31 @@ export const FacilitiesMap: FC<MapType> = ({
         }
       )
 
-      map.current.on('click', function () {
+      function unspiderfy(): void {
         spiderifier.current?.unspiderfy()
+        if (
+          map.current &&
+          spideredFeatureIds.current &&
+          spideredFeatureIds.current.length > 0
+        ) {
+          spideredFeatureIds.current.forEach((id) => {
+            map.current?.setFeatureState(
+              { source: 'facilities', id },
+              { spidered: false }
+            )
+          })
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          spideredFeatureIds.current = null
+        }
+      }
+
+      map.current.on('click', function () {
+        unspiderfy()
         onClickAnywhere()
       })
 
       map.current.on('click', 'unclustered-point', (e) => {
-        spiderifier.current?.unspiderfy()
         if (!e.features) return
         if (!map.current || !spiderifier.current) return
 
@@ -283,7 +312,7 @@ export const FacilitiesMap: FC<MapType> = ({
         const isClusterOfVeryNearButNotOverlappingPoints =
           featuresOnSameCoords.length !== features.length
         if (isClusterOfVeryNearButNotOverlappingPoints) {
-          zoomInBy1(map.current, featuresOnSameCoords[0].geometry.coordinates)
+          zoomIn(map.current, featuresOnSameCoords[0].geometry.coordinates, 2)
           return
         }
 
@@ -312,7 +341,56 @@ export const FacilitiesMap: FC<MapType> = ({
           features[0].geometry.coordinates,
           clickedFacilities
         )
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        spideredFeatureIds.current = features.map(
+          ({ properties }) => properties.id
+        )
+        spideredFeatureIds.current.forEach((id) => {
+          map.current?.setFeatureState(
+            { source: 'facilities', id },
+            { spidered: true }
+          )
+        })
       })
+    })
+
+    map.current.on('mousemove', 'unclustered-point', (e) => {
+      if (!map.current) return
+      if (!e.features || e.features.length === 0) return
+      const features = e.features as GeojsonFeatureType[]
+      if (hoveredStateIds.current && hoveredStateIds.current?.length > 0) {
+        hoveredStateIds.current?.forEach((id) => {
+          map.current?.setFeatureState(
+            { source: 'facilities', id },
+            { hover: false }
+          )
+        })
+      }
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      hoveredStateIds.current = features.map(({ properties }) => properties.id)
+      hoveredStateIds.current?.forEach((id) => {
+        map.current?.setFeatureState(
+          { source: 'facilities', id },
+          { hover: true }
+        )
+      })
+    })
+
+    map.current.on('mouseleave', 'unclustered-point', () => {
+      if (!map.current) return
+      if (hoveredStateIds.current && hoveredStateIds.current.length > 0) {
+        hoveredStateIds.current?.forEach((id) => {
+          map.current?.setFeatureState(
+            { source: 'facilities', id },
+            { hover: false }
+          )
+        })
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        hoveredStateIds.current = null
+      }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [markers])
@@ -436,9 +514,9 @@ function getFeaturesOnSameCoordsThanFirstOne(
   })
 }
 
-function zoomInBy1(map: Map, coordinates?: LngLatLike): void {
+function zoomIn(map: Map, coordinates?: LngLatLike, zoomIncrease = 1): void {
   map.easeTo({
     center: coordinates,
-    zoom: Math.min(MAX_ZOOM, map.getZoom() + 1),
+    zoom: Math.min(MAX_ZOOM, map.getZoom() + zoomIncrease),
   })
 }

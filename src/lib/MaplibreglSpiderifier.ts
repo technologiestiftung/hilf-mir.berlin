@@ -1,4 +1,4 @@
-import { Popup, Marker, Map, Feature, LngLatLike } from 'maplibre-gl'
+import { Marker, Map, LngLatLike } from 'maplibre-gl'
 
 interface SpiderParamType {
   x: number
@@ -53,7 +53,6 @@ export default class MaplibreglSpiderifier<MarkerType> {
     onMouseenter: UserOptionsType<MarkerType>['onMouseenter']
     onMouseleave: UserOptionsType<MarkerType>['onMouseleave']
     initializeMarker: UserOptionsType<MarkerType>['initializeMarker']
-    animationSpeed: number
   }
   previousMarkerObjects: MarkerObjectType<MarkerType>[]
 
@@ -62,15 +61,14 @@ export default class MaplibreglSpiderifier<MarkerType> {
     this.options = {
       circleSpiralSwitchover: 9, // show spiral instead of circle from this marker count upwards
       // 0 -> always spiral; Infinity -> always circle
-      circleFootSeparation: 40, // related to circumference of circle
-      spiralFootSeparation: 28, // related to size of spiral (experiment!)
-      spiralLengthStart: 24, // ditto
-      spiralLengthFactor: 4, // ditto
+      circleFootSeparation: 32, // related to circumference of circle
+      spiralFootSeparation: 28, // related to size of spiral
+      spiralLengthStart: 24,
+      spiralLengthFactor: 4,
       onClick: NULL_FUNCTION,
       onMouseenter: NULL_FUNCTION,
       onMouseleave: NULL_FUNCTION,
       initializeMarker: NULL_FUNCTION,
-      animationSpeed: 100,
       ...userOptions,
     }
     this.previousMarkerObjects = []
@@ -127,15 +125,10 @@ export default class MaplibreglSpiderifier<MarkerType> {
       }
     )
 
-    setTimeout(() => {
-      util.each(markerObjects.reverse(), (markerObject, index) => {
-        markerObject.elements.parent.className = (
-          markerObject.elements.parent.className || ''
-        ).replace('initial', '')
-        markerObject.elements.parent.style.transitionDelay = `${
-          (this.options.animationSpeed / 1000 / markerObjects.length) * index
-        }s`
-      })
+    util.each(markerObjects.reverse(), (markerObject) => {
+      markerObject.elements.parent.className = (
+        markerObject.elements.parent.className || ''
+      ).replace('initial', '')
     })
 
     this.previousMarkerObjects = markerObjects
@@ -144,19 +137,7 @@ export default class MaplibreglSpiderifier<MarkerType> {
   public unspiderfy(): void {
     util.each<MarkerObjectType<MarkerType>>(
       this.previousMarkerObjects.reverse(),
-      (oldMarkerObject, index) => {
-        oldMarkerObject.elements.parent.style['transitionDelay'] = `${
-          (this.options.animationSpeed /
-            1000 /
-            this.previousMarkerObjects.length) *
-          index
-        }s`
-        oldMarkerObject.elements.parent.className += ' exit'
-
-        setTimeout(() => {
-          oldMarkerObject.maplibreMarker.remove()
-        }, this.options.animationSpeed + 100) //Wait for 100ms more before clearing the DOM
-      }
+      (oldMarkerObject) => oldMarkerObject.maplibreMarker.remove()
     )
     this.previousMarkerObjects = []
   }
@@ -211,7 +192,7 @@ export default class MaplibreglSpiderifier<MarkerType> {
     const markerElem = document.createElement('div')
     const lineElem = document.createElement('div')
 
-    parentElem.className = 'spidered-marker animate initial'
+    parentElem.className = 'spidered-marker'
     lineElem.className = 'line-div'
     markerElem.className = 'icon-div'
 
