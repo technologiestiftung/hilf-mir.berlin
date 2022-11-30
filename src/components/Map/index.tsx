@@ -358,6 +358,11 @@ export const FacilitiesMap: FC<MapType> = ({
     map.current.on('mousemove', 'unclustered-point', (e) => {
       if (!map.current) return
       if (!e.features || e.features.length === 0) return
+
+      const container$ = document.querySelector<HTMLDivElement>(
+        '.mapboxgl-canvas-container.mapboxgl-interactive'
+      )
+      if (container$) container$.style.cursor = 'pointer'
       const features = e.features as GeojsonFeatureType[]
       if (hoveredStateIds.current && hoveredStateIds.current?.length > 0) {
         hoveredStateIds.current?.forEach((id) => {
@@ -380,6 +385,10 @@ export const FacilitiesMap: FC<MapType> = ({
 
     map.current.on('mouseleave', 'unclustered-point', () => {
       if (!map.current) return
+      const container$ = document.querySelector<HTMLDivElement>(
+        '.mapboxgl-canvas-container.mapboxgl-interactive'
+      )
+      if (container$) container$.style.cursor = 'grab'
       if (hoveredStateIds.current && hoveredStateIds.current.length > 0) {
         hoveredStateIds.current?.forEach((id) => {
           map.current?.setFeatureState(
