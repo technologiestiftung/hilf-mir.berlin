@@ -41,7 +41,7 @@ const twoPi = Math.PI * 2
 
 const NULL_FUNCTION = (): void => undefined
 
-export default class MaplibreglSpiderifier<MarkerType> {
+export default class MaplibreglSpiderifier<MarkerType extends { id: number }> {
   map: Map
   options: {
     circleSpiralSwitchover: number
@@ -55,6 +55,7 @@ export default class MaplibreglSpiderifier<MarkerType> {
     initializeMarker: UserOptionsType<MarkerType>['initializeMarker']
   }
   previousMarkerObjects: MarkerObjectType<MarkerType>[]
+  expandedIds: number[]
 
   constructor(map: Map, userOptions: Partial<UserOptionsType<MarkerType>>) {
     this.map = map
@@ -72,6 +73,7 @@ export default class MaplibreglSpiderifier<MarkerType> {
       ...userOptions,
     }
     this.previousMarkerObjects = []
+    this.expandedIds = []
   }
 
   public each(callback: (marker: MarkerObjectType<MarkerType>) => void): void {
@@ -86,6 +88,7 @@ export default class MaplibreglSpiderifier<MarkerType> {
     let markerObjects: MarkerObjectType<MarkerType>[] = []
 
     this.unspiderfy()
+    this.expandedIds = markers.map(({ id }) => id)
 
     markerObjects = util.map<MarkerType, MarkerObjectType<MarkerType>>(
       markers,
@@ -104,13 +107,13 @@ export default class MaplibreglSpiderifier<MarkerType> {
 
         this.options.initializeMarker(markerObject)
 
-        elements.parent.addEventListener('click', (e: Event) => {
+        elements.marker.addEventListener('click', (e: Event) => {
           this.options.onClick(e, markerObject)
         })
-        elements.parent.addEventListener('mouseenter', (e: Event) => {
+        elements.marker.addEventListener('mouseenter', (e: Event) => {
           this.options.onMouseenter(e, markerObject)
         })
-        elements.parent.addEventListener('mouseleave', (e: Event) => {
+        elements.marker.addEventListener('mouseleave', (e: Event) => {
           this.options.onMouseleave(e, markerObject)
         })
 
@@ -140,6 +143,7 @@ export default class MaplibreglSpiderifier<MarkerType> {
       (oldMarkerObject) => oldMarkerObject.maplibreMarker.remove()
     )
     this.previousMarkerObjects = []
+    this.expandedIds = []
   }
 
   private generateSpiderParams(count: number): SpiderParamType[] {

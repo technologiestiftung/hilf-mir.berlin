@@ -1,5 +1,4 @@
 import { MinimalRecordType } from '@lib/mapRecordToMinimum'
-import { LngLatLike } from 'maplibre-gl'
 
 export interface GeojsonType {
   type: string
@@ -7,16 +6,15 @@ export interface GeojsonType {
 }
 
 // This typing is not yet exhaustive but enough for the current use case:
-export interface GeojsonFeatureType {
+export interface GeojsonFeatureType<PropertiesType = Record<string, unknown>> {
   type: string
   geometry: {
     type: string
-    coordinates?: LngLatLike
+    coordinates?: [x: number, y: number]
     [key: string]: unknown
   }
-  properties: {
+  properties: PropertiesType & {
     id: number
-    [key: string]: unknown
   }
 }
 

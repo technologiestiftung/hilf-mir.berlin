@@ -2,9 +2,9 @@ import { useEffect, FC, useRef, useState, useCallback } from 'react'
 import maplibregl, {
   LngLat,
   LngLatLike,
+  Feature,
   Map,
   Marker,
-  Offset,
   Popup,
 } from 'maplibre-gl'
 import {
@@ -68,15 +68,18 @@ export const FacilitiesMap: FC<MapType> = ({
   const { push } = useRouter()
   const map = useRef<Map>(null)
   const highlightedMarker = useRef<Marker>(null)
-  const popup = useRef<Popup>(null)
+  const popup = useRef(
+    new Popup({
+      closeButton: false,
+      closeOnClick: false,
+    })
+  )
   const hoveredStateIds = useRef<number[]>(null)
   const spideredFeatureIds = useRef<number[]>(null)
   const highlightedSearchMarker = useRef<Marker>(null)
   const highlightedUserGeoposition = useRef<Marker>(null)
   const spiderifier =
-    useRef<InstanceType<typeof MaplibreglSpiderifier<Record<string, unknown>>>>(
-      null
-    )
+    useRef<InstanceType<typeof MaplibreglSpiderifier<MinimalRecordType>>>(null)
 
   const { pathname } = useRouter()
   const [urlState, setUrlState] = useUrlState()
@@ -276,27 +279,24 @@ export const FacilitiesMap: FC<MapType> = ({
               zoom: MAX_ZOOM,
             })
           },
-          onMouseenter(_e, markerObject) {
+          onMouseenter(_e, { marker, spiderParam }) {
             if (!map.current) return
-            console.log('Hovered over', markerObject.marker.title)
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            popup.current = new Popup({
-              closeButton: true,
-              closeOnClick: false,
-              offset: popupOffsetForSpiderLeg(
-                markerObject.spiderParam
-              ) as Offset,
-            })
+            console.log('Hovered over', marker.title)
 
-            popup.current.setHTML(markerObject.marker.title).addTo(map.current)
+            popup.current.setOffset(
+              popupOffsetForSpiderLeg(spiderParam) as unknown
+            )
 
-            markerObject.maplibreMarker.setPopup(popup.current)
+            popup.current
+              .setLngLat([marker.longitude, marker.latitude])
+              .setHTML(marker.title)
+              .addTo(map.current)
           },
           onMouseleave(_e, markerObject) {
             console.log('Hovered out', markerObject.marker.title)
 
-            popup.current?.remove()
+            popup.current.setOffset(0)
+            popup.current.remove()
           },
         }
       )
@@ -329,7 +329,7 @@ export const FacilitiesMap: FC<MapType> = ({
         if (!e.features) return
         if (!map.current || !spiderifier.current) return
 
-        const features = e.features as GeojsonFeatureType[]
+        const features = e.features as GeojsonFeatureType<MinimalRecordType>[]
         if (features.length === 0 || !features[0].geometry.coordinates) return
 
         const featuresOnSameCoords =
@@ -363,6 +363,7 @@ export const FacilitiesMap: FC<MapType> = ({
           })
           return
         }
+        popup.current?.remove.bind(popup.current)()
         spiderifier.current.spiderfy(
           features[0].geometry.coordinates,
           clickedFacilities
@@ -387,7 +388,7 @@ export const FacilitiesMap: FC<MapType> = ({
 
       setCursor('pointer')
 
-      const features = e.features as GeojsonFeatureType[]
+      const features = e.features as GeojsonFeatureType<MinimalRecordType>[]
       if (hoveredStateIds.current && hoveredStateIds.current?.length > 0) {
         hoveredStateIds.current?.forEach((id) => {
           map.current?.setFeatureState(
@@ -398,13 +399,27 @@ export const FacilitiesMap: FC<MapType> = ({
       }
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      hoveredStateIds.current = features.map(({ properties }) => properties.id)
+      hoveredStateIds.current = features.map(({ id }) => id as number)
       hoveredStateIds.current?.forEach((id) => {
         map.current?.setFeatureState(
           { source: 'facilities', id },
           { hover: true }
         )
       })
+
+      if (
+        features.length >= 1 &&
+        !spiderifier.current?.expandedIds.some((id) =>
+          features.find((marker) => marker.properties.id === id)
+        )
+      ) {
+        const { longitude, latitude } = features[0]
+          .properties as MinimalRecordType
+        popup.current
+          .setLngLat([longitude, latitude])
+          .setHTML(getPopupHTML(features))
+          .addTo(map.current)
+      }
     })
 
     map.current.on('mouseleave', 'unclustered-point', () => {
@@ -423,6 +438,8 @@ export const FacilitiesMap: FC<MapType> = ({
         // @ts-ignore
         hoveredStateIds.current = null
       }
+
+      popup.current.remove.bind(popup.current)()
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [markers])
@@ -530,16 +547,14 @@ export const FacilitiesMap: FC<MapType> = ({
   )
 }
 
-function getFeaturesOnSameCoordsThanFirstOne(
-  features: GeojsonFeatureType[]
-): GeojsonFeatureType[] {
-  const pointA = new LngLat(
-    ...(features[0].geometry.coordinates as [number, number])
-  )
+function getFeaturesOnSameCoordsThanFirstOne<PropsType>(
+  features: GeojsonFeatureType<PropsType>[]
+): GeojsonFeatureType<PropsType>[] {
+  const pointACoords = features[0].geometry.coordinates || [0, 0]
+  const pointA = new LngLat(...pointACoords)
   return features.filter((feat) => {
-    const pointB = new LngLat(
-      ...(feat.geometry.coordinates as [number, number])
-    )
+    const coordinates = feat.geometry.coordinates || [0, 0]
+    const pointB = new LngLat(...coordinates)
     const dist = pointA.distanceTo(pointB)
     const distance = Math.round(dist / 100) / 10
     return distance < 0.1
@@ -558,4 +573,14 @@ function setCursor(cursor = 'grab'): void {
     '.mapboxgl-canvas-container.mapboxgl-interactive'
   )
   if (container$) container$.style.cursor = cursor
+}
+
+function getPopupHTML(
+  features: GeojsonFeatureType<MinimalRecordType>[]
+): string {
+  if (features.length > 1) return `${features.length} Items. Click to expand.`
+  const { title } = features[0].properties
+  return `
+    <h3>${title}</h3>
+  `
 }
