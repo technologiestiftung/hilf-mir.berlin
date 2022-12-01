@@ -1,5 +1,5 @@
 import { useEffect, FC, useRef, useState, useCallback } from 'react'
-import maplibregl, { LngLat, LngLatLike, Map, Marker, Popup } from 'maplibre-gl'
+import maplibregl, { LngLatLike, Map, Marker, Popup } from 'maplibre-gl'
 import {
   createGeoJsonStructure,
   GeojsonFeatureType,
@@ -18,6 +18,11 @@ import MaplibreglSpiderifier, {
 import { MOBILE_BREAKPOINT } from '@lib/hooks/useIsMobile'
 import { useTexts } from '@lib/TextsContext'
 import { getPopupHTML } from './popupUtils'
+import {
+  getFeaturesOnSameCoordsThanFirstOne,
+  setCursor,
+  zoomIn,
+} from './mapUtil'
 
 interface MapType {
   markers?: MinimalRecordType[]
@@ -32,6 +37,8 @@ interface MapType {
   highlightedCenter?: LngLatLike
   searchCenter?: LngLatLike
 }
+
+type MarkerClickHandlerType = (facility: MinimalRecordType) => void
 
 const easeInOutQuad = (t: number): number =>
   t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1
@@ -74,6 +81,7 @@ export const FacilitiesMap: FC<MapType> = ({
   const spideredFeatureIds = useRef<number[]>(null)
   const highlightedSearchMarker = useRef<Marker>(null)
   const highlightedUserGeoposition = useRef<Marker>(null)
+  const markerClickHandler = useRef<MarkerClickHandlerType>(() => undefined)
   const spiderifier =
     useRef<InstanceType<typeof MaplibreglSpiderifier<MinimalRecordType>>>(null)
 
@@ -190,6 +198,24 @@ export const FacilitiesMap: FC<MapType> = ({
   )
 
   useEffect(() => {
+    markerClickHandler.current = (facility: MinimalRecordType): void => {
+      if (!map.current || !facility) return
+      void push({
+        pathname: `/${facility.id}`,
+        query: {
+          ...urlState,
+          latitude: facility.latitude,
+          longitude: facility.longitude,
+        },
+      })
+      map.current.easeTo({
+        center: [facility.longitude, facility.latitude],
+        zoom: MAX_ZOOM,
+      })
+    }
+  }, [push, urlState])
+
+  useEffect(() => {
     if (!markers || !map.current) return
 
     map.current.on('load', function () {
@@ -265,14 +291,7 @@ export const FacilitiesMap: FC<MapType> = ({
         map.current,
         {
           onClick(_e, markerObject) {
-            void push(`/${markerObject.marker.id}`)
-            map.current?.easeTo({
-              center: [
-                markerObject.marker.longitude,
-                markerObject.marker.latitude,
-              ],
-              zoom: MAX_ZOOM,
-            })
+            markerClickHandler.current(markerObject.marker)
           },
           onMouseenter(_e, { marker, spiderParam }) {
             if (!map.current) return
@@ -324,15 +343,24 @@ export const FacilitiesMap: FC<MapType> = ({
         if (!map.current || !spiderifier.current) return
 
         const features = e.features as GeojsonFeatureType<MinimalRecordType>[]
-        if (features.length === 0 || !features[0].geometry.coordinates) return
+        const activeFeatures = features.filter(({ state }) => state.active)
+        const firstFeature = activeFeatures[0]
+
+        if (activeFeatures.length === 0 || !firstFeature.geometry.coordinates)
+          return
 
         const featuresOnSameCoords =
-          getFeaturesOnSameCoordsThanFirstOne(features)
+          getFeaturesOnSameCoordsThanFirstOne(activeFeatures)
 
         const isClusterOfVeryNearButNotOverlappingPoints =
-          featuresOnSameCoords.length !== features.length
+          featuresOnSameCoords.length !== activeFeatures.length
         if (isClusterOfVeryNearButNotOverlappingPoints) {
-          zoomIn(map.current, featuresOnSameCoords[0].geometry.coordinates, 2)
+          zoomIn(
+            map.current,
+            featuresOnSameCoords[0].geometry.coordinates,
+            2,
+            MAX_ZOOM
+          )
           return
         }
 
@@ -343,7 +371,7 @@ export const FacilitiesMap: FC<MapType> = ({
           clickedMarkerIds.includes(marker.id)
         )
 
-        map.current.easeTo({ center: features[0].geometry.coordinates })
+        map.current.easeTo({ center: firstFeature.geometry.coordinates })
 
         const isMobile = window.innerWidth <= MOBILE_BREAKPOINT
         if (isMobile) {
@@ -351,21 +379,17 @@ export const FacilitiesMap: FC<MapType> = ({
           return
         }
         if (clickedFacilities.length === 1) {
-          void push(`/${clickedFacilities[0].id}`)
-          map.current.easeTo({
-            center: featuresOnSameCoords[0].geometry.coordinates,
-            zoom: MAX_ZOOM,
-          })
+          markerClickHandler.current(clickedFacilities[0])
           return
         }
         popup.current?.remove.bind(popup.current)()
         spiderifier.current.spiderfy(
-          features[0].geometry.coordinates,
+          firstFeature.geometry.coordinates,
           clickedFacilities
         )
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        spideredFeatureIds.current = features.map(
+        spideredFeatureIds.current = activeFeatures.map(
           ({ properties }) => properties.id
         )
         spideredFeatureIds.current.forEach((id) => {
@@ -381,9 +405,13 @@ export const FacilitiesMap: FC<MapType> = ({
       if (!map.current) return
       if (!e.features || e.features.length === 0) return
 
+      const features = e.features as GeojsonFeatureType<MinimalRecordType>[]
+      const activeFeatures = features.filter(({ state }) => state.active)
+      const allFeaturesInactive = activeFeatures.length === 0
+      if (allFeaturesInactive) return
+
       setCursor('pointer')
 
-      const features = e.features as GeojsonFeatureType<MinimalRecordType>[]
       if (hoveredStateIds.current && hoveredStateIds.current?.length > 0) {
         hoveredStateIds.current?.forEach((id) => {
           map.current?.setFeatureState(
@@ -403,18 +431,18 @@ export const FacilitiesMap: FC<MapType> = ({
       })
 
       if (
-        features.length >= 1 &&
+        activeFeatures.length >= 1 &&
         !spiderifier.current?.expandedIds.some((id) =>
-          features.find((marker) => marker.properties.id === id)
+          activeFeatures.find((marker) => marker.properties.id === id)
         )
       ) {
-        const { longitude, latitude } = features[0]
+        const { longitude, latitude } = activeFeatures[0]
           .properties as MinimalRecordType
         popup.current
           .setLngLat([longitude, latitude])
           .setHTML(
             getPopupHTML(
-              features.map(({ properties }) => properties),
+              activeFeatures.map(({ properties }) => properties),
               texts
             )
           )
@@ -545,32 +573,4 @@ export const FacilitiesMap: FC<MapType> = ({
       <MapTilerLogo />
     </>
   )
-}
-
-function getFeaturesOnSameCoordsThanFirstOne<PropsType>(
-  features: GeojsonFeatureType<PropsType>[]
-): GeojsonFeatureType<PropsType>[] {
-  const pointACoords = features[0].geometry.coordinates || [0, 0]
-  const pointA = new LngLat(...pointACoords)
-  return features.filter((feat) => {
-    const coordinates = feat.geometry.coordinates || [0, 0]
-    const pointB = new LngLat(...coordinates)
-    const dist = pointA.distanceTo(pointB)
-    const distance = Math.round(dist / 100) / 10
-    return distance < 0.1
-  })
-}
-
-function zoomIn(map: Map, coordinates?: LngLatLike, zoomIncrease = 1): void {
-  map.easeTo({
-    center: coordinates,
-    zoom: Math.min(MAX_ZOOM, map.getZoom() + zoomIncrease),
-  })
-}
-
-function setCursor(cursor = 'grab'): void {
-  const container$ = document.querySelector<HTMLDivElement>(
-    '.mapboxgl-canvas-container.mapboxgl-interactive'
-  )
-  if (container$) container$.style.cursor = cursor
 }

@@ -16,6 +16,7 @@ export interface GeojsonFeatureType<PropertiesType = Record<string, unknown>> {
   properties: PropertiesType & {
     id: number
   }
+  state: Record<string, unknown>
 }
 
 export const createGeoJsonStructure = (
@@ -31,6 +32,7 @@ export const createGeoJsonStructure = (
           coordinates: [marker.longitude, marker.latitude],
         },
         properties: marker,
+        state: {},
       }
     }),
   }
