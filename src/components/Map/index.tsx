@@ -1,12 +1,5 @@
 import { useEffect, FC, useRef, useState, useCallback } from 'react'
-import maplibregl, {
-  LngLat,
-  LngLatLike,
-  Feature,
-  Map,
-  Marker,
-  Popup,
-} from 'maplibre-gl'
+import maplibregl, { LngLat, LngLatLike, Map, Marker, Popup } from 'maplibre-gl'
 import {
   createGeoJsonStructure,
   GeojsonFeatureType,
@@ -22,7 +15,9 @@ import { MapTilerLogo } from '@components/MaptilerLogo'
 import MaplibreglSpiderifier, {
   popupOffsetForSpiderLeg,
 } from '@lib/MaplibreglSpiderifier'
-import { useIsMobile } from '@lib/hooks/useIsMobile'
+import { MOBILE_BREAKPOINT } from '@lib/hooks/useIsMobile'
+import { useTexts } from '@lib/TextsContext'
+import { getPopupHTML } from './popupUtils'
 
 interface MapType {
   markers?: MinimalRecordType[]
@@ -64,14 +59,15 @@ export const FacilitiesMap: FC<MapType> = ({
   highlightedCenter,
   searchCenter,
 }) => {
-  const isMobile = useIsMobile()
   const { push } = useRouter()
+  const texts = useTexts()
   const map = useRef<Map>(null)
   const highlightedMarker = useRef<Marker>(null)
   const popup = useRef(
     new Popup({
       closeButton: false,
       closeOnClick: false,
+      maxWidth: '320px',
     })
   )
   const hoveredStateIds = useRef<number[]>(null)
@@ -269,7 +265,6 @@ export const FacilitiesMap: FC<MapType> = ({
         map.current,
         {
           onClick(_e, markerObject) {
-            console.log('Clicked on ', markerObject.marker.title)
             void push(`/${markerObject.marker.id}`)
             map.current?.easeTo({
               center: [
@@ -281,7 +276,6 @@ export const FacilitiesMap: FC<MapType> = ({
           },
           onMouseenter(_e, { marker, spiderParam }) {
             if (!map.current) return
-            console.log('Hovered over', marker.title)
 
             popup.current.setOffset(
               popupOffsetForSpiderLeg(spiderParam) as unknown
@@ -289,12 +283,10 @@ export const FacilitiesMap: FC<MapType> = ({
 
             popup.current
               .setLngLat([marker.longitude, marker.latitude])
-              .setHTML(marker.title)
+              .setHTML(getPopupHTML([marker], texts))
               .addTo(map.current)
           },
-          onMouseleave(_e, markerObject) {
-            console.log('Hovered out', markerObject.marker.title)
-
+          onMouseleave() {
             popup.current.setOffset(0)
             popup.current.remove()
           },
@@ -303,6 +295,8 @@ export const FacilitiesMap: FC<MapType> = ({
 
       function unspiderfy(): void {
         spiderifier.current?.unspiderfy()
+        popup.current.setOffset(0)
+        popup.current.remove()
         if (
           map.current &&
           spideredFeatureIds.current &&
@@ -351,6 +345,7 @@ export const FacilitiesMap: FC<MapType> = ({
 
         map.current.easeTo({ center: features[0].geometry.coordinates })
 
+        const isMobile = window.innerWidth <= MOBILE_BREAKPOINT
         if (isMobile) {
           onMarkerClick(clickedFacilities)
           return
@@ -417,7 +412,12 @@ export const FacilitiesMap: FC<MapType> = ({
           .properties as MinimalRecordType
         popup.current
           .setLngLat([longitude, latitude])
-          .setHTML(getPopupHTML(features))
+          .setHTML(
+            getPopupHTML(
+              features.map(({ properties }) => properties),
+              texts
+            )
+          )
           .addTo(map.current)
       }
     })
@@ -573,14 +573,4 @@ function setCursor(cursor = 'grab'): void {
     '.mapboxgl-canvas-container.mapboxgl-interactive'
   )
   if (container$) container$.style.cursor = cursor
-}
-
-function getPopupHTML(
-  features: GeojsonFeatureType<MinimalRecordType>[]
-): string {
-  if (features.length > 1) return `${features.length} Items. Click to expand.`
-  const { title } = features[0].properties
-  return `
-    <h3>${title}</h3>
-  `
 }

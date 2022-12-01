@@ -56,6 +56,7 @@ export default class MaplibreglSpiderifier<MarkerType extends { id: number }> {
   }
   previousMarkerObjects: MarkerObjectType<MarkerType>[]
   expandedIds: number[]
+  markerHoveredId: number | null
 
   constructor(map: Map, userOptions: Partial<UserOptionsType<MarkerType>>) {
     this.map = map
@@ -74,6 +75,7 @@ export default class MaplibreglSpiderifier<MarkerType extends { id: number }> {
     }
     this.previousMarkerObjects = []
     this.expandedIds = []
+    this.markerHoveredId = null
   }
 
   public each(callback: (marker: MarkerObjectType<MarkerType>) => void): void {
@@ -110,7 +112,8 @@ export default class MaplibreglSpiderifier<MarkerType extends { id: number }> {
         elements.marker.addEventListener('click', (e: Event) => {
           this.options.onClick(e, markerObject)
         })
-        elements.marker.addEventListener('mouseenter', (e: Event) => {
+        elements.marker.addEventListener('mousemove', (e: Event) => {
+          if (this.markerHoveredId === marker.id) return
           this.options.onMouseenter(e, markerObject)
         })
         elements.marker.addEventListener('mouseleave', (e: Event) => {
