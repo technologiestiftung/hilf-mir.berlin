@@ -3,6 +3,13 @@
 
 ### Bug Fixes
 
+* **deps:** update dependency use-debounce to v9 ([c6f6a53](https://github.com/technologiestiftung/wegweiser-frontend/commit/c6f6a53f16cfbd8bbfe48cd9b9f134f2c6e99058))
+
+# [1.3.0-rc.7](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.3.0-rc.6...v1.3.0-rc.7) (2022-11-24)
+
+
+### Bug Fixes
+
 * **WEG-82:** Close search on click outside ([cf647b3](https://github.com/technologiestiftung/wegweiser-frontend/commit/cf647b3e960780afeaeb75450990bc364c2c3b66))
 
 # [1.3.0-rc.6](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.3.0-rc.5...v1.3.0-rc.6) (2022-11-23)
@@ -48,9 +55,7 @@
 ### Features
 
 * **WEG-109:** Add Accessibility indicator ([4d92f63](https://github.com/technologiestiftung/wegweiser-frontend/commit/4d92f634aefdcfaa8425bf8b966fe76c0301532f))
-=======
 * **deps:** update dependency use-debounce to v9 ([c6f6a53](https://github.com/technologiestiftung/wegweiser-frontend/commit/c6f6a53f16cfbd8bbfe48cd9b9f134f2c6e99058))
->>>>>>> main
 
 # [1.2.0](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.1.0...v1.2.0) (2022-10-28)
 
