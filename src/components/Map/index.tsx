@@ -9,6 +9,9 @@ import { useDebouncedCallback } from 'use-debounce'
 import { URLViewportType } from '@lib/types/map'
 import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { useUrlState } from '@lib/UrlStateContext'
+import classNames from '@lib/classNames'
+import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
+import { MapTilerLogo } from '@components/MaptilerLogo'
 
 interface MapType {
   markers?: MinimalRecordType[]
@@ -25,6 +28,7 @@ interface MapType {
    * Also, a highlighted marker will be drawn to the map.
    */
   highlightedCenter?: LngLatLike
+  searchCenter?: LngLatLike
 }
 
 const easeInOutQuad = (t: number): number =>
@@ -50,12 +54,21 @@ export const FacilitiesMap: FC<MapType> = ({
   onMoveStart = () => undefined,
   onClickAnywhere = () => undefined,
   highlightedCenter,
+  searchCenter,
 }) => {
   const map = useRef<Map>(null)
   const highlightedMarker = useRef<Marker>(null)
+  const highlightedSearchMarker = useRef<Marker>(null)
+  const highlightedUserGeoposition = useRef<Marker>(null)
 
   const { pathname } = useRouter()
   const [urlState, setUrlState] = useUrlState()
+  const {
+    isLoading: userGeolocationIsLoading,
+    latitude: userLatitude,
+    longitude: userLongitude,
+    useGeolocation,
+  } = useUserGeolocation()
 
   // The initial viewport will be available on 2nd render,
   // because we get it from useRouter. First it has to be null.
@@ -80,7 +93,7 @@ export const FacilitiesMap: FC<MapType> = ({
 
     if (
       mapLongitude === urlState.longitude &&
-      mapLatitude == urlState.latitude &&
+      mapLatitude === urlState.latitude &&
       mapZoom === urlState.zoom
     )
       return
@@ -200,33 +213,24 @@ export const FacilitiesMap: FC<MapType> = ({
 
       updateFilteredFacilities(activeTags as number[])
 
+      const opacityGlCondition = [
+        'case',
+        ['boolean', ['feature-state', 'active'], false],
+        1,
+        0,
+      ]
+
       map.current.addLayer({
         id: 'unclustered-point',
         type: 'circle',
         source: 'facilities',
         paint: {
-          'circle-radius': 8,
+          'circle-radius': 10,
           'circle-stroke-width': 1,
-          'circle-stroke-color': [
-            'case',
-            // While the feature state is still undefined, we prefer to
-            // show the facilities as not active, so that we don't create
-            // disappointment when first facilities flash and then they
-            // disappear.
-            ['boolean', ['feature-state', 'active'], false],
-            '#fff',
-            '#E40422',
-          ],
-          'circle-color': [
-            'case',
-            // While the feature state is still undefined, we prefer to
-            // show the facilities as not active, so that we don't create
-            // disappointment when first facilities flash and then they
-            // disappear.
-            ['boolean', ['feature-state', 'active'], false],
-            '#E40422',
-            '#fff',
-          ],
+          'circle-stroke-color': '#fff',
+          'circle-color': '#E40422',
+          'circle-stroke-opacity': opacityGlCondition,
+          'circle-opacity': opacityGlCondition,
         },
       })
 
@@ -242,7 +246,7 @@ export const FacilitiesMap: FC<MapType> = ({
 
         map.current.easeTo({
           center: features[0].geometry.coordinates,
-          zoom: 18,
+          zoom: 17,
         })
 
         const clickedFacilities = markers.filter((marker) =>
@@ -256,14 +260,61 @@ export const FacilitiesMap: FC<MapType> = ({
   }, [markers])
 
   useEffect(() => {
-    if (!map.current || !highlightedCenter) return
+    if (!map.current) return
+    if (!useGeolocation || !userLatitude || !userLongitude) {
+      // Without a userGeolocation we want to remove any highlightedUserGeoposition:
+      highlightedUserGeoposition && highlightedUserGeoposition.current?.remove()
+      return
+    } else {
+      // Remove possibly existent user geoposition marker:
+      highlightedUserGeoposition.current?.remove()
 
-    map.current.easeTo({
-      center: highlightedCenter,
-      zoom: 18,
-    })
+      const customMarker = document.createElement('div')
+      customMarker.className = classNames(
+        'w-8 h-8 border-2 border-white rounded-full bg-blau ring-2',
+        'ring-blau ring-offset-2 ring-offset-white'
+      )
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      highlightedUserGeoposition.current = new maplibregl.Marker(customMarker)
+        .setLngLat([userLongitude, userLatitude])
+        .addTo(map.current)
+
+      map.current.easeTo({
+        center: [userLongitude, userLatitude],
+        zoom: 17,
+      })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [highlightedCenter])
+  }, [mapIsFullyLoaded, userGeolocationIsLoading, useGeolocation])
+
+  useEffect(() => {
+    if (!map.current) return
+    if (!searchCenter) {
+      // Without a searchCenter we want to remove any highlightedSearchMarker:
+      highlightedSearchMarker && highlightedSearchMarker.current?.remove()
+      return
+    } else {
+      // Remove possibly existent markers:
+      highlightedSearchMarker.current?.remove()
+
+      const customMarker = document.createElement('div')
+      customMarker.className = classNames('w-8 h-8 bg-norepeat')
+      customMarker.style.backgroundImage = 'url("/images/search_geopin.svg")'
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      highlightedSearchMarker.current = new maplibregl.Marker(customMarker)
+        .setLngLat(searchCenter)
+        .addTo(map.current)
+
+      map.current.easeTo({
+        center: searchCenter,
+        zoom: 17,
+      })
+    }
+  }, [searchCenter])
 
   useEffect(() => {
     if (!map.current) return
@@ -276,14 +327,21 @@ export const FacilitiesMap: FC<MapType> = ({
       highlightedMarker.current?.remove()
 
       const customMarker = document.createElement('div')
-      customMarker.className =
-        'rounded-full w-8 h-8 bg-red border-2 border-white'
+      customMarker.className = classNames(
+        'w-10 h-10 bg-red rounded-full ring-2',
+        'ring-offset-white ring-offset-2 ring-red'
+      )
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       highlightedMarker.current = new maplibregl.Marker(customMarker)
         .setLngLat(highlightedCenter)
         .addTo(map.current)
+
+      map.current.easeTo({
+        center: highlightedCenter,
+        zoom: 17,
+      })
     }
   }, [highlightedCenter])
 
@@ -293,10 +351,13 @@ export const FacilitiesMap: FC<MapType> = ({
   )
 
   return (
-    <div
-      id="map"
-      className="w-full h-full bg-[#F8F4F0]"
-      aria-label="Kartenansicht der Einrichtungen"
-    ></div>
+    <>
+      <div
+        id="map"
+        className="w-full h-full bg-[#F8F4F0]"
+        aria-label="Kartenansicht der Einrichtungen"
+      />
+      <MapTilerLogo />
+    </>
   )
 }

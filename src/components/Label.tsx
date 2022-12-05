@@ -18,7 +18,7 @@ export const Label: FC<{
 }) => {
   const Icon = icons[label.fields.icon as keyof typeof icons] || Fragment
   return (
-    <li key={label.id} className="inline-block">
+    <li key={label.id} className="inline-block group">
       <button
         onClick={() => onClick(label.id)}
         className={classNames(
@@ -26,7 +26,7 @@ export const Label: FC<{
           `py-1.5 border text-lg flex gap-2 text-left leading-6 pl-2 pr-3 group`,
           isActive &&
             isInteractive &&
-            `bg-red border-red text-white hover:bg-gray-60 hover:border-gray-60`,
+            `bg-red border-red text-white hover:bg-gray-60 focus:group-hover:bg-red hover:border-gray-60`,
           (!isActive || !isInteractive) && ` border-gray-20`,
           !isActive && isInteractive && 'hover:bg-gray-10',
           isInteractive && [

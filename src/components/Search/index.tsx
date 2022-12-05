@@ -1,6 +1,7 @@
 import { ChangeEvent, FC, useState } from 'react'
 import { FeatureType, geocode } from '@lib/requests/geocode'
 import classNames from '@lib/classNames'
+import useClickOutside from '@lib/useClickOutside'
 
 interface SearchType {
   onSelectResult?: (place: FeatureType) => void
@@ -10,6 +11,10 @@ export const Search: FC<SearchType> = ({
 }) => {
   const [searchInput, setSearchInput] = useState('')
   const [searchResults, setSearchResults] = useState<FeatureType[]>([])
+  const containerRef = useClickOutside<HTMLDivElement>(() => {
+    setSearchInput('')
+    setSearchResults([])
+  })
   const onSearchInput = async (
     e: ChangeEvent<HTMLInputElement>
   ): Promise<void> => {
@@ -22,7 +27,10 @@ export const Search: FC<SearchType> = ({
     setSearchResults(results.features)
   }
   return (
-    <div className={classNames(`max-w-72 w-full bg-white h-12`)}>
+    <div
+      className={classNames(`max-w-72 w-full bg-white h-12`)}
+      ref={containerRef}
+    >
       <div className="grid grid-cols-1 h-12">
         <label htmlFor="geocoding-input" className="sr-only">
           Standortsuche
@@ -32,10 +40,10 @@ export const Search: FC<SearchType> = ({
           name="place"
           id="geocoding-input"
           className={classNames(
-            `border border-gray-100 px-3 py-2 h-12`,
+            `border border-gray-100 px-3 py-2 h-12 rounded-none`,
             `focus:outline-none focus:ring-2 focus:ring-red`,
             `focus:ring-offset-2 focus:ring-offset-white`,
-            `relative focus:z-10`
+            `relative focus:z-10 shadow-none`
           )}
           placeholder="Adresssuche"
           value={searchInput}
