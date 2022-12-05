@@ -1,10 +1,4 @@
-import {
-  Marker,
-  Map,
-  LngLatLike,
-  PositionAnchor,
-  PointLike,
-} from 'maplibre-gl'
+import { Marker, Map, LngLatLike, PositionAnchor, PointLike } from 'maplibre-gl'
 
 interface SpiderParamType {
   x: number
