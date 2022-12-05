@@ -1,5 +1,10 @@
 import { useEffect, FC, useRef, useState, useCallback } from 'react'
-import maplibregl, { LngLatLike, Map, Marker } from 'maplibre-gl'
+import maplibregl, {
+  DataDrivenPropertyValueSpecification,
+  LngLatLike,
+  Map,
+  Marker,
+} from 'maplibre-gl'
 import {
   createGeoJsonStructure,
   GeojsonFeatureType,
@@ -218,7 +223,7 @@ export const FacilitiesMap: FC<MapType> = ({
         ['boolean', ['feature-state', 'active'], false],
         1,
         0,
-      ]
+      ] as DataDrivenPropertyValueSpecification<number>
 
       map.current.addLayer({
         id: 'unclustered-point',
