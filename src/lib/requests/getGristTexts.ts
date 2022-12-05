@@ -24,7 +24,7 @@ export async function getGristTexts(): Promise<TextsMapType> {
       ...acc,
       [key]: sanitize(de, {
         allowedTags: htmlIsAllowed
-          ? ['a', 'b', 'i', 'em', 'strong', 'u', 'sup', 'sub']
+          ? ['a', 'b', 'i', 'em', 'strong', 'u', 'sup', 'sub', 'br']
           : [],
         allowedAttributes: {
           a: htmlIsAllowed ? ['href', 'title'] : [],
