@@ -1,4 +1,4 @@
-# [1.3.0-rc.7](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.3.0-rc.6...v1.3.0-rc.7) (2022-11-24)
+## [1.3.1](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.2.0...v1.2.1) (2022-12-05)
 
 
 ### Bug Fixes
@@ -10,8 +10,7 @@
 
 ### Features
 
-* **WEG-97:** Allow htmls tags in particular texts ([051a9dd](https://github.com/technologiestiftung/wegweiser-frontend/commit/051a9dd52697420ebbb9b412cd58962042955673))
-* **WEG-97:** Allow specific html tags in facility info ([9f9d0e0](https://github.com/technologiestiftung/wegweiser-frontend/commit/9f9d0e0e0ae6b3c66d322a4dc9b891c18c1ec0b5))
+* **WEG-97:** Allow specific html tags in facility info ([9f9d0e0](https://github.com/technologiestiftung/wegweiser-frontend/commit/9f9d0e0e0ae6b3c66d322a4dc9b891c18c1ec0b5) & [051a9dd](https://github.com/technologiestiftung/wegweiser-frontend/commit/051a9dd52697420ebbb9b412cd58962042955673))
 
 # [1.3.0-rc.5](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.3.0-rc.4...v1.3.0-rc.5) (2022-11-21)
 
@@ -49,6 +48,9 @@
 ### Features
 
 * **WEG-109:** Add Accessibility indicator ([4d92f63](https://github.com/technologiestiftung/wegweiser-frontend/commit/4d92f634aefdcfaa8425bf8b966fe76c0301532f))
+=======
+* **deps:** update dependency use-debounce to v9 ([c6f6a53](https://github.com/technologiestiftung/wegweiser-frontend/commit/c6f6a53f16cfbd8bbfe48cd9b9f134f2c6e99058))
+>>>>>>> main
 
 # [1.2.0](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.1.0...v1.2.0) (2022-10-28)
 
