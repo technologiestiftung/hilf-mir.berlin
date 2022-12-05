@@ -1,5 +1,41 @@
 import { GeojsonFeatureType } from '@lib/createGeojsonStructure'
-import { LngLat, Map, LngLatLike } from 'maplibre-gl'
+import MaplibreglSpiderifier, {
+  popupOffsetForSpiderLeg,
+} from '@lib/MaplibreglSpiderifier'
+import { MinimalRecordType } from '@lib/mapRecordToMinimum'
+import { TextsMapType } from '@lib/TextsContext'
+import { LngLat, Map, LngLatLike, Popup } from 'maplibre-gl'
+import { getPopupHTML } from './popupUtils'
+
+export type MarkerClickHandlerType = (facility: MinimalRecordType) => void
+
+export function getSpiderfier(config: {
+  popup: Popup
+  map: Map
+  clickHandler: MarkerClickHandlerType
+  texts: TextsMapType
+}): MaplibreglSpiderifier<MinimalRecordType> {
+  const { map, texts, clickHandler, popup } = config
+  return new MaplibreglSpiderifier<MinimalRecordType>(map, {
+    onClick(_e, markerObject) {
+      clickHandler(markerObject.marker)
+    },
+    onMouseenter(_e, { marker, spiderParam }) {
+      if (!map) return
+
+      popup.setOffset(popupOffsetForSpiderLeg(spiderParam) as unknown)
+
+      popup
+        .setLngLat([marker.longitude, marker.latitude])
+        .setHTML(getPopupHTML([marker], texts))
+        .addTo(map)
+    },
+    onMouseleave() {
+      popup.setOffset(0)
+      popup.remove()
+    },
+  })
+}
 
 export function getFeaturesOnSameCoordsThanFirstOne<PropsType>(
   features: GeojsonFeatureType<PropsType>[]

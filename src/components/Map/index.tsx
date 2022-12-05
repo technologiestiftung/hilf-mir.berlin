@@ -12,14 +12,14 @@ import { useUrlState } from '@lib/UrlStateContext'
 import classNames from '@lib/classNames'
 import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
 import { MapTilerLogo } from '@components/MaptilerLogo'
-import MaplibreglSpiderifier, {
-  popupOffsetForSpiderLeg,
-} from '@lib/MaplibreglSpiderifier'
+import MaplibreglSpiderifier from '@lib/MaplibreglSpiderifier'
 import { MOBILE_BREAKPOINT } from '@lib/hooks/useIsMobile'
-import { TextsMapType, useTexts } from '@lib/TextsContext'
+import { useTexts } from '@lib/TextsContext'
 import { getPopupHTML } from './popupUtils'
 import {
   getFeaturesOnSameCoordsThanFirstOne,
+  getSpiderfier,
+  MarkerClickHandlerType,
   setCursor,
   zoomIn,
 } from './mapUtil'
@@ -37,8 +37,6 @@ interface MapType {
   highlightedCenter?: LngLatLike
   searchCenter?: LngLatLike
 }
-
-type MarkerClickHandlerType = (facility: MinimalRecordType) => void
 
 const easeInOutQuad = (t: number): number =>
   t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1
@@ -557,32 +555,4 @@ export const FacilitiesMap: FC<MapType> = ({
       <MapTilerLogo />
     </>
   )
-}
-
-function getSpiderfier(config: {
-  popup: Popup
-  map: Map
-  clickHandler: MarkerClickHandlerType
-  texts: TextsMapType
-}): MaplibreglSpiderifier<MinimalRecordType> {
-  const { map, texts, clickHandler, popup } = config
-  return new MaplibreglSpiderifier<MinimalRecordType>(map, {
-    onClick(_e, markerObject) {
-      clickHandler(markerObject.marker)
-    },
-    onMouseenter(_e, { marker, spiderParam }) {
-      if (!map) return
-
-      popup.setOffset(popupOffsetForSpiderLeg(spiderParam) as unknown)
-
-      popup
-        .setLngLat([marker.longitude, marker.latitude])
-        .setHTML(getPopupHTML([marker], texts))
-        .addTo(map)
-    },
-    onMouseleave() {
-      popup.setOffset(0)
-      popup.remove()
-    },
-  })
 }
