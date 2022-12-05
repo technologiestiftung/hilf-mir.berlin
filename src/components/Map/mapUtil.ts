@@ -23,7 +23,7 @@ export function getSpiderfier(config: {
     onMouseenter(_e, { marker, spiderParam }) {
       if (!map) return
 
-      popup.setOffset(popupOffsetForSpiderLeg(spiderParam) as unknown)
+      popup.setOffset(popupOffsetForSpiderLeg(spiderParam))
 
       popup
         .setLngLat([marker.longitude, marker.latitude])

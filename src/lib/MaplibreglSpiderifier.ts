@@ -1,4 +1,10 @@
-import { Marker, Map, LngLatLike, Offset } from 'maplibre-gl'
+import {
+  Marker,
+  Map,
+  LngLatLike,
+  PositionAnchor,
+  PointLike,
+} from 'maplibre-gl'
 
 interface SpiderParamType {
   x: number
@@ -219,12 +225,15 @@ export default class MaplibreglSpiderifier<MarkerType extends { id: number }> {
 export function popupOffsetForSpiderLeg(
   spiderParam: SpiderParamType,
   offset = 0
-): Offset {
+): {
+  [_ in PositionAnchor]: PointLike
+} {
   const pinOffsetX = spiderParam.x
   const pinOffsetY = spiderParam.y
 
   offset = offset || 0
   return {
+    center: [pinOffsetX, pinOffsetY],
     top: offsetVariant([0, offset], pinOffsetX, pinOffsetY),
     'top-left': offsetVariant([offset, offset], pinOffsetX, pinOffsetY),
     'top-right': offsetVariant([-offset, offset], pinOffsetX, pinOffsetY),
@@ -241,7 +250,7 @@ function offsetVariant(
   offset: [number, number],
   variantX?: number,
   variantY?: number
-): [number, number] {
+): PointLike {
   return [offset[0] + (variantX || 0), offset[1] + (variantY || 0)]
 }
 
