@@ -16,7 +16,7 @@ import MaplibreglSpiderifier, {
   popupOffsetForSpiderLeg,
 } from '@lib/MaplibreglSpiderifier'
 import { MOBILE_BREAKPOINT } from '@lib/hooks/useIsMobile'
-import { useTexts } from '@lib/TextsContext'
+import { TextsMapType, useTexts } from '@lib/TextsContext'
 import { getPopupHTML } from './popupUtils'
 import {
   getFeaturesOnSameCoordsThanFirstOne,
@@ -287,30 +287,12 @@ export const FacilitiesMap: FC<MapType> = ({
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      spiderifier.current = new MaplibreglSpiderifier<MinimalRecordType>(
-        map.current,
-        {
-          onClick(_e, markerObject) {
-            markerClickHandler.current(markerObject.marker)
-          },
-          onMouseenter(_e, { marker, spiderParam }) {
-            if (!map.current) return
-
-            popup.current.setOffset(
-              popupOffsetForSpiderLeg(spiderParam) as unknown
-            )
-
-            popup.current
-              .setLngLat([marker.longitude, marker.latitude])
-              .setHTML(getPopupHTML([marker], texts))
-              .addTo(map.current)
-          },
-          onMouseleave() {
-            popup.current.setOffset(0)
-            popup.current.remove()
-          },
-        }
-      )
+      spiderifier.current = getSpiderfier({
+        clickHandler: markerClickHandler.current,
+        map: map.current,
+        popup: popup.current,
+        texts,
+      })
 
       function unspiderfy(): void {
         spiderifier.current?.unspiderfy()
@@ -404,6 +386,8 @@ export const FacilitiesMap: FC<MapType> = ({
     map.current.on('mousemove', 'unclustered-point', (e) => {
       if (!map.current) return
       if (!e.features || e.features.length === 0) return
+      const isMobile = window.innerWidth <= MOBILE_BREAKPOINT
+      if (isMobile) return
 
       const features = e.features as GeojsonFeatureType<MinimalRecordType>[]
       const activeFeatures = features.filter(({ state }) => state.active)
@@ -573,4 +557,32 @@ export const FacilitiesMap: FC<MapType> = ({
       <MapTilerLogo />
     </>
   )
+}
+
+function getSpiderfier(config: {
+  popup: Popup
+  map: Map
+  clickHandler: MarkerClickHandlerType
+  texts: TextsMapType
+}): MaplibreglSpiderifier<MinimalRecordType> {
+  const { map, texts, clickHandler, popup } = config
+  return new MaplibreglSpiderifier<MinimalRecordType>(map, {
+    onClick(_e, markerObject) {
+      clickHandler(markerObject.marker)
+    },
+    onMouseenter(_e, { marker, spiderParam }) {
+      if (!map) return
+
+      popup.setOffset(popupOffsetForSpiderLeg(spiderParam) as unknown)
+
+      popup
+        .setLngLat([marker.longitude, marker.latitude])
+        .setHTML(getPopupHTML([marker], texts))
+        .addTo(map)
+    },
+    onMouseleave() {
+      popup.setOffset(0)
+      popup.remove()
+    },
+  })
 }
