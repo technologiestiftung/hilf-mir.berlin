@@ -1,3 +1,10 @@
+# [1.3.0-rc.8](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.3.0-rc.7...v1.3.0-rc.8) (2022-12-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency use-debounce to v9 ([c6f6a53](https://github.com/technologiestiftung/wegweiser-frontend/commit/c6f6a53f16cfbd8bbfe48cd9b9f134f2c6e99058))
+
 # [1.3.0-rc.7](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.3.0-rc.6...v1.3.0-rc.7) (2022-11-24)
 
 
