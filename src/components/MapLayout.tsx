@@ -17,6 +17,7 @@ import { MapHeader } from './MapHeader'
 import { MapButtons } from './MapButtons'
 import { IconButton } from './IconButton'
 import { Arrow } from './icons/Arrow'
+import { useIsMobile } from '@lib/hooks/useIsMobile'
 
 const SCROLL_THRESHOLD = 300
 
@@ -35,6 +36,9 @@ export const MapLayout: FC<{
   const [filterSidebarIsOpened, setFilterSidebarIsOpened] = useState(false)
   const [urlState, setUrlState] = useUrlState()
   const [hasScrolled, setHasScrolled] = useState<boolean>(false)
+  const isMobile = useIsMobile()
+
+  const showMapUi = (isMobile && pathname === 'map') || !isMobile
 
   useEffect(() => {
     const scrollContainer = document.getElementById('main-sidebar')
@@ -102,15 +106,14 @@ export const MapLayout: FC<{
             />
           </div>
         )}
-        {!isFallback && pathname === '/map' && <MapButtons />}
+        {!isFallback && showMapUi && <MapButtons />}
         {!isFallback && selectedFacilities.length === 0 && (
           <MapListSwitch
             listViewOpen={listViewOpen}
             setListViewOpen={setListViewOpen}
           />
         )}
-        {((pathname === '/map' && listViewOpen) ||
-          (pathname !== '/' && pathname !== '/map')) && (
+        {showMapUi && listViewOpen && (
           <div
             className={classNames(
               `fixed left-full lg:left-sidebarW -translate-x-full z-40 pr-5`,
@@ -136,20 +139,15 @@ export const MapLayout: FC<{
           id="main-sidebar"
           className={classNames(
             `fixed w-screen h-screen top-0 left-0 overflow-y-auto`,
-            `lg:w-sidebarW lg:shadow-xl`,
-            pathname === '/map' ? 'z-20' : 'z-30',
+            `lg:w-sidebarW lg:shadow-xl z-10`,
             `relative bg-white min-h-screen transition-transform`,
-            pathname === '/map' &&
-              listViewOpen &&
-              `translate-y-0 pt-20 lg:pt-0`,
-            pathname === '/map' &&
-              !listViewOpen &&
-              `translate-y-[100vh] lg:translate-y-0`
+            showMapUi && listViewOpen && `translate-y-0 pt-20 lg:pt-0`,
+            showMapUi && !listViewOpen && `translate-y-[100vh] lg:translate-y-0`
           )}
         >
           {!isFallback && children}
         </aside>
-        {pathname === '/map' && (
+        {showMapUi && (
           <MapHeader
             handleSearchResult={handleSearchResult}
             filterSidebarIsOpened={filterSidebarIsOpened}

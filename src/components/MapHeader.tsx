@@ -30,9 +30,9 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
           `fixed inset-0 z-30 bottom-auto h-20`,
           listViewOpen ? `opacity-100` : `opacity-0`,
           `lg:opacity-0 transition-opacity`,
-          `bg-white border-b border-black`
+          `bg-white border-b border-black pointer-events-none`
         )}
-      ></div>
+      />
       <IconButtonLink
         pathName="/"
         className={classNames(

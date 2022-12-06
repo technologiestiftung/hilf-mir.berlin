@@ -50,6 +50,7 @@ const MAP_CONFIG = {
   defaultLongitude: 13.404954,
   minZoom: 10,
   maxZoom: 19,
+  zoomedInZoom: 17,
 }
 
 export const FacilitiesMap: FC<MapType> = ({
@@ -251,7 +252,7 @@ export const FacilitiesMap: FC<MapType> = ({
 
         map.current.easeTo({
           center: features[0].geometry.coordinates,
-          zoom: 17,
+          zoom: MAP_CONFIG.zoomedInZoom,
         })
 
         const clickedFacilities = markers.filter((marker) =>
@@ -288,7 +289,7 @@ export const FacilitiesMap: FC<MapType> = ({
 
       map.current.easeTo({
         center: [userLongitude, userLatitude],
-        zoom: 17,
+        zoom: MAP_CONFIG.zoomedInZoom,
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -316,7 +317,7 @@ export const FacilitiesMap: FC<MapType> = ({
 
       map.current.easeTo({
         center: searchCenter,
-        zoom: 17,
+        zoom: MAP_CONFIG.zoomedInZoom,
       })
     }
   }, [searchCenter])
@@ -326,6 +327,7 @@ export const FacilitiesMap: FC<MapType> = ({
     if (!highlightedCenter) {
       // Without a highlightedCenter we want to remove any highlightedMarker:
       highlightedMarker && highlightedMarker.current?.remove()
+      map.current.easeTo({ zoom: MAP_CONFIG.defaultZoom })
       return
     } else {
       // Remove possibly existent markers:
@@ -345,7 +347,7 @@ export const FacilitiesMap: FC<MapType> = ({
 
       map.current.easeTo({
         center: highlightedCenter,
-        zoom: 17,
+        zoom: MAP_CONFIG.zoomedInZoom,
       })
     }
   }, [highlightedCenter])
