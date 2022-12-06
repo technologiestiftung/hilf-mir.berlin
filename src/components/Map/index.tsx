@@ -52,7 +52,6 @@ export const transitionProps = {
   transitionEasing: easeInOutQuad,
 }
 
-const MAX_ZOOM = 17
 const MAP_CONFIG = {
   defaultZoom: 11,
   defaultLatitude: 52.520008,
@@ -215,7 +214,7 @@ export const FacilitiesMap: FC<MapType> = ({
       })
       map.current.easeTo({
         center: [facility.longitude, facility.latitude],
-        zoom: MAX_ZOOM,
+        zoom: MAP_CONFIG.zoomedInZoom,
       })
     }
   }, [push, urlState])
@@ -346,7 +345,7 @@ export const FacilitiesMap: FC<MapType> = ({
             map.current,
             featuresOnSameCoords[0].geometry.coordinates,
             2,
-            MAX_ZOOM
+            MAP_CONFIG.zoomedInZoom
           )
           return
         }
