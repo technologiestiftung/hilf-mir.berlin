@@ -147,7 +147,7 @@ export const MapLayout: FC<{
         >
           {!isFallback && children}
         </aside>
-        {showMapUi && (
+        {!isFallback && showMapUi && (
           <MapHeader
             handleSearchResult={handleSearchResult}
             filterSidebarIsOpened={filterSidebarIsOpened}
