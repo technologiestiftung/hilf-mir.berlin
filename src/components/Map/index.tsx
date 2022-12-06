@@ -327,6 +327,9 @@ export const FacilitiesMap: FC<MapType> = ({
     if (!highlightedCenter) {
       // Without a highlightedCenter we want to remove any highlightedMarker:
       highlightedMarker && highlightedMarker.current?.remove()
+
+      const mapZoom = map.current?.transform._zoom
+      if (mapZoom !== MAP_CONFIG.zoomedInZoom) return
       map.current.easeTo({ zoom: MAP_CONFIG.defaultZoom })
       return
     } else {
