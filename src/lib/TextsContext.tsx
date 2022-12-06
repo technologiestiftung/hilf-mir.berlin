@@ -105,6 +105,8 @@ const defaultValue = {
   filtersTagsLabelOnCard: '',
   andAllOtherFiltersLabel: '',
   allOtherFiltersLabel: '',
+  clickToExpandPopupLabel: '',
+  multipleFacilitiesPopupTitle: '',
 }
 
 export type TextsMapType = typeof defaultValue

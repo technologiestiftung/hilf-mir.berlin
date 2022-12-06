@@ -4,6 +4,7 @@ import maplibregl, {
   LngLatLike,
   Map,
   Marker,
+  Popup,
 } from 'maplibre-gl'
 import {
   createGeoJsonStructure,
@@ -17,17 +18,24 @@ import { useUrlState } from '@lib/UrlStateContext'
 import classNames from '@lib/classNames'
 import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
 import { MapTilerLogo } from '@components/MaptilerLogo'
+import MaplibreglSpiderifier from '@lib/MaplibreglSpiderifier'
+import { MOBILE_BREAKPOINT } from '@lib/hooks/useIsMobile'
+import { useTexts } from '@lib/TextsContext'
+import { getPopupHTML } from './popupUtils'
+import {
+  getFeaturesOnSameCoordsThanFirstOne,
+  getSpiderfier,
+  MarkerClickHandlerType,
+  setCursor,
+  zoomIn,
+} from './mapUtil'
 
 interface MapType {
   markers?: MinimalRecordType[]
   activeTags?: number[] | null
   onMarkerClick?: (facilities: MinimalRecordType[]) => void
-  onMoveStart?: () => void
-  /**
-   * Function that is called whenever a click on the map happens,
-   * that is anywhere except for a click on the facilities layer.
-   */
   onClickAnywhere?: () => void
+  onMoveStart?: () => void
   /** An optional array of [longitude, latitude].
    * If provided, the map's center will be forced to this location.
    * Also, a highlighted marker will be drawn to the map.
@@ -44,6 +52,7 @@ export const transitionProps = {
   transitionEasing: easeInOutQuad,
 }
 
+const MAX_ZOOM = 17
 const MAP_CONFIG = {
   defaultZoom: 11,
   defaultLatitude: 52.520008,
@@ -56,15 +65,29 @@ export const FacilitiesMap: FC<MapType> = ({
   markers,
   activeTags,
   onMarkerClick = () => undefined,
-  onMoveStart = () => undefined,
   onClickAnywhere = () => undefined,
+  onMoveStart = () => undefined,
   highlightedCenter,
   searchCenter,
 }) => {
+  const { push } = useRouter()
+  const texts = useTexts()
   const map = useRef<Map>(null)
   const highlightedMarker = useRef<Marker>(null)
+  const popup = useRef(
+    new Popup({
+      closeButton: false,
+      closeOnClick: false,
+      maxWidth: '320px',
+    })
+  )
+  const hoveredStateIds = useRef<number[]>(null)
+  const spideredFeatureIds = useRef<number[]>(null)
   const highlightedSearchMarker = useRef<Marker>(null)
   const highlightedUserGeoposition = useRef<Marker>(null)
+  const markerClickHandler = useRef<MarkerClickHandlerType>(() => undefined)
+  const spiderifier =
+    useRef<InstanceType<typeof MaplibreglSpiderifier<MinimalRecordType>>>(null)
 
   const { pathname } = useRouter()
   const [urlState, setUrlState] = useUrlState()
@@ -179,6 +202,24 @@ export const FacilitiesMap: FC<MapType> = ({
   )
 
   useEffect(() => {
+    markerClickHandler.current = (facility: MinimalRecordType): void => {
+      if (!map.current || !facility) return
+      void push({
+        pathname: `/${facility.id}`,
+        query: {
+          ...urlState,
+          latitude: facility.latitude,
+          longitude: facility.longitude,
+        },
+      })
+      map.current.easeTo({
+        center: [facility.longitude, facility.latitude],
+        zoom: MAX_ZOOM,
+      })
+    }
+  }, [push, urlState])
+
+  useEffect(() => {
     if (!markers || !map.current) return
 
     map.current.on('load', function () {
@@ -220,7 +261,11 @@ export const FacilitiesMap: FC<MapType> = ({
 
       const opacityGlCondition = [
         'case',
-        ['boolean', ['feature-state', 'active'], false],
+        [
+          'all',
+          ['boolean', ['feature-state', 'active'], false],
+          ['!', ['boolean', ['feature-state', 'spidered'], false]],
+        ],
         1,
         0,
       ] as DataDrivenPropertyValueSpecification<number>
@@ -233,33 +278,184 @@ export const FacilitiesMap: FC<MapType> = ({
           'circle-radius': 10,
           'circle-stroke-width': 1,
           'circle-stroke-color': '#fff',
-          'circle-color': '#E40422',
+          'circle-color': [
+            'case',
+            ['boolean', ['feature-state', 'hover'], false],
+            '#999999',
+            '#E40422',
+          ],
           'circle-stroke-opacity': opacityGlCondition,
           'circle-opacity': opacityGlCondition,
         },
       })
 
-      map.current.on('click', () => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      spiderifier.current = getSpiderfier({
+        clickHandler: markerClickHandler.current,
+        map: map.current,
+        popup: popup.current,
+        texts,
+      })
+
+      function unspiderfy(): void {
+        spiderifier.current?.unspiderfy()
+        popup.current.setOffset(0)
+        popup.current.remove()
+        if (
+          map.current &&
+          spideredFeatureIds.current &&
+          spideredFeatureIds.current.length > 0
+        ) {
+          spideredFeatureIds.current.forEach((id) => {
+            map.current?.setFeatureState(
+              { source: 'facilities', id },
+              { spidered: false }
+            )
+          })
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          spideredFeatureIds.current = null
+        }
+      }
+
+      map.current.on('click', function () {
+        unspiderfy()
         onClickAnywhere()
       })
 
-      map.current.on('click', 'unclustered-point', function (e) {
+      map.current.on('click', 'unclustered-point', (e) => {
         if (!e.features) return
-        if (!map.current) return
-        const features = e.features as GeojsonFeatureType[]
-        const clickedMarkerIds = features.map((f) => f.properties.id)
+        if (!map.current || !spiderifier.current) return
 
-        map.current.easeTo({
-          center: features[0].geometry.coordinates,
-          zoom: 17,
-        })
+        const features = e.features as GeojsonFeatureType<MinimalRecordType>[]
+        const activeFeatures = features.filter(({ state }) => state.active)
+        const firstFeature = activeFeatures[0]
 
+        if (activeFeatures.length === 0 || !firstFeature.geometry.coordinates)
+          return
+
+        const featuresOnSameCoords =
+          getFeaturesOnSameCoordsThanFirstOne(activeFeatures)
+
+        const isClusterOfVeryNearButNotOverlappingPoints =
+          featuresOnSameCoords.length !== activeFeatures.length
+        if (isClusterOfVeryNearButNotOverlappingPoints) {
+          zoomIn(
+            map.current,
+            featuresOnSameCoords[0].geometry.coordinates,
+            2,
+            MAX_ZOOM
+          )
+          return
+        }
+
+        const clickedMarkerIds = featuresOnSameCoords.map(
+          (f) => f.properties.id
+        )
         const clickedFacilities = markers.filter((marker) =>
           clickedMarkerIds.includes(marker.id)
         )
 
-        onMarkerClick(clickedFacilities)
+        map.current.easeTo({ center: firstFeature.geometry.coordinates })
+
+        const isMobile = window.innerWidth <= MOBILE_BREAKPOINT
+        if (isMobile) {
+          onMarkerClick(clickedFacilities)
+          return
+        }
+        if (clickedFacilities.length === 1) {
+          markerClickHandler.current(clickedFacilities[0])
+          return
+        }
+        popup.current?.remove.bind(popup.current)()
+        spiderifier.current.spiderfy(
+          firstFeature.geometry.coordinates,
+          clickedFacilities
+        )
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        spideredFeatureIds.current = activeFeatures.map(
+          ({ properties }) => properties.id
+        )
+        spideredFeatureIds.current.forEach((id) => {
+          map.current?.setFeatureState(
+            { source: 'facilities', id },
+            { spidered: true }
+          )
+        })
       })
+    })
+
+    map.current.on('mousemove', 'unclustered-point', (e) => {
+      if (!map.current) return
+      if (!e.features || e.features.length === 0) return
+      const isMobile = window.innerWidth <= MOBILE_BREAKPOINT
+      if (isMobile) return
+
+      const features = e.features as GeojsonFeatureType<MinimalRecordType>[]
+      const activeFeatures = features.filter(({ state }) => state.active)
+      const allFeaturesInactive = activeFeatures.length === 0
+      if (allFeaturesInactive) return
+
+      setCursor('pointer')
+
+      if (hoveredStateIds.current && hoveredStateIds.current?.length > 0) {
+        hoveredStateIds.current?.forEach((id) => {
+          map.current?.setFeatureState(
+            { source: 'facilities', id },
+            { hover: false }
+          )
+        })
+      }
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      hoveredStateIds.current = features.map(({ id }) => id as number)
+      hoveredStateIds.current?.forEach((id) => {
+        map.current?.setFeatureState(
+          { source: 'facilities', id },
+          { hover: true }
+        )
+      })
+
+      if (
+        activeFeatures.length >= 1 &&
+        !spiderifier.current?.expandedIds.some((id) =>
+          activeFeatures.find((marker) => marker.properties.id === id)
+        )
+      ) {
+        const { longitude, latitude } = activeFeatures[0]
+          .properties as MinimalRecordType
+        popup.current
+          .setLngLat([longitude, latitude])
+          .setHTML(
+            getPopupHTML(
+              activeFeatures.map(({ properties }) => properties),
+              texts
+            )
+          )
+          .addTo(map.current)
+      }
+    })
+
+    map.current.on('mouseleave', 'unclustered-point', () => {
+      if (!map.current) return
+
+      setCursor('inherit')
+
+      if (hoveredStateIds.current && hoveredStateIds.current.length > 0) {
+        hoveredStateIds.current?.forEach((id) => {
+          map.current?.setFeatureState(
+            { source: 'facilities', id },
+            { hover: false }
+          )
+        })
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        hoveredStateIds.current = null
+      }
+
+      popup.current.remove.bind(popup.current)()
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [markers])
@@ -288,7 +484,7 @@ export const FacilitiesMap: FC<MapType> = ({
 
       map.current.easeTo({
         center: [userLongitude, userLatitude],
-        zoom: 17,
+        zoom: MAX_ZOOM,
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -316,7 +512,7 @@ export const FacilitiesMap: FC<MapType> = ({
 
       map.current.easeTo({
         center: searchCenter,
-        zoom: 17,
+        zoom: MAX_ZOOM,
       })
     }
   }, [searchCenter])
@@ -345,7 +541,7 @@ export const FacilitiesMap: FC<MapType> = ({
 
       map.current.easeTo({
         center: highlightedCenter,
-        zoom: 17,
+        zoom: MAX_ZOOM,
       })
     }
   }, [highlightedCenter])
