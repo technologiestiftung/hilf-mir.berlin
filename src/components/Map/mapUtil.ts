@@ -69,3 +69,8 @@ export function setCursor(cursor = 'grab'): void {
   )
   if (container$) container$.style.cursor = cursor
 }
+
+export function normalizeLatLng(latOrLng?: number): number | undefined {
+  if (typeof latOrLng !== 'number') return undefined
+  return Math.round(latOrLng * 100000000) / 100000000
+}

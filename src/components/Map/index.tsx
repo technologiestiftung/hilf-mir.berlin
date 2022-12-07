@@ -26,6 +26,7 @@ import {
   getFeaturesOnSameCoordsThanFirstOne,
   getSpiderfier,
   MarkerClickHandlerType,
+  normalizeLatLng,
   setCursor,
   zoomIn,
 } from './mapUtil'
@@ -520,12 +521,26 @@ export const FacilitiesMap: FC<MapType> = ({
   useEffect(() => {
     if (!map.current) return
     if (!highlightedCenter) {
+      const mapZoom = map.current?.transform._zoom
+      const mapLongitude = normalizeLatLng(map.current?.transform._center.lng)
+      const mapLatitude = normalizeLatLng(map.current?.transform._center.lat)
+      const markerLongitude = normalizeLatLng(
+        highlightedMarker.current?._lngLat.lng
+      )
+      const markerLatitude = normalizeLatLng(
+        highlightedMarker.current?._lngLat.lat
+      )
+
+      if (
+        mapZoom === MAP_CONFIG.zoomedInZoom &&
+        mapLatitude === markerLatitude &&
+        mapLongitude === markerLongitude
+      ) {
+        map.current.easeTo({ zoom: MAP_CONFIG.defaultZoom })
+      }
+
       // Without a highlightedCenter we want to remove any highlightedMarker:
       highlightedMarker && highlightedMarker.current?.remove()
-
-      const mapZoom = map.current?.transform._zoom
-      if (mapZoom !== MAP_CONFIG.zoomedInZoom) return
-      map.current.easeTo({ zoom: MAP_CONFIG.defaultZoom })
       return
     } else {
       // Remove possibly existent markers:

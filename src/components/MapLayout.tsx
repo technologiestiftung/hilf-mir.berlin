@@ -38,7 +38,7 @@ export const MapLayout: FC<{
   const [hasScrolled, setHasScrolled] = useState<boolean>(false)
   const isMobile = useIsMobile()
 
-  const showMapUi = (isMobile && pathname === 'map') || !isMobile
+  const showMapUi = (isMobile && pathname === '/map') || !isMobile
 
   useEffect(() => {
     const scrollContainer = document.getElementById('main-sidebar')
