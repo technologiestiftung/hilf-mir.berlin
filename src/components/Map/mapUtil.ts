@@ -64,10 +64,10 @@ export function zoomIn(
 }
 
 export function setCursor(cursor = 'grab'): void {
-  const container$ = document.querySelector<HTMLDivElement>(
+  const container = document.querySelector<HTMLDivElement>(
     '.mapboxgl-canvas-container.mapboxgl-interactive'
   )
-  if (container$) container$.style.cursor = cursor
+  if (container) container.style.cursor = cursor
 }
 
 export function normalizeLatLng(latOrLng?: number): number | undefined {
