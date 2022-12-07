@@ -45,6 +45,12 @@ interface MapType {
   searchCenter?: LngLatLike
 }
 
+interface ViewportObjType {
+  latitude: number
+  longitude: number
+  zoom: number
+}
+
 const easeInOutQuad = (t: number): number =>
   t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1
 
@@ -71,7 +77,7 @@ export const FacilitiesMap: FC<MapType> = ({
   highlightedCenter,
   searchCenter,
 }) => {
-  const { push } = useRouter()
+  const { pathname, push } = useRouter()
   const texts = useTexts()
   const map = useRef<Map>(null)
   const highlightedMarker = useRef<Marker>(null)
@@ -90,7 +96,6 @@ export const FacilitiesMap: FC<MapType> = ({
   const spiderifier =
     useRef<InstanceType<typeof MaplibreglSpiderifier<MinimalRecordType>>>(null)
 
-  const { pathname } = useRouter()
   const [urlState, setUrlState] = useUrlState()
   const {
     isLoading: userGeolocationIsLoading,
@@ -99,13 +104,11 @@ export const FacilitiesMap: FC<MapType> = ({
     useGeolocation,
   } = useUserGeolocation()
 
+  const prevViewport = useRef<ViewportObjType>(null)
   // The initial viewport will be available on 2nd render,
   // because we get it from useRouter. First it has to be null.
-  const [initialViewport, setInitialViewport] = useState<{
-    latitude: number
-    longitude: number
-    zoom: number
-  } | null>(null)
+  const [initialViewport, setInitialViewport] =
+    useState<ViewportObjType | null>(null)
 
   const [mapIsFullyLoaded, setMapIsFullyLoaded] = useState(false)
 
@@ -127,13 +130,14 @@ export const FacilitiesMap: FC<MapType> = ({
     )
       return
 
-    // If all previous checks were passed, we need to set the initial viewport,
-    // which in the useEffect below will easeTo the desired location.
-    setInitialViewport({
+    const newViewport = {
       longitude: urlState.longitude,
       latitude: urlState.latitude,
       zoom: urlState.zoom,
-    })
+    }
+    // If all previous checks were passed, we need to set the initial viewport,
+    // which in the useEffect below will easeTo the desired location.
+    setInitialViewport(newViewport)
   }, [urlState.latitude, urlState.longitude, urlState.zoom, initialViewport])
 
   // After the initial viewport has been set ONCE (in the above useEffect),
@@ -203,8 +207,50 @@ export const FacilitiesMap: FC<MapType> = ({
   )
 
   useEffect(() => {
+    if (!map.current) return
+
+    if (pathname !== '/map') {
+      return
+    }
+
+    const mapLng = normalizeLatLng(map.current.getCenter().lng)
+    const mapLat = normalizeLatLng(map.current.getCenter().lat)
+    const mapZoom = map.current.getZoom()
+
+    const markerLng = normalizeLatLng(highlightedMarker.current?._lngLat.lng)
+    const markerLat = normalizeLatLng(highlightedMarker.current?._lngLat.lat)
+    const markerZoom = MAP_CONFIG.zoomedInZoom
+
+    const prevLng = normalizeLatLng(prevViewport.current?.longitude)
+    const prevLat = normalizeLatLng(prevViewport.current?.latitude)
+    const prevZoom = prevViewport.current?.zoom
+
+    // Without a highlightedCenter we want to remove any highlightedMarker:
+    highlightedMarker.current?.remove()
+
+    if (!prevLng || !prevLat || !prevZoom) return
+    if (
+      mapLng === markerLng &&
+      mapLat === markerLat &&
+      mapZoom === markerZoom
+    ) {
+      map.current.easeTo({
+        center: [prevLng, prevLat],
+        zoom: prevZoom,
+      })
+    }
+  }, [pathname])
+
+  useEffect(() => {
+    if (!map.current) return
     markerClickHandler.current = (facility: MinimalRecordType): void => {
       if (!map.current || !facility) return
+      const { lat: latitude, lng: longitude } = map.current.getCenter()
+      const zoom = map.current.getZoom.bind(map.current)()
+      if (!latitude || !longitude || !zoom) return
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      prevViewport.current = { latitude, longitude, zoom }
       void push({
         pathname: `/${facility.id}`,
         query: {
@@ -520,29 +566,7 @@ export const FacilitiesMap: FC<MapType> = ({
 
   useEffect(() => {
     if (!map.current) return
-    if (!highlightedCenter) {
-      const mapZoom = map.current?.transform._zoom
-      const mapLongitude = normalizeLatLng(map.current?.transform._center.lng)
-      const mapLatitude = normalizeLatLng(map.current?.transform._center.lat)
-      const markerLongitude = normalizeLatLng(
-        highlightedMarker.current?._lngLat.lng
-      )
-      const markerLatitude = normalizeLatLng(
-        highlightedMarker.current?._lngLat.lat
-      )
-
-      if (
-        mapZoom === MAP_CONFIG.zoomedInZoom &&
-        mapLatitude === markerLatitude &&
-        mapLongitude === markerLongitude
-      ) {
-        map.current.easeTo({ zoom: MAP_CONFIG.defaultZoom })
-      }
-
-      // Without a highlightedCenter we want to remove any highlightedMarker:
-      highlightedMarker && highlightedMarker.current?.remove()
-      return
-    } else {
+    if (highlightedCenter) {
       // Remove possibly existent markers:
       highlightedMarker.current?.remove()
 
