@@ -209,6 +209,8 @@ export const FacilitiesMap: FC<MapType> = ({
 
     if (pathname !== '/map') return
 
+    // When moving from [id] to /map, we check if the position of the
+    // has changed and zoom back to the previous position in case it hasn't
     const mapLng = normalizeLatLng(map.current.getCenter().lng)
     const mapLat = normalizeLatLng(map.current.getCenter().lat)
     const mapZoom = map.current.getZoom()
@@ -224,7 +226,11 @@ export const FacilitiesMap: FC<MapType> = ({
     // Without a highlightedCenter we want to remove any highlightedMarker:
     highlightedMarker.current?.remove()
 
+    // When an [id] page is (re)loaded, it doesn't yet have a previous position
     if (!prevLng || !prevLat || !prevZoom) return
+    // If the user hasn't moved from the default facility position and zoom,
+    // we zoom back to the previous map position and zoom
+    // This makes it easy to regain context and orientation
     if (
       mapLng === markerLng &&
       mapLat === markerLat &&
@@ -278,7 +284,12 @@ export const FacilitiesMap: FC<MapType> = ({
       })
 
       map.current.on('moveend', (e) => {
+        // Determines whether a moveend event has been triggered by a user or
+        // a programatic change (easeTo, flyTo, etc)
         const isUserEvent = !!e.originalEvent
+        // If the user has changed the zoom or position, we save a reference
+        // to the last position/zoom in order to move back to this position
+        // when the user goes back to map overview (deselcts the facility)
         if (map.current && isUserEvent) {
           const { lat: latitude, lng: longitude } = map.current.getCenter()
           const zoom = map.current.getZoom.bind(map.current)()
