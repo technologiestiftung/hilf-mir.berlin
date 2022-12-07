@@ -278,7 +278,8 @@ export const FacilitiesMap: FC<MapType> = ({
       })
 
       map.current.on('moveend', (e) => {
-        if (map.current && e.originalEvent) {
+        const isUserEvent = !!e.originalEvent
+        if (map.current && isUserEvent) {
           const { lat: latitude, lng: longitude } = map.current.getCenter()
           const zoom = map.current.getZoom.bind(map.current)()
           if (!latitude || !longitude || !zoom) return
@@ -402,7 +403,7 @@ export const FacilitiesMap: FC<MapType> = ({
           clickedMarkerIds.includes(marker.id)
         )
 
-        // map.current.easeTo({ center: firstFeature.geometry.coordinates })
+        map.current.easeTo({ center: firstFeature.geometry.coordinates })
 
         const isMobile = window.innerWidth <= MOBILE_BREAKPOINT
         if (isMobile) {
