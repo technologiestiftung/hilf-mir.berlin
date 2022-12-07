@@ -177,8 +177,6 @@ export const FacilitiesMap: FC<MapType> = ({
   // Debounced function that updates the URL query without triggering a rerender:
   const debouncedViewportChange = useDebouncedCallback(
     (viewport: URLViewportType): void => {
-      if (pathname !== '/map') return
-
       setUrlState({
         ...urlState,
         ...viewport,
@@ -209,9 +207,7 @@ export const FacilitiesMap: FC<MapType> = ({
   useEffect(() => {
     if (!map.current) return
 
-    if (pathname !== '/map') {
-      return
-    }
+    if (pathname !== '/map') return
 
     const mapLng = normalizeLatLng(map.current.getCenter().lng)
     const mapLat = normalizeLatLng(map.current.getCenter().lat)
@@ -245,12 +241,6 @@ export const FacilitiesMap: FC<MapType> = ({
     if (!map.current) return
     markerClickHandler.current = (facility: MinimalRecordType): void => {
       if (!map.current || !facility) return
-      const { lat: latitude, lng: longitude } = map.current.getCenter()
-      const zoom = map.current.getZoom.bind(map.current)()
-      if (!latitude || !longitude || !zoom) return
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      prevViewport.current = { latitude, longitude, zoom }
       void push({
         pathname: `/${facility.id}`,
         query: {
@@ -288,6 +278,14 @@ export const FacilitiesMap: FC<MapType> = ({
       })
 
       map.current.on('moveend', (e) => {
+        if (map.current && e.originalEvent) {
+          const { lat: latitude, lng: longitude } = map.current.getCenter()
+          const zoom = map.current.getZoom.bind(map.current)()
+          if (!latitude || !longitude || !zoom) return
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          prevViewport.current = { latitude, longitude, zoom }
+        }
         debouncedViewportChange({
           latitude: e.target.transform._center.lat,
           longitude: e.target.transform._center.lng,
@@ -404,7 +402,7 @@ export const FacilitiesMap: FC<MapType> = ({
           clickedMarkerIds.includes(marker.id)
         )
 
-        map.current.easeTo({ center: firstFeature.geometry.coordinates })
+        // map.current.easeTo({ center: firstFeature.geometry.coordinates })
 
         const isMobile = window.innerWidth <= MOBILE_BREAKPOINT
         if (isMobile) {
