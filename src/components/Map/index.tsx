@@ -33,6 +33,7 @@ import { useMapIsFullyLoaded } from '@lib/hooks/useMapIsFullyLoaded'
 import { useOnMapFeatureMove } from '@lib/hooks/useOnMapFeatureMove'
 import { useMapUserGeolocationMarker } from '@lib/hooks/useMapUserGeolocationMarker'
 import { useInitialViewport } from '@lib/hooks/useInitialViewport'
+import { useMapHighlightMarker } from '@lib/hooks/useMapHighlightMarker'
 
 interface MapType {
   markers?: MinimalRecordType[]
@@ -44,7 +45,7 @@ interface MapType {
    * If provided, the map's center will be forced to this location.
    * Also, a highlighted marker will be drawn to the map.
    */
-  highlightedCenter?: LngLatLike
+  highlightedCenter?: [longitude: number, latitude: number]
   searchCenter?: LngLatLike
 }
 
@@ -77,7 +78,6 @@ export const FacilitiesMap: FC<MapType> = ({
   const { push } = useRouter()
   const texts = useTexts()
   const map = useRef<Map>(null)
-  const highlightedMarker = useRef<Marker>(null)
   const popup = useRef(
     new Popup({
       closeButton: false,
@@ -94,11 +94,23 @@ export const FacilitiesMap: FC<MapType> = ({
 
   const [urlState, setUrlState] = useUrlState()
 
+  const highlightedMarkerViewport = highlightedCenter
+    ? {
+        latitude: highlightedCenter[1],
+        longitude: highlightedCenter[0],
+        zoom: MAP_CONFIG.zoomedInZoom,
+      }
+    : null
+  const highlightedMarker = useMapHighlightMarker(
+    map.current,
+    highlightedMarkerViewport
+  )
+
   useEaseOnBackToMap({
     map: map.current,
     zoomedInCoords: {
-      latitude: highlightedMarker.current?._lngLat.lat,
-      longitude: highlightedMarker.current?._lngLat.lng,
+      latitude: highlightedMarker?._lngLat.lat,
+      longitude: highlightedMarker?._lngLat.lng,
       zoom: MAP_CONFIG.zoomedInZoom,
     },
   })
@@ -440,31 +452,6 @@ export const FacilitiesMap: FC<MapType> = ({
       })
     }
   }, [searchCenter])
-
-  useEffect(() => {
-    if (!map.current) return
-    // Remove possibly existent markers:
-    highlightedMarker.current?.remove()
-
-    if (highlightedCenter) {
-      const customMarker = document.createElement('div')
-      customMarker.className = classNames(
-        'w-10 h-10 bg-red rounded-full ring-2',
-        'ring-offset-white ring-offset-2 ring-red'
-      )
-
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      highlightedMarker.current = new maplibregl.Marker(customMarker)
-        .setLngLat(highlightedCenter)
-        .addTo(map.current)
-
-      map.current.easeTo({
-        center: highlightedCenter,
-        zoom: MAP_CONFIG.zoomedInZoom,
-      })
-    }
-  }, [highlightedCenter])
 
   useEffect(
     () => updateFilteredFacilities(activeTags as number[]),
