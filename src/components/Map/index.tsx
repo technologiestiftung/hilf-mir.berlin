@@ -1,5 +1,5 @@
 import { useEffect, FC, useRef, useCallback } from 'react'
-import { DataDrivenPropertyValueSpecification } from 'maplibre-gl'
+import { DataDrivenPropertyValueSpecification, Popup } from 'maplibre-gl'
 import {
   createGeoJsonStructure,
   GeojsonFeatureType,
