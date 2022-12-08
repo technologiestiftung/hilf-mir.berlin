@@ -1,11 +1,5 @@
-import { useEffect, FC, useRef, useState, useCallback } from 'react'
-import maplibregl, {
-  DataDrivenPropertyValueSpecification,
-  LngLatLike,
-  Map,
-  Marker,
-  Popup,
-} from 'maplibre-gl'
+import { useEffect, FC, useRef, useCallback } from 'react'
+import { DataDrivenPropertyValueSpecification } from 'maplibre-gl'
 import {
   createGeoJsonStructure,
   GeojsonFeatureType,
