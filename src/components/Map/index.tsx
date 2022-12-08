@@ -30,6 +30,8 @@ import {
   zoomIn,
 } from './mapUtil'
 import { useEaseOnBackToMap } from '@lib/hooks/useEaseOnBackToMap'
+import { useMapIsFullyLoaded } from '@lib/hooks/useMapIsFullyLoaded'
+import { useOnMapFeatureMove } from '@lib/hooks/useOnMapFeatureMove'
 
 interface MapType {
   markers?: MinimalRecordType[]
@@ -112,7 +114,56 @@ export const FacilitiesMap: FC<MapType> = ({
     null
   )
 
-  const [mapIsFullyLoaded, setMapIsFullyLoaded] = useState(false)
+  const mapIsFullyLoaded = useMapIsFullyLoaded(map.current)
+
+  useOnMapFeatureMove(map.current, 'unclustered-point', (features) => {
+    if (!map.current) return
+    const isMobile = window.innerWidth <= MOBILE_BREAKPOINT
+    if (isMobile) return
+
+    const activeFeatures = features.filter(({ state }) => state.active)
+    const allFeaturesInactive = activeFeatures.length === 0
+    if (allFeaturesInactive) return
+
+    setCursor('pointer')
+
+    if (hoveredStateIds.current && hoveredStateIds.current?.length > 0) {
+      hoveredStateIds.current?.forEach((id) => {
+        map.current?.setFeatureState(
+          { source: 'facilities', id },
+          { hover: false }
+        )
+      })
+    }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    hoveredStateIds.current = features.map(({ id }) => id as number)
+    hoveredStateIds.current?.forEach((id) => {
+      map.current?.setFeatureState(
+        { source: 'facilities', id },
+        { hover: true }
+      )
+    })
+
+    if (
+      activeFeatures.length >= 1 &&
+      !spiderifier.current?.expandedIds.some((id) =>
+        activeFeatures.find((marker) => marker.properties.id === id)
+      )
+    ) {
+      const { longitude, latitude } = activeFeatures[0]
+        .properties as MinimalRecordType
+      popup.current
+        .setLngLat([longitude, latitude])
+        .setHTML(
+          getPopupHTML(
+            activeFeatures.map(({ properties }) => properties),
+            texts
+          )
+        )
+        .addTo(map.current)
+    }
+  })
 
   useEffect(() => {
     // If we've already got an initial viewport, we can not redefine it
@@ -230,17 +281,6 @@ export const FacilitiesMap: FC<MapType> = ({
 
     map.current.on('load', function () {
       if (!map.current) return
-
-      const pollForMapLoaded = (): void => {
-        if (map.current?.loaded()) {
-          setMapIsFullyLoaded(true)
-          return
-        } else {
-          requestAnimationFrame(pollForMapLoaded)
-        }
-      }
-
-      pollForMapLoaded()
 
       map.current.on('movestart', () => {
         onMoveStart()
@@ -396,52 +436,6 @@ export const FacilitiesMap: FC<MapType> = ({
     map.current.on('mousemove', 'unclustered-point', (e) => {
       if (!map.current) return
       if (!e.features || e.features.length === 0) return
-      const isMobile = window.innerWidth <= MOBILE_BREAKPOINT
-      if (isMobile) return
-
-      const features = e.features as GeojsonFeatureType<MinimalRecordType>[]
-      const activeFeatures = features.filter(({ state }) => state.active)
-      const allFeaturesInactive = activeFeatures.length === 0
-      if (allFeaturesInactive) return
-
-      setCursor('pointer')
-
-      if (hoveredStateIds.current && hoveredStateIds.current?.length > 0) {
-        hoveredStateIds.current?.forEach((id) => {
-          map.current?.setFeatureState(
-            { source: 'facilities', id },
-            { hover: false }
-          )
-        })
-      }
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      hoveredStateIds.current = features.map(({ id }) => id as number)
-      hoveredStateIds.current?.forEach((id) => {
-        map.current?.setFeatureState(
-          { source: 'facilities', id },
-          { hover: true }
-        )
-      })
-
-      if (
-        activeFeatures.length >= 1 &&
-        !spiderifier.current?.expandedIds.some((id) =>
-          activeFeatures.find((marker) => marker.properties.id === id)
-        )
-      ) {
-        const { longitude, latitude } = activeFeatures[0]
-          .properties as MinimalRecordType
-        popup.current
-          .setLngLat([longitude, latitude])
-          .setHTML(
-            getPopupHTML(
-              activeFeatures.map(({ properties }) => properties),
-              texts
-            )
-          )
-          .addTo(map.current)
-      }
     })
 
     map.current.on('mouseleave', 'unclustered-point', () => {
