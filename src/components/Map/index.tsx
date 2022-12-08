@@ -16,7 +16,6 @@ import { URLViewportType, ViewportType } from '@lib/types/map'
 import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { useUrlState } from '@lib/UrlStateContext'
 import classNames from '@lib/classNames'
-import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
 import { MapTilerLogo } from '@components/MaptilerLogo'
 import MaplibreglSpiderifier from '@lib/MaplibreglSpiderifier'
 import { MOBILE_BREAKPOINT } from '@lib/hooks/useIsMobile'
@@ -32,6 +31,7 @@ import {
 import { useEaseOnBackToMap } from '@lib/hooks/useEaseOnBackToMap'
 import { useMapIsFullyLoaded } from '@lib/hooks/useMapIsFullyLoaded'
 import { useOnMapFeatureMove } from '@lib/hooks/useOnMapFeatureMove'
+import { useMapUserGeolocationMarker } from '@lib/hooks/useMapUserGeolocationMarker'
 
 interface MapType {
   markers?: MinimalRecordType[]
@@ -87,18 +87,11 @@ export const FacilitiesMap: FC<MapType> = ({
   const hoveredStateIds = useRef<number[]>(null)
   const spideredFeatureIds = useRef<number[]>(null)
   const highlightedSearchMarker = useRef<Marker>(null)
-  const highlightedUserGeoposition = useRef<Marker>(null)
   const markerClickHandler = useRef<MarkerClickHandlerType>(() => undefined)
   const spiderifier =
     useRef<InstanceType<typeof MaplibreglSpiderifier<MinimalRecordType>>>(null)
 
   const [urlState, setUrlState] = useUrlState()
-  const {
-    isLoading: userGeolocationIsLoading,
-    latitude: userLatitude,
-    longitude: userLongitude,
-    useGeolocation,
-  } = useUserGeolocation()
 
   useEaseOnBackToMap({
     map: map.current,
@@ -115,6 +108,12 @@ export const FacilitiesMap: FC<MapType> = ({
   )
 
   const mapIsFullyLoaded = useMapIsFullyLoaded(map.current)
+
+  useMapUserGeolocationMarker(
+    map.current,
+    MAP_CONFIG.zoomedInZoom,
+    mapIsFullyLoaded
+  )
 
   useOnMapFeatureMove(map.current, 'unclustered-point', (features) => {
     if (!map.current) return
@@ -282,18 +281,6 @@ export const FacilitiesMap: FC<MapType> = ({
     map.current.on('load', function () {
       if (!map.current) return
 
-      map.current.on('movestart', () => {
-        onMoveStart()
-      })
-
-      map.current.on('moveend', (e) => {
-        debouncedViewportChange({
-          latitude: e.target.transform._center.lat,
-          longitude: e.target.transform._center.lng,
-          zoom: e.target.transform._zoom,
-        })
-      })
-
       map.current.addSource('facilities', {
         type: 'geojson',
         data: createGeoJsonStructure(markers),
@@ -342,6 +329,18 @@ export const FacilitiesMap: FC<MapType> = ({
         map: map.current,
         popup: popup.current,
         texts,
+      })
+
+      map.current.on('movestart', () => {
+        onMoveStart()
+      })
+
+      map.current.on('moveend', (e) => {
+        debouncedViewportChange({
+          latitude: e.target.transform._center.lat,
+          longitude: e.target.transform._center.lng,
+          zoom: e.target.transform._zoom,
+        })
       })
 
       function unspiderfy(): void {
@@ -459,36 +458,6 @@ export const FacilitiesMap: FC<MapType> = ({
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [markers])
-
-  useEffect(() => {
-    if (!map.current) return
-    if (!useGeolocation || !userLatitude || !userLongitude) {
-      // Without a userGeolocation we want to remove any highlightedUserGeoposition:
-      highlightedUserGeoposition && highlightedUserGeoposition.current?.remove()
-      return
-    } else {
-      // Remove possibly existent user geoposition marker:
-      highlightedUserGeoposition.current?.remove()
-
-      const customMarker = document.createElement('div')
-      customMarker.className = classNames(
-        'w-8 h-8 border-2 border-white rounded-full bg-blau ring-2',
-        'ring-blau ring-offset-2 ring-offset-white'
-      )
-
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      highlightedUserGeoposition.current = new maplibregl.Marker(customMarker)
-        .setLngLat([userLongitude, userLatitude])
-        .addTo(map.current)
-
-      map.current.easeTo({
-        center: [userLongitude, userLatitude],
-        zoom: MAP_CONFIG.zoomedInZoom,
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapIsFullyLoaded, userGeolocationIsLoading, useGeolocation])
 
   useEffect(() => {
     if (!map.current) return
