@@ -12,10 +12,9 @@ import {
 } from '@lib/createGeojsonStructure'
 import { useRouter } from 'next/router'
 import { useDebouncedCallback } from 'use-debounce'
-import { URLViewportType, ViewportType } from '@lib/types/map'
+import { URLViewportType } from '@lib/types/map'
 import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { useUrlState } from '@lib/UrlStateContext'
-import classNames from '@lib/classNames'
 import { MapTilerLogo } from '@components/MaptilerLogo'
 import MaplibreglSpiderifier from '@lib/MaplibreglSpiderifier'
 import { MOBILE_BREAKPOINT } from '@lib/hooks/useIsMobile'
@@ -34,6 +33,7 @@ import { useOnMapFeatureMove } from '@lib/hooks/useOnMapFeatureMove'
 import { useMapUserGeolocationMarker } from '@lib/hooks/useMapUserGeolocationMarker'
 import { useInitialViewport } from '@lib/hooks/useInitialViewport'
 import { useMapHighlightMarker } from '@lib/hooks/useMapHighlightMarker'
+import { useMapSearchMarker } from '@lib/hooks/useMapSearchMarker'
 
 interface MapType {
   markers?: MinimalRecordType[]
@@ -46,7 +46,7 @@ interface MapType {
    * Also, a highlighted marker will be drawn to the map.
    */
   highlightedCenter?: [longitude: number, latitude: number]
-  searchCenter?: LngLatLike
+  searchCenter?: [longitude: number, latitude: number]
 }
 
 const easeInOutQuad = (t: number): number =>
@@ -87,13 +87,20 @@ export const FacilitiesMap: FC<MapType> = ({
   )
   const hoveredStateIds = useRef<number[]>(null)
   const spideredFeatureIds = useRef<number[]>(null)
-  const highlightedSearchMarker = useRef<Marker>(null)
   const markerClickHandler = useRef<MarkerClickHandlerType>(() => undefined)
   const spiderifier =
     useRef<InstanceType<typeof MaplibreglSpiderifier<MinimalRecordType>>>(null)
 
   const [urlState, setUrlState] = useUrlState()
 
+  const highlightedSearchViewport = searchCenter
+    ? {
+        latitude: searchCenter[1],
+        longitude: searchCenter[0],
+        zoom: MAP_CONFIG.zoomedInZoom,
+      }
+    : null
+  useMapSearchMarker(map.current, highlightedSearchViewport)
   const highlightedMarkerViewport = highlightedCenter
     ? {
         latitude: highlightedCenter[1],
@@ -425,33 +432,6 @@ export const FacilitiesMap: FC<MapType> = ({
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [markers])
-
-  useEffect(() => {
-    if (!map.current) return
-    if (!searchCenter) {
-      // Without a searchCenter we want to remove any highlightedSearchMarker:
-      highlightedSearchMarker && highlightedSearchMarker.current?.remove()
-      return
-    } else {
-      // Remove possibly existent markers:
-      highlightedSearchMarker.current?.remove()
-
-      const customMarker = document.createElement('div')
-      customMarker.className = classNames('w-8 h-8 bg-norepeat')
-      customMarker.style.backgroundImage = 'url("/images/search_geopin.svg")'
-
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      highlightedSearchMarker.current = new maplibregl.Marker(customMarker)
-        .setLngLat(searchCenter)
-        .addTo(map.current)
-
-      map.current.easeTo({
-        center: searchCenter,
-        zoom: MAP_CONFIG.zoomedInZoom,
-      })
-    }
-  }, [searchCenter])
 
   useEffect(
     () => updateFilteredFacilities(activeTags as number[]),
