@@ -1,3 +1,10 @@
+# [1.3.0-rc.9](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.3.0-rc.8...v1.3.0-rc.9) (2022-12-08)
+
+
+### Bug Fixes
+
+* **MapHeader:** Don't render MapHeader if fallback ([11ede78](https://github.com/technologiestiftung/wegweiser-frontend/commit/11ede78bd0e667fe96293e823b519bf99162f116))
+
 ## [1.3.1](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.2.0...v1.2.1) (2022-12-05)
 
 
