@@ -12,7 +12,7 @@ import {
 } from '@lib/createGeojsonStructure'
 import { useRouter } from 'next/router'
 import { useDebouncedCallback } from 'use-debounce'
-import { URLViewportType } from '@lib/types/map'
+import { URLViewportType, ViewportType } from '@lib/types/map'
 import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { useUrlState } from '@lib/UrlStateContext'
 import classNames from '@lib/classNames'
@@ -26,10 +26,10 @@ import {
   getFeaturesOnSameCoordsThanFirstOne,
   getSpiderfier,
   MarkerClickHandlerType,
-  normalizeLatLng,
   setCursor,
   zoomIn,
 } from './mapUtil'
+import { useEaseOnBackToMap } from '@lib/hooks/useEaseOnBackToMap'
 
 interface MapType {
   markers?: MinimalRecordType[]
@@ -43,12 +43,6 @@ interface MapType {
    */
   highlightedCenter?: LngLatLike
   searchCenter?: LngLatLike
-}
-
-interface ViewportObjType {
-  latitude: number
-  longitude: number
-  zoom: number
 }
 
 const easeInOutQuad = (t: number): number =>
@@ -77,7 +71,7 @@ export const FacilitiesMap: FC<MapType> = ({
   highlightedCenter,
   searchCenter,
 }) => {
-  const { pathname, push } = useRouter()
+  const { push } = useRouter()
   const texts = useTexts()
   const map = useRef<Map>(null)
   const highlightedMarker = useRef<Marker>(null)
@@ -104,11 +98,19 @@ export const FacilitiesMap: FC<MapType> = ({
     useGeolocation,
   } = useUserGeolocation()
 
-  const prevViewport = useRef<ViewportObjType>(null)
+  useEaseOnBackToMap({
+    map: map.current,
+    zoomedInCoords: {
+      latitude: highlightedMarker.current?._lngLat.lat,
+      longitude: highlightedMarker.current?._lngLat.lng,
+      zoom: MAP_CONFIG.zoomedInZoom,
+    },
+  })
   // The initial viewport will be available on 2nd render,
   // because we get it from useRouter. First it has to be null.
-  const [initialViewport, setInitialViewport] =
-    useState<ViewportObjType | null>(null)
+  const [initialViewport, setInitialViewport] = useState<ViewportType | null>(
+    null
+  )
 
   const [mapIsFullyLoaded, setMapIsFullyLoaded] = useState(false)
 
@@ -206,45 +208,6 @@ export const FacilitiesMap: FC<MapType> = ({
 
   useEffect(() => {
     if (!map.current) return
-
-    if (pathname !== '/map') return
-
-    // When moving from [id] to /map, we check if the position of the
-    // has changed and zoom back to the previous position in case it hasn't
-    const mapLng = normalizeLatLng(map.current.getCenter().lng)
-    const mapLat = normalizeLatLng(map.current.getCenter().lat)
-    const mapZoom = map.current.getZoom()
-
-    const markerLng = normalizeLatLng(highlightedMarker.current?._lngLat.lng)
-    const markerLat = normalizeLatLng(highlightedMarker.current?._lngLat.lat)
-    const markerZoom = MAP_CONFIG.zoomedInZoom
-
-    const prevLng = normalizeLatLng(prevViewport.current?.longitude)
-    const prevLat = normalizeLatLng(prevViewport.current?.latitude)
-    const prevZoom = prevViewport.current?.zoom
-
-    // Without a highlightedCenter we want to remove any highlightedMarker:
-    highlightedMarker.current?.remove()
-
-    // When an [id] page is (re)loaded, it doesn't yet have a previous position
-    if (!prevLng || !prevLat || !prevZoom) return
-    // If the user hasn't moved from the default facility position and zoom,
-    // we zoom back to the previous map position and zoom
-    // This makes it easy to regain context and orientation
-    if (
-      mapLng === markerLng &&
-      mapLat === markerLat &&
-      mapZoom === markerZoom
-    ) {
-      map.current.easeTo({
-        center: [prevLng, prevLat],
-        zoom: prevZoom,
-      })
-    }
-  }, [pathname])
-
-  useEffect(() => {
-    if (!map.current) return
     markerClickHandler.current = (facility: MinimalRecordType): void => {
       if (!map.current || !facility) return
       void push({
@@ -284,20 +247,6 @@ export const FacilitiesMap: FC<MapType> = ({
       })
 
       map.current.on('moveend', (e) => {
-        // Determines whether a moveend event has been triggered by a user or
-        // a programatic change (easeTo, flyTo, etc)
-        const isUserEvent = !!e.originalEvent
-        // If the user has changed the zoom or position, we save a reference
-        // to the last position/zoom in order to move back to this position
-        // when the user goes back to map overview (deselcts the facility)
-        if (map.current && isUserEvent) {
-          const { lat: latitude, lng: longitude } = map.current.getCenter()
-          const zoom = map.current.getZoom.bind(map.current)()
-          if (!latitude || !longitude || !zoom) return
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          prevViewport.current = { latitude, longitude, zoom }
-        }
         debouncedViewportChange({
           latitude: e.target.transform._center.lat,
           longitude: e.target.transform._center.lng,
@@ -576,10 +525,10 @@ export const FacilitiesMap: FC<MapType> = ({
 
   useEffect(() => {
     if (!map.current) return
-    if (highlightedCenter) {
-      // Remove possibly existent markers:
-      highlightedMarker.current?.remove()
+    // Remove possibly existent markers:
+    highlightedMarker.current?.remove()
 
+    if (highlightedCenter) {
       const customMarker = document.createElement('div')
       customMarker.className = classNames(
         'w-10 h-10 bg-red rounded-full ring-2',
