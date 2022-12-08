@@ -32,6 +32,7 @@ import { useEaseOnBackToMap } from '@lib/hooks/useEaseOnBackToMap'
 import { useMapIsFullyLoaded } from '@lib/hooks/useMapIsFullyLoaded'
 import { useOnMapFeatureMove } from '@lib/hooks/useOnMapFeatureMove'
 import { useMapUserGeolocationMarker } from '@lib/hooks/useMapUserGeolocationMarker'
+import { useInitialViewport } from '@lib/hooks/useInitialViewport'
 
 interface MapType {
   markers?: MinimalRecordType[]
@@ -101,11 +102,7 @@ export const FacilitiesMap: FC<MapType> = ({
       zoom: MAP_CONFIG.zoomedInZoom,
     },
   })
-  // The initial viewport will be available on 2nd render,
-  // because we get it from useRouter. First it has to be null.
-  const [initialViewport, setInitialViewport] = useState<ViewportType | null>(
-    null
-  )
+  useInitialViewport(map.current)
 
   const mapIsFullyLoaded = useMapIsFullyLoaded(map.current)
 
@@ -163,48 +160,6 @@ export const FacilitiesMap: FC<MapType> = ({
         .addTo(map.current)
     }
   })
-
-  useEffect(() => {
-    // If we've already got an initial viewport, we can not redefine it
-    // anymore because something initial shoudl only be set once.
-    if (initialViewport) return
-
-    if (!urlState.latitude || !urlState.longitude || !urlState.zoom) return
-
-    const mapLongitude = map.current?.transform._center.lng
-    const mapLatitude = map.current?.transform._center.lat
-    const mapZoom = map.current?.transform._zoom
-
-    if (
-      mapLongitude === urlState.longitude &&
-      mapLatitude === urlState.latitude &&
-      mapZoom === urlState.zoom
-    )
-      return
-
-    const newViewport = {
-      longitude: urlState.longitude,
-      latitude: urlState.latitude,
-      zoom: urlState.zoom,
-    }
-    // If all previous checks were passed, we need to set the initial viewport,
-    // which in the useEffect below will easeTo the desired location.
-    setInitialViewport(newViewport)
-  }, [urlState.latitude, urlState.longitude, urlState.zoom, initialViewport])
-
-  // After the initial viewport has been set ONCE (in the above useEffect),
-  // we ease the map to the location specified in the query state.
-  useEffect(() => {
-    if (!initialViewport) return
-    map.current &&
-      map.current.easeTo({
-        center: [
-          initialViewport.longitude,
-          initialViewport.latitude,
-        ] as LngLatLike,
-        zoom: initialViewport.zoom,
-      })
-  }, [initialViewport])
 
   // Map setup (run only once on initial render)
   useEffect(() => {
