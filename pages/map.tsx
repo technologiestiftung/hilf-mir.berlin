@@ -10,7 +10,9 @@ import { GristLabelType } from '@common/types/gristData'
 import { useUrlState } from '@lib/UrlStateContext'
 import { useRouter } from 'next/router'
 import { loadData } from '@lib/loadData'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { useDistanceToUser } from '@lib/hooks/useDistanceToUser'
+import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
 
 export const getStaticProps: GetStaticProps = async () => {
   const { texts, labels, records } = await loadData()
@@ -40,23 +42,46 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
   const [urlState, setUrlState] = useUrlState()
   const texts = useTexts()
   const { isFallback } = useRouter()
+  const { getDistanceToUser } = useDistanceToUser()
+  const { useGeolocation } = useUserGeolocation()
 
   const [filteredRecords, setFilteredRecords] =
     useState<MinimalRecordType[]>(originalRecords)
+
+  const sortFacilities = useCallback(
+    (facilities: MinimalRecordType[]) => {
+      if (!useGeolocation) return facilities
+      return facilities.sort((a, b) => {
+        const distanceToUserFromFacilityA = getDistanceToUser({
+          latitude: a.latitude,
+          longitude: a.longitude,
+        })
+        const distanceToUserFromFacilityB = getDistanceToUser({
+          latitude: b.latitude,
+          longitude: b.longitude,
+        })
+
+        // When we don't have a user geolocation we simply skip the sorting:
+        if (!distanceToUserFromFacilityA || !distanceToUserFromFacilityB)
+          return 0
+
+        return distanceToUserFromFacilityA - distanceToUserFromFacilityB
+      })
+    },
+    [getDistanceToUser, useGeolocation]
+  )
 
   useEffect(() => {
     if (!urlState.tags || urlState.tags?.length < 0) return
     const newFilteredRecords = originalRecords.filter((record) =>
       urlState.tags?.every((t) => record.labels.find((l) => l === t))
     )
-    return setFilteredRecords(newFilteredRecords)
-  }, [urlState.tags, originalRecords])
+    return setFilteredRecords(sortFacilities(newFilteredRecords))
+  }, [urlState.tags, originalRecords, sortFacilities])
 
   const [pageTitle, setPageTitle] = useState(texts.mapPageTitle)
 
   useEffect(() => {
-    console.log(filteredRecords.length)
-
     setPageTitle(
       texts.mapPageTitle.replace(/^\d\d?\d?/g, `${filteredRecords.length}`)
     )
@@ -71,7 +96,7 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
       </Head>
       <h1
         className={classNames(
-          `hidden lg:block sticky top-0`,
+          `hidden lg:block sticky top-0 z-10`,
           `px-5 py-8 bg-white border-b border-gray-10`
         )}
       >
@@ -81,18 +106,7 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
         {!isFallback &&
           (filteredRecords.length !== originalRecords.length ||
             filteredRecords.length === 0) && (
-            <div className="text-lg p-5 border-y border-gray-20 bg-gray-10/50">
-              <p>
-                {filteredRecords.length === 0 && texts.noResults}
-                {filteredRecords.length === 1 &&
-                  texts.filteredResultsAmountSingular
-                    .replace('#number', `${filteredRecords.length}`)
-                    .replace('#total', `${originalRecords.length}`)}
-                {filteredRecords.length > 1 &&
-                  texts.filteredResultsAmountPlural
-                    .replace('#number', `${filteredRecords.length}`)
-                    .replace('#total', `${originalRecords.length}`)}
-              </p>
+            <div className="p-5 text-lg border-y border-gray-20 bg-gray-10/50">
               <button
                 onClick={() => setUrlState({ tags: [] })}
                 className={classNames(

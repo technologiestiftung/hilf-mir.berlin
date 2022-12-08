@@ -1,25 +1,24 @@
+import {
+  getDistanceBetweenTwoPoints,
+  PointType,
+} from '@lib/getDistanceBetweenTwoPoints'
+import { useCallback } from 'react'
 import { useUserGeolocation } from './useUserGeolocation'
-import { LngLat } from 'maplibre-gl'
-import { useEffect, useState } from 'react'
 
-interface PointType {
-  latitude?: number
-  longitude?: number
+interface UseDistanceToUserReturnType {
+  getDistanceToUser: (pointA: PointType) => number | undefined
 }
 
-export const useDistanceToUser = (pointA: PointType): number | undefined => {
+export const useDistanceToUser = (): UseDistanceToUserReturnType => {
   const pointB = useUserGeolocation()
-  const [distance, setDistance] = useState<number | undefined>()
-  useEffect(() => {
-    if (!pointA?.latitude || !pointA?.longitude) return
-    if (!pointB?.latitude || !pointB?.longitude) return
 
-    const userLocation = new LngLat(pointA.longitude, pointA.latitude)
-    const facilityLocation = new LngLat(pointB.longitude, pointB.latitude)
-    const dist = userLocation.distanceTo(facilityLocation)
+  const getDistanceToUser = useCallback(
+    (pointA: PointType): number | undefined => {
+      return getDistanceBetweenTwoPoints(pointA, pointB)
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [pointB.latitude, pointB.longitude]
+  )
 
-    setDistance(Math.round(dist / 100) / 10)
-  }, [pointA, pointB])
-
-  return distance
+  return { getDistanceToUser }
 }

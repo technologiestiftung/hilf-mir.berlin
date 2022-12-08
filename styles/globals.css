@@ -19,19 +19,58 @@
 	}
 
   html, body {
-    @apply font-sans overflow-x-hidden;
+    @apply overflow-x-hidden font-sans;
   }
 	h1 {
-		@apply uppercase font-bold text-3xl md:text-4xl leading-8 md:leading-9;
+		@apply text-3xl font-bold uppercase md:text-4xl leading-8 md:leading-9;
 	}
 
-	.maplibregl-canvas-container canvas {
-		@apply focus:outline-none;
-	}
+  .maplibregl-canvas-container canvas {
+    @apply focus:outline-none;
+  }
 
-	.maplibregl-canvas-container {
-		@apply relative w-full h-full focus-within:outline-none focus-within:border-2 focus-within:border-red;
-	}
+  .maplibregl-canvas-container {
+    @apply relative w-full h-full focus-within:outline-none focus-within:border-2 focus-within:border-red;
+  }
+
+  /* Spiderifier  */
+  .spidered-marker {
+    width: 1px;
+    height: 1px;
+    overflow: display;
+    will-change: transform;
+  }
+
+  .spidered-marker:hover {
+    cursor: pointer;
+  }
+
+  .spidered-marker .icon-div {
+    position: relative;
+    z-index: 1;
+  }
+
+  .spidered-marker .icon-div::before {
+    content: '';
+    @apply absolute z-10 border border-white rounded-full bg-red -translate-x-1/2 -translate-y-1/2 transition-colors;
+    width: 22px;
+    height: 22px;
+  }
+
+  .spidered-marker:hover .icon-div::before {
+    @apply bg-gray-40;
+  }
+
+  .spidered-marker .line-div {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 1.3px;
+    background-color: #343434;
+    transform-origin: bottom;
+    z-index: 0;
+    height: 0;
+  }
 }
 
 @layer utilities {

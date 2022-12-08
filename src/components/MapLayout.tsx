@@ -17,24 +17,28 @@ import { MapHeader } from './MapHeader'
 import { MapButtons } from './MapButtons'
 import { IconButton } from './IconButton'
 import { Arrow } from './icons/Arrow'
+import { useIsMobile } from '@lib/hooks/useIsMobile'
 
 const SCROLL_THRESHOLD = 300
 
 export const MapLayout: FC<{
   records: MinimalRecordType[]
   labels: GristLabelType[]
-  center?: LngLatLike
-}> = ({ children, records, labels, center }) => {
-  const { pathname, isFallback } = useRouter()
+}> = ({ children, records, labels }) => {
+  const { query, pathname, isFallback } = useRouter()
   const texts = useTexts()
   const [listViewOpen, setListViewOpen] = useState<boolean>(false)
-  const [mapCenter, setMapCenter] = useState<LngLatLike | undefined>(center)
+  const [mapCenter, setMapCenter] = useState<LngLatLike | undefined>()
+  const [searchCenter, setSearchCenter] = useState<LngLatLike | undefined>()
   const [selectedFacilities, setSelectedFacilities] = useState<
     MinimalRecordType[]
   >([])
   const [filterSidebarIsOpened, setFilterSidebarIsOpened] = useState(false)
   const [urlState, setUrlState] = useUrlState()
   const [hasScrolled, setHasScrolled] = useState<boolean>(false)
+  const isMobile = useIsMobile()
+
+  const showMapUi = (isMobile && pathname === '/map') || !isMobile
 
   useEffect(() => {
     const scrollContainer = document.getElementById('main-sidebar')
@@ -58,7 +62,7 @@ export const MapLayout: FC<{
   }
 
   const handleSearchResult = (place: FeatureType): void => {
-    setMapCenter(place.center)
+    setSearchCenter(place.center)
     setUrlState({
       longitude: place.center[0],
       latitude: place.center[1],
@@ -66,8 +70,16 @@ export const MapLayout: FC<{
   }
 
   useEffect(() => {
-    setMapCenter(center)
-  }, [center])
+    setSelectedFacilities([])
+    if (!query.id || typeof query.id !== 'string') {
+      setMapCenter(undefined)
+      return
+    }
+    const currentId = parseInt(`${query.id}`, 10)
+    const currentRecord = records.find(({ id }) => id === currentId)
+    if (!currentRecord) return
+    setMapCenter([currentRecord.longitude, currentRecord.latitude])
+  }, [query.id, records])
 
   return (
     <LabelsProvider value={labels}>
@@ -90,18 +102,18 @@ export const MapLayout: FC<{
                 setSelectedFacilities([])
               }}
               highlightedCenter={mapCenter}
+              searchCenter={searchCenter}
             />
           </div>
         )}
-        {!isFallback && pathname === '/map' && <MapButtons />}
+        {!isFallback && showMapUi && <MapButtons />}
         {!isFallback && selectedFacilities.length === 0 && (
           <MapListSwitch
             listViewOpen={listViewOpen}
             setListViewOpen={setListViewOpen}
           />
         )}
-        {((pathname === '/map' && listViewOpen) ||
-          (pathname !== '/' && pathname !== '/map')) && (
+        {showMapUi && listViewOpen && (
           <div
             className={classNames(
               `fixed left-full lg:left-sidebarW -translate-x-full z-40 pr-5`,
@@ -110,7 +122,7 @@ export const MapLayout: FC<{
             )}
           >
             <IconButton
-              className="flex"
+              className="flex drop-shadow-lg"
               onClick={() => {
                 const aside = document.getElementById(`main-sidebar`)
                 if (!aside) return
@@ -127,20 +139,15 @@ export const MapLayout: FC<{
           id="main-sidebar"
           className={classNames(
             `fixed w-screen h-screen top-0 left-0 overflow-y-auto`,
-            `lg:w-sidebarW lg:shadow-xl`,
-            pathname === '/map' ? 'z-20' : 'z-30',
+            `lg:w-sidebarW lg:shadow-xl z-10`,
             `relative bg-white min-h-screen transition-transform`,
-            pathname === '/map' &&
-              listViewOpen &&
-              `translate-y-0 pt-20 lg:pt-0`,
-            pathname === '/map' &&
-              !listViewOpen &&
-              `translate-y-[100vh] lg:translate-y-0`
+            showMapUi && listViewOpen && `translate-y-0 pt-20 lg:pt-0`,
+            showMapUi && !listViewOpen && `translate-y-[100vh] lg:translate-y-0`
           )}
         >
           {!isFallback && children}
         </aside>
-        {pathname === '/map' && (
+        {!isFallback && showMapUi && (
           <MapHeader
             handleSearchResult={handleSearchResult}
             filterSidebarIsOpened={filterSidebarIsOpened}
@@ -176,6 +183,7 @@ export const MapLayout: FC<{
               <div className="p-5">
                 <FiltersList
                   recordsWithOnlyLabels={(records || []).map((r) => r.labels)}
+                  onSubmit={() => setFilterSidebarIsOpened(false)}
                 />
               </div>
             </>

@@ -54,7 +54,8 @@ export const UrlStateProvider: FC = ({ children }) => {
           ...newState,
         }),
       } as Record<string, string>).toString()
-      const as = `${pathname}?${paramsString}`
+      const path = typeof query.id === 'string' ? `/${query.id}` : pathname
+      const as = `${path}?${paramsString}`
       window.history.replaceState(
         {
           ...window.history.state,
@@ -70,7 +71,7 @@ export const UrlStateProvider: FC = ({ children }) => {
       if (newState.zoom) setZoom(newState.zoom)
       if (newState.tags) setTags(newState.tags)
     },
-    [latitude, longitude, pathname, tags, zoom]
+    [latitude, longitude, pathname, tags, zoom, query.id]
   )
 
   const state = {
