@@ -1,3 +1,24 @@
+# [1.3.0](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.2.1...v1.3.0) (2022-12-08)
+
+
+### Bug Fixes
+
+* **MapHeader:** Don't render MapHeader if fallback ([11ede78](https://github.com/technologiestiftung/wegweiser-frontend/commit/11ede78bd0e667fe96293e823b519bf99162f116))
+* **WEG-100:** Fix rounded corners of search input in IOS ([bad1463](https://github.com/technologiestiftung/wegweiser-frontend/commit/bad1463420270d9a62ca96c5ed09c8abceab2b9c))
+* **WEG-124:** Fix scroll container wrongly sized on mobile ([d7e52a3](https://github.com/technologiestiftung/wegweiser-frontend/commit/d7e52a369e15229382a3c45c16dac9b72af37e35))
+* **WEG-124:** Use fixed position for the scroll container on mobile ([09d0884](https://github.com/technologiestiftung/wegweiser-frontend/commit/09d088449d13299c81354e862e0b917380cc8ed1))
+* **WEG-134:** Show selected item as well as user location ([3c1114e](https://github.com/technologiestiftung/wegweiser-frontend/commit/3c1114e88869bcb48762711191d6787d977d1348))
+* **WEG-82:** Close search on click outside ([cf647b3](https://github.com/technologiestiftung/wegweiser-frontend/commit/cf647b3e960780afeaeb75450990bc364c2c3b66))
+
+
+### Features
+
+* **WEG-109:** Add Accessibility indicator ([4d92f63](https://github.com/technologiestiftung/wegweiser-frontend/commit/4d92f634aefdcfaa8425bf8b966fe76c0301532f))
+* **WEG-61:** always sort facilities when new filters are applied ([afa9915](https://github.com/technologiestiftung/wegweiser-frontend/commit/afa9915f9e88f81a9420ca0e590ca40e3b450fa1))
+* **WEG-61:** don't sort facilities without permission ([5cdd4c0](https://github.com/technologiestiftung/wegweiser-frontend/commit/5cdd4c0aba4d315192f7b37e3eec8e89edee249e))
+* **WEG-97:** Allow htmls tags in particular texts ([051a9dd](https://github.com/technologiestiftung/wegweiser-frontend/commit/051a9dd52697420ebbb9b412cd58962042955673))
+* **WEG-97:** Allow specific html tags in facility info ([9f9d0e0](https://github.com/technologiestiftung/wegweiser-frontend/commit/9f9d0e0e0ae6b3c66d322a4dc9b891c18c1ec0b5))
+
 # [1.3.0-rc.9](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.3.0-rc.8...v1.3.0-rc.9) (2022-12-08)
 
 
