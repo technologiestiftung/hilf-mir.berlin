@@ -11,7 +11,6 @@ import { useUrlState } from '@lib/UrlStateContext'
 import { useTexts } from '@lib/TextsContext'
 import { MapListSwitch } from './MapListSwitch'
 import { Cross } from './icons/Cross'
-import { LngLatLike } from 'maplibre-gl'
 import { FacilityCarousel } from './FacilityCarousel'
 import { MapHeader } from './MapHeader'
 import { MapButtons } from './MapButtons'
@@ -28,8 +27,12 @@ export const MapLayout: FC<{
   const { query, pathname, isFallback } = useRouter()
   const texts = useTexts()
   const [listViewOpen, setListViewOpen] = useState<boolean>(false)
-  const [mapCenter, setMapCenter] = useState<LngLatLike | undefined>()
-  const [searchCenter, setSearchCenter] = useState<LngLatLike | undefined>()
+  const [mapCenter, setMapCenter] = useState<
+    [lng: number, lat: number] | undefined
+  >()
+  const [searchCenter, setSearchCenter] = useState<
+    [lng: number, lat: number] | undefined
+  >()
   const [selectedFacilities, setSelectedFacilities] = useState<
     MinimalRecordType[]
   >([])

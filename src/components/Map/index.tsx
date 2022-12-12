@@ -1,11 +1,5 @@
-import { useEffect, FC, useRef, useState, useCallback } from 'react'
-import maplibregl, {
-  DataDrivenPropertyValueSpecification,
-  LngLatLike,
-  Map,
-  Marker,
-  Popup,
-} from 'maplibre-gl'
+import { useEffect, FC, useRef, useCallback } from 'react'
+import { DataDrivenPropertyValueSpecification, Popup } from 'maplibre-gl'
 import {
   createGeoJsonStructure,
   GeojsonFeatureType,
@@ -15,8 +9,6 @@ import { useDebouncedCallback } from 'use-debounce'
 import { URLViewportType } from '@lib/types/map'
 import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { useUrlState } from '@lib/UrlStateContext'
-import classNames from '@lib/classNames'
-import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
 import { MapTilerLogo } from '@components/MaptilerLogo'
 import MaplibreglSpiderifier from '@lib/MaplibreglSpiderifier'
 import { MOBILE_BREAKPOINT } from '@lib/hooks/useIsMobile'
@@ -26,10 +18,17 @@ import {
   getFeaturesOnSameCoordsThanFirstOne,
   getSpiderfier,
   MarkerClickHandlerType,
-  normalizeLatLng,
   setCursor,
   zoomIn,
 } from './mapUtil'
+import { useEaseOnBackToMap } from '@lib/hooks/useEaseOnBackToMap'
+import { useMapIsFullyLoaded } from '@lib/hooks/useMapIsFullyLoaded'
+import { useOnMapFeatureMove } from '@lib/hooks/useOnMapFeatureMove'
+import { useMapUserGeolocationMarker } from '@lib/hooks/useMapUserGeolocationMarker'
+import { useInitialViewport } from '@lib/hooks/useInitialViewport'
+import { useMapHighlightMarker } from '@lib/hooks/useMapHighlightMarker'
+import { useMapSearchMarker } from '@lib/hooks/useMapSearchMarker'
+import { useMaplibreMap } from '@lib/hooks/useMaplibreMap'
 
 interface MapType {
   markers?: MinimalRecordType[]
@@ -41,14 +40,8 @@ interface MapType {
    * If provided, the map's center will be forced to this location.
    * Also, a highlighted marker will be drawn to the map.
    */
-  highlightedCenter?: LngLatLike
-  searchCenter?: LngLatLike
-}
-
-interface ViewportObjType {
-  latitude: number
-  longitude: number
-  zoom: number
+  highlightedCenter?: [longitude: number, latitude: number]
+  searchCenter?: [longitude: number, latitude: number]
 }
 
 const easeInOutQuad = (t: number): number =>
@@ -77,10 +70,8 @@ export const FacilitiesMap: FC<MapType> = ({
   highlightedCenter,
   searchCenter,
 }) => {
-  const { pathname, push } = useRouter()
+  const { push } = useRouter()
   const texts = useTexts()
-  const map = useRef<Map>(null)
-  const highlightedMarker = useRef<Marker>(null)
   const popup = useRef(
     new Popup({
       closeButton: false,
@@ -90,90 +81,90 @@ export const FacilitiesMap: FC<MapType> = ({
   )
   const hoveredStateIds = useRef<number[]>(null)
   const spideredFeatureIds = useRef<number[]>(null)
-  const highlightedSearchMarker = useRef<Marker>(null)
-  const highlightedUserGeoposition = useRef<Marker>(null)
   const markerClickHandler = useRef<MarkerClickHandlerType>(() => undefined)
   const spiderifier =
     useRef<InstanceType<typeof MaplibreglSpiderifier<MinimalRecordType>>>(null)
+  const map = useMaplibreMap({ containerId: 'map', ...MAP_CONFIG })
 
   const [urlState, setUrlState] = useUrlState()
-  const {
-    isLoading: userGeolocationIsLoading,
-    latitude: userLatitude,
-    longitude: userLongitude,
-    useGeolocation,
-  } = useUserGeolocation()
 
-  const prevViewport = useRef<ViewportObjType>(null)
-  // The initial viewport will be available on 2nd render,
-  // because we get it from useRouter. First it has to be null.
-  const [initialViewport, setInitialViewport] =
-    useState<ViewportObjType | null>(null)
+  const highlightedSearchViewport = searchCenter
+    ? {
+        latitude: searchCenter[1],
+        longitude: searchCenter[0],
+        zoom: MAP_CONFIG.zoomedInZoom,
+      }
+    : null
+  useMapSearchMarker(map, highlightedSearchViewport)
+  const highlightedMarkerViewport = highlightedCenter
+    ? {
+        latitude: highlightedCenter[1],
+        longitude: highlightedCenter[0],
+        zoom: MAP_CONFIG.zoomedInZoom,
+      }
+    : null
+  const highlightedMarker = useMapHighlightMarker(
+    map,
+    highlightedMarkerViewport
+  )
 
-  const [mapIsFullyLoaded, setMapIsFullyLoaded] = useState(false)
+  useEaseOnBackToMap({
+    map: map,
+    zoomedInCoords: {
+      latitude: highlightedMarker?._lngLat.lat,
+      longitude: highlightedMarker?._lngLat.lng,
+      zoom: MAP_CONFIG.zoomedInZoom,
+    },
+  })
+  useInitialViewport(map)
 
-  useEffect(() => {
-    // If we've already got an initial viewport, we can not redefine it
-    // anymore because something initial shoudl only be set once.
-    if (initialViewport) return
+  const mapIsFullyLoaded = useMapIsFullyLoaded(map)
 
-    if (!urlState.latitude || !urlState.longitude || !urlState.zoom) return
+  useMapUserGeolocationMarker(map, MAP_CONFIG.zoomedInZoom, mapIsFullyLoaded)
 
-    const mapLongitude = map.current?.transform._center.lng
-    const mapLatitude = map.current?.transform._center.lat
-    const mapZoom = map.current?.transform._zoom
+  useOnMapFeatureMove(map, 'unclustered-point', (features) => {
+    if (!map) return
+    const isMobile = window.innerWidth <= MOBILE_BREAKPOINT
+    if (isMobile) return
 
-    if (
-      mapLongitude === urlState.longitude &&
-      mapLatitude === urlState.latitude &&
-      mapZoom === urlState.zoom
-    )
-      return
+    const activeFeatures = features.filter(({ state }) => state.active)
+    const allFeaturesInactive = activeFeatures.length === 0
+    if (allFeaturesInactive) return
 
-    const newViewport = {
-      longitude: urlState.longitude,
-      latitude: urlState.latitude,
-      zoom: urlState.zoom,
-    }
-    // If all previous checks were passed, we need to set the initial viewport,
-    // which in the useEffect below will easeTo the desired location.
-    setInitialViewport(newViewport)
-  }, [urlState.latitude, urlState.longitude, urlState.zoom, initialViewport])
+    setCursor('pointer')
 
-  // After the initial viewport has been set ONCE (in the above useEffect),
-  // we ease the map to the location specified in the query state.
-  useEffect(() => {
-    if (!initialViewport) return
-    map.current &&
-      map.current.easeTo({
-        center: [
-          initialViewport.longitude,
-          initialViewport.latitude,
-        ] as LngLatLike,
-        zoom: initialViewport.zoom,
+    if (hoveredStateIds.current && hoveredStateIds.current?.length > 0) {
+      hoveredStateIds.current?.forEach((id) => {
+        map?.setFeatureState({ source: 'facilities', id }, { hover: false })
       })
-  }, [initialViewport])
-
-  // Map setup (run only once on initial render)
-  useEffect(() => {
+    }
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    map.current = new maplibregl.Map({
-      container: 'map',
-      style: `${process.env.NEXT_PUBLIC_MAPTILER_STYLE_URL || ''}?key=${
-        process.env.NEXT_PUBLIC_MAPTILER_API_KEY || ''
-      }`,
-      center: [
-        MAP_CONFIG.defaultLongitude,
-        MAP_CONFIG.defaultLatitude,
-      ] as LngLatLike,
-      zoom: MAP_CONFIG.defaultZoom,
-      minZoom: MAP_CONFIG.minZoom,
-      maxZoom: MAP_CONFIG.maxZoom,
+    hoveredStateIds.current = features.map(({ id }) => id as number)
+    hoveredStateIds.current?.forEach((id) => {
+      map?.setFeatureState({ source: 'facilities', id }, { hover: true })
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
+    if (
+      activeFeatures.length >= 1 &&
+      !spiderifier.current?.expandedIds.some((id) =>
+        activeFeatures.find((marker) => marker.properties.id === id)
+      )
+    ) {
+      const { longitude, latitude } = activeFeatures[0]
+        .properties as MinimalRecordType
+      popup.current
+        .setLngLat([longitude, latitude])
+        .setHTML(
+          getPopupHTML(
+            activeFeatures.map(({ properties }) => properties),
+            texts
+          )
+        )
+        .addTo(map)
+    }
+  })
+  //
   // Debounced function that updates the URL query without triggering a rerender:
   const debouncedViewportChange = useDebouncedCallback(
     (viewport: URLViewportType): void => {
@@ -187,10 +178,10 @@ export const FacilitiesMap: FC<MapType> = ({
 
   const updateFilteredFacilities = useCallback(
     (activeTags: number[]) => {
-      if (!map.current || !mapIsFullyLoaded) return
+      if (!map || !mapIsFullyLoaded) return
 
       markers?.forEach((marker) => {
-        map.current?.setFeatureState(
+        map?.setFeatureState(
           {
             source: 'facilities',
             id: marker.id,
@@ -201,52 +192,13 @@ export const FacilitiesMap: FC<MapType> = ({
         )
       })
     },
-    [markers, mapIsFullyLoaded]
+    [map, markers, mapIsFullyLoaded]
   )
 
   useEffect(() => {
-    if (!map.current) return
-
-    if (pathname !== '/map') return
-
-    // When moving from [id] to /map, we check if the position of the
-    // has changed and zoom back to the previous position in case it hasn't
-    const mapLng = normalizeLatLng(map.current.getCenter().lng)
-    const mapLat = normalizeLatLng(map.current.getCenter().lat)
-    const mapZoom = map.current.getZoom()
-
-    const markerLng = normalizeLatLng(highlightedMarker.current?._lngLat.lng)
-    const markerLat = normalizeLatLng(highlightedMarker.current?._lngLat.lat)
-    const markerZoom = MAP_CONFIG.zoomedInZoom
-
-    const prevLng = normalizeLatLng(prevViewport.current?.longitude)
-    const prevLat = normalizeLatLng(prevViewport.current?.latitude)
-    const prevZoom = prevViewport.current?.zoom
-
-    // Without a highlightedCenter we want to remove any highlightedMarker:
-    highlightedMarker.current?.remove()
-
-    // When an [id] page is (re)loaded, it doesn't yet have a previous position
-    if (!prevLng || !prevLat || !prevZoom) return
-    // If the user hasn't moved from the default facility position and zoom,
-    // we zoom back to the previous map position and zoom
-    // This makes it easy to regain context and orientation
-    if (
-      mapLng === markerLng &&
-      mapLat === markerLat &&
-      mapZoom === markerZoom
-    ) {
-      map.current.easeTo({
-        center: [prevLng, prevLat],
-        zoom: prevZoom,
-      })
-    }
-  }, [pathname])
-
-  useEffect(() => {
-    if (!map.current) return
+    if (!map) return
     markerClickHandler.current = (facility: MinimalRecordType): void => {
-      if (!map.current || !facility) return
+      if (!map || !facility) return
       void push({
         pathname: `/${facility.id}`,
         query: {
@@ -255,7 +207,7 @@ export const FacilitiesMap: FC<MapType> = ({
           longitude: facility.longitude,
         },
       })
-      map.current.easeTo({
+      map.easeTo({
         center: [facility.longitude, facility.latitude],
         zoom: MAP_CONFIG.zoomedInZoom,
       })
@@ -263,49 +215,12 @@ export const FacilitiesMap: FC<MapType> = ({
   }, [push, urlState])
 
   useEffect(() => {
-    if (!markers || !map.current) return
+    if (!markers || !map) return
 
-    map.current.on('load', function () {
-      if (!map.current) return
+    map.on('load', function () {
+      if (!map) return
 
-      const pollForMapLoaded = (): void => {
-        if (map.current?.loaded()) {
-          setMapIsFullyLoaded(true)
-          return
-        } else {
-          requestAnimationFrame(pollForMapLoaded)
-        }
-      }
-
-      pollForMapLoaded()
-
-      map.current.on('movestart', () => {
-        onMoveStart()
-      })
-
-      map.current.on('moveend', (e) => {
-        // Determines whether a moveend event has been triggered by a user or
-        // a programatic change (easeTo, flyTo, etc)
-        const isUserEvent = !!e.originalEvent
-        // If the user has changed the zoom or position, we save a reference
-        // to the last position/zoom in order to move back to this position
-        // when the user goes back to map overview (deselcts the facility)
-        if (map.current && isUserEvent) {
-          const { lat: latitude, lng: longitude } = map.current.getCenter()
-          const zoom = map.current.getZoom.bind(map.current)()
-          if (!latitude || !longitude || !zoom) return
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          prevViewport.current = { latitude, longitude, zoom }
-        }
-        debouncedViewportChange({
-          latitude: e.target.transform._center.lat,
-          longitude: e.target.transform._center.lng,
-          zoom: e.target.transform._zoom,
-        })
-      })
-
-      map.current.addSource('facilities', {
+      map.addSource('facilities', {
         type: 'geojson',
         data: createGeoJsonStructure(markers),
         // We need to set an ID for making setFeatureState work.
@@ -327,7 +242,7 @@ export const FacilitiesMap: FC<MapType> = ({
         0,
       ] as DataDrivenPropertyValueSpecification<number>
 
-      map.current.addLayer({
+      map.addLayer({
         id: 'unclustered-point',
         type: 'circle',
         source: 'facilities',
@@ -350,9 +265,21 @@ export const FacilitiesMap: FC<MapType> = ({
       // @ts-ignore
       spiderifier.current = getSpiderfier({
         clickHandler: markerClickHandler.current,
-        map: map.current,
+        map: map,
         popup: popup.current,
         texts,
+      })
+
+      map.on('movestart', () => {
+        onMoveStart()
+      })
+
+      map.on('moveend', (e) => {
+        debouncedViewportChange({
+          latitude: e.target.transform._center.lat,
+          longitude: e.target.transform._center.lng,
+          zoom: e.target.transform._zoom,
+        })
       })
 
       function unspiderfy(): void {
@@ -360,12 +287,12 @@ export const FacilitiesMap: FC<MapType> = ({
         popup.current.setOffset(0)
         popup.current.remove()
         if (
-          map.current &&
+          map &&
           spideredFeatureIds.current &&
           spideredFeatureIds.current.length > 0
         ) {
           spideredFeatureIds.current.forEach((id) => {
-            map.current?.setFeatureState(
+            map?.setFeatureState(
               { source: 'facilities', id },
               { spidered: false }
             )
@@ -376,14 +303,14 @@ export const FacilitiesMap: FC<MapType> = ({
         }
       }
 
-      map.current.on('click', function () {
+      map.on('click', function () {
         unspiderfy()
         onClickAnywhere()
       })
 
-      map.current.on('click', 'unclustered-point', (e) => {
+      map.on('click', 'unclustered-point', (e) => {
         if (!e.features) return
-        if (!map.current || !spiderifier.current) return
+        if (!map || !spiderifier.current) return
 
         const features = e.features as GeojsonFeatureType<MinimalRecordType>[]
         const activeFeatures = features.filter(({ state }) => state.active)
@@ -399,7 +326,7 @@ export const FacilitiesMap: FC<MapType> = ({
           featuresOnSameCoords.length !== activeFeatures.length
         if (isClusterOfVeryNearButNotOverlappingPoints) {
           zoomIn(
-            map.current,
+            map,
             featuresOnSameCoords[0].geometry.coordinates,
             2,
             MAP_CONFIG.zoomedInZoom
@@ -414,7 +341,7 @@ export const FacilitiesMap: FC<MapType> = ({
           clickedMarkerIds.includes(marker.id)
         )
 
-        map.current.easeTo({ center: firstFeature.geometry.coordinates })
+        map.easeTo({ center: firstFeature.geometry.coordinates })
 
         const isMobile = window.innerWidth <= MOBILE_BREAKPOINT
         if (isMobile) {
@@ -436,76 +363,24 @@ export const FacilitiesMap: FC<MapType> = ({
           ({ properties }) => properties.id
         )
         spideredFeatureIds.current.forEach((id) => {
-          map.current?.setFeatureState(
-            { source: 'facilities', id },
-            { spidered: true }
-          )
+          map?.setFeatureState({ source: 'facilities', id }, { spidered: true })
         })
       })
     })
 
-    map.current.on('mousemove', 'unclustered-point', (e) => {
-      if (!map.current) return
+    map.on('mousemove', 'unclustered-point', (e) => {
+      if (!map) return
       if (!e.features || e.features.length === 0) return
-      const isMobile = window.innerWidth <= MOBILE_BREAKPOINT
-      if (isMobile) return
-
-      const features = e.features as GeojsonFeatureType<MinimalRecordType>[]
-      const activeFeatures = features.filter(({ state }) => state.active)
-      const allFeaturesInactive = activeFeatures.length === 0
-      if (allFeaturesInactive) return
-
-      setCursor('pointer')
-
-      if (hoveredStateIds.current && hoveredStateIds.current?.length > 0) {
-        hoveredStateIds.current?.forEach((id) => {
-          map.current?.setFeatureState(
-            { source: 'facilities', id },
-            { hover: false }
-          )
-        })
-      }
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      hoveredStateIds.current = features.map(({ id }) => id as number)
-      hoveredStateIds.current?.forEach((id) => {
-        map.current?.setFeatureState(
-          { source: 'facilities', id },
-          { hover: true }
-        )
-      })
-
-      if (
-        activeFeatures.length >= 1 &&
-        !spiderifier.current?.expandedIds.some((id) =>
-          activeFeatures.find((marker) => marker.properties.id === id)
-        )
-      ) {
-        const { longitude, latitude } = activeFeatures[0]
-          .properties as MinimalRecordType
-        popup.current
-          .setLngLat([longitude, latitude])
-          .setHTML(
-            getPopupHTML(
-              activeFeatures.map(({ properties }) => properties),
-              texts
-            )
-          )
-          .addTo(map.current)
-      }
     })
 
-    map.current.on('mouseleave', 'unclustered-point', () => {
-      if (!map.current) return
+    map.on('mouseleave', 'unclustered-point', () => {
+      if (!map) return
 
       setCursor('inherit')
 
       if (hoveredStateIds.current && hoveredStateIds.current.length > 0) {
         hoveredStateIds.current?.forEach((id) => {
-          map.current?.setFeatureState(
-            { source: 'facilities', id },
-            { hover: false }
-          )
+          map?.setFeatureState({ source: 'facilities', id }, { hover: false })
         })
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -516,88 +391,6 @@ export const FacilitiesMap: FC<MapType> = ({
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [markers])
-
-  useEffect(() => {
-    if (!map.current) return
-    if (!useGeolocation || !userLatitude || !userLongitude) {
-      // Without a userGeolocation we want to remove any highlightedUserGeoposition:
-      highlightedUserGeoposition && highlightedUserGeoposition.current?.remove()
-      return
-    } else {
-      // Remove possibly existent user geoposition marker:
-      highlightedUserGeoposition.current?.remove()
-
-      const customMarker = document.createElement('div')
-      customMarker.className = classNames(
-        'w-8 h-8 border-2 border-white rounded-full bg-blau ring-2',
-        'ring-blau ring-offset-2 ring-offset-white'
-      )
-
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      highlightedUserGeoposition.current = new maplibregl.Marker(customMarker)
-        .setLngLat([userLongitude, userLatitude])
-        .addTo(map.current)
-
-      map.current.easeTo({
-        center: [userLongitude, userLatitude],
-        zoom: MAP_CONFIG.zoomedInZoom,
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapIsFullyLoaded, userGeolocationIsLoading, useGeolocation])
-
-  useEffect(() => {
-    if (!map.current) return
-    if (!searchCenter) {
-      // Without a searchCenter we want to remove any highlightedSearchMarker:
-      highlightedSearchMarker && highlightedSearchMarker.current?.remove()
-      return
-    } else {
-      // Remove possibly existent markers:
-      highlightedSearchMarker.current?.remove()
-
-      const customMarker = document.createElement('div')
-      customMarker.className = classNames('w-8 h-8 bg-norepeat')
-      customMarker.style.backgroundImage = 'url("/images/search_geopin.svg")'
-
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      highlightedSearchMarker.current = new maplibregl.Marker(customMarker)
-        .setLngLat(searchCenter)
-        .addTo(map.current)
-
-      map.current.easeTo({
-        center: searchCenter,
-        zoom: MAP_CONFIG.zoomedInZoom,
-      })
-    }
-  }, [searchCenter])
-
-  useEffect(() => {
-    if (!map.current) return
-    if (highlightedCenter) {
-      // Remove possibly existent markers:
-      highlightedMarker.current?.remove()
-
-      const customMarker = document.createElement('div')
-      customMarker.className = classNames(
-        'w-10 h-10 bg-red rounded-full ring-2',
-        'ring-offset-white ring-offset-2 ring-red'
-      )
-
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      highlightedMarker.current = new maplibregl.Marker(customMarker)
-        .setLngLat(highlightedCenter)
-        .addTo(map.current)
-
-      map.current.easeTo({
-        center: highlightedCenter,
-        zoom: MAP_CONFIG.zoomedInZoom,
-      })
-    }
-  }, [highlightedCenter])
 
   useEffect(
     () => updateFilteredFacilities(activeTags as number[]),

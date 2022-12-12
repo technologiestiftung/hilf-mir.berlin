@@ -1,4 +1,4 @@
-export type ViewportProps = Partial<{
+interface FullViewportType {
   width: number
   height: number
   latitude: number
@@ -15,9 +15,16 @@ export type ViewportProps = Partial<{
   transitionEasing: (t: number) => number
   transitionInterpolator: unknown
   transitionInterruption: number
-}>
+}
+
+export type ViewportProps = Partial<FullViewportType>
 
 export type URLViewportType = Pick<
   ViewportProps,
+  'latitude' | 'longitude' | 'zoom'
+>
+
+export type ViewportType = Pick<
+  FullViewportType,
   'latitude' | 'longitude' | 'zoom'
 >
