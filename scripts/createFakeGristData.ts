@@ -65,6 +65,9 @@ const fakeData: Omit<TableRowType, 'id'>[] = Array.from(Array(300)).map(() => {
         getRandomNumberInRange(1, 6)
       ).map((id) => parseInt(id)),
       Zielgruppen: 'Familien;Senioren',
+      Prio: ['', 'Versteckt', 'Niedrieg', 'Mittel', 'Hoch'][
+        getRandomNumberInRange(0, 4)
+      ],
       Sprachen: createRandomArrayFromArray(
         ['Deutsch', 'Englisch', 'Türkisch', 'Polnisch', 'Arabisch', 'Spanisch'],
         getRandomNumberInRange(1, 6)
@@ -103,5 +106,7 @@ const postRows = async (): Promise<void> => {
 try {
   void postRows()
 } catch (error) {
+  console.error(error)
+}
   console.error(error)
 }
