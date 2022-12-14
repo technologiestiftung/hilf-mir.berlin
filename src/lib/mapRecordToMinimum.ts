@@ -5,6 +5,8 @@ import {
   OpeningTimesBoundsType,
 } from './getRecordOpeningTimesBounds'
 
+type PrioNumberType = -1 | 0 | 1 | 2
+
 export interface MinimalRecordType
   extends Record<string, unknown>,
     OpeningTimesBoundsType {
@@ -12,6 +14,7 @@ export interface MinimalRecordType
   title: string
   latitude: number
   longitude: number
+  prioriy: PrioNumberType
   labels: number[]
   open247: boolean
   description: string
@@ -26,10 +29,26 @@ export const mapRecordToMinimum = (record: TableRowType): MinimalRecordType => {
     ...getRecordOpeningTimesBounds(record.fields),
     labels: record.fields.Schlagworte,
     open247: record.fields['c24_h_7_Tage'].trim() === 'ja',
+    prioriy: mapPriorityToNumber(record.fields.Prio),
     description: sanitizeHtml(record.fields.Uber_uns, {
       allowedTags: [],
       allowedAttributes: {},
       disallowedTagsMode: 'discard',
     }),
+  }
+}
+
+function mapPriorityToNumber(
+  rawPrio: TableRowType['fields']['Prio']
+): PrioNumberType {
+  switch (rawPrio) {
+    case 'Hoch':
+      return 2
+    case 'Mittel':
+      return 1
+    case 'Versteckt':
+      return -1
+    default:
+      return 0
   }
 }

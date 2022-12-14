@@ -16,7 +16,11 @@ import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
 
 export const getStaticProps: GetStaticProps = async () => {
   const { texts, labels, records } = await loadData()
-  const recordsWithOnlyMinimum = records.map(mapRecordToMinimum)
+  const recordsWithOnlyMinimum = records
+    .map(mapRecordToMinimum)
+    .filter((r) => r.prioriy >= 0)
+    .sort((a, b) => b.prioriy - a.prioriy || a.title.localeCompare(b.title))
+
   return {
     props: {
       texts: {
@@ -63,9 +67,12 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
 
         // When we don't have a user geolocation we simply skip the sorting:
         if (!distanceToUserFromFacilityA || !distanceToUserFromFacilityB)
-          return 0
+          return b.prioriy - a.prioriy
 
-        return distanceToUserFromFacilityA - distanceToUserFromFacilityB
+        return (
+          b.prioriy - a.prioriy ||
+          distanceToUserFromFacilityA - distanceToUserFromFacilityB
+        )
       })
     },
     [getDistanceToUser, useGeolocation]
