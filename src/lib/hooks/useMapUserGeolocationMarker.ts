@@ -1,5 +1,6 @@
 import classNames from '@lib/classNames'
 import { Map, Marker } from 'maplibre-gl'
+import { useRouter } from 'next/router'
 import { useEffect, useRef } from 'react'
 import { useUserGeolocation } from './useUserGeolocation'
 
@@ -15,6 +16,7 @@ export function useMapUserGeolocationMarker(
     useGeolocation,
   } = useUserGeolocation()
   const highlightedUserGeoposition = useRef<Marker>(null)
+  const { pathname } = useRouter()
 
   useEffect(() => {
     if (!map) return
@@ -38,6 +40,7 @@ export function useMapUserGeolocationMarker(
         .setLngLat([userLongitude, userLatitude])
         .addTo(map)
 
+      if (pathname !== '/map') return
       map.easeTo({
         center: [userLongitude, userLatitude],
         zoom: zoomedInZoom || 17,
