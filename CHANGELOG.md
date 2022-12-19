@@ -1,3 +1,10 @@
+# [1.4.0-rc.2](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.4.0-rc.1...v1.4.0-rc.2) (2022-12-19)
+
+
+### Bug Fixes
+
+* **WEG-150:** Fix display of markers when no urlState ([88631df](https://github.com/technologiestiftung/wegweiser-frontend/commit/88631dfade7f3c9234da5759e9fbf7ac94479121))
+
 # [1.4.0-rc.1](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.3.0...v1.4.0-rc.1) (2022-12-19)
 
 
