@@ -90,18 +90,18 @@ export const FacilitiesMap: FC<MapType> = ({
 
   const highlightedSearchViewport = searchCenter
     ? {
-      latitude: searchCenter[1],
-      longitude: searchCenter[0],
-      zoom: MAP_CONFIG.zoomedInZoom,
-    }
+        latitude: searchCenter[1],
+        longitude: searchCenter[0],
+        zoom: MAP_CONFIG.zoomedInZoom,
+      }
     : null
   useMapSearchMarker(map, highlightedSearchViewport)
   const highlightedMarkerViewport = highlightedCenter
     ? {
-      latitude: highlightedCenter[1],
-      longitude: highlightedCenter[0],
-      zoom: MAP_CONFIG.zoomedInZoom,
-    }
+        latitude: highlightedCenter[1],
+        longitude: highlightedCenter[0],
+        zoom: MAP_CONFIG.zoomedInZoom,
+      }
     : null
   const highlightedMarker = useMapHighlightMarker(
     map,
@@ -213,12 +213,12 @@ export const FacilitiesMap: FC<MapType> = ({
         zoom: MAP_CONFIG.zoomedInZoom,
       })
     }
-  }, [push, urlState])
+  }, [push, urlState, map])
 
   useEffect(() => {
     if (!mapStylesLoaded || !markers || !map) return
 
-    if (!map.getSource("facilities")) {
+    if (!map.getSource('facilities')) {
       map.addSource('facilities', {
         type: 'geojson',
         data: createGeoJsonStructure(markers),
@@ -242,7 +242,7 @@ export const FacilitiesMap: FC<MapType> = ({
       0,
     ] as DataDrivenPropertyValueSpecification<number>
 
-    if (!map.getLayer("unclustered-point")) {
+    if (!map.getLayer('unclustered-point')) {
       map.addLayer({
         id: 'unclustered-point',
         type: 'circle',
@@ -305,7 +305,7 @@ export const FacilitiesMap: FC<MapType> = ({
       }
     }
 
-    map.on('click', function() {
+    map.on('click', function () {
       unspiderfy()
       onClickAnywhere()
     })
@@ -336,9 +336,7 @@ export const FacilitiesMap: FC<MapType> = ({
         return
       }
 
-      const clickedMarkerIds = featuresOnSameCoords.map(
-        (f) => f.properties.id
-      )
+      const clickedMarkerIds = featuresOnSameCoords.map((f) => f.properties.id)
       const clickedFacilities = markers.filter((marker) =>
         clickedMarkerIds.includes(marker.id)
       )
@@ -392,6 +390,7 @@ export const FacilitiesMap: FC<MapType> = ({
     })
 
     setMapLayersLoaded(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapStylesLoaded])
 
   useEffect(
