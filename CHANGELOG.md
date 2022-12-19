@@ -1,3 +1,17 @@
+# [1.4.0](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.3.0...v1.4.0) (2022-12-19)
+
+
+### Bug Fixes
+
+* **createFakeGristData:** Remove artefact from vim ([5413a14](https://github.com/technologiestiftung/wegweiser-frontend/commit/5413a14e81e643e19f5bddeb157049ff4b5f65d2))
+* **WEG-147:** Don't ease to the user's location if on a facility page ([049945c](https://github.com/technologiestiftung/wegweiser-frontend/commit/049945c34c68f171172e6d2101a07edd2bf8edf9))
+* **WEG-150:** Fix display of markers when no urlState ([88631df](https://github.com/technologiestiftung/wegweiser-frontend/commit/88631dfade7f3c9234da5759e9fbf7ac94479121))
+
+
+### Features
+
+* **WEG-114:** Sort by priority first and then by title or distance ([f32eafa](https://github.com/technologiestiftung/wegweiser-frontend/commit/f32eafa672515d6ac505f1e86d36663779738121))
+
 # [1.4.0-rc.2](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.4.0-rc.1...v1.4.0-rc.2) (2022-12-19)
 
 
