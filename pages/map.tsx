@@ -79,9 +79,9 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
   )
 
   useEffect(() => {
-    if (!urlState.tags || urlState.tags?.length < 0) return
+    const tags = urlState.tags || []
     const newFilteredRecords = originalRecords.filter((record) =>
-      urlState.tags?.every((t) => record.labels.find((l) => l === t))
+      tags?.every((t) => record.labels.find((l) => l === t))
     )
     return setFilteredRecords(sortFacilities(newFilteredRecords))
   }, [urlState.tags, originalRecords, sortFacilities])
