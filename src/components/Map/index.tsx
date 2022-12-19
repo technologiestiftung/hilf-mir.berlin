@@ -1,4 +1,4 @@
-import { useEffect, FC, useRef, useCallback } from 'react'
+import { useEffect, FC, useRef, useCallback, useState } from 'react'
 import { DataDrivenPropertyValueSpecification, Popup } from 'maplibre-gl'
 import {
   createGeoJsonStructure,
@@ -22,7 +22,7 @@ import {
   zoomIn,
 } from './mapUtil'
 import { useEaseOnBackToMap } from '@lib/hooks/useEaseOnBackToMap'
-import { useMapIsFullyLoaded } from '@lib/hooks/useMapIsFullyLoaded'
+import { useMapStylesLoaded } from '@lib/hooks/useMapStylesLoaded'
 import { useOnMapFeatureMove } from '@lib/hooks/useOnMapFeatureMove'
 import { useMapUserGeolocationMarker } from '@lib/hooks/useMapUserGeolocationMarker'
 import { useInitialViewport } from '@lib/hooks/useInitialViewport'
@@ -90,18 +90,18 @@ export const FacilitiesMap: FC<MapType> = ({
 
   const highlightedSearchViewport = searchCenter
     ? {
-        latitude: searchCenter[1],
-        longitude: searchCenter[0],
-        zoom: MAP_CONFIG.zoomedInZoom,
-      }
+      latitude: searchCenter[1],
+      longitude: searchCenter[0],
+      zoom: MAP_CONFIG.zoomedInZoom,
+    }
     : null
   useMapSearchMarker(map, highlightedSearchViewport)
   const highlightedMarkerViewport = highlightedCenter
     ? {
-        latitude: highlightedCenter[1],
-        longitude: highlightedCenter[0],
-        zoom: MAP_CONFIG.zoomedInZoom,
-      }
+      latitude: highlightedCenter[1],
+      longitude: highlightedCenter[0],
+      zoom: MAP_CONFIG.zoomedInZoom,
+    }
     : null
   const highlightedMarker = useMapHighlightMarker(
     map,
@@ -118,9 +118,10 @@ export const FacilitiesMap: FC<MapType> = ({
   })
   useInitialViewport(map)
 
-  const mapIsFullyLoaded = useMapIsFullyLoaded(map)
+  const mapStylesLoaded = useMapStylesLoaded(map)
+  const [mapLayersLoaded, setMapLayersLoaded] = useState(false)
 
-  useMapUserGeolocationMarker(map, MAP_CONFIG.zoomedInZoom, mapIsFullyLoaded)
+  useMapUserGeolocationMarker(map, MAP_CONFIG.zoomedInZoom, mapLayersLoaded)
 
   useOnMapFeatureMove(map, 'unclustered-point', (features) => {
     if (!map) return
@@ -178,21 +179,21 @@ export const FacilitiesMap: FC<MapType> = ({
 
   const updateFilteredFacilities = useCallback(
     (activeTags: number[]) => {
-      if (!map || !mapIsFullyLoaded) return
+      if (!map || !mapLayersLoaded || !markers) return
 
-      markers?.forEach((marker) => {
-        map?.setFeatureState(
+      markers.forEach((marker) => {
+        map.setFeatureState(
           {
             source: 'facilities',
             id: marker.id,
           },
           {
-            active: activeTags?.every((tag) => marker.labels.includes(tag)),
+            active: activeTags.every((tag) => marker.labels.includes(tag)),
           }
         )
       })
     },
-    [map, markers, mapIsFullyLoaded]
+    [map, markers, mapLayersLoaded]
   )
 
   useEffect(() => {
@@ -215,11 +216,9 @@ export const FacilitiesMap: FC<MapType> = ({
   }, [push, urlState])
 
   useEffect(() => {
-    if (!markers || !map) return
+    if (!mapStylesLoaded || !markers || !map) return
 
-    map.on('load', function () {
-      if (!map) return
-
+    if (!map.getSource("facilities")) {
       map.addSource('facilities', {
         type: 'geojson',
         data: createGeoJsonStructure(markers),
@@ -228,20 +227,22 @@ export const FacilitiesMap: FC<MapType> = ({
         // a unique ID.
         promoteId: 'id',
       })
+    }
 
-      updateFilteredFacilities(activeTags as number[])
+    updateFilteredFacilities(activeTags as number[])
 
-      const opacityGlCondition = [
-        'case',
-        [
-          'all',
-          ['boolean', ['feature-state', 'active'], false],
-          ['!', ['boolean', ['feature-state', 'spidered'], false]],
-        ],
-        1,
-        0,
-      ] as DataDrivenPropertyValueSpecification<number>
+    const opacityGlCondition = [
+      'case',
+      [
+        'all',
+        ['boolean', ['feature-state', 'active'], false],
+        ['!', ['boolean', ['feature-state', 'spidered'], false]],
+      ],
+      1,
+      0,
+    ] as DataDrivenPropertyValueSpecification<number>
 
+    if (!map.getLayer("unclustered-point")) {
       map.addLayer({
         id: 'unclustered-point',
         type: 'circle',
@@ -260,111 +261,111 @@ export const FacilitiesMap: FC<MapType> = ({
           'circle-opacity': opacityGlCondition,
         },
       })
+    }
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      spiderifier.current = getSpiderfier({
-        clickHandler: markerClickHandler.current,
-        map: map,
-        popup: popup.current,
-        texts,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    spiderifier.current = getSpiderfier({
+      clickHandler: markerClickHandler.current,
+      map: map,
+      popup: popup.current,
+      texts,
+    })
+
+    map.on('movestart', () => {
+      onMoveStart()
+    })
+
+    map.on('moveend', (e) => {
+      debouncedViewportChange({
+        latitude: e.target.transform._center.lat,
+        longitude: e.target.transform._center.lng,
+        zoom: e.target.transform._zoom,
       })
+    })
 
-      map.on('movestart', () => {
-        onMoveStart()
-      })
-
-      map.on('moveend', (e) => {
-        debouncedViewportChange({
-          latitude: e.target.transform._center.lat,
-          longitude: e.target.transform._center.lng,
-          zoom: e.target.transform._zoom,
-        })
-      })
-
-      function unspiderfy(): void {
-        spiderifier.current?.unspiderfy()
-        popup.current.setOffset(0)
-        popup.current.remove()
-        if (
-          map &&
-          spideredFeatureIds.current &&
-          spideredFeatureIds.current.length > 0
-        ) {
-          spideredFeatureIds.current.forEach((id) => {
-            map?.setFeatureState(
-              { source: 'facilities', id },
-              { spidered: false }
-            )
-          })
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          spideredFeatureIds.current = null
-        }
-      }
-
-      map.on('click', function () {
-        unspiderfy()
-        onClickAnywhere()
-      })
-
-      map.on('click', 'unclustered-point', (e) => {
-        if (!e.features) return
-        if (!map || !spiderifier.current) return
-
-        const features = e.features as GeojsonFeatureType<MinimalRecordType>[]
-        const activeFeatures = features.filter(({ state }) => state.active)
-        const firstFeature = activeFeatures[0]
-
-        if (activeFeatures.length === 0 || !firstFeature.geometry.coordinates)
-          return
-
-        const featuresOnSameCoords =
-          getFeaturesOnSameCoordsThanFirstOne(activeFeatures)
-
-        const isClusterOfVeryNearButNotOverlappingPoints =
-          featuresOnSameCoords.length !== activeFeatures.length
-        if (isClusterOfVeryNearButNotOverlappingPoints) {
-          zoomIn(
-            map,
-            featuresOnSameCoords[0].geometry.coordinates,
-            2,
-            MAP_CONFIG.zoomedInZoom
+    function unspiderfy(): void {
+      spiderifier.current?.unspiderfy()
+      popup.current.setOffset(0)
+      popup.current.remove()
+      if (
+        map &&
+        spideredFeatureIds.current &&
+        spideredFeatureIds.current.length > 0
+      ) {
+        spideredFeatureIds.current.forEach((id) => {
+          map?.setFeatureState(
+            { source: 'facilities', id },
+            { spidered: false }
           )
-          return
-        }
-
-        const clickedMarkerIds = featuresOnSameCoords.map(
-          (f) => f.properties.id
-        )
-        const clickedFacilities = markers.filter((marker) =>
-          clickedMarkerIds.includes(marker.id)
-        )
-
-        map.easeTo({ center: firstFeature.geometry.coordinates })
-
-        const isMobile = window.innerWidth <= MOBILE_BREAKPOINT
-        if (isMobile) {
-          onMarkerClick(clickedFacilities)
-          return
-        }
-        if (clickedFacilities.length === 1) {
-          markerClickHandler.current(clickedFacilities[0])
-          return
-        }
-        popup.current?.remove.bind(popup.current)()
-        spiderifier.current.spiderfy(
-          firstFeature.geometry.coordinates,
-          clickedFacilities
-        )
+        })
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        spideredFeatureIds.current = activeFeatures.map(
-          ({ properties }) => properties.id
+        spideredFeatureIds.current = null
+      }
+    }
+
+    map.on('click', function() {
+      unspiderfy()
+      onClickAnywhere()
+    })
+
+    map.on('click', 'unclustered-point', (e) => {
+      if (!e.features) return
+      if (!map || !spiderifier.current) return
+
+      const features = e.features as GeojsonFeatureType<MinimalRecordType>[]
+      const activeFeatures = features.filter(({ state }) => state.active)
+      const firstFeature = activeFeatures[0]
+
+      if (activeFeatures.length === 0 || !firstFeature.geometry.coordinates)
+        return
+
+      const featuresOnSameCoords =
+        getFeaturesOnSameCoordsThanFirstOne(activeFeatures)
+
+      const isClusterOfVeryNearButNotOverlappingPoints =
+        featuresOnSameCoords.length !== activeFeatures.length
+      if (isClusterOfVeryNearButNotOverlappingPoints) {
+        zoomIn(
+          map,
+          featuresOnSameCoords[0].geometry.coordinates,
+          2,
+          MAP_CONFIG.zoomedInZoom
         )
-        spideredFeatureIds.current.forEach((id) => {
-          map?.setFeatureState({ source: 'facilities', id }, { spidered: true })
-        })
+        return
+      }
+
+      const clickedMarkerIds = featuresOnSameCoords.map(
+        (f) => f.properties.id
+      )
+      const clickedFacilities = markers.filter((marker) =>
+        clickedMarkerIds.includes(marker.id)
+      )
+
+      map.easeTo({ center: firstFeature.geometry.coordinates })
+
+      const isMobile = window.innerWidth <= MOBILE_BREAKPOINT
+      if (isMobile) {
+        onMarkerClick(clickedFacilities)
+        return
+      }
+      if (clickedFacilities.length === 1) {
+        markerClickHandler.current(clickedFacilities[0])
+        return
+      }
+      popup.current?.remove.bind(popup.current)()
+      spiderifier.current.spiderfy(
+        firstFeature.geometry.coordinates,
+        clickedFacilities
+      )
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      spideredFeatureIds.current = activeFeatures.map(
+        ({ properties }) => properties.id
+      )
+      spideredFeatureIds.current.forEach((id) => {
+        map?.setFeatureState({ source: 'facilities', id }, { spidered: true })
       })
     })
 
@@ -389,8 +390,9 @@ export const FacilitiesMap: FC<MapType> = ({
 
       popup.current.remove.bind(popup.current)()
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [markers])
+
+    setMapLayersLoaded(true)
+  }, [mapStylesLoaded])
 
   useEffect(
     () => updateFilteredFacilities(activeTags as number[]),
