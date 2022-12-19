@@ -24,6 +24,7 @@ export interface TableRowType extends Record<string, unknown> {
     Schlagworte: number[]
     /** Zielgruppen is a) still unused and b) currently a text column, which will soon become a reference list like Schlagworte */
     Zielgruppen: string
+    Prio: '' | 'Hoch' | 'Mittel' | 'Niedrieg' | 'Versteckt'
     Wichtige_Hinweise: string
     Beratungsmoglichkeiten: string
     Sprachen: string
