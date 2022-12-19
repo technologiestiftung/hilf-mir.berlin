@@ -1,7 +1,7 @@
 import { Map } from 'maplibre-gl'
 import { useEffect, useState } from 'react'
 
-export function useMapIsFullyLoaded(map: null | Map): boolean {
+export function useMapStylesLoaded(map: null | Map): boolean {
   const [mapIsFullyLoaded, setMapIsFullyLoaded] = useState(false)
 
   useEffect(() => {

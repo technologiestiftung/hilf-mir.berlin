@@ -16,7 +16,11 @@ import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
 
 export const getStaticProps: GetStaticProps = async () => {
   const { texts, labels, records } = await loadData()
-  const recordsWithOnlyMinimum = records.map(mapRecordToMinimum)
+  const recordsWithOnlyMinimum = records
+    .map(mapRecordToMinimum)
+    .filter((r) => r.prioriy >= 0)
+    .sort((a, b) => b.prioriy - a.prioriy || a.title.localeCompare(b.title))
+
   return {
     props: {
       texts: {
@@ -63,18 +67,21 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
 
         // When we don't have a user geolocation we simply skip the sorting:
         if (!distanceToUserFromFacilityA || !distanceToUserFromFacilityB)
-          return 0
+          return b.prioriy - a.prioriy
 
-        return distanceToUserFromFacilityA - distanceToUserFromFacilityB
+        return (
+          b.prioriy - a.prioriy ||
+          distanceToUserFromFacilityA - distanceToUserFromFacilityB
+        )
       })
     },
     [getDistanceToUser, useGeolocation]
   )
 
   useEffect(() => {
-    if (!urlState.tags || urlState.tags?.length < 0) return
+    const tags = urlState.tags || []
     const newFilteredRecords = originalRecords.filter((record) =>
-      urlState.tags?.every((t) => record.labels.find((l) => l === t))
+      tags?.every((t) => record.labels.find((l) => l === t))
     )
     return setFilteredRecords(sortFacilities(newFilteredRecords))
   }, [urlState.tags, originalRecords, sortFacilities])
