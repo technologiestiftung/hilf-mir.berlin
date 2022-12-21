@@ -18,6 +18,7 @@ import {
   getFeaturesOnSameCoordsThanFirstOne,
   getSpiderfier,
   MarkerClickHandlerType,
+  ClusterClickHandlerType,
   setCursor,
   zoomIn,
 } from './mapUtil'
@@ -82,6 +83,7 @@ export const FacilitiesMap: FC<MapType> = ({
   const hoveredStateIds = useRef<number[]>(null)
   const spideredFeatureIds = useRef<number[]>(null)
   const markerClickHandler = useRef<MarkerClickHandlerType>(() => undefined)
+  const clusterClickHandler = useRef<ClusterClickHandlerType>(() => undefined)
   const [spiderifiedIds, setSpiderfiedIds] = useState<number[]>([])
   const spiderifier =
     useRef<InstanceType<typeof MaplibreglSpiderifier<MinimalRecordType>>>(null)
@@ -240,8 +242,10 @@ export const FacilitiesMap: FC<MapType> = ({
     }
   }, [setSpiderfiedIds])
 
-  const onInternalMarkerClick = useCallback(
-    (features?: GeojsonFeatureType<MinimalRecordType>[]): void => {
+  useEffect(() => {
+    clusterClickHandler.current = (
+      features?: GeojsonFeatureType<MinimalRecordType>[]
+    ): void => {
       if (!features || !markers) return
       if (!map || !spiderifier.current) return
 
@@ -299,9 +303,8 @@ export const FacilitiesMap: FC<MapType> = ({
       spideredFeatureIds.current.forEach((id) => {
         map?.setFeatureState({ source: 'facilities', id }, { spidered: true })
       })
-    },
-    [query.id, markers, map]
-  )
+    }
+  }, [query.id, markers, map])
 
   useEffect(() => {
     if (!mapStylesLoaded || !markers || !map) return
@@ -379,7 +382,7 @@ export const FacilitiesMap: FC<MapType> = ({
 
     map.on('click', 'unclustered-point', (e) => {
       const features = e.features as GeojsonFeatureType<MinimalRecordType>[]
-      onInternalMarkerClick(features)
+      clusterClickHandler.current(features)
     })
 
     map.on('mousemove', 'unclustered-point', (e) => {
