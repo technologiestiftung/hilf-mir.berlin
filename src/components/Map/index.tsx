@@ -81,10 +81,9 @@ export const FacilitiesMap: FC<MapType> = ({
     })
   )
   const hoveredStateIds = useRef<number[]>(null)
-  const spideredFeatureIds = useRef<number[]>(null)
+  const [isSpiderfied, setIsSpiderfied] = useState(false)
   const markerClickHandler = useRef<MarkerClickHandlerType>(() => undefined)
   const clusterClickHandler = useRef<ClusterClickHandlerType>(() => undefined)
-  const [spiderifiedIds, setSpiderfiedIds] = useState<number[]>([])
   const spiderifier =
     useRef<InstanceType<typeof MaplibreglSpiderifier<MinimalRecordType>>>(null)
   const map = useMaplibreMap({ containerId: 'map', ...MAP_CONFIG })
@@ -101,7 +100,8 @@ export const FacilitiesMap: FC<MapType> = ({
   useMapSearchMarker(map, highlightedSearchViewport)
 
   const id = typeof query.id === 'string' ? parseInt(query.id, 10) : undefined
-  const currentFacilityIdPageIsSpiderfied = id && spiderifiedIds.includes(id)
+  const currentFacilityIdPageIsSpiderfied =
+    id && isSpiderfied && spiderifier.current?.expandedIds.includes(id)
 
   const highlightedMarkerViewport =
     highlightedCenter && !currentFacilityIdPageIsSpiderfied
@@ -188,7 +188,6 @@ export const FacilitiesMap: FC<MapType> = ({
   const updateFilteredFacilities = useCallback(
     (activeTags: number[]) => {
       if (!map || !mapLayersLoaded || !markers) return
-
       markers.forEach((marker) => {
         map.setFeatureState(
           {
@@ -224,23 +223,14 @@ export const FacilitiesMap: FC<MapType> = ({
   }, [push, urlState, map])
 
   const unspiderfy = useCallback((): void => {
+    spiderifier.current?.expandedIds.forEach((id) => {
+      map?.setFeatureState({ source: 'facilities', id }, { spidered: false })
+    })
     spiderifier.current?.unspiderfy()
     popup.current.setOffset(0)
     popup.current.remove()
-    setSpiderfiedIds([])
-    if (
-      map &&
-      spideredFeatureIds.current &&
-      spideredFeatureIds.current.length > 0
-    ) {
-      spideredFeatureIds.current.forEach((id) => {
-        map?.setFeatureState({ source: 'facilities', id }, { spidered: false })
-      })
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      spideredFeatureIds.current = null
-    }
-  }, [setSpiderfiedIds])
+    setIsSpiderfied(false)
+  }, [map])
 
   useEffect(() => {
     clusterClickHandler.current = (
@@ -292,17 +282,10 @@ export const FacilitiesMap: FC<MapType> = ({
         clickedFacilities,
         typeof query.id === 'string' ? query.id : undefined
       )
-      setSpiderfiedIds(clickedFacilities.map(({ id }) => id))
-      const spiderfiedIds = activeFeatures.map(
-        ({ properties }) => properties.id
-      )
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      spideredFeatureIds.current = spiderfiedIds
-      setSpiderfiedIds(spiderfiedIds)
-      spideredFeatureIds.current.forEach((id) => {
+      spiderifier.current?.expandedIds.forEach((id) => {
         map?.setFeatureState({ source: 'facilities', id }, { spidered: true })
       })
+      setIsSpiderfied(true)
     }
   }, [query.id, markers, map])
 
@@ -411,10 +394,10 @@ export const FacilitiesMap: FC<MapType> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapStylesLoaded])
 
-  useEffect(
-    () => updateFilteredFacilities(activeTags as number[]),
-    [activeTags, markers, updateFilteredFacilities]
-  )
+  useEffect(() => {
+    unspiderfy()
+    updateFilteredFacilities(activeTags as number[])
+  }, [activeTags, markers, updateFilteredFacilities, query.id])
 
   return (
     <>
