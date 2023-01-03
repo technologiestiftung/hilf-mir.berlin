@@ -42,7 +42,8 @@ const Home: Page<HomePropsType> = ({ labels, recordsWithOnlyLabels }) => {
     <LabelsProvider value={labels}>
       <Head>
         <title>
-          Willkommen - Digitaler Wegweiser Psychiatrie und Suchthilfe Berlin
+          Willkommen bei HILF-MIR Berlin - dein digitaler Wegweiser für
+          Psychiatrie und Suchthilfe in Berlin
         </title>
       </Head>
       <div

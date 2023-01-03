@@ -72,7 +72,7 @@ const FAQS: {
   },
   {
     question:
-      'Welche Daten werden von mir gespeichert, wenn ich den Wegweiser benutze?',
+      'Welche Daten werden von mir gespeichert, wenn ich HILF-MIR Berlin benutze?',
     answer: (
       <>
         <p>
