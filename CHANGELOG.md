@@ -1,3 +1,16 @@
+# [1.5.0](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.4.0...v1.5.0) (2023-01-05)
+
+
+### Bug Fixes
+
+* **Map:** Make sure the marker comes back after leaving the page ([d0c1961](https://github.com/technologiestiftung/wegweiser-frontend/commit/d0c196186a2669d3157095455cabb448a8abfa78))
+* **Map:** Use a ref for cluster click hander to make sure closure takes effect ([aa10d2e](https://github.com/technologiestiftung/wegweiser-frontend/commit/aa10d2ec475ba374f2bd823ef1013de10259c1bf))
+
+
+### Features
+
+* **WEG-148:** Show active element in spiderfied branches ([9b8a5cc](https://github.com/technologiestiftung/wegweiser-frontend/commit/9b8a5cc57a601a5cfa0c142461d6defc96494e58))
+
 # [1.5.0-rc.1](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.4.0...v1.5.0-rc.1) (2023-01-05)
 
 
