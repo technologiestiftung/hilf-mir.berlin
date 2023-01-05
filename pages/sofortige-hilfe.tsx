@@ -91,6 +91,7 @@ const Home: NextPage = () => {
             <a
               className={classNames(
                 `p-0 text-3xl`,
+                `hover:text-red transition-colors`,
                 `focus:outline-none focus:ring-2 focus:ring-red`,
                 `focus:ring-offset-2 focus:ring-offset-white`
               )}
@@ -104,6 +105,7 @@ const Home: NextPage = () => {
             <a
               className={classNames(
                 `p-0 text-3xl`,
+                `hover:text-red transition-colors`,
                 `focus:outline-none focus:ring-2 focus:ring-red`,
                 `focus:ring-offset-2 focus:ring-offset-white`
               )}
@@ -117,6 +119,7 @@ const Home: NextPage = () => {
             <a
               className={classNames(
                 `p-0 text-3xl`,
+                `hover:text-red transition-colors`,
                 `focus:outline-none focus:ring-2 focus:ring-red`,
                 `focus:ring-offset-2 focus:ring-offset-white`
               )}
@@ -127,6 +130,7 @@ const Home: NextPage = () => {
             <a
               className={classNames(
                 `p-0 text-3xl`,
+                `hover:text-red transition-colors`,
                 `focus:outline-none focus:ring-2 focus:ring-red`,
                 `focus:ring-offset-2 focus:ring-offset-white`
               )}
@@ -140,12 +144,31 @@ const Home: NextPage = () => {
             <a
               className={classNames(
                 `p-0 text-3xl`,
+                `hover:text-red transition-colors`,
                 `focus:outline-none focus:ring-2 focus:ring-red`,
                 `focus:ring-offset-2 focus:ring-offset-white`
               )}
               href={`tel:${texts.kidsPhoneNumber1}`}
             >
               {texts.kidsPhoneNumber1}
+            </a>
+          </section>
+          <section className="flex flex-col gap-1">
+            <h4 className="font-bold text-lg">
+              {texts.furtherEmergencyNumbersLabel}
+            </h4>
+            <a
+              className={classNames(
+                `p-0 text-3xl`,
+                `hover:text-red transition-colors`,
+                `focus:outline-none focus:ring-2 focus:ring-red`,
+                `focus:ring-offset-2 focus:ring-offset-white`
+              )}
+              href={texts.furtherEmergencyNumbersLinkUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {texts.furtherEmergencyNumbersLinkText}
             </a>
           </section>
         </div>
