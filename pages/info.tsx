@@ -25,14 +25,14 @@ const Info: Page = () => {
   return (
     <div>
       <Head>
-        <title>Info - Wegweiser Berlin</title>
+        <title>Info - HILF-MIR Berlin</title>
       </Head>
       <div className="min-h-screen mx-auto max-w-xl">
         <BackButton onClick={() => void back()} />
         <div
           className={classNames('p-5 md:p-8 flex flex-col gap-8 md:pt-[5vmin]')}
         >
-          <h1>Über den Wegweiser Berlin</h1>
+          <h1>Über HILF-MIR Berlin</h1>
           <About />
           <div>
             <h2 className="text-3xl font-bold">FAQ</h2>

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { FC, ReactNode } from 'react'
 
 const FAQS: {
@@ -18,10 +19,10 @@ const FAQS: {
   },
   {
     question:
-      'Welche Einrichtungen oder Angebote können im Wegweiser gefunden werden?',
+      'Welche Einrichtungen oder Angebote können bei HILF-MIR Berlin gefunden werden?',
     answer: (
       <p>
-        Der Wegweiser ermöglicht die Suche nach niedrigschwelligen
+        HILF-MIR Berlin ermöglicht die Suche nach niedrigschwelligen
         psychosozialen Angeboten. Es werden alle Angebote berücksichtigt, die du
         ohne besondere Zugangsvoraussetzungen im Rahmen ihrer Öffnungszeiten
         aufsuchen oder zumindest anrufen oder anschreiben kannst. Viele dieser
@@ -30,16 +31,17 @@ const FAQS: {
         andere haben gar keine Verbindung mit dem Land Berlin. Uns ist es
         wichtig, dir eine möglichst große Auswahl qualifizierter Angebote zu
         zeigen, damit du das Angebot finden kannst, bei dem du dich mit deinem
-        Thema am Besten aufgehoben fühlst.
+        Thema am besten aufgehoben fühlst.
       </p>
     ),
   },
   {
-    question: 'Welche Einrichtungen können NICHT im Wegweiser gefunden werden?',
+    question:
+      'Welche Einrichtungen können NICHT im bei HILF-MIR Berlin gefunden werden?',
     answer: (
       <>
         <p>
-          Der Wegweiser hat keinen Fokus auf psychiatrische oder
+          HILF-MIR Berlin hat keinen Fokus auf psychiatrische oder
           psychotherapeutische Behandlung. Hierzu kannst du einfach die
           Ärztinnen und Ärzte bzw. Psychotherapeutinnen und -therapeuten-
           <a href="https://www.kvberlin.de/fuer-patienten/arzt-und-psychotherapeutensuche">
@@ -48,14 +50,15 @@ const FAQS: {
           nutzen.
         </p>
         <p>
-          Weiterhin führen wir üblicherweise im Wegweiser keine Wohnprojekte auf
-          – Therapeutische Wohngruppen, betreutes Einzelwohnen und andere
-          besondere Wohnformen sind Leistungen der Teilhabe für Menschen mit
-          einer seelischen Behinderung. Ob du für diese in Frage kommst,
-          erfährst du im Gespräch mit dem Teilhabefachdienst von deinem Bezirk.
+          Weiterhin führen wir üblicherweise bei HILF-MIR Berlin keine
+          Wohnprojekte auf – Therapeutische Wohngruppen, betreutes Einzelwohnen
+          und andere besondere Wohnformen sind Leistungen der Teilhabe für
+          Menschen mit einer seelischen Behinderung. Ob du für diese in Frage
+          kommst, erfährst du im Gespräch mit dem Teilhabefachdienst von 
+          deinem Bezirk.
         </p>
         <p>
-          Selbsthilfegruppen können wir in der ersten Version des Wegweisers
+          Selbsthilfegruppen können wir in der ersten Version von HILF-MIR Berlin
           noch nicht integrieren. Aktuell findest du eine gute Übersicht über
           passende Selbsthilfegruppen auf{' '}
           <a href="https://sekis-berlin.de/">Sekis-Berlin</a> und bei der{' '}
@@ -69,26 +72,18 @@ const FAQS: {
   },
   {
     question:
-      'Welche Daten werden von mir gespeichert, wenn ich den Wegweiser benutze?',
+      'Welche Daten werden von mir gespeichert, wenn ich HILF-MIR Berlin benutze?',
     answer: (
       <>
         <p>
-          Die Internetseite Digitaler Wegweiser speichert keine Daten von dir.
+          Die Internetseite HILF-MIR Berlin speichert keine Daten von dir.
           Zur Benutzung der Suche, werden deine Eingaben (z.B. ausgewählte
           Schlagworte, Filter) zur Darstellung der passenden Suchergebnisse nur
           in dem Moment der Suche zwar verarbeitet, aber nicht gespeichert.
         </p>
         <p>
-          Der Digitale Wegweiser kommt ganz ohne Cookies aus. Weitere
-          Informationen, findest du in der allgemeinen Datenschutzerklärung der
-          Senatsverwaltung und dem spezifischen Teil zum Digitalen Wegweiser.
-        </p>
-        <p>
-          Hier kommst du zur{' '}
-          <a href="https://www.berlin.de/sen/wgpg/">
-            allgemeinen Datenschutzerklärung
-          </a>
-          .
+          HILF-MIR Berlin kommt ganz ohne Cookies aus. Weitere
+          Informationen, findest du in der allgemeinen <a href="https://www.technologiestiftung-berlin.de/datenschutz">Datenschutzerklärung der Technologiestiftung Berlin.</a>
         </p>
       </>
     ),
@@ -99,7 +94,7 @@ const FAQS: {
     answer: (
       <>
         <p>
-          Der Wegweiser ermöglicht die Suche nach niedrigschwelligen
+          HILF-MIR Berlin ermöglicht die Suche nach niedrigschwelligen
           sozialpsychiatrischen Angeboten einschließlich Angeboten der
           Suchthilfe. TherapeutInnen und ÄrztInnen gehören nicht dazu.
         </p>
@@ -121,8 +116,8 @@ const FAQS: {
     answer: (
       <p>
         Bitte schreibe eine Mail an:{' '}
-        <a href="mailto:wegweiser@senwgpg.berlin.de">
-          wegweiser@senwgpg.berlin.de
+        <a href="mailto:info@hilf-mir.berlin">
+        info@hilf-mir.berlin
         </a>
       </p>
     ),
@@ -133,8 +128,8 @@ const FAQS: {
     answer: (
       <p>
         Bitte schreibe eine Mail an:{' '}
-        <a href="mailto:wegweiser@senwgpg.berlin.de">
-          wegweiser@senwgpg.berlin.de
+        <a href="mailto:info@hilf-mir.berlin">
+        info@hilf-mir.berlin
         </a>
       </p>
     ),
@@ -144,21 +139,21 @@ const FAQS: {
     answer: (
       <>
         <p>
-          Der Wegweiser wächst und verbessert sich dank der Unterstützung vieler
+          HILF-MIR Berlin wächst und verbessert sich dank der Unterstützung vieler
           Mitwirkender. Lob und Kritik ist dabei essentiell. Wir freuen uns über
           deine Nachricht.
         </p>
         <p>
           Bitte schreibe eine Mail mit deinem Lob oder deiner Kritik an:{' '}
-          <a href="mailto:wegweiser@senwgpg.berlin.de">
-            wegweiser@senwgpg.berlin.de
+          <a href="mailto:info@hilf-mir.berlin">
+          info@hilf-mir.berlin
           </a>
         </p>
       </>
     ),
   },
   {
-    question: 'Warum gibt es diesen Wegweiser?',
+    question: 'Warum gibt es das Informationsangebot HILF-MIR Berlin?',
     answer: (
       <>
         <p>
@@ -168,7 +163,7 @@ const FAQS: {
           finden. Im Internet gibt es viele verschiedene Seiten von Verwaltung,
           Trägern und anderen Anbietern.
         </p>
-        <p>Die Ziele des Wegweisers sind:</p>
+        <p>Die Ziele von HILF-MIR Berlin sind:</p>
         <ul>
           <li>
             Hindernisse bei der Hilfesuche abbauen, indem die Hilfsangebote
@@ -185,19 +180,19 @@ const FAQS: {
   },
   {
     question:
-      'Wer war an der Entwicklung dieser Seite beteiligt und wer ist nun Ansprechpartner?',
+      'Wer war an der Entwicklung dieser Seite beteiligt und wer sind die Ansprechpersonen?',
     answer: (
       <>
         <p>
-          Die Idee den Wegweiser zu entwickeln, entstand in der für Gesundheit
+          Die Idee, HILF-MIR Berlin zu entwickeln, entstand in der für Gesundheit
           zuständigen Senatsverwaltung des Landes Berlins, welche auch die
           Projektleitung und die inhaltliche Verantwortung übernimmt.
           Zivilgesellschaft, Sozialunternehmen und Verwaltung entwickeln
-          gemeinsam den digitalen Wegweiser.
+          gemeinsam HILF-MIR Berlin.
         </p>
         <p>
-          CityLAB Berlin unterstützt die Projektentwicklung und programmierte
-          den Digitalen Wegweiser.
+          Das CityLAB Berlin verantwortet die Projektentwicklung und programmiert
+          HILF-MIR Berlin.
         </p>
       </>
     ),
