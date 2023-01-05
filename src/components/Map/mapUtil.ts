@@ -8,6 +8,9 @@ import { LngLat, Map, LngLatLike, Popup } from 'maplibre-gl'
 import { getPopupHTML } from './popupUtils'
 
 export type MarkerClickHandlerType = (facility: MinimalRecordType) => void
+export type ClusterClickHandlerType = (
+  facilites: GeojsonFeatureType<MinimalRecordType>[]
+) => void
 
 export function getSpiderfier(config: {
   popup: Popup

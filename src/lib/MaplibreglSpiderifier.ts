@@ -85,7 +85,11 @@ export default class MaplibreglSpiderifier<MarkerType extends { id: number }> {
     )
   }
 
-  public spiderfy(lngLat: LngLatLike, markers: MarkerType[]): void {
+  public spiderfy(
+    lngLat: LngLatLike,
+    markers: MarkerType[],
+    activeElementId?: string
+  ): void {
     const spiderParams = this.generateSpiderParams(markers.length)
     let markerObjects: MarkerObjectType<MarkerType>[] = []
 
@@ -119,6 +123,10 @@ export default class MaplibreglSpiderifier<MarkerType extends { id: number }> {
         elements.marker.addEventListener('mouseleave', (e: Event) => {
           this.options.onMouseleave(e, markerObject)
         })
+
+        if (activeElementId === `${marker.id}`) {
+          elements.marker.classList.add('active')
+        }
 
         return markerObject
       }
