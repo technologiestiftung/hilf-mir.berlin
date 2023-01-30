@@ -25,7 +25,7 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: [
-          'Nunito',
+          'Manrope',
           'Calibri',
           'Segoe UI',
           'Roboto',
@@ -40,7 +40,7 @@ module.exports = {
           'sans-serif',
         ],
         headline: [
-          'Domine',
+          'Manrope',
           'PT Serif',
           'Georgia',
           'Times New Roman',
