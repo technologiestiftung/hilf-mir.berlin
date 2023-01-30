@@ -85,6 +85,7 @@ const defaultValue = {
   filtersGeoSearchLabel: '',
   filtersSearchTargetLabel: '',
   filtersSearchTargetLabelOnCard: '',
+  languagesLabel: '',
   geolocationForbidden: '',
   opened: '',
   alwaysOpened: '',
