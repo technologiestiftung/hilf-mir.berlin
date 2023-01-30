@@ -43,9 +43,9 @@ const App = ({ Component, pageProps }: AppPropsType): JSX.Element => {
             <link
               rel="mask-icon"
               href="/safari-pinned-tab.svg"
-              color="#e40422"
+              color="#773666"
             />
-            <meta name="msapplication-TileColor" content="#e40422" />
+            <meta name="msapplication-TileColor" content="#773666" />
             <meta name="theme-color" content="#ffffff" />
           </Head>
           <Layout {...pageProps}>
