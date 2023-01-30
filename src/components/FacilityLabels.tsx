@@ -3,12 +3,14 @@ import {
   useFiltersWithActiveProp,
 } from '@lib/hooks/useFiltersWithActiveProp'
 import { useRecordLabels } from '@lib/hooks/useRecordLabels'
+import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { useTexts } from '@lib/TextsContext'
 import { FC } from 'react'
 import { FiltersTextList } from './FiltersTextList'
 
 interface FacilityLabelsType {
   labels: number[]
+  languages: MinimalRecordType['languages']
 }
 
 const isGroup = (filter: FiltersWithActivePropType): boolean =>
@@ -16,7 +18,10 @@ const isGroup = (filter: FiltersWithActivePropType): boolean =>
 const isTarget = (filter: FiltersWithActivePropType): boolean =>
   filter.fields.group2 === 'zielpublikum'
 
-export const FacilityLabels: FC<FacilityLabelsType> = ({ labels }) => {
+export const FacilityLabels: FC<FacilityLabelsType> = ({
+  labels,
+  languages,
+}) => {
   const texts = useTexts()
   const { topicsLabels, targetAudienceLabels } = useRecordLabels(labels)
 
@@ -33,7 +38,7 @@ export const FacilityLabels: FC<FacilityLabelsType> = ({ labels }) => {
   return (
     <>
       {topicsLabels.length > 0 && (
-        <div className="px-5 mt-5 mb-3 text-sm leading-4">
+        <div className="px-5 text-sm leading-4">
           {texts.filtersTagsLabelOnCard}:{' '}
           <FiltersTextList
             filters={topicsLabels}
@@ -48,6 +53,21 @@ export const FacilityLabels: FC<FacilityLabelsType> = ({ labels }) => {
             filters={targetAudienceLabels}
             includesAllFilters={targetIncludesAllFilters}
           />
+        </div>
+      )}
+      {languages.length > 0 && (
+        <div className="px-5 text-sm leading-4">
+          {texts.languagesLabel}:{' '}
+          {languages.map((language, idx) => {
+            return (
+              <>
+                <span className="font-bold" key={language}>
+                  {language}
+                </span>
+                {idx !== languages.length - 1 && ', '}
+              </>
+            )
+          })}
         </div>
       )}
     </>

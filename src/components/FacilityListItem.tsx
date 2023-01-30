@@ -75,8 +75,8 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
             <p className="px-5 pt-3 line-clamp-3">{record.description}</p>
           )}
           {labels.length > 0 && (
-            <footer className="pb-7">
-              <FacilityLabels labels={labels} />
+            <footer className="mt-5 pb-7 grid grid-cols-1 gap-y-3">
+              <FacilityLabels labels={labels} languages={record.languages} />
             </footer>
           )}
           <span
