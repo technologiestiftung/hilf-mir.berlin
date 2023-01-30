@@ -22,7 +22,7 @@ export const PrimaryButton: FC<ButtonPropsType> = ({
       `font-medium text-left text-2xl relative items-center`,
       `grid grid-cols-[1fr,auto] w-full group font-serif`,
       !disabled && [
-        `hover:bg-primary hover:text-white `,
+        `hover:bg-white hover:text-primary border border-trasparent hover:border-primary`,
         `focus:outline-none focus:ring-2 focus:ring-primary`,
         `focus:ring-offset-2 focus:ring-offset-white`,
       ],

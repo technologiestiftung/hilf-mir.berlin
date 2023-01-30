@@ -77,10 +77,9 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
           onClick={() => setFilterSidebarIsOpened(!filterSidebarIsOpened)}
           className={classNames(
             `flex items-center group relative border-gray-20`,
-            `focus:border-l focus:z-20 md:border-l focus:rounded`,
+            `focus:border-l focus:z-20 focus:rounded`,
             `focus:outline-none focus:ring-2 focus:ring-primary`,
-            `focus:ring-offset-2 focus:ring-offset-white`,
-            !listViewOpen && `shadow-md shadow-black/5`
+            `focus:ring-offset-2 focus:ring-offset-white`
           )}
         >
           <span
@@ -90,6 +89,7 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
               `px-4 py-2.5 h-12 text-xl`,
               `rounded group-focus:rounded`,
               !listViewOpen && `rounded-l-none md:rounded-l`,
+              !listViewOpen && `shadow-md shadow-black/5`,
               `text-left whitespace-nowrap items-center`,
               `transition-colors group-hover:bg-primary group-hover:text-white`,
               urlState.tags && urlState.tags.length > 0
