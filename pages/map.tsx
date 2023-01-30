@@ -56,6 +56,11 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
     (facilities: MinimalRecordType[]) => {
       if (!useGeolocation) return facilities
       return facilities.sort((a, b) => {
+        const amountActiveLabelsA =
+          urlState.tags?.filter((id) => a.labels.includes(id)).length || 0
+        const amountActiveLabelsB =
+          urlState.tags?.filter((id) => b.labels.includes(id)).length || 0
+
         const distanceToUserFromFacilityA = getDistanceToUser({
           latitude: a.latitude,
           longitude: a.longitude,
@@ -71,17 +76,20 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
 
         return (
           b.prioriy - a.prioriy ||
-          distanceToUserFromFacilityA - distanceToUserFromFacilityB
+          amountActiveLabelsB - amountActiveLabelsA ||
+          distanceToUserFromFacilityA - distanceToUserFromFacilityB ||
+          a.title.localeCompare(b.title)
         )
       })
     },
-    [getDistanceToUser, useGeolocation]
+    [getDistanceToUser, useGeolocation, urlState.tags]
   )
 
   useEffect(() => {
     const tags = urlState.tags || []
+    if (tags.length === 0) return
     const newFilteredRecords = originalRecords.filter((record) =>
-      tags?.every((t) => record.labels.find((l) => l === t))
+      tags?.some((t) => record.labels.find((l) => l === t))
     )
     return setFilteredRecords(sortFacilities(newFilteredRecords))
   }, [urlState.tags, originalRecords, sortFacilities])

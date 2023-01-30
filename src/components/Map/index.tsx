@@ -195,7 +195,7 @@ export const FacilitiesMap: FC<MapType> = ({
             id: marker.id,
           },
           {
-            active: activeTags.every((tag) => marker.labels.includes(tag)),
+            active: activeTags.some((tag) => marker.labels.includes(tag)),
           }
         )
       })
