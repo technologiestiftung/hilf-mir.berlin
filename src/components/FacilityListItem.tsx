@@ -40,8 +40,8 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
             `border-b border-b-gray-20 block`,
             `flex flex-col gap-1 bg-white group`,
             `transition-colors hover:bg-gray-10/50`,
-            `focus:ring-inset focus:ring-2 focus:ring-red`,
-            `focus:outline-none focus:border-b-red`
+            `focus:ring-inset focus:ring-2 focus:ring-primary`,
+            `focus:outline-none focus:border-b-primary`
           )}
         >
           <header
@@ -53,8 +53,8 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
             <h2
               className={classNames(
                 `font-serif text-xl`,
-                `group-hover:text-red transition-colors`,
-                `group-focus:text-red`
+                `group-hover:text-primary transition-colors`,
+                `group-focus:text-primary`
               )}
             >
               {title}
@@ -62,8 +62,8 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
             {(distance || isOpened) && (
               <div className="flex text-lg gap-4">
                 {isOpened && (
-                  <small className="flex items-center text-mittelgruen gap-2">
-                    <span className="inline-block w-2 h-2 rounded-full bg-mittelgruen"></span>
+                  <small className="flex items-center text-success gap-2">
+                    <span className="inline-block w-2 h-2 rounded-full bg-success"></span>
                     {texts.opened}
                   </small>
                 )}
@@ -81,7 +81,7 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
           )}
           <span
             className={classNames(
-              'font-bold text-red py-4 flex gap-2 justify-end text-right',
+              'font-bold text-primary py-4 flex gap-2 justify-end text-right',
               'border-t border-gray-10 px-5'
             )}
           >

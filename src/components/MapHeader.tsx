@@ -78,7 +78,7 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
           className={classNames(
             `flex items-center group relative border-gray-20`,
             `focus:border-l focus:z-20 md:border-l focus:rounded`,
-            `focus:outline-none focus:ring-2 focus:ring-red`,
+            `focus:outline-none focus:ring-2 focus:ring-primary`,
             `focus:ring-offset-2 focus:ring-offset-white`,
             !listViewOpen && `shadow-md shadow-black/5`
           )}
@@ -91,9 +91,9 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
               `rounded group-focus:rounded`,
               !listViewOpen && `rounded-l-none md:rounded-l`,
               `text-left whitespace-nowrap items-center`,
-              `transition-colors group-hover:bg-red group-hover:text-white`,
+              `transition-colors group-hover:bg-primary group-hover:text-white`,
               urlState.tags && urlState.tags.length > 0
-                ? `bg-red text-white`
+                ? `bg-primary text-white`
                 : `bg-white`
             )}
           >

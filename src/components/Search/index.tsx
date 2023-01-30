@@ -44,8 +44,8 @@ export const Search: FC<SearchType> = ({
           id="geocoding-input"
           className={classNames(
             `border border-gray-20 md:rounded px-3 py-2 h-12`,
-            `focus:outline-none focus:ring-2 focus:ring-red focus:rounded`,
-            `focus:ring-offset-2 focus:ring-offset-white focus:border-red`,
+            `focus:outline-none focus:ring-2 focus:ring-primary focus:rounded`,
+            `focus:ring-offset-2 focus:ring-offset-white focus:border-primary`,
             `relative focus:z-10 shadow-none placeholder:text-gray-60`
           )}
           placeholder="Adresssuche"

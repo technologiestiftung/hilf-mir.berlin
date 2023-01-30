@@ -177,7 +177,7 @@ export const MapLayout: FC<{
               >
                 {texts.filterLabel}
                 <button
-                  className="text-red"
+                  className="text-primary"
                   onClick={() => setFilterSidebarIsOpened(false)}
                 >
                   <Cross />

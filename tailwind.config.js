@@ -7,10 +7,10 @@ module.exports = {
   ],
   theme: {
     colors: {
-      red: '#773666',
+      primary: '#773666',
       black: '#0A1045',
-      mittelgruen: '#69AC4C',
-      blau: '#5891C3',
+      success: '#69AC4C',
+      info: '#5891C3',
       gray: {
         '10': '#EFEFEF',
         '20': '#CCCCCC',
@@ -41,18 +41,10 @@ module.exports = {
         ],
         serif: [
           'Domine',
-          'Calibri',
-          'Segoe UI',
-          'Roboto',
-          'Oxygen',
-          'Ubuntu',
-          'Cantarell',
-          'Fira Sans',
-          'Droid Sans',
-          'Helvetica Neue',
-          'Helvetica',
-          'Arial',
-          'sans-serif',
+          'PT Serif',
+          'Georgia',
+          'Times New Roman',
+          'serif',
         ],
       },
       spacing: {

@@ -18,12 +18,12 @@ export const PrimaryButton: FC<ButtonPropsType> = ({
     onClick={(evt) => !disabled && onClick(evt)}
     className={classNames(
       className,
-      `bg-red text-white rounded leading-7 transition-colors`,
+      `bg-primary text-white rounded leading-7 transition-colors`,
       `font-medium text-left text-2xl relative items-center`,
       `grid grid-cols-[1fr,auto] w-full group font-serif`,
       !disabled && [
-        `hover:bg-red hover:text-white `,
-        `focus:outline-none focus:ring-2 focus:ring-red`,
+        `hover:bg-primary hover:text-white `,
+        `focus:outline-none focus:ring-2 focus:ring-primary`,
         `focus:ring-offset-2 focus:ring-offset-white`,
       ],
       disabled && [

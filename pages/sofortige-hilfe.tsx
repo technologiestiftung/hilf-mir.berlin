@@ -55,7 +55,7 @@ const Home: NextPage = () => {
         <div className="p-5 md:p-8 flex flex-col gap-8 md:pt-[5vmin]">
           <h1 className="relative pr-16">
             {texts.directHelpButtonText}
-            <Phone className="absolute top-1/2 right-0 -translate-y-1/2 text-red" />
+            <Phone className="absolute top-1/2 right-0 -translate-y-1/2 text-primary" />
           </h1>
           <section className="flex flex-col gap-1">
             <h4 className="font-bold text-lg">
@@ -73,7 +73,7 @@ const Home: NextPage = () => {
                   `border border-gray-20 p-3 text-lg pr-12`,
                   `my-2 bg-white form-select appearance-none`,
                   `block w-full bg-white bg-clip-padding bg-no-repeat`,
-                  `focus:outline-none focus:ring-2 focus:ring-red`,
+                  `focus:outline-none focus:ring-2 focus:ring-primary`,
                   `focus:ring-offset-2 focus:ring-offset-white`
                 )}
               >
@@ -91,8 +91,8 @@ const Home: NextPage = () => {
             <a
               className={classNames(
                 `p-0 text-3xl`,
-                `hover:text-red transition-colors`,
-                `focus:outline-none focus:ring-2 focus:ring-red`,
+                `hover:text-primary transition-colors`,
+                `focus:outline-none focus:ring-2 focus:ring-primary`,
                 `focus:ring-offset-2 focus:ring-offset-white`
               )}
               href={`tel:${neighborhoodNumber}`}
@@ -105,8 +105,8 @@ const Home: NextPage = () => {
             <a
               className={classNames(
                 `p-0 text-3xl`,
-                `hover:text-red transition-colors`,
-                `focus:outline-none focus:ring-2 focus:ring-red`,
+                `hover:text-primary transition-colors`,
+                `focus:outline-none focus:ring-2 focus:ring-primary`,
                 `focus:ring-offset-2 focus:ring-offset-white`
               )}
               href={`tel:${texts.drugsPhoneNumber1}`}
@@ -119,8 +119,8 @@ const Home: NextPage = () => {
             <a
               className={classNames(
                 `p-0 text-3xl`,
-                `hover:text-red transition-colors`,
-                `focus:outline-none focus:ring-2 focus:ring-red`,
+                `hover:text-primary transition-colors`,
+                `focus:outline-none focus:ring-2 focus:ring-primary`,
                 `focus:ring-offset-2 focus:ring-offset-white`
               )}
               href={`tel:${texts.seelsorgePhoneNumber1}`}
@@ -130,8 +130,8 @@ const Home: NextPage = () => {
             <a
               className={classNames(
                 `p-0 text-3xl`,
-                `hover:text-red transition-colors`,
-                `focus:outline-none focus:ring-2 focus:ring-red`,
+                `hover:text-primary transition-colors`,
+                `focus:outline-none focus:ring-2 focus:ring-primary`,
                 `focus:ring-offset-2 focus:ring-offset-white`
               )}
               href={`tel:${texts.seelsorgePhoneNumber2}`}
@@ -144,8 +144,8 @@ const Home: NextPage = () => {
             <a
               className={classNames(
                 `p-0 text-3xl`,
-                `hover:text-red transition-colors`,
-                `focus:outline-none focus:ring-2 focus:ring-red`,
+                `hover:text-primary transition-colors`,
+                `focus:outline-none focus:ring-2 focus:ring-primary`,
                 `focus:ring-offset-2 focus:ring-offset-white`
               )}
               href={`tel:${texts.kidsPhoneNumber1}`}
@@ -160,8 +160,8 @@ const Home: NextPage = () => {
             <a
               className={classNames(
                 `p-0 text-3xl`,
-                `hover:text-red transition-colors`,
-                `focus:outline-none focus:ring-2 focus:ring-red`,
+                `hover:text-primary transition-colors`,
+                `focus:outline-none focus:ring-2 focus:ring-primary`,
                 `focus:ring-offset-2 focus:ring-offset-white`
               )}
               href={texts.furtherEmergencyNumbersLinkUrl}

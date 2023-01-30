@@ -20,8 +20,8 @@ interface IconButtonPropsType extends IconButtonCommonProps {
 const commonClasses = [
   `h-12 w-12 border border-gray-20 bg-white rounded`,
   `justify-center items-center shrink-0`,
-  `hover:bg-red hover:text-white transition-colors`,
-  `focus:outline-none focus:ring-2 focus:ring-red`,
+  `hover:bg-primary hover:text-white transition-colors`,
+  `focus:outline-none focus:ring-2 focus:ring-primary`,
   `focus:ring-offset-2 focus:ring-offset-white focus:z-30`,
 ]
 

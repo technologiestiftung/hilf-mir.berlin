@@ -73,9 +73,9 @@ export const FiltersList: FC<{
             }
             className={classNames(
               `text-lg leading-6 text-left font-normal mb-8`,
-              `focus:outline-none focus:ring-2 focus:ring-red`,
+              `focus:outline-none focus:ring-2 focus:ring-primary`,
               `focus:ring-offset-2 focus:ring-offset-white`,
-              `underline text-gray-80 hover-red transition-colors`
+              `underline text-gray-80 hover-primary transition-colors`
             )}
           >
             {texts.reset}
@@ -108,9 +108,9 @@ export const FiltersList: FC<{
             }
             className={classNames(
               `text-lg leading-6 text-left font-normal mb-8`,
-              `focus:outline-none focus:ring-2 focus:ring-red`,
+              `focus:outline-none focus:ring-2 focus:ring-primary`,
               `focus:ring-offset-2 focus:ring-offset-white`,
-              `underline text-gray-80 hover-red transition-colors`
+              `underline text-gray-80 hover-primary transition-colors`
             )}
           >
             {texts.reset}

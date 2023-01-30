@@ -29,7 +29,7 @@ export const Footer: FC = () => {
               rel="noopener noreferrer"
               className={classNames(
                 `transition-opacity hover:opacity-50`,
-                `focus:outline-none focus:ring-2 focus:ring-red`,
+                `focus:outline-none focus:ring-2 focus:ring-primary`,
                 `focus:ring-offset-2 focus:ring-offset-white`
               )}
             >
@@ -44,7 +44,7 @@ export const Footer: FC = () => {
               rel="noopener noreferrer"
               className={classNames(
                 `transition-opacity hover:opacity-50`,
-                `focus:outline-none focus:ring-2 focus:ring-red`,
+                `focus:outline-none focus:ring-2 focus:ring-primary`,
                 `focus:ring-offset-2 focus:ring-offset-white`
               )}
             >
@@ -59,7 +59,7 @@ export const Footer: FC = () => {
               rel="noopener noreferrer"
               className={classNames(
                 `transition-opacity hover:opacity-50`,
-                `focus:outline-none focus:ring-2 focus:ring-red`,
+                `focus:outline-none focus:ring-2 focus:ring-primary`,
                 `focus:ring-offset-2 focus:ring-offset-white`
               )}
             >
@@ -74,7 +74,7 @@ export const Footer: FC = () => {
               rel="noopener noreferrer"
               className={classNames(
                 `transition-opacity hover:opacity-50`,
-                `focus:outline-none focus:ring-2 focus:ring-red`,
+                `focus:outline-none focus:ring-2 focus:ring-primary`,
                 `focus:ring-offset-2 focus:ring-offset-white`
               )}
             >

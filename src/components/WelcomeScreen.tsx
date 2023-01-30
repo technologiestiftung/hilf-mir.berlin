@@ -56,8 +56,8 @@ export const WelcomeScreen: FC<{
               target="_blank"
               rel="noopener noreferrer"
               className={classNames(
-                `underline transition-colors hover:text-red pt-3`,
-                `focus:outline-none focus:ring-2 focus:ring-red`,
+                `underline transition-colors hover:text-primary pt-3`,
+                `focus:outline-none focus:ring-2 focus:ring-primary`,
                 `focus:ring-offset-2 focus:ring-offset-white`
               )}
             >

@@ -17,7 +17,7 @@ export const MapButtons: FC = () => {
     >
       <IconButtonLink
         pathName="/sofortige-hilfe"
-        className="flex text-red border-b-0 focus:border-b rounded-b-none focus:rounded-b"
+        className="flex text-primary border-b-0 focus:border-b rounded-b-none focus:rounded-b"
         aria-label={texts.directHelpButtonText}
       >
         <Phone />

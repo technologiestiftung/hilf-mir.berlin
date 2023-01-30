@@ -35,7 +35,7 @@
   }
 
   .maplibregl-canvas-container {
-    @apply relative w-full h-full focus-within:outline-none focus-within:border-2 focus-within:border-red;
+    @apply relative w-full h-full focus-within:outline-none focus-within:border-2 focus-within:border-primary;
   }
 
   /* Spiderifier  */
@@ -57,13 +57,13 @@
 
   .spidered-marker .icon-div::before {
     content: '';
-    @apply absolute z-10 border border-white rounded-full bg-red -translate-x-1/2 -translate-y-1/2 transition-colors;
+    @apply absolute z-10 border border-white rounded-full bg-primary -translate-x-1/2 -translate-y-1/2 transition-colors;
     width: 22px;
     height: 22px;
   }
 
   .spidered-marker .icon-div.active::before {
-    @apply ring-2 ring-red ring-offset-2 ring-offset-white;
+    @apply ring-2 ring-primary ring-offset-2 ring-offset-white;
   }
 
   .spidered-marker:hover .icon-div::before {

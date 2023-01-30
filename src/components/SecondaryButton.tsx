@@ -19,8 +19,8 @@ export const SecondaryButton: FC<SecondaryButtonPropType> = ({
       `rounded border border-gray-20 group leading-7`,
       `font-medium text-left text-2xl font-serif`,
       `grid grid-cols-[1fr,auto] items-center`,
-      `hover:bg-red hover:text-white transition-colors`,
-      `focus:outline-none focus:ring-2 focus:ring-red`,
+      `hover:bg-primary hover:text-white transition-colors`,
+      `focus:outline-none focus:ring-2 focus:ring-primary`,
       `focus:ring-offset-2 focus:ring-offset-white`
     )}
   >
@@ -28,7 +28,7 @@ export const SecondaryButton: FC<SecondaryButtonPropType> = ({
     <span
       className={classNames(
         `w-14 h-14 inline-flex items-center`,
-        `justify-center text-red group-hover:text-white`
+        `justify-center text-primary group-hover:text-white`
       )}
     >
       {icon}

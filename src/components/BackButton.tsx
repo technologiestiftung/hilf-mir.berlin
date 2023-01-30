@@ -21,8 +21,8 @@ export const BackButton: FC<BackButtonPropsType> = (props) => {
   const commonProps = {
     className: classNames(
       `flex gap-2 p-3 items-center`,
-      `transition-colors hover:text-red`,
-      `focus:outline-none focus:ring-2 focus:ring-red`,
+      `transition-colors hover:text-primary`,
+      `focus:outline-none focus:ring-2 focus:ring-primary`,
       `focus:ring-offset-2 focus:ring-offset-white`
     ),
     'aria-label': texts.backText,
