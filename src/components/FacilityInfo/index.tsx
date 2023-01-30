@@ -62,6 +62,16 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
 
   const accessibility = facility.fields.Barrierefreiheit.trim().toLowerCase()
 
+  const phoneNumberItems = splitString(facility.fields.Telefonnummer, ',').map(
+    (phoneNumber) => {
+      return {
+        icon: <Phone />,
+        text: phoneNumber,
+        href: `tel:${phoneNumber}`,
+      }
+    }
+  )
+
   const infoList = [
     {
       icon: <Geopin />,
@@ -82,11 +92,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
       text: facility.fields.EMail,
       href: `mailto:${facility.fields.EMail}`,
     },
-    {
-      icon: <Phone />,
-      text: splitString(facility.fields.Telefonnummer, ',')[0],
-      href: `tel:${splitString(facility.fields.Telefonnummer, ',')[0]}`,
-    },
+    ...phoneNumberItems,
   ].filter((info) => typeof info === 'object' && !!info.text) as {
     icon: JSX.Element
     text: string
