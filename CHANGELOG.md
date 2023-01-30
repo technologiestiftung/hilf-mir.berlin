@@ -1,3 +1,11 @@
+## [1.5.1-rc.1](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.5.0...v1.5.1-rc.1) (2023-01-30)
+
+
+### Bug Fixes
+
+* **WEG-159:** ensure map/list switch doesn't cover UI ([1bf67e7](https://github.com/technologiestiftung/wegweiser-frontend/commit/1bf67e7f9151a509bb5bc9a0b0f4eea530800bea))
+* **WEG-167:** hide map/list switch on non-map paths ([eb15d1c](https://github.com/technologiestiftung/wegweiser-frontend/commit/eb15d1c9edde6f0107968115476143f7413b255b))
+
 # [1.5.0](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.4.0...v1.5.0) (2023-01-05)
 
 
