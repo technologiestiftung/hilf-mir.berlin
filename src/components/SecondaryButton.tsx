@@ -16,9 +16,9 @@ export const SecondaryButton: FC<SecondaryButtonPropType> = ({
     onClick={onClick}
     className={classNames(
       className,
-      `border border-black group leading-7`,
-      `font-medium text-left text-2xl`,
-      `grid grid-cols-[1fr,auto]`,
+      `rounded border border-gray-20 group leading-7`,
+      `font-medium text-left text-2xl font-serif`,
+      `grid grid-cols-[1fr,auto] items-center`,
       `hover:bg-red hover:text-white transition-colors`,
       `focus:outline-none focus:ring-2 focus:ring-red`,
       `focus:ring-offset-2 focus:ring-offset-white`

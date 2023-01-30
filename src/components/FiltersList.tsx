@@ -85,7 +85,7 @@ export const FiltersList: FC<{
       <div className="md:flex md:flex-wrap md:items-start md:gap-x-4">
         <h3
           className={classNames(
-            `font-bold text-lg mb-3 w-full flex justify-between`
+            `font-serif text-xl mb-3 w-full flex justify-between`
           )}
         >
           {texts.filtersSearchTargetLabel}
@@ -125,7 +125,7 @@ export const FiltersList: FC<{
           {texts.filtersGeoSearchLabel}
         </SwitchButton>
         <PrimaryButton
-          className="md:max-w-sm"
+          className="w-auto"
           onClick={() => {
             onSubmit()
             void push({

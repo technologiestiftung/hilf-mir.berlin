@@ -7,10 +7,10 @@ module.exports = {
   ],
   theme: {
     colors: {
-      red: '#E40422',
-      black: '#000000',
-      mittelgruen: '#00AA84',
-      blau: '#324fa3',
+      red: '#773666',
+      black: '#0A1045',
+      mittelgruen: '#69AC4C',
+      blau: '#5891C3',
       gray: {
         '10': '#EFEFEF',
         '20': '#CCCCCC',
@@ -25,7 +25,22 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: [
-          'AlbertSans',
+          'Nunito',
+          'Calibri',
+          'Segoe UI',
+          'Roboto',
+          'Oxygen',
+          'Ubuntu',
+          'Cantarell',
+          'Fira Sans',
+          'Droid Sans',
+          'Helvetica Neue',
+          'Helvetica',
+          'Arial',
+          'sans-serif',
+        ],
+        serif: [
+          'Domine',
           'Calibri',
           'Segoe UI',
           'Roboto',

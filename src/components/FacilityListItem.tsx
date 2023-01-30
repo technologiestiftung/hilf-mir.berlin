@@ -37,7 +37,7 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
       >
         <a
           className={classNames(
-            `border-b border-b-black block`,
+            `border-b border-b-gray-20 block`,
             `flex flex-col gap-1 bg-white group`,
             `transition-colors hover:bg-gray-10/50`,
             `focus:ring-inset focus:ring-2 focus:ring-red`,
@@ -52,7 +52,7 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
           >
             <h2
               className={classNames(
-                `font-bold text-xl`,
+                `font-serif text-xl`,
                 `group-hover:text-red transition-colors`,
                 `group-focus:text-red`
               )}

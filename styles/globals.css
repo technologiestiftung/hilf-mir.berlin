@@ -20,9 +20,14 @@
 
   html, body {
     @apply overflow-x-hidden font-sans;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+    hyphenate-limit-after: 1;
+    hyphenate-limit-before: 3;
   }
 	h1 {
-		@apply text-3xl font-bold uppercase md:text-4xl leading-8 md:leading-9;
+		@apply text-4xl md:text-5xl font-serif;
 	}
 
   .maplibregl-canvas-container canvas {

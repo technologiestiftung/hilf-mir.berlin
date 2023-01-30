@@ -329,7 +329,7 @@ export const FacilitiesMap: FC<MapType> = ({
             'case',
             ['boolean', ['feature-state', 'hover'], false],
             '#999999',
-            '#E40422',
+            '#773666',
           ],
           'circle-stroke-opacity': opacityGlCondition,
           'circle-opacity': opacityGlCondition,

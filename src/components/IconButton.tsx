@@ -18,7 +18,7 @@ interface IconButtonPropsType extends IconButtonCommonProps {
 }
 
 const commonClasses = [
-  `h-12 w-12 border border-black bg-white`,
+  `h-12 w-12 border border-gray-20 bg-white rounded`,
   `justify-center items-center shrink-0`,
   `hover:bg-red hover:text-white transition-colors`,
   `focus:outline-none focus:ring-2 focus:ring-red`,

@@ -31,12 +31,8 @@ export const WelcomeScreen: FC<{
         )}
       >
         <div>
-          <section className="w-full h-32 md:h-[202px] relative">
+          <section className="w-full h-32 md:h-[202px] relative mb-6">
             <Image src={introImage} layout="fill" objectFit="cover" />
-            <span className="absolute bottom-0 right-0 w-20 h-20">
-              {/* eslint-disable-next-line prettier/prettier */}
-              <StripesPattern aria-hidden="true" />
-            </span>
           </section>
         </div>
         <h1 className="p-5 pt-6 md:px-8 md:pt-12">{texts.homeWelcomeTitle}</h1>

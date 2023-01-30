@@ -70,7 +70,7 @@ const Home: NextPage = () => {
                 value={selectedNeighborhood}
                 onChange={(evt) => setSelectedNeighborhood(evt.target.value)}
                 className={classNames(
-                  `border border-black p-3 text-lg pr-12`,
+                  `border border-gray-20 p-3 text-lg pr-12`,
                   `my-2 bg-white form-select appearance-none`,
                   `block w-full bg-white bg-clip-padding bg-no-repeat`,
                   `focus:outline-none focus:ring-2 focus:ring-red`,

@@ -30,13 +30,13 @@ export const SwitchButton: FC<SwitchButtonPropsType> = ({
   >
     <span
       className={classNames(
-        `rounded-full p-1 flex relative w-[61px]`,
+        `rounded-full p-1 flex relative w-[61px] transition-colors`,
         !disabled && [
-          `border-black`,
+          `border `,
           `group-focus:outline-none group-focus:ring-2 group-focus:ring-red`,
           `group-focus:ring-offset-2 group-focus:ring-offset-white`,
         ],
-        value ? 'bg-blau' : `bg-gray-10`
+        value ? 'bg-blau border-blau' : `bg-gray-10 border-gray-20`
       )}
     >
       <span className="w-6 h-6 inline-block" />
