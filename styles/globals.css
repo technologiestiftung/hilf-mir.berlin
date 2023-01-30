@@ -34,7 +34,7 @@
     hyphenate-limit-before: 3;
   }
 	h1 {
-		@apply text-4xl md:text-5xl font-serif;
+		@apply text-4xl md:text-5xl font-headline;
 	}
 
   .maplibregl-canvas-container canvas {

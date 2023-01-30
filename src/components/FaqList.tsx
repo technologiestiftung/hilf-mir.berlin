@@ -259,11 +259,11 @@ const FAQS: {
 
 export const FaqList: FC = () => {
   return (
-    <ul className="prose prose-p:text-black prose-li:pl-0 prose-li:mt-8 prose-headings:font-serif">
+    <ul className="prose prose-p:text-black prose-li:pl-0 prose-li:mt-8 prose-headings:font-headline">
       {FAQS.map(({ question, answer }) => {
         return (
           <li key={question}>
-            <p className="font-serif text-xl">{question}</p>
+            <p className="font-headline text-xl">{question}</p>
             <div>{answer}</div>
           </li>
         )

@@ -39,7 +39,7 @@ module.exports = {
           'Arial',
           'sans-serif',
         ],
-        serif: [
+        headline: [
           'Domine',
           'PT Serif',
           'Georgia',

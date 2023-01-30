@@ -52,7 +52,7 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
           >
             <h2
               className={classNames(
-                `font-serif text-xl`,
+                `font-headline text-xl`,
                 `group-hover:text-primary transition-colors`,
                 `group-focus:text-primary`
               )}

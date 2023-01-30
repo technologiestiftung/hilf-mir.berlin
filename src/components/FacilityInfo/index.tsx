@@ -160,7 +160,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
         )}
         {facility.fields.Montag && (
           <div className="pb-8">
-            <h4 className="flex font-serif justify-between px-5 mb-5 text-xl items-baseline">
+            <h4 className="flex font-headline justify-between px-5 mb-5 text-xl items-baseline">
               Öffnungszeiten
               {isOpened && !parsedFacilty.open247 && (
                 <span className="flex items-center text-base font-normal font-sans text-success gap-2">
