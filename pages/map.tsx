@@ -109,7 +109,7 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
       >
         {isFallback ? `Seite Lädt...` : `${pageTitle}`}
       </h1>
-      <ul>
+      <ul className="pb-28">
         {!isFallback &&
           (filteredRecords.length !== originalRecords.length ||
             filteredRecords.length === 0) && (
