@@ -16,6 +16,7 @@ import { useUrlState } from '@lib/UrlStateContext'
 import { Accessible } from '@components/icons/Accessible'
 import Link from 'next/link'
 import { FacilityLabels } from '@components/FacilityLabels'
+import { splitString } from '@lib/splitString'
 
 interface FacilityInfoType {
   facility: TableRowType
@@ -83,8 +84,8 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
     },
     {
       icon: <Phone />,
-      text: facility.fields.Telefonnummer,
-      href: `tel:${facility.fields.Telefonnummer}`,
+      text: splitString(facility.fields.Telefonnummer, ',')[0],
+      href: `tel:${splitString(facility.fields.Telefonnummer, ',')[0]}`,
     },
   ].filter((info) => typeof info === 'object' && !!info.text) as {
     icon: JSX.Element
