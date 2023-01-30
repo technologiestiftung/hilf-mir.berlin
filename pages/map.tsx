@@ -53,7 +53,7 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
     useState<MinimalRecordType[]>(originalRecords)
 
   const sortByTagsCount = useCallback(
-    (a, b) => {
+    (a: MinimalRecordType, b: MinimalRecordType) => {
       const amountActiveLabelsA =
         urlState.tags?.filter((id) => a.labels.includes(id)).length || 0
       const amountActiveLabelsB =
