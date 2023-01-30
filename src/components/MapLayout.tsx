@@ -110,12 +110,15 @@ export const MapLayout: FC<{
           </div>
         )}
         {!isFallback && showMapUi && <MapButtons />}
-        {!isFallback && selectedFacilities.length === 0 && (
-          <MapListSwitch
-            listViewOpen={listViewOpen}
-            setListViewOpen={setListViewOpen}
-          />
-        )}
+        {!isFallback &&
+          isMobile &&
+          pathname === '/map' &&
+          selectedFacilities.length === 0 && (
+            <MapListSwitch
+              listViewOpen={listViewOpen}
+              setListViewOpen={setListViewOpen}
+            />
+          )}
         {showMapUi && listViewOpen && (
           <div
             className={classNames(
