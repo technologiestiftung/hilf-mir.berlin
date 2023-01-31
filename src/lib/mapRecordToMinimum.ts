@@ -19,6 +19,7 @@ export interface MinimalRecordType
   labels: number[]
   languages: string[]
   open247: boolean
+  openingTimesText: string
   description: string
 }
 
@@ -32,6 +33,7 @@ export const mapRecordToMinimum = (record: TableRowType): MinimalRecordType => {
     labels: record.fields.Schlagworte,
     languages: splitString(record.fields.Sprachen, ','),
     open247: record.fields['c24_h_7_Tage'].trim() === 'ja',
+    openingTimesText: (record.fields['Weitere_Offnungszeiten'] || '').trim(),
     prioriy: mapPriorityToNumber(record.fields.Prio),
     description: sanitizeHtml(record.fields.Uber_uns, {
       allowedTags: [],

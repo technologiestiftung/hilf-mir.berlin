@@ -236,6 +236,11 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
                 />
               </>
             )}
+            {parsedFacilty.openingTimesText && (
+              <p className="whitespace-pre-wrap p-5 pt-8">
+                {parsedFacilty.openingTimesText}
+              </p>
+            )}
           </div>
         )}
       </article>
