@@ -1,3 +1,12 @@
+# [1.6.0-rc.4](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.6.0-rc.3...v1.6.0-rc.4) (2023-01-31)
+
+
+### Bug Fixes
+
+* **eslin:** Fix eslint formatting ([62ebdb9](https://github.com/technologiestiftung/wegweiser-frontend/commit/62ebdb9a9e863933246864798eee4290c565e67f))
+* **MapHeader:** Reintroduce border on filter button ([130856e](https://github.com/technologiestiftung/wegweiser-frontend/commit/130856e7bc4d5dbbea81f8a5014c5fe1a88332ad))
+* **MapHeader:** Remove weird shadow and border on filter button ([0e5c5cb](https://github.com/technologiestiftung/wegweiser-frontend/commit/0e5c5cb2da263c4400e6dfd944cf3251e86f38be))
+
 # [1.6.0-rc.3](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.6.0-rc.2...v1.6.0-rc.3) (2023-01-31)
 
 
