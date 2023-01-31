@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import { RadioGroup as HeadlessRadioGroup } from '@headlessui/react'
 
 const RadioGroupOption: FC<{ value: string; label: string }> = ({
@@ -9,7 +9,7 @@ const RadioGroupOption: FC<{ value: string; label: string }> = ({
     <>
       <HeadlessRadioGroup.Option value={value}>
         {({ checked }) => (
-          <span className={checked ? 'bg-blue-200' : ''}>{label}</span>
+          <span className={checked ? 'bg-blau text-white' : ''}>{label}</span>
         )}
       </HeadlessRadioGroup.Option>
     </>
@@ -39,10 +39,17 @@ interface RadioGroupOptionType {
 export const RadioGroup: FC<{
   label: string
   options: RadioGroupOptionType[]
-  onChange: () => void
+  onChange?: () => void
 }> = ({ label, options = PLANS, onChange = () => undefined }) => {
+  const [activeOption, setActiveOption] = useState(options[0].value)
+
+  const handleChange = (selectedValue: RadioGroupOptionType['value']): void => {
+    setActiveOption(selectedValue)
+    onChange && onChange()
+  }
+
   return (
-    <HeadlessRadioGroup value={options[0].value} onChange={onChange}>
+    <HeadlessRadioGroup value={activeOption} onChange={handleChange}>
       <HeadlessRadioGroup.Label>{label}</HeadlessRadioGroup.Label>
       {options.map((option) => {
         return (
