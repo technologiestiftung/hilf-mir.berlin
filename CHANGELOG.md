@@ -1,3 +1,11 @@
+# [1.6.0-rc.3](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.6.0-rc.2...v1.6.0-rc.3) (2023-01-31)
+
+
+### Features
+
+* **WEG-160:** display all phone numbers ([b7b428d](https://github.com/technologiestiftung/wegweiser-frontend/commit/b7b428d9817bed12941af2d445a3594266d1221d))
+* **WEG-160:** only display first phone number ([d2ad97f](https://github.com/technologiestiftung/wegweiser-frontend/commit/d2ad97f9222402cf1d9c079317d8a228dfd60ac7))
+
 # [1.6.0-rc.2](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.6.0-rc.1...v1.6.0-rc.2) (2023-01-31)
 
 
