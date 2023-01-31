@@ -1,3 +1,11 @@
+# [1.6.0-rc.1](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.5.1-rc.1...v1.6.0-rc.1) (2023-01-31)
+
+
+### Features
+
+* **WEG-164:** access languages from Grist ([86feb2c](https://github.com/technologiestiftung/wegweiser-frontend/commit/86feb2c481c63d8c27b8ac141605fb5a844b4040))
+* **WEG-164:** also display languages for facility ([df3096b](https://github.com/technologiestiftung/wegweiser-frontend/commit/df3096b3ad2fda25678032b7bda0e03e02c37962))
+
 ## [1.5.1-rc.1](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.5.0...v1.5.1-rc.1) (2023-01-30)
 
 
