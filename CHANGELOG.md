@@ -1,3 +1,10 @@
+# [1.6.0-rc.2](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.6.0-rc.1...v1.6.0-rc.2) (2023-01-31)
+
+
+### Bug Fixes
+
+* **facilities:** Sort by active tags also when no location is active ([117152a](https://github.com/technologiestiftung/wegweiser-frontend/commit/117152a3077f8866b1705c95677d2e386319d683))
+
 # [1.6.0-rc.1](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.5.1-rc.1...v1.6.0-rc.1) (2023-01-31)
 
 
