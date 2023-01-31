@@ -18,7 +18,7 @@ module.exports = {
         '60': '#666666',
         '80': '#333333',
       },
-      white: '#FAFAFF',
+      white: '#FFF',
       trasparent: 'transparent',
       currentColor: 'currentColor',
     },

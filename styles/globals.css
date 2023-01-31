@@ -33,7 +33,7 @@
 	}
 
   html, body {
-    @apply overflow-x-hidden font-sans;
+    @apply overflow-x-hidden font-sans bg-white;
     -webkit-hyphens: auto;
     -ms-hyphens: auto;
     hyphens: auto;
