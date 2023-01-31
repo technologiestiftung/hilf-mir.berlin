@@ -1,3 +1,10 @@
+# [1.6.0-rc.5](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.6.0-rc.4...v1.6.0-rc.5) (2023-01-31)
+
+
+### Features
+
+* **WEG-163:** Add opening hours help text ([03a5839](https://github.com/technologiestiftung/wegweiser-frontend/commit/03a5839fc52166fcbe55f209a0675cb162eefb20))
+
 # [1.6.0-rc.4](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.6.0-rc.3...v1.6.0-rc.4) (2023-01-31)
 
 
