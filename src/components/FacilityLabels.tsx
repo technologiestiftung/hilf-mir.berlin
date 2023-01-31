@@ -28,6 +28,7 @@ export const FacilityLabels: FC<FacilityLabelsType> = ({
   const allFilters = useFiltersWithActiveProp()
   const tagsFilters = allFilters.filter(isGroup)
   const targetFilters = allFilters.filter(isTarget)
+  const someFiltersActive = allFilters.some(({ isActive }) => isActive)
   const tagsIncludesAllFilters = tagsFilters.every(({ id }) =>
     topicsLabels.find((filter) => filter.id === id)
   )
@@ -37,24 +38,26 @@ export const FacilityLabels: FC<FacilityLabelsType> = ({
 
   return (
     <>
-      {topicsLabels.length > 0 && (
-        <div className="px-5 text-sm leading-4">
-          {texts.filtersTagsLabelOnCard}:{' '}
-          <FiltersTextList
-            filters={topicsLabels}
-            includesAllFilters={tagsIncludesAllFilters}
-          />
-        </div>
-      )}
-      {targetAudienceLabels.length > 0 && (
-        <div className="px-5 text-sm leading-4">
-          {texts.filtersSearchTargetLabelOnCard}:{' '}
-          <FiltersTextList
-            filters={targetAudienceLabels}
-            includesAllFilters={targetIncludesAllFilters}
-          />
-        </div>
-      )}
+      {topicsLabels.length > 0 &&
+        !(tagsIncludesAllFilters && !someFiltersActive) && (
+          <div className="px-5 text-sm leading-4">
+            {texts.filtersTagsLabelOnCard}:{' '}
+            <FiltersTextList
+              filters={topicsLabels}
+              includesAllFilters={tagsIncludesAllFilters}
+            />
+          </div>
+        )}
+      {targetAudienceLabels.length > 0 &&
+        !(targetIncludesAllFilters && !someFiltersActive) && (
+          <div className="px-5 text-sm leading-4">
+            {texts.filtersSearchTargetLabelOnCard}:{' '}
+            <FiltersTextList
+              filters={targetAudienceLabels}
+              includesAllFilters={targetIncludesAllFilters}
+            />
+          </div>
+        )}
       {languages.length > 0 && (
         <div className="px-5 text-sm leading-4">
           {texts.languagesLabel}:{' '}
