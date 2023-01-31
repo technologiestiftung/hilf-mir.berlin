@@ -9,7 +9,7 @@ module.exports = {
     colors: {
       primary: '#773666',
       black: '#0A1045',
-      success: '#69AC4C',
+      success: '#4f9033',
       info: '#5891C3',
       gray: {
         '10': '#EFEFEF',
@@ -18,14 +18,14 @@ module.exports = {
         '60': '#666666',
         '80': '#333333',
       },
-      white: '#fff',
+      white: '#FAFAFF',
       trasparent: 'transparent',
       currentColor: 'currentColor',
     },
     extend: {
       fontFamily: {
         sans: [
-          'Nunito',
+          'DM Sans',
           'Calibri',
           'Segoe UI',
           'Roboto',
@@ -38,13 +38,6 @@ module.exports = {
           'Helvetica',
           'Arial',
           'sans-serif',
-        ],
-        headline: [
-          'Domine',
-          'PT Serif',
-          'Georgia',
-          'Times New Roman',
-          'serif',
         ],
       },
       spacing: {

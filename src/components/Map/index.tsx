@@ -324,7 +324,7 @@ export const FacilitiesMap: FC<MapType> = ({
         paint: {
           'circle-radius': 10,
           'circle-stroke-width': 1,
-          'circle-stroke-color': '#fff',
+          'circle-stroke-color': '#FAFAFF',
           'circle-color': [
             'case',
             ['boolean', ['feature-state', 'hover'], false],

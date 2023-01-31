@@ -34,7 +34,7 @@ export const WelcomeScreen: FC<{
             <Image src={introImage} layout="fill" objectFit="cover" />
           </section>
         </div>
-        <h1 className="p-5 pt-6 md:px-8 md:pt-12">{texts.homeWelcomeTitle}</h1>
+        <h1 className="p-5 pt-6 md:px-8 md:pt-12 text-4xl md:text-5xl">{texts.homeWelcomeTitle}</h1>
         <p
           className="px-5 text-lg leading-snug md:px-8 bp-8 max-w-prose md:mb-8"
           dangerouslySetInnerHTML={{ __html: texts.homeWelcomeText }}

@@ -4,24 +4,31 @@
 
 @layer base {
 	@font-face {
-		font-family: 'Domine';
-		src: url('/fonts/Domine-VariableFont_wght.ttf?v=3.18') format('truetype-variations');
-		font-weight: 100 900;
+		font-family: 'DM Sans';
+		src: url('/fonts/DMSans-Italic.ttf?v=3.18') format('truetype');
+		font-weight: 400;
 		font-style: italic;
 		font-display: swap;
 	}
 	@font-face {
-		font-family: 'Nunito';
-		src: url('/fonts/Nunito-VariableFont_wght.ttf?v=3.18') format('truetype-variations');
-		font-weight: 100 900;
+		font-family: 'DM Sans';
+		src: url('/fonts/DMSans-Regular.ttf?v=3.18') format('truetype');
+		font-weight: 400;
 		font-style: normal;
 		font-display: swap;
 	}
 	@font-face {
-		font-family: 'Nunito';
-		src: url('/fonts/Nunito-Italic-VariableFont_wght.ttf?v=3.18') format('truetype-variations');
-		font-weight: 100 900;
+		font-family: 'DM Sans';
+		src: url('/fonts/DMSans-BoldItalic.ttf?v=3.18') format('truetype');
+		font-weight: bold;
 		font-style: italic;
+		font-display: swap;
+	}
+	@font-face {
+		font-family: 'DM Sans';
+		src: url('/fonts/DMSans-Bold.ttf?v=3.18') format('truetype');
+		font-weight: bold;
+		font-style: normal;
 		font-display: swap;
 	}
 
@@ -34,7 +41,7 @@
     hyphenate-limit-before: 3;
   }
 	h1 {
-		@apply text-4xl md:text-5xl font-headline;
+		@apply text-3xl md:text-4xl font-bold;
 	}
 
   .maplibregl-canvas-container canvas {

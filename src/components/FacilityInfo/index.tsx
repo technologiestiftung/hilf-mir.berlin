@@ -99,7 +99,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
       <BackButton href={{ pathname: `/map`, query: { ...urlState } }} />
       <article className="flex flex-col h-full gap-8">
         <div className="px-5 pt-5">
-          <h1 className="mb-2 text-3xl normal-case break-words hyphens-auto">
+          <h1 className="mb-2 text-2xl break-words hyphens-auto">
             {facility.fields.Einrichtung}
           </h1>
           {(distance || isOpened) && (
@@ -160,7 +160,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
         )}
         {facility.fields.Montag && (
           <div className="pb-8">
-            <h4 className="flex font-headline justify-between px-5 mb-5 text-xl items-baseline">
+            <h4 className="flex font-bold justify-between px-5 mb-5 text-xl items-baseline">
               Öffnungszeiten
               {isOpened && !parsedFacilty.open247 && (
                 <span className="flex items-center text-base font-normal font-sans text-success gap-2">
