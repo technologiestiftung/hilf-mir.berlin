@@ -1,10 +1,10 @@
-import { FC, ReactNode, useState } from 'react'
+import { FC, ReactNode } from 'react'
 import { RadioGroup as HeadlessRadioGroup } from '@headlessui/react'
 import classNames from '@lib/classNames'
 
 export interface RadioGroupOptionType {
   label: string | ReactNode
-  value: string
+  value: string | number
 }
 
 const RadioGroupOption: FC<RadioGroupOptionType> = ({ value, label }) => {
@@ -35,28 +35,25 @@ const RadioGroupOption: FC<RadioGroupOptionType> = ({ value, label }) => {
 export interface RadioGroupType {
   label: string
   options: RadioGroupOptionType[]
-  onChange?: () => void
+  activeValue: RadioGroupOptionType['value'] | undefined
+  onChange?: (selectedValue: RadioGroupOptionType['value']) => void
   className?: string
 }
 
 export const RadioGroup: FC<RadioGroupType> = ({
   label,
   options,
+  activeValue,
   onChange = () => undefined,
   className = '',
 }) => {
-  const [activeOption, setActiveOption] = useState<
-    RadioGroupOptionType['value'] | undefined
-  >()
-
   const handleChange = (selectedValue: RadioGroupOptionType['value']): void => {
-    setActiveOption(selectedValue)
-    onChange && onChange()
+    onChange(selectedValue)
   }
 
   return (
     <HeadlessRadioGroup
-      value={activeOption}
+      value={typeof activeValue === 'number' ? `${activeValue}` : activeValue}
       onChange={handleChange}
       className={classNames(className, 'flex gap-y-3 gap-x-2 flex-wrap mb-16')}
     >
