@@ -17,8 +17,8 @@ export function useMapHighlightMarker(
     if (!markerViewport?.latitude) return
     const customMarker = document.createElement('div')
     customMarker.className = classNames(
-      'w-10 h-10 bg-red rounded-full ring-2',
-      'ring-offset-white ring-offset-2 ring-red'
+      'w-10 h-10 bg-primary rounded-full ring-2',
+      'ring-offset-white ring-offset-2 ring-primary'
     )
 
     const markerCenter = [

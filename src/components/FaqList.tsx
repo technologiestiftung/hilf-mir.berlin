@@ -54,13 +54,13 @@ const FAQS: {
           Wohnprojekte auf – Therapeutische Wohngruppen, betreutes Einzelwohnen
           und andere besondere Wohnformen sind Leistungen der Teilhabe für
           Menschen mit einer seelischen Behinderung. Ob du für diese in Frage
-          kommst, erfährst du im Gespräch mit dem Teilhabefachdienst von 
-          deinem Bezirk.
+          kommst, erfährst du im Gespräch mit dem Teilhabefachdienst von deinem
+          Bezirk.
         </p>
         <p>
-          Selbsthilfegruppen können wir in der ersten Version von HILF-MIR Berlin
-          noch nicht integrieren. Aktuell findest du eine gute Übersicht über
-          passende Selbsthilfegruppen auf{' '}
+          Selbsthilfegruppen können wir in der ersten Version von HILF-MIR
+          Berlin noch nicht integrieren. Aktuell findest du eine gute Übersicht
+          über passende Selbsthilfegruppen auf{' '}
           <a href="https://sekis-berlin.de/">Sekis-Berlin</a> und bei der{' '}
           <a href="https://www.landesstelle-berlin.de/adressen/suchtselbsthilfegruppen/suche-suchtselbsthilfegruppen-in-berlin/">
             Landesstelle für Suchtfragen
@@ -76,14 +76,17 @@ const FAQS: {
     answer: (
       <>
         <p>
-          Die Internetseite HILF-MIR Berlin speichert keine Daten von dir.
-          Zur Benutzung der Suche, werden deine Eingaben (z.B. ausgewählte
+          Die Internetseite HILF-MIR Berlin speichert keine Daten von dir. Zur
+          Benutzung der Suche, werden deine Eingaben (z.B. ausgewählte
           Schlagworte, Filter) zur Darstellung der passenden Suchergebnisse nur
           in dem Moment der Suche zwar verarbeitet, aber nicht gespeichert.
         </p>
         <p>
-          HILF-MIR Berlin kommt ganz ohne Cookies aus. Weitere
-          Informationen, findest du in der allgemeinen <a href="https://www.technologiestiftung-berlin.de/datenschutz">Datenschutzerklärung der Technologiestiftung Berlin.</a>
+          HILF-MIR Berlin kommt ganz ohne Cookies aus. Weitere Informationen,
+          findest du in der allgemeinen{' '}
+          <a href="https://www.technologiestiftung-berlin.de/datenschutz">
+            Datenschutzerklärung der Technologiestiftung Berlin.
+          </a>
         </p>
       </>
     ),
@@ -116,9 +119,7 @@ const FAQS: {
     answer: (
       <p>
         Bitte schreibe eine Mail an:{' '}
-        <a href="mailto:info@hilf-mir.berlin">
-        info@hilf-mir.berlin
-        </a>
+        <a href="mailto:info@hilf-mir.berlin">info@hilf-mir.berlin</a>
       </p>
     ),
   },
@@ -128,9 +129,7 @@ const FAQS: {
     answer: (
       <p>
         Bitte schreibe eine Mail an:{' '}
-        <a href="mailto:info@hilf-mir.berlin">
-        info@hilf-mir.berlin
-        </a>
+        <a href="mailto:info@hilf-mir.berlin">info@hilf-mir.berlin</a>
       </p>
     ),
   },
@@ -139,15 +138,13 @@ const FAQS: {
     answer: (
       <>
         <p>
-          HILF-MIR Berlin wächst und verbessert sich dank der Unterstützung vieler
-          Mitwirkender. Lob und Kritik ist dabei essentiell. Wir freuen uns über
-          deine Nachricht.
+          HILF-MIR Berlin wächst und verbessert sich dank der Unterstützung
+          vieler Mitwirkender. Lob und Kritik ist dabei essentiell. Wir freuen
+          uns über deine Nachricht.
         </p>
         <p>
           Bitte schreibe eine Mail mit deinem Lob oder deiner Kritik an:{' '}
-          <a href="mailto:info@hilf-mir.berlin">
-          info@hilf-mir.berlin
-          </a>
+          <a href="mailto:info@hilf-mir.berlin">info@hilf-mir.berlin</a>
         </p>
       </>
     ),
@@ -184,15 +181,15 @@ const FAQS: {
     answer: (
       <>
         <p>
-          Die Idee, HILF-MIR Berlin zu entwickeln, entstand in der für Gesundheit
-          zuständigen Senatsverwaltung des Landes Berlins, welche auch die
-          Projektleitung und die inhaltliche Verantwortung übernimmt.
+          Die Idee, HILF-MIR Berlin zu entwickeln, entstand in der für
+          Gesundheit zuständigen Senatsverwaltung des Landes Berlins, welche
+          auch die Projektleitung und die inhaltliche Verantwortung übernimmt.
           Zivilgesellschaft, Sozialunternehmen und Verwaltung entwickeln
           gemeinsam HILF-MIR Berlin.
         </p>
         <p>
-          Das CityLAB Berlin verantwortet die Projektentwicklung und programmiert
-          HILF-MIR Berlin.
+          Das CityLAB Berlin verantwortet die Projektentwicklung und
+          programmiert HILF-MIR Berlin.
         </p>
       </>
     ),
@@ -262,11 +259,11 @@ const FAQS: {
 
 export const FaqList: FC = () => {
   return (
-    <ul className="prose prose-p:text-black prose-li:pl-0 prose-li:mt-8">
+    <ul className="prose prose-p:text-black prose-li:pl-0 prose-li:mt-8 prose-headings:font-headline font-bold">
       {FAQS.map(({ question, answer }) => {
         return (
           <li key={question}>
-            <p className="font-bold text-xl">{question}</p>
+            <p className="font-headline font-bold text-xl">{question}</p>
             <div>{answer}</div>
           </li>
         )

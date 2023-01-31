@@ -33,26 +33,26 @@ export const FacilityCarouselSlide: FC<MinimalRecordType> = (facility) => {
         className={classNames(
           `block h-full`,
           `flex flex-col bg-white group`,
-          `border border-black justify-between`,
+          `border border-gray-20 shadow-lg shadow-black/20 justify-between`,
           `transition-colors hover:bg-gray-10`,
-          `focus:ring-inset focus:ring-2 focus:ring-red`,
-          `focus:outline-none focus:border-red`
+          `focus:ring-inset focus:ring-2 focus:ring-primary`,
+          `focus:outline-none focus:border-primary`
         )}
       >
         <div className="max-w-[calc(100vw-40px)]">
           <h2
             className={classNames(
-              'font-bold text-xl px-5 pt-5',
-              `group-hover:text-red transition-colors`,
-              `group-focus:text-red inline-flex gap-x-4 flex-wrap`
+              'font-headline font-bold text-xl px-5 pt-5',
+              `group-hover:text-primary transition-colors`,
+              `group-focus:text-primary inline-flex gap-x-4 flex-wrap`
             )}
           >
             {facility.title}
             {(distance || isOpened) && (
-              <div className="inline-flex text-lg font-normal gap-4">
+              <div className="inline-flex font-sans text-lg font-normal gap-4">
                 {isOpened && (
-                  <small className="inline-flex items-center font-normal text-mittelgruen gap-2">
-                    <span className="inline-block w-2 h-2 rounded-full bg-mittelgruen" />
+                  <small className="inline-flex items-center font-normal text-success gap-2">
+                    <span className="inline-block w-2 h-2 rounded-full bg-success" />
                     {texts.opened}
                   </small>
                 )}
@@ -68,7 +68,7 @@ export const FacilityCarouselSlide: FC<MinimalRecordType> = (facility) => {
         </div>
         <span
           className={classNames(
-            'font-bold text-red py-4 flex gap-2 justify-end text-right',
+            'font-bold text-primary py-4 flex gap-2 justify-end text-right',
             'border-t border-gray-10 px-5'
           )}
         >

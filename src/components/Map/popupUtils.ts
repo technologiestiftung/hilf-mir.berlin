@@ -14,8 +14,8 @@ export function getPopupHTML(
     ${
       (isOpened &&
         `
-        <div class="font-normal text-mittelgruen text-sm font-sans items-center flex gap-2 px-1 my-1">
-          <span class="inline-block w-2 h-2 rounded-full bg-mittelgruen"></span>
+        <div class="font-normal text-success text-sm font-sans items-center flex gap-2 px-1 my-1">
+          <span class="inline-block w-2 h-2 rounded-full bg-success"></span>
           ${texts.opened}
         </div>
     `) ||
@@ -35,7 +35,7 @@ export function getPopupHTML(
 
 function getTitleHTML(title: string): string {
   return `
-    <h2 class="font-bold text-lg px-1 font-sans leading-tight break-words flex justify-between items-end gap-4">
+    <h2 class="font-headline font-bold text-lg px-1 leading-tight break-words flex justify-between items-end gap-4">
       ${title}
     </h2>
   `
@@ -52,7 +52,7 @@ function getMultipleFacilitiesHTML(
         '#number',
         `${facilities.length}`
       )}
-      <span class="font-normal text-sm">
+      <span class="font-normal font-sans text-sm text-gray-60">
         ${texts.clickToExpandPopupLabel}
       </span>
     `)}
