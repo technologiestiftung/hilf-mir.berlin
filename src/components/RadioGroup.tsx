@@ -1,47 +1,53 @@
-import { FC, useState } from 'react'
+import { FC, ReactNode, useState } from 'react'
 import { RadioGroup as HeadlessRadioGroup } from '@headlessui/react'
+import classNames from '@lib/classNames'
 
-const RadioGroupOption: FC<{ value: string; label: string }> = ({
-  value,
-  label,
-}) => {
+export interface RadioGroupOptionType {
+  label: string | ReactNode
+  value: string
+}
+
+const RadioGroupOption: FC<RadioGroupOptionType> = ({ value, label }) => {
   return (
     <>
       <HeadlessRadioGroup.Option value={value}>
-        {({ checked }) => (
-          <span className={checked ? 'bg-blau text-white' : ''}>{label}</span>
+        {({ active, checked }) => (
+          <span
+            className={classNames(
+              checked
+                ? 'bg-red border-red text-white hover:bg-gray-60 focus:group-hover:bg-red hover:border-gray-60'
+                : 'border-gray-20 hover:bg-gray-10',
+              'py-1.5 pl-2 pr-3 border flex gap-2',
+              'text-left text-lg leading-6',
+              active &&
+                `!bg-red !text-white outline-none ring-2 ring-red ring-offset-2 ring-offset-white`,
+              'cursor-pointer'
+            )}
+          >
+            {label}
+          </span>
         )}
       </HeadlessRadioGroup.Option>
     </>
   )
 }
 
-const PLANS: RadioGroupOptionType[] = [
-  {
-    value: 'startup',
-    label: 'Startup',
-  },
-  {
-    value: 'enterprise',
-    label: 'Enterprise',
-  },
-  {
-    value: 'hobby',
-    label: 'Hobby',
-  },
-]
-
-interface RadioGroupOptionType {
-  label: string
-  value: string
-}
-
-export const RadioGroup: FC<{
+export interface RadioGroupType {
   label: string
   options: RadioGroupOptionType[]
   onChange?: () => void
-}> = ({ label, options = PLANS, onChange = () => undefined }) => {
-  const [activeOption, setActiveOption] = useState(options[0].value)
+  className?: string
+}
+
+export const RadioGroup: FC<RadioGroupType> = ({
+  label,
+  options,
+  onChange = () => undefined,
+  className = '',
+}) => {
+  const [activeOption, setActiveOption] = useState<
+    RadioGroupOptionType['value'] | undefined
+  >()
 
   const handleChange = (selectedValue: RadioGroupOptionType['value']): void => {
     setActiveOption(selectedValue)
@@ -49,8 +55,14 @@ export const RadioGroup: FC<{
   }
 
   return (
-    <HeadlessRadioGroup value={activeOption} onChange={handleChange}>
-      <HeadlessRadioGroup.Label>{label}</HeadlessRadioGroup.Label>
+    <HeadlessRadioGroup
+      value={activeOption}
+      onChange={handleChange}
+      className={classNames(className, 'flex gap-y-3 gap-x-2 flex-wrap mb-16')}
+    >
+      <HeadlessRadioGroup.Label className="font-bold text-lg w-full flex justify-between">
+        {label}
+      </HeadlessRadioGroup.Label>
       {options.map((option) => {
         return (
           <RadioGroupOption
