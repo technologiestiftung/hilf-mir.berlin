@@ -121,8 +121,11 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
           )}
         </div>
         {allLabels.length > 0 && (
-          <div className="w-full">
-            <FacilityLabels labels={facility.fields.Schlagworte} />
+          <div className="w-full grid grid-cols-1 gap-y-3">
+            <FacilityLabels
+              labels={facility.fields.Schlagworte}
+              languages={parsedFacilty.languages}
+            />
           </div>
         )}
         {infoList.length > 0 && (
