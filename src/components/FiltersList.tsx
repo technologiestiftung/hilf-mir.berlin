@@ -42,7 +42,7 @@ export const FiltersList: FC<{
     .some(({ id }) => tags.find((f) => f === id))
 
   const filteredRecords = recordsWithOnlyLabels.filter((recordLabels) =>
-    tags.every((tagId) => recordLabels.find((labelId) => labelId === tagId))
+    tags.some((tagId) => recordLabels.find((labelId) => labelId === tagId))
   )
 
   const updateFilters = (newTags: number[]): void => {
