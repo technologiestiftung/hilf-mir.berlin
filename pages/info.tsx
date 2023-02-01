@@ -35,7 +35,7 @@ const Info: Page = () => {
           <h1>Über HILF-MIR Berlin</h1>
           <About />
           <div>
-            <h2 className="text-3xl font-bold">FAQ</h2>
+            <h2 className="text-3xl font-headline font-bold">FAQ</h2>
             <FaqList />
           </div>
         </div>

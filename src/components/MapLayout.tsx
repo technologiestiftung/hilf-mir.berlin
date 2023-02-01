@@ -173,14 +173,14 @@ export const MapLayout: FC<{
             <>
               <h3
                 className={classNames(
-                  `sticky top-0 flex justify-between`,
+                  `sticky top-0 flex justify-between font-headline font-bold`,
                   `px-5 py-6 bg-white border-b border-gray-10`,
-                  `font-bold uppercase text-2xl items-center leading-tight`
+                  `text-2xl items-center leading-tight`
                 )}
               >
                 {texts.filterLabel}
                 <button
-                  className="text-red"
+                  className="text-primary"
                   onClick={() => setFilterSidebarIsOpened(false)}
                 >
                   <Cross />

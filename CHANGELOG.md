@@ -1,3 +1,27 @@
+# [1.6.0-rc.5](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.6.0-rc.4...v1.6.0-rc.5) (2023-01-31)
+
+
+### Features
+
+* **WEG-163:** Add opening hours help text ([03a5839](https://github.com/technologiestiftung/wegweiser-frontend/commit/03a5839fc52166fcbe55f209a0675cb162eefb20))
+
+# [1.6.0-rc.4](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.6.0-rc.3...v1.6.0-rc.4) (2023-01-31)
+
+
+### Bug Fixes
+
+* **eslin:** Fix eslint formatting ([62ebdb9](https://github.com/technologiestiftung/wegweiser-frontend/commit/62ebdb9a9e863933246864798eee4290c565e67f))
+* **MapHeader:** Reintroduce border on filter button ([130856e](https://github.com/technologiestiftung/wegweiser-frontend/commit/130856e7bc4d5dbbea81f8a5014c5fe1a88332ad))
+* **MapHeader:** Remove weird shadow and border on filter button ([0e5c5cb](https://github.com/technologiestiftung/wegweiser-frontend/commit/0e5c5cb2da263c4400e6dfd944cf3251e86f38be))
+
+# [1.6.0-rc.3](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.6.0-rc.2...v1.6.0-rc.3) (2023-01-31)
+
+
+### Features
+
+* **WEG-160:** display all phone numbers ([b7b428d](https://github.com/technologiestiftung/wegweiser-frontend/commit/b7b428d9817bed12941af2d445a3594266d1221d))
+* **WEG-160:** only display first phone number ([d2ad97f](https://github.com/technologiestiftung/wegweiser-frontend/commit/d2ad97f9222402cf1d9c079317d8a228dfd60ac7))
+
 # [1.6.0-rc.2](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.6.0-rc.1...v1.6.0-rc.2) (2023-01-31)
 
 
