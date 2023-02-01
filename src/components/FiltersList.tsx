@@ -42,7 +42,7 @@ export const FiltersList: FC<{
     .some(({ id }) => tags.find((f) => f === id))
 
   const filteredRecords = recordsWithOnlyLabels.filter((recordLabels) =>
-    tags.every((tagId) => recordLabels.find((labelId) => labelId === tagId))
+    tags.some((tagId) => recordLabels.find((labelId) => labelId === tagId))
   )
 
   const updateFilters = (newTags: number[]): void => {
@@ -73,9 +73,9 @@ export const FiltersList: FC<{
             }
             className={classNames(
               `text-lg leading-6 text-left font-normal mb-8`,
-              `focus:outline-none focus:ring-2 focus:ring-red`,
+              `focus:outline-none focus:ring-2 focus:ring-primary`,
               `focus:ring-offset-2 focus:ring-offset-white`,
-              `underline text-gray-80 hover-red transition-colors`
+              `underline text-gray-80 hover-primary transition-colors`
             )}
           >
             {texts.reset}
@@ -85,7 +85,7 @@ export const FiltersList: FC<{
       <div className="md:flex md:flex-wrap md:items-start md:gap-x-4">
         <h3
           className={classNames(
-            `font-bold text-lg mb-3 w-full flex justify-between`
+            `font-headline font-bold text-xl mb-3 w-full flex justify-between`
           )}
         >
           {texts.filtersSearchTargetLabel}
@@ -108,9 +108,9 @@ export const FiltersList: FC<{
             }
             className={classNames(
               `text-lg leading-6 text-left font-normal mb-8`,
-              `focus:outline-none focus:ring-2 focus:ring-red`,
+              `focus:outline-none focus:ring-2 focus:ring-primary`,
               `focus:ring-offset-2 focus:ring-offset-white`,
-              `underline text-gray-80 hover-red transition-colors`
+              `underline text-gray-80 hover-primary transition-colors`
             )}
           >
             {texts.reset}
@@ -125,7 +125,7 @@ export const FiltersList: FC<{
           {texts.filtersGeoSearchLabel}
         </SwitchButton>
         <PrimaryButton
-          className="md:max-w-sm"
+          className="w-auto"
           onClick={() => {
             onSubmit()
             void push({

@@ -35,7 +35,7 @@ export const WelcomeFilters: FC<{
           {!isMobile && (
             <h2
               className={classNames(
-                `pt-8 pb-2 uppercase font-bold text-3xl`,
+                `pt-8 pb-2 font-bold text-3xl`,
                 `flex items-center justify-between gap-8`
               )}
             >

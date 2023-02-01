@@ -195,7 +195,10 @@ export const FacilitiesMap: FC<MapType> = ({
             id: marker.id,
           },
           {
-            active: activeTags.every((tag) => marker.labels.includes(tag)),
+            active:
+              activeTags.length > 0
+                ? activeTags.some((tag) => marker.labels.includes(tag))
+                : true,
           }
         )
       })
@@ -324,12 +327,12 @@ export const FacilitiesMap: FC<MapType> = ({
         paint: {
           'circle-radius': 10,
           'circle-stroke-width': 1,
-          'circle-stroke-color': '#fff',
+          'circle-stroke-color': '#FAFAFF',
           'circle-color': [
             'case',
             ['boolean', ['feature-state', 'hover'], false],
             '#999999',
-            '#E40422',
+            '#773666',
           ],
           'circle-stroke-opacity': opacityGlCondition,
           'circle-opacity': opacityGlCondition,

@@ -110,12 +110,15 @@ export const MapLayout: FC<{
           </div>
         )}
         {!isFallback && showMapUi && <MapButtons />}
-        {!isFallback && selectedFacilities.length === 0 && (
-          <MapListSwitch
-            listViewOpen={listViewOpen}
-            setListViewOpen={setListViewOpen}
-          />
-        )}
+        {!isFallback &&
+          isMobile &&
+          pathname === '/map' &&
+          selectedFacilities.length === 0 && (
+            <MapListSwitch
+              listViewOpen={listViewOpen}
+              setListViewOpen={setListViewOpen}
+            />
+          )}
         {showMapUi && listViewOpen && (
           <div
             className={classNames(
@@ -170,14 +173,14 @@ export const MapLayout: FC<{
             <>
               <h3
                 className={classNames(
-                  `sticky top-0 flex justify-between`,
+                  `sticky top-0 flex justify-between font-headline font-bold`,
                   `px-5 py-6 bg-white border-b border-gray-10`,
-                  `font-bold uppercase text-2xl items-center leading-tight`
+                  `text-2xl items-center leading-tight`
                 )}
               >
                 {texts.filterLabel}
                 <button
-                  className="text-red"
+                  className="text-primary"
                   onClick={() => setFilterSidebarIsOpened(false)}
                 >
                   <Cross />

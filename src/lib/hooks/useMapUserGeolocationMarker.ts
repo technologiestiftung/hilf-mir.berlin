@@ -30,8 +30,8 @@ export function useMapUserGeolocationMarker(
 
       const customMarker = document.createElement('div')
       customMarker.className = classNames(
-        'w-8 h-8 border-2 border-white rounded-full bg-blau ring-2',
-        'ring-blau ring-offset-2 ring-offset-white'
+        'w-8 h-8 border-2 border-white rounded-full bg-info ring-2',
+        'ring-info ring-offset-2 ring-offset-white'
       )
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment

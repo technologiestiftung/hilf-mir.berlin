@@ -2,7 +2,6 @@ import { useTexts } from '@lib/TextsContext'
 import Image from 'next/image'
 import { FC } from 'react'
 import introImage from '../images/intro-header.png'
-import StripesPattern from '../images/stripe-pattern.svg'
 import { PrimaryButton } from '@components/PrimaryButton'
 import { SecondaryButton } from '@components/SecondaryButton'
 import { Phone } from '@components/icons/Phone'
@@ -31,15 +30,13 @@ export const WelcomeScreen: FC<{
         )}
       >
         <div>
-          <section className="w-full h-32 md:h-[202px] relative">
+          <section className="w-full h-32 md:h-[202px] relative mb-6">
             <Image src={introImage} layout="fill" objectFit="cover" />
-            <span className="absolute bottom-0 right-0 w-20 h-20">
-              {/* eslint-disable-next-line prettier/prettier */}
-              <StripesPattern aria-hidden="true" />
-            </span>
           </section>
         </div>
-        <h1 className="p-5 pt-6 md:px-8 md:pt-12">{texts.homeWelcomeTitle}</h1>
+        <h1 className="p-5 pt-6 md:px-8 md:pt-12 text-4xl md:text-5xl">
+          {texts.homeWelcomeTitle}
+        </h1>
         <p
           className="px-5 text-lg leading-snug md:px-8 bp-8 max-w-prose md:mb-8"
           dangerouslySetInnerHTML={{ __html: texts.homeWelcomeText }}
@@ -60,8 +57,8 @@ export const WelcomeScreen: FC<{
               target="_blank"
               rel="noopener noreferrer"
               className={classNames(
-                `underline transition-colors hover:text-red pt-3`,
-                `focus:outline-none focus:ring-2 focus:ring-red`,
+                `underline transition-colors hover:text-primary pt-3`,
+                `focus:outline-none focus:ring-2 focus:ring-primary`,
                 `focus:ring-offset-2 focus:ring-offset-white`
               )}
             >

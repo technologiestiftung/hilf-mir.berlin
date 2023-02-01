@@ -27,7 +27,7 @@ export const FiltersTextList: FC<FiltersTextListPropType> = ({
       {filtersToRender.map((filter, idx) => (
         <Fragment key={filter.id}>
           <span
-            className={classNames(className, filter.isActive && `text-red`)}
+            className={classNames(className, filter.isActive && `text-primary`)}
           >
             {filter.fields.text}
           </span>

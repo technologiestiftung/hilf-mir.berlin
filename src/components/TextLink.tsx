@@ -13,8 +13,8 @@ export const TextLink: FC<{ href: string; className?: string }> = ({
     className={classNames(
       className,
       `cursor-pointer`,
-      `underline transition-colors hover:text-red`,
-      `focus:outline-none focus:ring-2 focus:ring-red`,
+      `underline transition-colors hover:text-primary`,
+      `focus:outline-none focus:ring-2 focus:ring-primary`,
       `focus:ring-offset-2 focus:ring-offset-white`
     )}
   >

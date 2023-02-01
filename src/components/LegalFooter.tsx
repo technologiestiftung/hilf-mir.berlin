@@ -17,8 +17,8 @@ export const LegalFooter: FC = () => {
           <Link href="/info">
             <a
               className={classNames(
-                `underline transition-colors hover:text-red`,
-                `focus:outline-none focus:ring-2 focus:ring-red`,
+                `underline transition-colors hover:text-primary`,
+                `focus:outline-none focus:ring-2 focus:ring-primary`,
                 `focus:ring-offset-2 focus:ring-offset-white`
               )}
             >
@@ -27,8 +27,8 @@ export const LegalFooter: FC = () => {
           </Link>
           <a
             className={classNames(
-              `underline transition-colors hover:text-red`,
-              `focus:outline-none focus:ring-2 focus:ring-red`,
+              `underline transition-colors hover:text-primary`,
+              `focus:outline-none focus:ring-2 focus:ring-primary`,
               `focus:ring-offset-2 focus:ring-offset-white`
             )}
             href={texts.footerImprintLinkUrl}
@@ -39,8 +39,8 @@ export const LegalFooter: FC = () => {
           </a>
           <a
             className={classNames(
-              `underline transition-colors hover:text-red`,
-              `focus:outline-none focus:ring-2 focus:ring-red`,
+              `underline transition-colors hover:text-primary`,
+              `focus:outline-none focus:ring-2 focus:ring-primary`,
               `focus:ring-offset-2 focus:ring-offset-white`
             )}
             href={texts.footerPrivacyLinkUrl}

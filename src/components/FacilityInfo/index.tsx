@@ -16,6 +16,7 @@ import { useUrlState } from '@lib/UrlStateContext'
 import { Accessible } from '@components/icons/Accessible'
 import Link from 'next/link'
 import { FacilityLabels } from '@components/FacilityLabels'
+import { splitString } from '@lib/splitString'
 
 interface FacilityInfoType {
   facility: TableRowType
@@ -32,7 +33,7 @@ const OpenDaysItem: FC<OpenDaysType> = ({ day, hours, isActive }) => {
     <div
       className={classNames(
         `flex justify-between gap-4 py-2 px-5 -mt-1`,
-        isActive && `bg-red text-white`
+        isActive && `bg-primary text-white`
       )}
     >
       <div>{day}</div>
@@ -61,6 +62,16 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
 
   const accessibility = facility.fields.Barrierefreiheit.trim().toLowerCase()
 
+  const phoneNumberItems = splitString(facility.fields.Telefonnummer, ',').map(
+    (phoneNumber) => {
+      return {
+        icon: <Phone />,
+        text: phoneNumber,
+        href: `tel:${phoneNumber}`,
+      }
+    }
+  )
+
   const infoList = [
     {
       icon: <Geopin />,
@@ -81,11 +92,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
       text: facility.fields.EMail,
       href: `mailto:${facility.fields.EMail}`,
     },
-    {
-      icon: <Phone />,
-      text: facility.fields.Telefonnummer,
-      href: `tel:${facility.fields.Telefonnummer}`,
-    },
+    ...phoneNumberItems,
   ].filter((info) => typeof info === 'object' && !!info.text) as {
     icon: JSX.Element
     text: string
@@ -99,14 +106,14 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
       <BackButton href={{ pathname: `/map`, query: { ...urlState } }} />
       <article className="flex flex-col h-full gap-8">
         <div className="px-5 pt-5">
-          <h1 className="mb-2 text-3xl normal-case break-words hyphens-auto">
+          <h1 className="mb-2 text-2xl break-words hyphens-auto">
             {facility.fields.Einrichtung}
           </h1>
           {(distance || isOpened) && (
             <div className="flex text-lg gap-4">
               {isOpened && (
-                <span className="flex items-center text-mittelgruen gap-2">
-                  <span className="inline-block w-2 h-2 rounded-full bg-mittelgruen"></span>
+                <span className="flex items-center text-success gap-2">
+                  <span className="inline-block w-2 h-2 rounded-full bg-success"></span>
                   {texts.opened}
                 </span>
               )}
@@ -121,8 +128,11 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
           )}
         </div>
         {allLabels.length > 0 && (
-          <div className="w-full">
-            <FacilityLabels labels={facility.fields.Schlagworte} />
+          <div className="w-full grid grid-cols-1 gap-y-3">
+            <FacilityLabels
+              labels={facility.fields.Schlagworte}
+              languages={parsedFacilty.languages}
+            />
           </div>
         )}
         {infoList.length > 0 && (
@@ -134,7 +144,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
               )
               const content = (
                 <>
-                  <span className="text-red">{icon}</span>
+                  <span className="text-primary">{icon}</span>
                   <span>{text}</span>
                 </>
               )
@@ -145,7 +155,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
                       <a
                         className={classNames(
                           containerClass,
-                          `hover:text-red transition-colors`
+                          `hover:text-primary transition-colors`
                         )}
                       >
                         {content}
@@ -160,11 +170,11 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
         )}
         {facility.fields.Montag && (
           <div className="pb-8">
-            <h4 className="flex justify-between px-5 mb-5 text-lg font-bold">
+            <h4 className="flex font-bold justify-between px-5 mb-5 text-xl items-baseline">
               Öffnungszeiten
               {isOpened && !parsedFacilty.open247 && (
-                <span className="flex items-center font-normal text-mittelgruen gap-2">
-                  <span className="inline-block w-2 h-2 rounded-full bg-mittelgruen"></span>
+                <span className="flex items-center text-base font-normal font-sans text-success gap-2">
+                  <span className="inline-block w-2 h-2 rounded-full bg-success"></span>
                   {texts.opened}
                 </span>
               )}
@@ -174,13 +184,13 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
                 <p
                   className={classNames(
                     'flex items-center gap-2 justify-center',
-                    'border border-mittelgruen text-mittelgruen font-bold ',
+                    'border border-success text-success font-bold ',
                     'px-5 py-2'
                   )}
                 >
                   <span
                     className={classNames(
-                      'inline-block w-2 h-2 rounded-full bg-mittelgruen'
+                      'inline-block w-2 h-2 rounded-full bg-success'
                     )}
                   ></span>
                   {texts.alwaysOpened}
@@ -225,6 +235,11 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
                   hours={facility.fields.Sonntag}
                 />
               </>
+            )}
+            {parsedFacilty.openingTimesText && (
+              <p className="whitespace-pre-wrap p-5 pt-8">
+                {parsedFacilty.openingTimesText}
+              </p>
             )}
           </div>
         )}

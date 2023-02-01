@@ -7,10 +7,10 @@ module.exports = {
   ],
   theme: {
     colors: {
-      red: '#E40422',
-      black: '#000000',
-      mittelgruen: '#00AA84',
-      blau: '#324fa3',
+      primary: '#773666',
+      black: '#0A1045',
+      success: '#4f9033',
+      info: '#5891C3',
       gray: {
         '10': '#EFEFEF',
         '20': '#CCCCCC',
@@ -18,14 +18,14 @@ module.exports = {
         '60': '#666666',
         '80': '#333333',
       },
-      white: '#fff',
+      white: '#FFF',
       trasparent: 'transparent',
       currentColor: 'currentColor',
     },
     extend: {
       fontFamily: {
         sans: [
-          'AlbertSans',
+          'DM Sans',
           'Calibri',
           'Segoe UI',
           'Roboto',

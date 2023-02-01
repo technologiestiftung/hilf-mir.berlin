@@ -29,15 +29,16 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
         className={classNames(
           `fixed inset-0 z-30 bottom-auto h-20`,
           listViewOpen ? `opacity-100` : `opacity-0`,
-          `lg:opacity-0 transition-opacity`,
-          `bg-white border-b border-black pointer-events-none`
+          `lg:opacity-0 transition-opacity shadow-md shadow-black/5`,
+          `bg-white border-b border-gray-20 pointer-events-none`
         )}
       />
       <IconButtonLink
         pathName="/"
         className={classNames(
           'flex border-r-0 md:border-r',
-          `fixed lg:left-sidebarW ml-4 top-4 z-30`
+          `fixed lg:left-sidebarW ml-4 top-4 z-30`,
+          !listViewOpen && `shadow-md shadow-black/5`
         )}
         aria-label={texts.backToHome}
       >
@@ -55,8 +56,9 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
         <IconButtonLink
           pathName="/"
           className={classNames(
-            'flex md:hidden border-r',
-            !listViewOpen && '!border-r-trasparent'
+            'flex md:hidden border-r md:rounded-r focus:rounded',
+            !listViewOpen &&
+              '!border-r-trasparent !focus:border-r-gray-20 rounded-r-none'
           )}
           aria-label={texts.backToHome}
         >
@@ -74,21 +76,24 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
         <button
           onClick={() => setFilterSidebarIsOpened(!filterSidebarIsOpened)}
           className={classNames(
-            `flex items-center group relative`,
-            `focus:border-l focus:z-20 md:border-l`,
-            `focus:outline-none focus:ring-2 focus:ring-red`,
+            `flex items-center group relative border-gray-20`,
+            `focus:border-l focus:z-20 focus:rounded`,
+            `focus:outline-none focus:ring-2 focus:ring-primary`,
             `focus:ring-offset-2 focus:ring-offset-white`
           )}
         >
           <span
             className={classNames(
-              `border-t border-b border-r border-black`,
+              `border-t border-b border-r md:border-l border-gray-20 font-headline font-bold`,
               listViewOpen && `border-l lg:border-l-0`,
-              `px-4 py-2 h-12 text-xl font-bold`,
-              `text-left whitespace-nowrap`,
-              `transition-colors group-hover:bg-red group-hover:text-white`,
+              `px-4 py-2.5 h-12 text-xl`,
+              `rounded group-focus:rounded`,
+              !listViewOpen && `rounded-l-none md:rounded-l`,
+              !listViewOpen && `shadow-md shadow-black/5`,
+              `text-left whitespace-nowrap items-center`,
+              `transition-colors group-hover:bg-primary group-hover:text-white`,
               urlState.tags && urlState.tags.length > 0
-                ? `bg-red text-white`
+                ? `bg-primary text-white`
                 : `bg-white`
             )}
           >

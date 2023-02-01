@@ -52,9 +52,33 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
   const [filteredRecords, setFilteredRecords] =
     useState<MinimalRecordType[]>(originalRecords)
 
+  const sortByTagsCount = useCallback(
+    (a: MinimalRecordType, b: MinimalRecordType) => {
+      const amountActiveLabelsA =
+        urlState.tags?.filter((id) => a.labels.includes(id)).length || 0
+      const amountActiveLabelsB =
+        urlState.tags?.filter((id) => b.labels.includes(id)).length || 0
+
+      return amountActiveLabelsB - amountActiveLabelsA
+    },
+    [urlState.tags]
+  )
+
+  const defaultSort = useCallback(
+    (a: MinimalRecordType, b: MinimalRecordType) => {
+      return (
+        b.prioriy - a.prioriy ||
+        sortByTagsCount(a, b) ||
+        a.title.localeCompare(b.title)
+      )
+    },
+    [sortByTagsCount]
+  )
+
   const sortFacilities = useCallback(
     (facilities: MinimalRecordType[]) => {
-      if (!useGeolocation) return facilities
+      if (!useGeolocation) return facilities.sort(defaultSort)
+
       return facilities.sort((a, b) => {
         const distanceToUserFromFacilityA = getDistanceToUser({
           latitude: a.latitude,
@@ -66,22 +90,26 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
         })
 
         // When we don't have a user geolocation we simply skip the sorting:
-        if (!distanceToUserFromFacilityA || !distanceToUserFromFacilityB)
-          return b.prioriy - a.prioriy
+        if (!distanceToUserFromFacilityA || !distanceToUserFromFacilityB) {
+          return defaultSort(a, b)
+        }
 
         return (
           b.prioriy - a.prioriy ||
-          distanceToUserFromFacilityA - distanceToUserFromFacilityB
+          sortByTagsCount(a, b) ||
+          distanceToUserFromFacilityA - distanceToUserFromFacilityB ||
+          a.title.localeCompare(b.title)
         )
       })
     },
-    [getDistanceToUser, useGeolocation]
+    [getDistanceToUser, useGeolocation, defaultSort, sortByTagsCount]
   )
 
   useEffect(() => {
     const tags = urlState.tags || []
+    if (tags.length === 0) return
     const newFilteredRecords = originalRecords.filter((record) =>
-      tags?.every((t) => record.labels.find((l) => l === t))
+      tags?.some((t) => record.labels.find((l) => l === t))
     )
     return setFilteredRecords(sortFacilities(newFilteredRecords))
   }, [urlState.tags, originalRecords, sortFacilities])
@@ -109,7 +137,7 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
       >
         {isFallback ? `Seite Lädt...` : `${pageTitle}`}
       </h1>
-      <ul>
+      <ul className="pb-28">
         {!isFallback &&
           (filteredRecords.length !== originalRecords.length ||
             filteredRecords.length === 0) && (
@@ -118,8 +146,8 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
                 onClick={() => setUrlState({ tags: [] })}
                 className={classNames(
                   `cursor-pointer`,
-                  `underline transition-colors hover:text-red`,
-                  `focus:outline-none focus:ring-2 focus:ring-red`,
+                  `underline transition-colors hover:text-primary`,
+                  `focus:outline-none focus:ring-2 focus:ring-primary`,
                   `focus:ring-offset-2 focus:ring-offset-white`
                 )}
               >
