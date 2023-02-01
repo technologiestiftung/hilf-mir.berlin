@@ -1,3 +1,10 @@
+# [1.6.0-rc.7](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.6.0-rc.6...v1.6.0-rc.7) (2023-02-01)
+
+
+### Features
+
+* **WEG-163:** Show highlight marker on mobile when preselecting a facility ([19c28f2](https://github.com/technologiestiftung/wegweiser-frontend/commit/19c28f28a06730b4c04c260567e9ec2422d8def0))
+
 # [1.6.0-rc.6](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.6.0-rc.5...v1.6.0-rc.6) (2023-02-01)
 
 
