@@ -74,7 +74,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
 
   const closedRegex = /[gG]eschlossen/
 
-  const facilityClosedEveryDay =
+  const allDaysStateThatFacilityIsClosed =
     closedRegex.test(facility.fields.Montag) &&
     closedRegex.test(facility.fields.Dienstag) &&
     closedRegex.test(facility.fields.Mittwoch) &&
@@ -82,6 +82,12 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
     closedRegex.test(facility.fields.Freitag) &&
     closedRegex.test(facility.fields.Samstag) &&
     closedRegex.test(facility.fields.Sonntag)
+
+  const facilityIsLabelledAsOpen247 = parsedFacilty.open247
+
+  const everydayClosedButHasInfoText =
+    allDaysStateThatFacilityIsClosed &&
+    parsedFacilty.openingTimesText.length > 0
 
   const infoList = [
     {
@@ -208,7 +214,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
                 </p>
               </div>
             )}
-            {!parsedFacilty.open247 && !facilityClosedEveryDay && (
+            {!facilityIsLabelledAsOpen247 && !everydayClosedButHasInfoText && (
               <>
                 <OpenDaysItem
                   isActive={todayKey === 'Montag'}
