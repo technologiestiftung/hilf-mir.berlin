@@ -32,7 +32,6 @@ const RadioGroupOption: FC<RadioGroupOptionType> = ({ value, label }) => {
             className={classNames(
               GENERAL_CLASSES,
               checked ? CHECKED_CLASSES : UNCHECKED_CLASSES,
-              GENERAL_CLASSES,
               active && ACTIVE_CLASSES
             )}
           >
