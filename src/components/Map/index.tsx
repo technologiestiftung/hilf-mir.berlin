@@ -21,6 +21,8 @@ import {
   ClusterClickHandlerType,
   setCursor,
   zoomIn,
+  getActiveLabelGroups,
+  isFaclilityActive,
 } from './mapUtil'
 import { useEaseOnBackToMap } from '@lib/hooks/useEaseOnBackToMap'
 import { useMapStylesLoaded } from '@lib/hooks/useMapStylesLoaded'
@@ -30,6 +32,7 @@ import { useInitialViewport } from '@lib/hooks/useInitialViewport'
 import { useMapHighlightMarker } from '@lib/hooks/useMapHighlightMarker'
 import { useMapSearchMarker } from '@lib/hooks/useMapSearchMarker'
 import { useMaplibreMap } from '@lib/hooks/useMaplibreMap'
+import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
 
 interface MapType {
   markers?: MinimalRecordType[]
@@ -87,6 +90,7 @@ export const FacilitiesMap: FC<MapType> = ({
   const spiderifier =
     useRef<InstanceType<typeof MaplibreglSpiderifier<MinimalRecordType>>>(null)
   const map = useMaplibreMap({ containerId: 'map', ...MAP_CONFIG })
+  const labels = useFiltersWithActiveProp()
 
   const [urlState, setUrlState] = useUrlState()
 
@@ -185,26 +189,29 @@ export const FacilitiesMap: FC<MapType> = ({
     1000
   )
 
-  const updateFilteredFacilities = useCallback(
-    (activeTags: number[]) => {
-      if (!map || !mapLayersLoaded || !markers) return
-      markers.forEach((marker) => {
-        map.setFeatureState(
-          {
-            source: 'facilities',
-            id: marker.id,
-          },
-          {
-            active:
-              activeTags.length > 0
-                ? activeTags.some((tag) => marker.labels.includes(tag))
-                : true,
-          }
-        )
+  const updateFilteredFacilities = useCallback(() => {
+    if (!map || !markers || !mapLayersLoaded) return
+    const { activeTopcisLabels, activeTargetLabels } =
+      getActiveLabelGroups(labels)
+    const isFilteredByTopic = activeTopcisLabels.length > 0
+    const isFilteredByTarget = activeTargetLabels.length > 0
+    markers.forEach((marker) => {
+      const active = isFaclilityActive({
+        facility: marker,
+        activeTopcisLabels,
+        activeTargetLabels,
+        isFilteredByTopic,
+        isFilteredByTarget,
       })
-    },
-    [map, markers, mapLayersLoaded]
-  )
+      map.setFeatureState(
+        {
+          source: 'facilities',
+          id: marker.id,
+        },
+        { active }
+      )
+    })
+  }, [map, markers, labels, mapLayersLoaded])
 
   useEffect(() => {
     if (!map) return
@@ -306,7 +313,7 @@ export const FacilitiesMap: FC<MapType> = ({
       })
     }
 
-    updateFilteredFacilities(activeTags as number[])
+    updateFilteredFacilities()
 
     const opacityGlCondition = [
       'case',
@@ -399,7 +406,7 @@ export const FacilitiesMap: FC<MapType> = ({
 
   useEffect(() => {
     unspiderfy()
-    updateFilteredFacilities(activeTags as number[])
+    updateFilteredFacilities()
   }, [activeTags, markers, updateFilteredFacilities, query.id])
 
   return (
