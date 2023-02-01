@@ -9,20 +9,20 @@ export interface RadioGroupOptionType {
 
 const RadioGroupOption: FC<RadioGroupOptionType> = ({ value, label }) => {
   const GENERAL_CLASSES = classNames(
-    'py-1.5 pl-2 pr-3 border flex gap-2',
+    'py-1.5 pl-2 pr-3 border rounded flex gap-2',
     'text-left text-lg leading-6',
     'cursor-pointer'
   )
 
   const CHECKED_CLASSES = classNames(
-    'bg-red border-red text-white',
-    'hover:bg-gray-60 focus:group-hover:bg-red hover:border-gray-60'
+    'bg-primary border-primary text-white',
+    'hover:bg-gray-60 focus:group-hover:bg-primary hover:border-gray-60'
   )
 
   const UNCHECKED_CLASSES = 'border-gray-20 hover:bg-gray-10'
 
   const ACTIVE_CLASSES =
-    '!bg-red !text-white outline-none ring-2 ring-red ring-offset-2'
+    '!bg-primary !text-white outline-none ring-2 ring-primary ring-offset-2'
 
   return (
     <>
