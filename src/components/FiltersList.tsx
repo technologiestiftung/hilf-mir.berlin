@@ -85,7 +85,7 @@ export const FiltersList: FC<{
       <div className="md:flex md:flex-wrap md:items-start md:gap-x-4">
         <h3
           className={classNames(
-            `font-headline font-bold text-xl mb-3 w-full flex justify-between`
+            `font-bold text-xl mb-3 w-full flex justify-between`
           )}
         >
           {texts.filtersSearchTargetLabel}

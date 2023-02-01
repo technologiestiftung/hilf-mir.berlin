@@ -184,7 +184,7 @@ export const MapLayout: FC<{
             <>
               <h3
                 className={classNames(
-                  `sticky top-0 flex justify-between font-headline font-bold`,
+                  `sticky top-0 flex justify-between font-bold`,
                   `px-5 py-6 bg-white border-b border-gray-10`,
                   `text-2xl items-center leading-tight`
                 )}
