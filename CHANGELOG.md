@@ -1,3 +1,11 @@
+# [1.6.0-rc.6](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.6.0-rc.5...v1.6.0-rc.6) (2023-02-01)
+
+
+### Features
+
+* **WEG-175:** hide opening times when closed everyday ([f47a150](https://github.com/technologiestiftung/wegweiser-frontend/commit/f47a150fcf79bf0639651292f136655f7b2f6a89))
+* **WEG-175:** only hide opening times when there is additional info ([2c28ab1](https://github.com/technologiestiftung/wegweiser-frontend/commit/2c28ab10cd7af4896bf0ff29d8b5c0ee50a7689f))
+
 # [1.6.0-rc.5](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.6.0-rc.4...v1.6.0-rc.5) (2023-01-31)
 
 
