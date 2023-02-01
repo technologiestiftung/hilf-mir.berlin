@@ -107,6 +107,17 @@ export const MapLayout: FC<{
               highlightedCenter={mapCenter}
               searchCenter={searchCenter}
             />
+            {[selectedFacilities[0]].filter(Boolean).map(({ id }) => (
+              <div
+                key={id}
+                className={classNames(
+                  'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
+                  'opacity-0 delay-700 animate-fadein-delay-400',
+                  'pointer-events-none w-5 h-5 rounded-full bg-primary',
+                  'ring-2 ring-offset-2 ring-primary ring-offset-white'
+                )}
+              />
+            ))}
           </div>
         )}
         {!isFallback && showMapUi && <MapButtons />}
