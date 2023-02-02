@@ -14,7 +14,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useDistanceToUser } from '@lib/hooks/useDistanceToUser'
 import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
 import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
-import { getFilteredFacilities } from '@components/Map/mapUtil'
+import { getFilteredFacilities } from '@lib/facilityFilterUtil'
 
 export const getStaticProps: GetStaticProps = async () => {
   const { texts, labels, records } = await loadData()

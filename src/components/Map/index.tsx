@@ -21,8 +21,6 @@ import {
   ClusterClickHandlerType,
   setCursor,
   zoomIn,
-  getActiveLabelGroups,
-  isFaclilityActive,
 } from './mapUtil'
 import { useEaseOnBackToMap } from '@lib/hooks/useEaseOnBackToMap'
 import { useMapStylesLoaded } from '@lib/hooks/useMapStylesLoaded'
@@ -33,6 +31,10 @@ import { useMapHighlightMarker } from '@lib/hooks/useMapHighlightMarker'
 import { useMapSearchMarker } from '@lib/hooks/useMapSearchMarker'
 import { useMaplibreMap } from '@lib/hooks/useMaplibreMap'
 import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
+import {
+  getActiveLabelGroups,
+  isFaclilityActive,
+} from '@lib/facilityFilterUtil'
 
 interface MapType {
   markers?: MinimalRecordType[]
