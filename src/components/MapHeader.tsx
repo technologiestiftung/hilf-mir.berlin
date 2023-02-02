@@ -84,7 +84,7 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
         >
           <span
             className={classNames(
-              `border-t border-b border-r md:border-l border-gray-20 font-headline font-bold`,
+              `border-t border-b border-r md:border-l border-gray-20 font-bold`,
               listViewOpen && `border-l lg:border-l-0`,
               `px-4 py-2.5 h-12 text-xl`,
               `rounded group-focus:rounded`,

@@ -19,7 +19,7 @@ export const MapListSwitch: FC<MapListSwitchPropsType> = ({
       <button
         onClick={() => setListViewOpen(!listViewOpen)}
         className={classNames(
-          `lg:hidden max-w-[210px] font-headline font-bold`,
+          `lg:hidden max-w-[210px] font-bold`,
           `fixed sm:left-1/2 sm:-translate-x-1/2 z-30 items-center`,
           `left-1/2 -translate-x-1/2 bottom-8 rounded`,
           `border border-gray-20 px-4 py-2 text-xl`,

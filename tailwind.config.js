@@ -44,6 +44,15 @@ module.exports = {
         sidebarW: `420px`,
         mapW: `calc(100vw - 420px)`,
       },
+      animation: {
+        'fadein-delay-400': 'fadeIn 200ms ease-in-out 400ms 1 forwards',
+      },
+      keyframes: {
+        fadeIn: {
+          from: { opacity: 0 },
+          to: { opacity: 1 },
+        },
+      },
     },
   },
   plugins: [

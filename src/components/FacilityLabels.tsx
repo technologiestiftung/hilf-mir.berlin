@@ -5,7 +5,7 @@ import {
 import { useRecordLabels } from '@lib/hooks/useRecordLabels'
 import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { useTexts } from '@lib/TextsContext'
-import { FC } from 'react'
+import { FC, Fragment } from 'react'
 import { FiltersTextList } from './FiltersTextList'
 
 interface FacilityLabelsType {
@@ -60,12 +60,10 @@ export const FacilityLabels: FC<FacilityLabelsType> = ({
           {texts.languagesLabel}:{' '}
           {languages.map((language, idx) => {
             return (
-              <>
-                <span className="font-bold" key={language}>
-                  {language}
-                </span>
+              <Fragment key={language}>
+                <span className="font-bold">{language}</span>
                 {idx !== languages.length - 1 && ', '}
-              </>
+              </Fragment>
             )
           })}
         </div>
