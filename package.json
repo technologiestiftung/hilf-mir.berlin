@@ -1,6 +1,6 @@
 {
   "name": "wegweiser-frontend",
-  "version": "1.6.0-rc.8",
+  "version": "1.6.1-rc.1",
   "private": true,
   "scripts": {
     "dev": "next dev",

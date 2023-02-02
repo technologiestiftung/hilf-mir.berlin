@@ -1,5 +1,4 @@
-# [1.6.0-rc.8](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.6.0-rc.7...v1.6.0-rc.8) (2023-02-01)
-
+# [1.6.1-rc.1](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.6.0...v1.6.1-rc.1) (2023-02-02)
 
 ### Features
 
@@ -7,21 +6,28 @@
 * **WEG-169:** create first version of radio group component ([1bba8e4](https://github.com/technologiestiftung/wegweiser-frontend/commit/1bba8e4fe084ca484b9bca018930e76d82df0766))
 * **WEG-169:** let radio group change value ([d652bb6](https://github.com/technologiestiftung/wegweiser-frontend/commit/d652bb6919e4c08f0954116824a068d161e05cd4))
 * **WEG-169:** use radio group for focus group selection ([05b2b93](https://github.com/technologiestiftung/wegweiser-frontend/commit/05b2b9338c7dd6d9379b1bb9accbd9b980f6350f))
-
-# [1.6.0-rc.7](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.6.0-rc.6...v1.6.0-rc.7) (2023-02-01)
-
-
-### Features
-
 * **WEG-163:** Show highlight marker on mobile when preselecting a facility ([19c28f2](https://github.com/technologiestiftung/wegweiser-frontend/commit/19c28f28a06730b4c04c260567e9ec2422d8def0))
-
-# [1.6.0-rc.6](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.6.0-rc.5...v1.6.0-rc.6) (2023-02-01)
-
-
-### Features
-
 * **WEG-175:** hide opening times when closed everyday ([f47a150](https://github.com/technologiestiftung/wegweiser-frontend/commit/f47a150fcf79bf0639651292f136655f7b2f6a89))
 * **WEG-175:** only hide opening times when there is additional info ([2c28ab1](https://github.com/technologiestiftung/wegweiser-frontend/commit/2c28ab10cd7af4896bf0ff29d8b5c0ee50a7689f))
+
+# [1.6.0](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.5.0...v1.6.0) (2023-02-01)
+
+### Bug Fixes
+
+* **eslin:** Fix eslint formatting ([62ebdb9](https://github.com/technologiestiftung/wegweiser-frontend/commit/62ebdb9a9e863933246864798eee4290c565e67f))
+* **facilities:** Sort by active tags also when no location is active ([117152a](https://github.com/technologiestiftung/wegweiser-frontend/commit/117152a3077f8866b1705c95677d2e386319d683))
+* **MapHeader:** Reintroduce border on filter button ([130856e](https://github.com/technologiestiftung/wegweiser-frontend/commit/130856e7bc4d5dbbea81f8a5014c5fe1a88332ad))
+* **MapHeader:** Remove weird shadow and border on filter button ([0e5c5cb](https://github.com/technologiestiftung/wegweiser-frontend/commit/0e5c5cb2da263c4400e6dfd944cf3251e86f38be))
+* **WEG-159:** ensure map/list switch doesn't cover UI ([1bf67e7](https://github.com/technologiestiftung/wegweiser-frontend/commit/1bf67e7f9151a509bb5bc9a0b0f4eea530800bea))
+* **WEG-167:** hide map/list switch on non-map paths ([eb15d1c](https://github.com/technologiestiftung/wegweiser-frontend/commit/eb15d1c9edde6f0107968115476143f7413b255b))
+
+### Features
+
+* **WEG-160:** display all phone numbers ([b7b428d](https://github.com/technologiestiftung/wegweiser-frontend/commit/b7b428d9817bed12941af2d445a3594266d1221d))
+* **WEG-160:** only display first phone number ([d2ad97f](https://github.com/technologiestiftung/wegweiser-frontend/commit/d2ad97f9222402cf1d9c079317d8a228dfd60ac7))
+* **WEG-163:** Add opening hours help text ([03a5839](https://github.com/technologiestiftung/wegweiser-frontend/commit/03a5839fc52166fcbe55f209a0675cb162eefb20))
+* **WEG-164:** access languages from Grist ([86feb2c](https://github.com/technologiestiftung/wegweiser-frontend/commit/86feb2c481c63d8c27b8ac141605fb5a844b4040))
+* **WEG-164:** also display languages for facility ([df3096b](https://github.com/technologiestiftung/wegweiser-frontend/commit/df3096b3ad2fda25678032b7bda0e03e02c37962))
 
 # [1.6.0-rc.5](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.6.0-rc.4...v1.6.0-rc.5) (2023-01-31)
 
