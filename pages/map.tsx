@@ -113,7 +113,7 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
       labels,
     })
     return setFilteredRecords(sortFacilities(filteredRecords))
-  }, [labels, sortFacilities])
+  }, [urlState.tags?.join('-')])
 
   const [pageTitle, setPageTitle] = useState(texts.mapPageTitle)
 

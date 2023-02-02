@@ -211,7 +211,7 @@ export const FacilitiesMap: FC<MapType> = ({
         { active }
       )
     })
-  }, [map, markers, labels, mapLayersLoaded])
+  }, [map, markers, urlState.tags?.join('-'), mapLayersLoaded])
 
   useEffect(() => {
     if (!map) return
