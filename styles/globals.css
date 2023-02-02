@@ -2,98 +2,111 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-	@font-face {
-		font-family: 'DM Sans';
-		src: url('/fonts/DMSans-Italic.ttf?v=3.18') format('truetype');
-		font-weight: 400;
-		font-style: italic;
-		font-display: swap;
-	}
-	@font-face {
-		font-family: 'DM Sans';
-		src: url('/fonts/DMSans-Regular.ttf?v=3.18') format('truetype');
-		font-weight: 400;
-		font-style: normal;
-		font-display: swap;
-	}
-	@font-face {
-		font-family: 'DM Sans';
-		src: url('/fonts/DMSans-BoldItalic.ttf?v=3.18') format('truetype');
-		font-weight: bold;
-		font-style: italic;
-		font-display: swap;
-	}
-	@font-face {
-		font-family: 'DM Sans';
-		src: url('/fonts/DMSans-Bold.ttf?v=3.18') format('truetype');
-		font-weight: bold;
-		font-style: normal;
-		font-display: swap;
-	}
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/DMSans-Italic.ttf?v=3.18') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/DMSans-Regular.ttf?v=3.18') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/DMSans-BoldItalic.ttf?v=3.18') format('truetype');
+  font-weight: bold;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/DMSans-Bold.ttf?v=3.18') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
 
-  html, body {
-    @apply overflow-x-hidden font-sans bg-white;
-    -webkit-hyphens: auto;
-    -ms-hyphens: auto;
-    hyphens: auto;
-    hyphenate-limit-after: 1;
-    hyphenate-limit-before: 3;
-  }
-	h1 {
-		@apply text-3xl md:text-4xl font-bold;
-	}
+html, body {
+  @apply overflow-x-hidden font-sans bg-white;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphens: auto;
+  hyphenate-limit-after: 1;
+  hyphenate-limit-before: 3;
+}
 
-  .maplibregl-canvas-container canvas {
-    @apply focus:outline-none;
-  }
+*:focus-visible {
+  @apply outline outline-2 outline-primary;
+}
 
-  .maplibregl-canvas-container {
-    @apply relative w-full h-full focus-within:outline-none focus-within:border-2 focus-within:border-primary;
-  }
+h1 {
+  @apply text-3xl md:text-4xl font-bold;
+}
 
-  /* Spiderifier  */
-  .spidered-marker {
-    width: 1px;
-    height: 1px;
-    overflow: display;
-    will-change: transform;
-  }
+html .mapboxgl-map,
+html .maplibregl-map {
+  @apply font-sans;
+}
 
-  .spidered-marker:hover {
-    cursor: pointer;
-  }
+.maplibregl-canvas-container canvas {
+  @apply focus:outline-none;
+}
 
-  .spidered-marker .icon-div {
-    position: relative;
-    z-index: 1;
-  }
+.maplibregl-canvas-container {
+  @apply relative w-full h-full overflow-hidden box-border focus-within:outline-none focus-within:border-2 focus-within:border-primary;
+}
 
-  .spidered-marker .icon-div::before {
-    content: '';
-    @apply absolute z-10 border border-white rounded-full bg-primary -translate-x-1/2 -translate-y-1/2 transition-colors;
-    width: 22px;
-    height: 22px;
-  }
+.maplibregl-canvas-container:focus-within canvas {
+  margin-top: -2px;
+  margin-left: -2px;
+}
 
-  .spidered-marker .icon-div.active::before {
-    @apply ring-2 ring-primary ring-offset-2 ring-offset-white;
-  }
+/* Spiderifier  */
+.spidered-marker {
+  width: 1px;
+  height: 1px;
+  overflow: display;
+  will-change: transform;
+}
 
-  .spidered-marker:hover .icon-div::before {
-    @apply bg-gray-40;
-  }
+.spidered-marker:hover {
+  cursor: pointer;
+}
 
-  .spidered-marker .line-div {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 1.3px;
-    background-color: #343434;
-    transform-origin: bottom;
-    z-index: 0;
-    height: 0;
-  }
+.spidered-marker .icon-div {
+  position: relative;
+  z-index: 1;
+}
+
+.spidered-marker .icon-div::before {
+  content: '';
+  @apply absolute z-10 border border-white rounded-full bg-primary -translate-x-1/2 -translate-y-1/2 transition-colors;
+  width: 22px;
+  height: 22px;
+}
+
+.spidered-marker .icon-div.active::before {
+  @apply ring-2 ring-primary ring-offset-2 ring-offset-white;
+}
+
+.spidered-marker:hover .icon-div::before {
+  @apply bg-gray-40;
+}
+
+.spidered-marker .line-div {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 1.3px;
+  background-color: #343434;
+  transform-origin: bottom;
+  z-index: 0;
+  height: 0;
 }
 
 @layer utilities {

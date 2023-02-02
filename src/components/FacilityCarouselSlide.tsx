@@ -42,7 +42,7 @@ export const FacilityCarouselSlide: FC<MinimalRecordType> = (facility) => {
         <div className="max-w-[calc(100vw-40px)]">
           <h2
             className={classNames(
-              'font-headline font-bold text-xl px-5 pt-5',
+              'font-bold text-xl px-5 pt-5',
               `group-hover:text-primary transition-colors`,
               `group-focus:text-primary inline-flex gap-x-4 flex-wrap`
             )}

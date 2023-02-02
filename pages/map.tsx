@@ -13,6 +13,8 @@ import { loadData } from '@lib/loadData'
 import { useCallback, useEffect, useState } from 'react'
 import { useDistanceToUser } from '@lib/hooks/useDistanceToUser'
 import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
+import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
+import { getFilteredFacilities } from '@lib/facilityFilterUtil'
 
 export const getStaticProps: GetStaticProps = async () => {
   const { texts, labels, records } = await loadData()
@@ -48,7 +50,7 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
   const { isFallback } = useRouter()
   const { getDistanceToUser } = useDistanceToUser()
   const { useGeolocation } = useUserGeolocation()
-
+  const labels = useFiltersWithActiveProp()
   const [filteredRecords, setFilteredRecords] =
     useState<MinimalRecordType[]>(originalRecords)
 
@@ -106,13 +108,12 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
   )
 
   useEffect(() => {
-    const tags = urlState.tags || []
-    if (tags.length === 0) return
-    const newFilteredRecords = originalRecords.filter((record) =>
-      tags?.some((t) => record.labels.find((l) => l === t))
-    )
-    return setFilteredRecords(sortFacilities(newFilteredRecords))
-  }, [urlState.tags, originalRecords, sortFacilities])
+    const filteredRecords = getFilteredFacilities({
+      facilities: originalRecords,
+      labels,
+    })
+    return setFilteredRecords(sortFacilities(filteredRecords))
+  }, [urlState.tags?.join('-')])
 
   const [pageTitle, setPageTitle] = useState(texts.mapPageTitle)
 

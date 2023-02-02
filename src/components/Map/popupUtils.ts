@@ -35,7 +35,7 @@ export function getPopupHTML(
 
 function getTitleHTML(title: string): string {
   return `
-    <h2 class="font-headline font-bold text-lg px-1 leading-tight break-words flex justify-between items-end gap-4">
+    <h2 class="font-bold text-lg px-1 leading-tight break-words flex justify-between items-end gap-4">
       ${title}
     </h2>
   `
