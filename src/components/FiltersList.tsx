@@ -3,12 +3,13 @@ import classNames from '@lib/classNames'
 import { useUrlState } from '@lib/UrlStateContext'
 import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
 import { useTexts } from '@lib/TextsContext'
-import { FC } from 'react'
+import { FC, useEffect, useMemo, useState } from 'react'
 import { SwitchButton } from './SwitchButton'
 import { PrimaryButton } from './PrimaryButton'
 import { useRouter } from 'next/router'
 import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
 import { FiltersTagsList } from './FiltersTagsList'
+import { RadioGroup } from './RadioGroup'
 
 export const FiltersList: FC<{
   recordsWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
@@ -18,7 +19,9 @@ export const FiltersList: FC<{
   const texts = useTexts()
   const labels = useFiltersWithActiveProp()
   const [urlState, updateUrlState] = useUrlState()
-  const tags = urlState.tags || []
+
+  const tags = useMemo(() => urlState.tags || [], [urlState.tags])
+
   const {
     latitude,
     longitude,
@@ -36,6 +39,27 @@ export const FiltersList: FC<{
   const someTargetFiltersActive = targetGroups.some((targetGroup) =>
     tags.find((f) => f === targetGroup.id)
   )
+
+  const targetGroupIds = labels
+    .filter((label) => label.fields.group2 === 'zielpublikum')
+    .map((label) => label.id)
+
+  const [activeTargetGroupId, setActiveTargetGroupId] = useState(
+    tags.find((tag) => {
+      return targetGroupIds.includes(tag)
+    })
+  )
+
+  useEffect(() => {
+    if (tags.length === 0) return
+
+    const currentTargetGroupId = tags.find((tag) =>
+      targetGroupIds.includes(tag)
+    )
+    if (currentTargetGroupId) {
+      setActiveTargetGroupId(currentTargetGroupId)
+    }
+  }, [tags, targetGroupIds])
 
   const someGroupFiltersActive = labels
     .filter(({ fields }) => fields.group2 !== 'zielpublikum')
@@ -83,29 +107,46 @@ export const FiltersList: FC<{
         )}
       </div>
       <div className="md:flex md:flex-wrap md:items-start md:gap-x-4">
-        <h3
-          className={classNames(
-            `font-bold text-xl mb-3 w-full flex justify-between`
-          )}
-        >
-          {texts.filtersSearchTargetLabel}
-        </h3>
-        <ul className="flex flex-wrap gap-2 mb-5">
-          <FiltersTagsList
-            filters={targetGroups}
-            onLabelClick={updateFilters}
+        <div className="block">
+          <RadioGroup
+            className="mb-5"
+            label={texts.filtersSearchTargetLabel}
+            options={targetGroups.map((group) => {
+              return {
+                value: `${group.id}`,
+                label: group.fields.text,
+              }
+            })}
+            activeValue={activeTargetGroupId || ''}
+            onChange={(selectedValue) => {
+              const targetGroupAlreadyInUrl = tags.some((tag) => {
+                return targetGroupIds.includes(tag)
+              })
+
+              if (targetGroupAlreadyInUrl) {
+                const tagsWithoutOldTargetGroup = tags.filter((tag) => {
+                  return !targetGroupIds.includes(tag)
+                })
+                updateFilters([
+                  ...tagsWithoutOldTargetGroup,
+                  Number(selectedValue),
+                ])
+              } else {
+                updateFilters([...tags, Number(selectedValue)])
+              }
+            }}
           />
-        </ul>
+        </div>
         {someTargetFiltersActive && (
           <button
-            onClick={() =>
+            onClick={() => {
               updateFilters(
                 tags.filter((f) => {
-                  const label = labels.find(({ id }) => id === f)
-                  return label?.fields.group2 !== `zielpublikum`
+                  return !targetGroupIds.includes(f)
                 }) || []
               )
-            }
+              setActiveTargetGroupId(undefined)
+            }}
             className={classNames(
               `text-lg leading-6 text-left font-normal mb-8`,
               `focus:outline-none focus:ring-2 focus:ring-primary`,
