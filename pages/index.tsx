@@ -45,6 +45,18 @@ const Home: Page<HomePropsType> = ({ labels, recordsWithOnlyLabels }) => {
           Willkommen bei HILF-MIR Berlin - dein digitaler Wegweiser für
           Psychiatrie und Suchthilfe in Berlin
         </title>
+        <meta name="title" content="hilf-mir.berlin" />
+        <meta
+          name="description"
+          content="Hier findest Du schnell und einfach psychosoziale Hilfsangebote in ganz Berlin, die zu Deiner Situation passen."
+        />
+        <meta
+          name="keywords"
+          content="Hilfe,Beratung,Angst,Zwänge,Verzeiflung,Stimmen hören,Traurigkeit,Essverhalten,Einsamkeit,Beziehung zu anderen Menschen,Alkohol,Kiffen,Drogen,Glücksspiel,Gaming,Medikamente,LSTBIQ,Schwangerschaft,Sexuell übertragbare Infektionen,Körperliche Erkrankungen,Gewalterfahrungen"
+        />
+        <meta name="robots" content="index, follow" />
+        <meta name="revisit-after" content="30 days" />
+        <meta name="author" content="Technologiestiftung Berlin" />
       </Head>
       <div
         className={classNames('overflow-hidden', isMobile && 'fixed inset-0')}

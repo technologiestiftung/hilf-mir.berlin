@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "7.6.0",
+    "@saithodev/semantic-release-backmerge": "2.1.3",
     "@tailwindcss/line-clamp": "0.4.2",
     "@tailwindcss/typography": "0.5.9",
     "@technologiestiftung/semantic-release-config": "1.2.0",
