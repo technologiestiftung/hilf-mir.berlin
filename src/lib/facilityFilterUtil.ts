@@ -9,7 +9,7 @@ interface GetFilteredFacilitiesPropType {
 interface IsFaclilityActivePropType {
   activeTargetLabels: GristLabelType[]
   activeTopcisLabels: GristLabelType[]
-  facility: MinimalRecordType
+  facilityLabels: GristLabelType['id'][]
   isFilteredByTarget: boolean
   isFilteredByTopic: boolean
 }
@@ -19,14 +19,14 @@ export const isFaclilityActive = ({
   activeTopcisLabels,
   isFilteredByTarget,
   isFilteredByTopic,
-  facility,
+  facilityLabels,
 }: IsFaclilityActivePropType): boolean => {
   if (!isFilteredByTopic && !isFilteredByTarget) return true
   const hasSomeOfTheActiveTopics =
-    activeTopcisLabels?.some((tag) => facility.labels.includes(tag.id)) || false
+    activeTopcisLabels?.some((tag) => facilityLabels.includes(tag.id)) || false
   const hasAnActiveTarget =
     (activeTargetLabels[0] &&
-      facility.labels.includes(activeTargetLabels[0].id)) ||
+      facilityLabels.includes(activeTargetLabels[0].id)) ||
     false
 
   if (!isFilteredByTopic && isFilteredByTarget) return hasAnActiveTarget
@@ -54,7 +54,7 @@ export const getFilteredFacilities = ({
   if (!isFilteredByTopic && !isFilteredByTarget) return facilities
   return facilities.filter((facility) => {
     return isFaclilityActive({
-      facility,
+      facilityLabels: facility.labels,
       activeTopcisLabels,
       activeTargetLabels,
       isFilteredByTopic,

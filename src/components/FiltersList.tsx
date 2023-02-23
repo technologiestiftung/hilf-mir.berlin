@@ -10,6 +10,7 @@ import { useRouter } from 'next/router'
 import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
 import { FiltersTagsList } from './FiltersTagsList'
 import { RadioGroup } from './RadioGroup'
+import { isFaclilityActive } from '@lib/facilityFilterUtil'
 
 export const FiltersList: FC<{
   recordsWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
@@ -65,9 +66,25 @@ export const FiltersList: FC<{
     .filter(({ fields }) => fields.group2 !== 'zielpublikum')
     .some(({ id }) => tags.find((f) => f === id))
 
-  const filteredRecords = recordsWithOnlyLabels.filter((recordLabels) =>
-    tags.some((tagId) => recordLabels.find((labelId) => labelId === tagId))
+  const activeTopcisLabels = [...group1, ...group2, ...group3].filter(
+    (topic) => topic.isActive
   )
+
+  const activeTragetLabels = targetGroups.filter((target) => target.isActive)
+
+  const isFilteredByTopic = activeTopcisLabels.length > 0
+  const isFilteredByTarget = activeTragetLabels.length > 0
+
+  const filteredRecords = recordsWithOnlyLabels.filter((recordLabels) => {
+    if (!isFilteredByTopic && !isFilteredByTarget) return true
+    return isFaclilityActive({
+      isFilteredByTopic,
+      isFilteredByTarget,
+      facilityLabels: recordLabels,
+      activeTargetLabels: activeTragetLabels,
+      activeTopcisLabels: activeTopcisLabels,
+    })
+  })
 
   const updateFilters = (newTags: number[]): void => {
     updateUrlState({ tags: newTags })

@@ -199,7 +199,7 @@ export const FacilitiesMap: FC<MapType> = ({
     const isFilteredByTarget = activeTargetLabels.length > 0
     markers.forEach((marker) => {
       const active = isFaclilityActive({
-        facility: marker,
+        facilityLabels: marker.labels,
         activeTopcisLabels,
         activeTargetLabels,
         isFilteredByTopic,
