@@ -10,6 +10,10 @@ export const useFilteredFacilitiesCount = (
   facilitiesWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
 ): number => {
   const labels = useFiltersWithActiveProp()
+  const concatenatedActiveLabelIds = labels
+    .filter((label) => label.isActive)
+    .map((label) => label.id)
+    .join('-')
 
   const [filteredFacilities, setFilteredFacilities] = useState(
     facilitiesWithOnlyLabels
@@ -34,8 +38,10 @@ export const useFilteredFacilitiesCount = (
         })
       }
     )
+
     setFilteredFacilities(filteredFacilities)
-  }, [labels.join('-'), facilitiesWithOnlyLabels])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [concatenatedActiveLabelIds, facilitiesWithOnlyLabels])
 
   return filteredFacilities.length
 }
