@@ -1,3 +1,16 @@
+# [1.7.0](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.6.0...v1.7.0) (2023-02-02)
+
+
+### Features
+
+* **WEG-163:** Show highlight marker on mobile when preselecting a facility ([19c28f2](https://github.com/technologiestiftung/wegweiser-frontend/commit/19c28f28a06730b4c04c260567e9ec2422d8def0))
+* **WEG-169:** control active value of radio group ([f6f78f4](https://github.com/technologiestiftung/wegweiser-frontend/commit/f6f78f40874e160c5cd6b6db31df6bd826d767a9))
+* **WEG-169:** create first version of radio group component ([1bba8e4](https://github.com/technologiestiftung/wegweiser-frontend/commit/1bba8e4fe084ca484b9bca018930e76d82df0766))
+* **WEG-169:** let radio group change value ([d652bb6](https://github.com/technologiestiftung/wegweiser-frontend/commit/d652bb6919e4c08f0954116824a068d161e05cd4))
+* **WEG-169:** use radio group for focus group selection ([05b2b93](https://github.com/technologiestiftung/wegweiser-frontend/commit/05b2b9338c7dd6d9379b1bb9accbd9b980f6350f))
+* **WEG-175:** hide opening times when closed everyday ([f47a150](https://github.com/technologiestiftung/wegweiser-frontend/commit/f47a150fcf79bf0639651292f136655f7b2f6a89))
+* **WEG-175:** only hide opening times when there is additional info ([2c28ab1](https://github.com/technologiestiftung/wegweiser-frontend/commit/2c28ab10cd7af4896bf0ff29d8b5c0ee50a7689f))
+
 # [1.7.0-rc.1](https://github.com/technologiestiftung/wegweiser-frontend/compare/v1.6.0...v1.7.0-rc.1) (2023-02-02)
 
 
