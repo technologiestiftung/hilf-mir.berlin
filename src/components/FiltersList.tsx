@@ -10,6 +10,7 @@ import { useRouter } from 'next/router'
 import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
 import { FiltersTagsList } from './FiltersTagsList'
 import { RadioGroup } from './RadioGroup'
+import { useFilteredFacilitiesCount } from '@lib/hooks/useFilteredFacilitiesCount'
 
 export const FiltersList: FC<{
   recordsWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
@@ -29,6 +30,10 @@ export const FiltersList: FC<{
     setGeolocationUsage,
     geolocationIsForbidden,
   } = useUserGeolocation()
+
+  const filteredFacilitiesCount = useFilteredFacilitiesCount(
+    recordsWithOnlyLabels
+  )
 
   const group1 = labels.filter(({ fields }) => fields.group2 === 'gruppe-1')
   const group2 = labels.filter(({ fields }) => fields.group2 === 'gruppe-2')
@@ -64,10 +69,6 @@ export const FiltersList: FC<{
   const someGroupFiltersActive = labels
     .filter(({ fields }) => fields.group2 !== 'zielpublikum')
     .some(({ id }) => tags.find((f) => f === id))
-
-  const filteredRecords = recordsWithOnlyLabels.filter((recordLabels) =>
-    tags.some((tagId) => recordLabels.find((labelId) => labelId === tagId))
-  )
 
   const updateFilters = (newTags: number[]): void => {
     updateUrlState({ tags: newTags })
@@ -177,9 +178,9 @@ export const FiltersList: FC<{
               },
             })
           }}
-          disabled={tags.length > 0 && filteredRecords.length === 0}
+          disabled={tags.length > 0 && filteredFacilitiesCount === 0}
           tooltip={
-            tags.length > 0 && filteredRecords.length === 0
+            tags.length > 0 && filteredFacilitiesCount === 0
               ? texts.filtersButtonTextFilteredNoResultsHint
               : ''
           }
@@ -187,16 +188,16 @@ export const FiltersList: FC<{
           {(tags.length === 0 || tags.length === labels.length) &&
             texts.filtersButtonTextAllFilters}
           {tags.length > 0 &&
-            filteredRecords.length === 1 &&
+            filteredFacilitiesCount === 1 &&
             texts.filtersButtonTextFilteredSingular}
           {tags.length > 0 &&
-            filteredRecords.length > 1 &&
+            filteredFacilitiesCount > 1 &&
             texts.filtersButtonTextFilteredPlural.replace(
               '#number',
-              `${filteredRecords.length}`
+              `${filteredFacilitiesCount}`
             )}
           {tags.length > 0 &&
-            filteredRecords.length === 0 &&
+            filteredFacilitiesCount === 0 &&
             texts.filtersButtonTextFilteredNoResults}
         </PrimaryButton>
       </div>
