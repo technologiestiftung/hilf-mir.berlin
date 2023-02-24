@@ -56,11 +56,6 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
 
   const { Strasse, Hausnummer, PLZ, Zusatz, Art_der_Anmeldung } =
     facility.fields
-  const addressOneLiner =
-    Strasse && Hausnummer && PLZ
-      ? `${Strasse} ${Hausnummer}, ${PLZ} Berlin`
-      : undefined
-  const addressAddition = Zusatz
 
   const accessibility = facility.fields.Barrierefreiheit.trim().toLowerCase()
 
@@ -96,7 +91,14 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
       icon: <Geopin />,
       text: (
         <>
-          {addressOneLiner} <br /> {addressAddition}
+          {Strasse} {Hausnummer}{' '}
+          {Zusatz && (
+            <>
+              <br />
+              <>{Zusatz}</>
+            </>
+          )}
+          <br /> {PLZ} Berlin
         </>
       ),
     },
