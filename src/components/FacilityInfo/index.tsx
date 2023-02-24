@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, ReactNode } from 'react'
 import { TableRowType } from '@common/types/gristData'
 import { useDistanceToUser } from '@lib/hooks/useDistanceToUser'
 import { useIsFacilityOpened } from '@lib/hooks/useIsFacilityOpened'
@@ -54,11 +54,8 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
   })
   const { allLabels } = useRecordLabels(facility.fields.Schlagworte)
 
-  const { Strasse, Hausnummer, PLZ, Art_der_Anmeldung } = facility.fields
-  const addressOneLiner =
-    Strasse && Hausnummer && PLZ
-      ? `${Strasse} ${Hausnummer}, ${PLZ} Berlin`
-      : undefined
+  const { Strasse, Hausnummer, PLZ, Zusatz, Art_der_Anmeldung } =
+    facility.fields
 
   const accessibility = facility.fields.Barrierefreiheit.trim().toLowerCase()
 
@@ -92,7 +89,18 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
   const infoList = [
     {
       icon: <Geopin />,
-      text: addressOneLiner,
+      text: (
+        <>
+          {Strasse} {Hausnummer}{' '}
+          {Zusatz && (
+            <>
+              <br />
+              <>{Zusatz}</>
+            </>
+          )}
+          <br /> {PLZ} Berlin
+        </>
+      ),
     },
     accessibility !== 'nein' &&
       accessibility !== 'keine angabe' && {
@@ -112,7 +120,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
     ...phoneNumberItems,
   ].filter((info) => typeof info === 'object' && !!info.text) as {
     icon: JSX.Element
-    text: string
+    text: string | ReactNode
     href?: string
   }[]
 
