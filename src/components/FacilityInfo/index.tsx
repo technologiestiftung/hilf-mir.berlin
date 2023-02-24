@@ -54,7 +54,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
   })
   const { allLabels } = useRecordLabels(facility.fields.Schlagworte)
 
-  const { Strasse, Hausnummer, PLZ } = facility.fields
+  const { Strasse, Hausnummer, PLZ, Art_der_Anmeldung } = facility.fields
   const addressOneLiner =
     Strasse && Hausnummer && PLZ
       ? `${Strasse} ${Hausnummer}, ${PLZ} Berlin`
@@ -254,9 +254,12 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
               </>
             )}
             {parsedFacilty.openingTimesText && (
-              <p className="whitespace-pre-wrap p-5 pt-8">
+              <p className="whitespace-pre-wrap px-5 mt-7">
                 {parsedFacilty.openingTimesText}
               </p>
+            )}
+            {Art_der_Anmeldung && (
+              <p className="mt-7 px-5">{Art_der_Anmeldung}</p>
             )}
           </div>
         )}
