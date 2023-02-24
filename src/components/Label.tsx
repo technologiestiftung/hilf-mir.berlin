@@ -26,7 +26,7 @@ export const Label: FC<{
           `py-1.5 border text-lg flex gap-2 text-left leading-6 pl-2 pr-3 group rounded`,
           isActive &&
             isInteractive &&
-            `bg-primary border-primary text-white hover:bg-gray-60 focus:group-hover:bg-primary hover:border-gray-60`,
+            `bg-primary border-primary text-white focus:group-hover:bg-primary`,
           (!isActive || !isInteractive) && ` border-gray-20`,
           !isActive && isInteractive && 'hover:bg-gray-10',
           isInteractive && [
