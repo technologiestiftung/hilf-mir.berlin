@@ -77,8 +77,7 @@ export const Footer: FC = () => {
             </div>
           </div>
           <p className="max-w-xl lg:max-w-[325px] text-sm lg:translate-y-7">
-            Unterstützt durch die Senatsverwaltung für Wissenschaft, Gesundheit,
-            Pflege und Gleichstellung (SenWGPG).
+            {texts.footerCooperationLabel}
           </p>
         </section>
       </footer>

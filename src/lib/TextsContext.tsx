@@ -20,8 +20,6 @@ const defaultValue = {
   footerCityLABLogoAltText: '',
   footerCityLABLogoLink: '',
   footerCooperationLabel: '',
-  footerSenWGPGLogoAltText: '',
-  footerSenWGPGLogoLink: '',
   footerProjectSponsorLabel: '',
   footerSentatskanzleiLogoAltText: '',
   footerSentatskanzleiLogoLink: '',
