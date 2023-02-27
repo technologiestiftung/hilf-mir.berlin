@@ -17,8 +17,8 @@ export const Footer: FC = () => {
             `md:container md:max-w-7xl md:mx-auto md:px-8`
           )}
         >
-          <div className="flex gap-x-8 md:gap-x-12">
-            <div className="flex flex-col gap-y-3">
+          <div className="w-full sm:w-auto flex flex-wrap gap-x-3 gap-y-8 sm:gap-x-8 md:gap-x-12 justify-between">
+            <div className="flex flex-col gap-y-2 sm:gap-y-3">
               <h4 className="text-sm">{texts.footerProjectOwnerLabel}</h4>
               <a
                 href={texts.footerTSBLogoLink}
@@ -37,7 +37,7 @@ export const Footer: FC = () => {
                 />
               </a>
             </div>
-            <div className="flex flex-col gap-y-3">
+            <div className="flex flex-col gap-y-2 sm:gap-y-3">
               <h4 className="text-sm">{texts.footerProjectExecutionerLabel}</h4>
               <a
                 href={texts.footerCityLABLogoLink}
@@ -56,7 +56,7 @@ export const Footer: FC = () => {
                 />
               </a>
             </div>
-            <div className="flex flex-col gap-y-3">
+            <div className="flex flex-col gap-y-2 sm:gap-y-3">
               <h4 className="text-sm">{texts.footerProjectSponsorLabel}</h4>
               <a
                 href={texts.footerSentatskanzleiLogoLink}

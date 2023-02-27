@@ -1,6 +1,5 @@
 import type { GetStaticProps } from 'next'
 import Head from 'next/head'
-import { useIsMobile } from '@lib/hooks/useIsMobile'
 import { LegalFooter } from '@components/LegalFooter'
 import { Page } from '@common/types/nextPage'
 import classNames from '@lib/classNames'
@@ -9,6 +8,7 @@ import { FaqList } from '@components/FaqList'
 import { BackButton } from '@components/BackButton'
 import { useRouter } from 'next/router'
 import { About } from '@components/About'
+import { Footer } from '@components/Footer'
 
 export const getStaticProps: GetStaticProps = async () => {
   const { texts } = await loadData()
@@ -20,7 +20,6 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 const Info: Page = () => {
-  const isMobile = useIsMobile()
   const { back } = useRouter()
   return (
     <div>
@@ -40,7 +39,8 @@ const Info: Page = () => {
           </div>
         </div>
       </div>
-      {!isMobile && <LegalFooter />}
+      <Footer />
+      <LegalFooter />
     </div>
   )
 }

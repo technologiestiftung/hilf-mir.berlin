@@ -11,12 +11,13 @@ export const LegalFooter: FC = () => {
         <div
           className={classNames(
             'md:container mx-auto md:max-w-7xl',
-            'py-5 px-5 md:py-8 lg:px-8',
+            'px-5 py-10 lg:px-8',
             'flex gap-x-4 gap-y-3 flex-wrap justify-between'
           )}
         >
-          <p className="text-sm text-gray-60">
-            <b>{texts.disclaimerPrefix}</b> {texts.disclaimerContent}
+          <p className="text-sm px-2 py-0.5 rounded text-gray-60 border border-gray-10 bg-gray-10 bg-opacity-25">
+            <b className="text-gray-80">{texts.disclaimerPrefix}</b>{' '}
+            {texts.disclaimerContent}
           </p>
           <section
             className={classNames(

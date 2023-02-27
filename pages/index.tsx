@@ -60,10 +60,7 @@ const Home: Page<HomePropsType> = ({ labels, recordsWithOnlyLabels }) => {
         <meta name="author" content="Technologiestiftung Berlin" />
       </Head>
       <div
-        className={classNames(
-          'overflow-hidden pb-20',
-          isMobile && 'fixed inset-0'
-        )}
+        className={classNames('overflow-hidden', isMobile && 'fixed inset-0')}
       >
         <div
           className={classNames(
