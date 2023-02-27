@@ -15,7 +15,7 @@ export const LegalFooter: FC = () => {
             'flex gap-x-4 gap-y-3 flex-wrap justify-between'
           )}
         >
-          <p className="text-sm">
+          <p className="text-sm text-gray-60">
             <b>{texts.disclaimerPrefix}</b> {texts.disclaimerContent}
           </p>
           <section
