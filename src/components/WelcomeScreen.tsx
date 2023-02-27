@@ -9,6 +9,7 @@ import { useRouter } from 'next/router'
 import classNames from '@lib/classNames'
 import { useIsMobile } from '@lib/hooks/useIsMobile'
 import { LegalFooter } from './LegalFooter'
+import { Footer } from './Footer'
 
 export const WelcomeScreen: FC<{
   onShowOffers: () => void
@@ -42,7 +43,7 @@ export const WelcomeScreen: FC<{
           dangerouslySetInnerHTML={{ __html: texts.homeWelcomeText }}
         />
         {isMobile && (
-          <div className="flex flex-col p-5 pt-8 gap-2">
+          <div className="flex flex-col p-5 pt-8 pb-20 gap-2">
             <PrimaryButton onClick={onShowOffers}>
               {texts.findOffersButtonText}
             </PrimaryButton>
@@ -66,7 +67,12 @@ export const WelcomeScreen: FC<{
             </a>
           </div>
         )}
-        {isMobile && <LegalFooter />}
+        {isMobile && (
+          <>
+            <Footer />
+            <LegalFooter />
+          </>
+        )}
       </div>
     </div>
   )

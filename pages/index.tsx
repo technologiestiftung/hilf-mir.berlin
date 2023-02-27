@@ -10,6 +10,7 @@ import { LegalFooter } from '@components/LegalFooter'
 import { Page } from '@common/types/nextPage'
 import { LabelsProvider } from '@lib/LabelsContext'
 import { loadData } from '@lib/loadData'
+import { Footer } from '@components/Footer'
 
 export const getStaticProps: GetStaticProps = async () => {
   const { texts, labels, records } = await loadData()
@@ -59,7 +60,10 @@ const Home: Page<HomePropsType> = ({ labels, recordsWithOnlyLabels }) => {
         <meta name="author" content="Technologiestiftung Berlin" />
       </Head>
       <div
-        className={classNames('overflow-hidden', isMobile && 'fixed inset-0')}
+        className={classNames(
+          'overflow-hidden pb-20',
+          isMobile && 'fixed inset-0'
+        )}
       >
         <div
           className={classNames(
@@ -75,7 +79,12 @@ const Home: Page<HomePropsType> = ({ labels, recordsWithOnlyLabels }) => {
           />
         </div>
       </div>
-      {!isMobile && <LegalFooter />}
+      {!isMobile && (
+        <>
+          <Footer />
+          <LegalFooter />
+        </>
+      )}
     </LabelsProvider>
   )
 }
