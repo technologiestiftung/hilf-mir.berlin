@@ -7,6 +7,14 @@ module.exports = {
   ],
   theme: {
     colors: {
+      purple: {
+        50: '#F9F1F7',
+        200: '#ECD5E6',
+        500: '#773666',
+        700: '#4A1A3E',
+      },
+      // TODO: Note that currently primary and purple-500 are the same.
+      // When there is time for refactoring, we should use the purple scale everywhere.
       primary: '#773666',
       black: '#0A1045',
       success: '#4f9033',
