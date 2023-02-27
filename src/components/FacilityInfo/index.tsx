@@ -82,10 +82,6 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
 
   const facilityIsLabelledAsOpen247 = parsedFacilty.open247
 
-  const everydayClosedButHasInfoText =
-    allDaysStateThatFacilityIsClosed &&
-    parsedFacilty.openingTimesText.length > 0
-
   const infoList = [
     {
       icon: <Geopin />,
@@ -222,45 +218,46 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
                 </p>
               </div>
             )}
-            {!facilityIsLabelledAsOpen247 && !everydayClosedButHasInfoText && (
-              <>
-                <OpenDaysItem
-                  isActive={todayKey === 'Montag'}
-                  day={texts.weekdayMonday}
-                  hours={facility.fields.Montag}
-                />
-                <OpenDaysItem
-                  isActive={todayKey === 'Dienstag'}
-                  day={texts.weekdayTuesday}
-                  hours={facility.fields.Dienstag}
-                />
-                <OpenDaysItem
-                  isActive={todayKey === 'Mittwoch'}
-                  day={texts.weekdayWednesday}
-                  hours={facility.fields.Mittwoch}
-                />
-                <OpenDaysItem
-                  isActive={todayKey === 'Donnerstag'}
-                  day={texts.weekdayThursday}
-                  hours={facility.fields.Donnerstag}
-                />
-                <OpenDaysItem
-                  isActive={todayKey === 'Freitag'}
-                  day={texts.weekdayFriday}
-                  hours={facility.fields.Freitag}
-                />
-                <OpenDaysItem
-                  isActive={todayKey === 'Samstag'}
-                  day={texts.weekdaySaturday}
-                  hours={facility.fields.Samstag}
-                />
-                <OpenDaysItem
-                  isActive={todayKey === 'Sonntag'}
-                  day={texts.weekdaySunday}
-                  hours={facility.fields.Sonntag}
-                />
-              </>
-            )}
+            {!facilityIsLabelledAsOpen247 &&
+              !allDaysStateThatFacilityIsClosed && (
+                <>
+                  <OpenDaysItem
+                    isActive={todayKey === 'Montag'}
+                    day={texts.weekdayMonday}
+                    hours={facility.fields.Montag}
+                  />
+                  <OpenDaysItem
+                    isActive={todayKey === 'Dienstag'}
+                    day={texts.weekdayTuesday}
+                    hours={facility.fields.Dienstag}
+                  />
+                  <OpenDaysItem
+                    isActive={todayKey === 'Mittwoch'}
+                    day={texts.weekdayWednesday}
+                    hours={facility.fields.Mittwoch}
+                  />
+                  <OpenDaysItem
+                    isActive={todayKey === 'Donnerstag'}
+                    day={texts.weekdayThursday}
+                    hours={facility.fields.Donnerstag}
+                  />
+                  <OpenDaysItem
+                    isActive={todayKey === 'Freitag'}
+                    day={texts.weekdayFriday}
+                    hours={facility.fields.Freitag}
+                  />
+                  <OpenDaysItem
+                    isActive={todayKey === 'Samstag'}
+                    day={texts.weekdaySaturday}
+                    hours={facility.fields.Samstag}
+                  />
+                  <OpenDaysItem
+                    isActive={todayKey === 'Sonntag'}
+                    day={texts.weekdaySunday}
+                    hours={facility.fields.Sonntag}
+                  />
+                </>
+              )}
             {parsedFacilty.openingTimesText && (
               <p className="whitespace-pre-wrap px-5 mt-7">
                 {parsedFacilty.openingTimesText}
