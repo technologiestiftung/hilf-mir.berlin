@@ -20,8 +20,6 @@ const defaultValue = {
   footerCityLABLogoAltText: '',
   footerCityLABLogoLink: '',
   footerCooperationLabel: '',
-  footerSenWGPGLogoAltText: '',
-  footerSenWGPGLogoLink: '',
   footerProjectSponsorLabel: '',
   footerSentatskanzleiLogoAltText: '',
   footerSentatskanzleiLogoLink: '',
@@ -113,6 +111,8 @@ const defaultValue = {
   allOtherFiltersLabel: '',
   clickToExpandPopupLabel: '',
   multipleFacilitiesPopupTitle: '',
+  disclaimerPrefix: '',
+  disclaimerContent: '',
 }
 
 export type TextsMapType = typeof defaultValue

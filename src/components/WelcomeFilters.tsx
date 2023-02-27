@@ -10,6 +10,7 @@ import { useRouter } from 'next/router'
 import { Phone } from './icons/Phone'
 import classNames from '@lib/classNames'
 import { TextLink } from './TextLink'
+import { Footer } from './Footer'
 
 export const WelcomeFilters: FC<{
   onGoBack: () => void
@@ -53,13 +54,18 @@ export const WelcomeFilters: FC<{
             dangerouslySetInnerHTML={{ __html: texts.welcomeFiltersText }}
           />
           <FiltersList recordsWithOnlyLabels={recordsWithOnlyLabels} />
-          <div className="hidden md:block w-full mt-6">
+          <div className="hidden md:block w-full mt-6 pb-0 lg:pb-20">
             <TextLink href={texts.moreOffersKVBLinkUrl}>
               {texts.moreOffersKVBLinkText}
             </TextLink>
           </div>
         </div>
-        {isMobile && <LegalFooter />}
+        {isMobile && (
+          <>
+            <Footer />
+            <LegalFooter />
+          </>
+        )}
       </div>
     </>
   )

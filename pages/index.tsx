@@ -10,6 +10,7 @@ import { LegalFooter } from '@components/LegalFooter'
 import { Page } from '@common/types/nextPage'
 import { LabelsProvider } from '@lib/LabelsContext'
 import { loadData } from '@lib/loadData'
+import { Footer } from '@components/Footer'
 
 export const getStaticProps: GetStaticProps = async () => {
   const { texts, labels, records } = await loadData()
@@ -75,7 +76,12 @@ const Home: Page<HomePropsType> = ({ labels, recordsWithOnlyLabels }) => {
           />
         </div>
       </div>
-      {!isMobile && <LegalFooter />}
+      {!isMobile && (
+        <>
+          <Footer />
+          <LegalFooter />
+        </>
+      )}
     </LabelsProvider>
   )
 }
