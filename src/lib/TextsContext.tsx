@@ -113,6 +113,8 @@ const defaultValue = {
   allOtherFiltersLabel: '',
   clickToExpandPopupLabel: '',
   multipleFacilitiesPopupTitle: '',
+  disclaimerPrefix: '',
+  disclaimerContent: '',
 }
 
 export type TextsMapType = typeof defaultValue
