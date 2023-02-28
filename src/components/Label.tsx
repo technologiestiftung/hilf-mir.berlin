@@ -23,12 +23,14 @@ export const Label: FC<{
         onClick={() => onClick(label.id)}
         className={classNames(
           className,
-          `py-1.5 border text-lg flex gap-2 text-left leading-6 pl-2 pr-3 group rounded`,
+          `py-1.5 text-lg flex gap-2 text-left leading-6 pl-2 pr-3 rounded`,
           isActive &&
             isInteractive &&
-            `bg-primary border-primary text-white focus:group-hover:bg-primary`,
+            `bg-primary border-primary text-white hover:bg-purple-400`,
           (!isActive || !isInteractive) && ` border-gray-20`,
-          !isActive && isInteractive && 'hover:bg-gray-10',
+          !isActive &&
+            isInteractive &&
+            'bg-purple-50 hover:bg-purple-200 text-purple-700',
           isInteractive && [
             `focus:outline-none focus:ring-2 focus:ring-primary`,
             `focus:ring-offset-2 focus:ring-offset-white`,
