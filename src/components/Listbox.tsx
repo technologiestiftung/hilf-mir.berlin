@@ -2,6 +2,7 @@ import { FC, Fragment, ReactNode } from 'react'
 import { Listbox as HeadlessListbox, Transition } from '@headlessui/react'
 import { ChevronUpDown as ChevronUpDownIcon } from './icons/ChevronUpDown'
 import { Check } from './icons/Check'
+import classNames from '@lib/classNames'
 
 interface ListboxOptionType {
   label: string | ReactNode
@@ -33,16 +34,34 @@ export const Listbox: FC<ListboxType> = ({
   return (
     <div className={className}>
       <HeadlessListbox value={activeOption} onChange={handleChange}>
-        <HeadlessListbox.Label className="font-bold text-lg w-full flex justify-between">
+        <HeadlessListbox.Label
+          className={classNames(
+            'w-full flex justify-between',
+            'font-bold text-lg'
+          )}
+        >
           {label}
         </HeadlessListbox.Label>
         <div className="relative mt-2">
-          <HeadlessListbox.Button className="text-lg relative w-full rounded bg-white py-1 pl-3 pr-10 text-left border border-gray-20 focus:outline-none focus-visible:border-purple-500 focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white cursor-pointer">
+          <HeadlessListbox.Button
+            className={classNames(
+              'relative w-full py-1 pl-3 pr-10 cursor-pointer',
+              'text-lg text-left',
+              'bg-white border border-gray-20 rounded',
+              'focus:outline-none focus-visible:border-purple-500 focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white'
+            )}
+          >
             <span className="block truncate">
               {mergedOptions.find((option) => option.value === activeOption)
                 ?.label || nullSelectionLabel}
             </span>
-            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+            <span
+              className={classNames(
+                'absolute inset-y-0 right-0 pr-2',
+                'flex items-center',
+                'pointer-events-none'
+              )}
+            >
               <ChevronUpDownIcon className="w-4 h-4 text-gray-40" />
             </span>
           </HeadlessListbox.Button>
@@ -52,7 +71,14 @@ export const Listbox: FC<ListboxType> = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <HeadlessListbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded bg-white py-1 shadow-lg ring-1 ring-purple-500 ring-opacity-5 focus:outline-none">
+            <HeadlessListbox.Options
+              className={classNames(
+                'mt-1 py-1',
+                'absolute max-h-60 w-full overflow-auto',
+                'rounded bg-white',
+                'shadow-lg ring-1 ring-purple-500 ring-opacity-5 focus:outline-none'
+              )}
+            >
               {mergedOptions.map((option, optionIdx) => (
                 <HeadlessListbox.Option
                   key={optionIdx}
@@ -73,7 +99,7 @@ export const Listbox: FC<ListboxType> = ({
                         {option.label}
                       </span>
                       {selected ? (
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                           <Check className="w-4 h-4" />
                         </span>
                       ) : null}
