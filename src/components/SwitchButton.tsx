@@ -21,7 +21,7 @@ export const SwitchButton: FC<SwitchButtonPropsType> = ({
     onClick={() => !disabled && onToggle(!value)}
     className={classNames(
       className,
-      `mb-8 flex w-full gap-5 text-lg items-center`,
+      `mb-8 flex w-max gap-5 text-lg items-center`,
       `transition-colors relative text-left`,
       `focus:outline-none group`,
       !disabled && `hover:text-primary`,
