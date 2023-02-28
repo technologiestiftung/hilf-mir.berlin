@@ -101,9 +101,8 @@ export const FiltersList: FC<{
           </button>
         )}
       </div>
-
       <div className="grid">
-        <div className="block w-max z-10">
+        <div className="block">
           <Listbox
             label={texts.filtersSearchTargetLabel}
             options={targetGroups.map((group) => {
@@ -158,7 +157,7 @@ export const FiltersList: FC<{
           {texts.filtersGeoSearchLabel}
         </SwitchButton>
         <PrimaryButton
-          className="w-full md:w-max"
+          className="w-max"
           onClick={() => {
             onSubmit()
             void push({
