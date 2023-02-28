@@ -113,6 +113,7 @@ export const FiltersList: FC<{
               }
             })}
             activeOption={activeTargetGroupId || null}
+            nullSelectionLabel={texts.noTargetPreferenceButtonText}
             onChange={(selectedValue) => {
               const hasValidTargetGroup = !!selectedValue
               const targetGroupAlreadyInUrl = tags.some((tag) => {
