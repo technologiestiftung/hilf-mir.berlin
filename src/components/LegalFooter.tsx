@@ -7,49 +7,60 @@ export const LegalFooter: FC = () => {
   const texts = useTexts()
   return (
     <>
-      <footer className={classNames(`py-5 md:py-8 border-t border-gray-20`)}>
-        <section
+      <footer className={classNames(`border-t border-gray-20`)}>
+        <div
           className={classNames(
-            `flex gap-x-6 gap-y-4 flex-wrap text-gray-40`,
-            `md:container md:max-w-7xl md:mx-auto px-5 md:px-8`
+            'md:container mx-auto md:max-w-7xl',
+            'px-5 py-10 lg:px-8',
+            'flex gap-x-4 gap-y-3 flex-wrap justify-between'
           )}
         >
-          <Link href="/info">
+          <p className="text-sm px-2 py-0.5 rounded text-gray-60 border border-gray-10 bg-gray-10 bg-opacity-25">
+            <b className="text-gray-80">{texts.disclaimerPrefix}</b>{' '}
+            {texts.disclaimerContent}
+          </p>
+          <section
+            className={classNames(
+              `flex gap-x-6 gap-y-4 flex-wrap text-gray-40`
+            )}
+          >
+            <Link href="/info">
+              <a
+                className={classNames(
+                  `underline transition-colors hover:text-primary`,
+                  `focus:outline-none focus:ring-2 focus:ring-primary`,
+                  `focus:ring-offset-2 focus:ring-offset-white`
+                )}
+              >
+                {texts.footerInfoPageLinkText}
+              </a>
+            </Link>
             <a
               className={classNames(
                 `underline transition-colors hover:text-primary`,
                 `focus:outline-none focus:ring-2 focus:ring-primary`,
                 `focus:ring-offset-2 focus:ring-offset-white`
               )}
+              href={texts.footerImprintLinkUrl}
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              {texts.footerInfoPageLinkText}
+              {texts.footerImprintLinkText}
             </a>
-          </Link>
-          <a
-            className={classNames(
-              `underline transition-colors hover:text-primary`,
-              `focus:outline-none focus:ring-2 focus:ring-primary`,
-              `focus:ring-offset-2 focus:ring-offset-white`
-            )}
-            href={texts.footerImprintLinkUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {texts.footerImprintLinkText}
-          </a>
-          <a
-            className={classNames(
-              `underline transition-colors hover:text-primary`,
-              `focus:outline-none focus:ring-2 focus:ring-primary`,
-              `focus:ring-offset-2 focus:ring-offset-white`
-            )}
-            href={texts.footerPrivacyLinkUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {texts.footerPrivacyLinkText}
-          </a>
-        </section>
+            <a
+              className={classNames(
+                `underline transition-colors hover:text-primary`,
+                `focus:outline-none focus:ring-2 focus:ring-primary`,
+                `focus:ring-offset-2 focus:ring-offset-white`
+              )}
+              href={texts.footerPrivacyLinkUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {texts.footerPrivacyLinkText}
+            </a>
+          </section>
+        </div>
       </footer>
     </>
   )

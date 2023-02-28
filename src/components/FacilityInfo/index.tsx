@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, ReactNode } from 'react'
 import { TableRowType } from '@common/types/gristData'
 import { useDistanceToUser } from '@lib/hooks/useDistanceToUser'
 import { useIsFacilityOpened } from '@lib/hooks/useIsFacilityOpened'
@@ -54,11 +54,8 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
   })
   const { allLabels } = useRecordLabels(facility.fields.Schlagworte)
 
-  const { Strasse, Hausnummer, PLZ } = facility.fields
-  const addressOneLiner =
-    Strasse && Hausnummer && PLZ
-      ? `${Strasse} ${Hausnummer}, ${PLZ} Berlin`
-      : undefined
+  const { Strasse, Hausnummer, PLZ, Zusatz, Art_der_Anmeldung } =
+    facility.fields
 
   const accessibility = facility.fields.Barrierefreiheit.trim().toLowerCase()
 
@@ -85,14 +82,21 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
 
   const facilityIsLabelledAsOpen247 = parsedFacilty.open247
 
-  const everydayClosedButHasInfoText =
-    allDaysStateThatFacilityIsClosed &&
-    parsedFacilty.openingTimesText.length > 0
-
   const infoList = [
     {
       icon: <Geopin />,
-      text: addressOneLiner,
+      text: (
+        <>
+          {Strasse} {Hausnummer}{' '}
+          {Zusatz && (
+            <>
+              <br />
+              <>{Zusatz}</>
+            </>
+          )}
+          <br /> {PLZ} Berlin
+        </>
+      ),
     },
     accessibility !== 'nein' &&
       accessibility !== 'keine angabe' && {
@@ -112,7 +116,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
     ...phoneNumberItems,
   ].filter((info) => typeof info === 'object' && !!info.text) as {
     icon: JSX.Element
-    text: string
+    text: string | ReactNode
     href?: string
   }[]
 
@@ -214,49 +218,53 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
                 </p>
               </div>
             )}
-            {!facilityIsLabelledAsOpen247 && !everydayClosedButHasInfoText && (
-              <>
-                <OpenDaysItem
-                  isActive={todayKey === 'Montag'}
-                  day={texts.weekdayMonday}
-                  hours={facility.fields.Montag}
-                />
-                <OpenDaysItem
-                  isActive={todayKey === 'Dienstag'}
-                  day={texts.weekdayTuesday}
-                  hours={facility.fields.Dienstag}
-                />
-                <OpenDaysItem
-                  isActive={todayKey === 'Mittwoch'}
-                  day={texts.weekdayWednesday}
-                  hours={facility.fields.Mittwoch}
-                />
-                <OpenDaysItem
-                  isActive={todayKey === 'Donnerstag'}
-                  day={texts.weekdayThursday}
-                  hours={facility.fields.Donnerstag}
-                />
-                <OpenDaysItem
-                  isActive={todayKey === 'Freitag'}
-                  day={texts.weekdayFriday}
-                  hours={facility.fields.Freitag}
-                />
-                <OpenDaysItem
-                  isActive={todayKey === 'Samstag'}
-                  day={texts.weekdaySaturday}
-                  hours={facility.fields.Samstag}
-                />
-                <OpenDaysItem
-                  isActive={todayKey === 'Sonntag'}
-                  day={texts.weekdaySunday}
-                  hours={facility.fields.Sonntag}
-                />
-              </>
-            )}
+            {!facilityIsLabelledAsOpen247 &&
+              !allDaysStateThatFacilityIsClosed && (
+                <>
+                  <OpenDaysItem
+                    isActive={todayKey === 'Montag'}
+                    day={texts.weekdayMonday}
+                    hours={facility.fields.Montag}
+                  />
+                  <OpenDaysItem
+                    isActive={todayKey === 'Dienstag'}
+                    day={texts.weekdayTuesday}
+                    hours={facility.fields.Dienstag}
+                  />
+                  <OpenDaysItem
+                    isActive={todayKey === 'Mittwoch'}
+                    day={texts.weekdayWednesday}
+                    hours={facility.fields.Mittwoch}
+                  />
+                  <OpenDaysItem
+                    isActive={todayKey === 'Donnerstag'}
+                    day={texts.weekdayThursday}
+                    hours={facility.fields.Donnerstag}
+                  />
+                  <OpenDaysItem
+                    isActive={todayKey === 'Freitag'}
+                    day={texts.weekdayFriday}
+                    hours={facility.fields.Freitag}
+                  />
+                  <OpenDaysItem
+                    isActive={todayKey === 'Samstag'}
+                    day={texts.weekdaySaturday}
+                    hours={facility.fields.Samstag}
+                  />
+                  <OpenDaysItem
+                    isActive={todayKey === 'Sonntag'}
+                    day={texts.weekdaySunday}
+                    hours={facility.fields.Sonntag}
+                  />
+                </>
+              )}
             {parsedFacilty.openingTimesText && (
-              <p className="whitespace-pre-wrap p-5 pt-8">
+              <p className="whitespace-pre-wrap px-5 mt-7">
                 {parsedFacilty.openingTimesText}
               </p>
+            )}
+            {Art_der_Anmeldung && (
+              <p className="mt-7 px-5">{Art_der_Anmeldung}</p>
             )}
           </div>
         )}

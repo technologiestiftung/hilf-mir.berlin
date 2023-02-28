@@ -21,8 +21,9 @@ export const PrimaryButton: FC<ButtonPropsType> = ({
       `bg-primary text-white rounded leading-7 transition-colors`,
       `font-medium text-left text-2xl relative items-center`,
       `grid grid-cols-[1fr,auto] w-full group font-bold`,
+      'group',
       !disabled && [
-        `hover:bg-white hover:text-primary border border-trasparent hover:border-primary`,
+        `border border-trasparent`,
         `focus:outline-none focus:ring-2 focus:ring-primary`,
         `focus:ring-offset-2 focus:ring-offset-white`,
       ],
@@ -36,7 +37,8 @@ export const PrimaryButton: FC<ButtonPropsType> = ({
     <span
       className={classNames(
         `w-14 h-14`,
-        `inline-flex items-center justify-center`
+        `inline-flex items-center justify-center`,
+        'transition-transform group-hover:translate-x-0.5'
       )}
     >
       <Arrow />
