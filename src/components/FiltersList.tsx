@@ -73,7 +73,7 @@ export const FiltersList: FC<{
 
   return (
     <div className="pb-20 lg:pb-0">
-      <div className="md:pt-10 flex flex-wrap gap-x-8 md:pb-8">
+      <div className="md:pt-10 flex flex-wrap gap-x-8 pb-6 md:pb-8">
         <ul className="flex flex-wrap gap-2 place-content-start mb-5">
           <FiltersTagsList
             filters={[...group1, ...group2, ...group3]}
