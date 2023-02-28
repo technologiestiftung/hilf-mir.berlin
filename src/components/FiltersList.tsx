@@ -104,7 +104,7 @@ export const FiltersList: FC<{
           </button>
         )}
       </div>
-      <div className="md:flex md:flex-wrap md:items-start md:gap-x-4">
+      <div className="grid">
         <div className="block">
           <RadioGroup
             className="mb-5"
@@ -164,7 +164,7 @@ export const FiltersList: FC<{
           {texts.filtersGeoSearchLabel}
         </SwitchButton>
         <PrimaryButton
-          className="w-auto"
+          className="w-max"
           onClick={() => {
             onSubmit()
             void push({
