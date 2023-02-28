@@ -9,8 +9,8 @@ import { PrimaryButton } from './PrimaryButton'
 import { useRouter } from 'next/router'
 import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
 import { FiltersTagsList } from './FiltersTagsList'
-import { RadioGroup } from './RadioGroup'
 import { useFilteredFacilitiesCount } from '@lib/hooks/useFilteredFacilitiesCount'
+import { Listbox } from './Listbox'
 
 export const FiltersList: FC<{
   recordsWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
@@ -40,9 +40,6 @@ export const FiltersList: FC<{
   const group3 = labels.filter(({ fields }) => fields.group2 === 'gruppe-3')
   const targetGroups = labels.filter(
     ({ fields }) => fields.group2 === 'zielpublikum'
-  )
-  const someTargetFiltersActive = targetGroups.some((targetGroup) =>
-    tags.find((f) => f === targetGroup.id)
   )
 
   const targetGroupIds = labels
@@ -104,57 +101,53 @@ export const FiltersList: FC<{
           </button>
         )}
       </div>
+
       <div className="md:flex md:flex-wrap md:items-start md:gap-x-4">
-        <div className="block">
-          <RadioGroup
-            className="mb-5"
+        <div className="block z-10">
+          <Listbox
             label={texts.filtersSearchTargetLabel}
             options={targetGroups.map((group) => {
               return {
-                value: `${group.id}`,
+                value: group.id,
                 label: group.fields.text,
               }
             })}
-            activeValue={activeTargetGroupId || ''}
+            activeOption={activeTargetGroupId || null}
             onChange={(selectedValue) => {
+              const hasValidTargetGroup = !!selectedValue
               const targetGroupAlreadyInUrl = tags.some((tag) => {
                 return targetGroupIds.includes(tag)
               })
 
-              if (targetGroupAlreadyInUrl) {
-                const tagsWithoutOldTargetGroup = tags.filter((tag) => {
-                  return !targetGroupIds.includes(tag)
-                })
-                updateFilters([
-                  ...tagsWithoutOldTargetGroup,
-                  Number(selectedValue),
-                ])
-              } else {
-                updateFilters([...tags, Number(selectedValue)])
+              const tagsWithoutOldTargetGroup = tags.filter((tag) => {
+                return !targetGroupIds.includes(tag)
+              })
+
+              switch (true) {
+                case targetGroupAlreadyInUrl && hasValidTargetGroup:
+                  updateFilters([
+                    ...tagsWithoutOldTargetGroup,
+                    selectedValue as number,
+                  ])
+                  break
+                case targetGroupAlreadyInUrl && !hasValidTargetGroup:
+                  updateFilters([...tagsWithoutOldTargetGroup])
+                  setActiveTargetGroupId(undefined)
+                  break
+                case !targetGroupAlreadyInUrl && hasValidTargetGroup:
+                  updateFilters([...tags, selectedValue as number])
+                  break
+                case !targetGroupAlreadyInUrl && !hasValidTargetGroup:
+                  updateFilters([...tags])
+                  setActiveTargetGroupId(undefined)
+                  break
+                default:
+                  break
               }
             }}
+            className="mb-12"
           />
         </div>
-        {someTargetFiltersActive && (
-          <button
-            onClick={() => {
-              updateFilters(
-                tags.filter((f) => {
-                  return !targetGroupIds.includes(f)
-                }) || []
-              )
-              setActiveTargetGroupId(undefined)
-            }}
-            className={classNames(
-              `text-lg leading-6 text-left font-normal mb-8`,
-              `focus:outline-none focus:ring-2 focus:ring-primary`,
-              `focus:ring-offset-2 focus:ring-offset-white`,
-              `underline text-gray-80 hover-primary transition-colors`
-            )}
-          >
-            {texts.reset}
-          </button>
-        )}
         <SwitchButton
           value={useGeolocation}
           onToggle={setGeolocationUsage}
@@ -164,7 +157,7 @@ export const FiltersList: FC<{
           {texts.filtersGeoSearchLabel}
         </SwitchButton>
         <PrimaryButton
-          className="w-auto"
+          className="w-full md:w-auto"
           onClick={() => {
             onSubmit()
             void push({
