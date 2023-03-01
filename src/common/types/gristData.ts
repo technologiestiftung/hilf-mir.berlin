@@ -5,6 +5,7 @@ export interface GristLabelType extends Record<string, unknown> {
     text: string
     icon: string
     group2: 'gruppe-1' | 'gruppe-2' | 'gruppe-3' | 'zielpublikum'
+    order: number | null
   }
 }
 
