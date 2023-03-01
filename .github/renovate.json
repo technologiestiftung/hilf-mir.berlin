@@ -1,4 +1,5 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["@inpyjamas", ":disableDependencyDashboard"]
+  "extends": ["github>technologiestiftung/renovate-config"],
+  "baseBranches": ["staging"]
 }
