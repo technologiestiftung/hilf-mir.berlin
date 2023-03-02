@@ -114,7 +114,7 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
         <title>
           {isFallback
             ? 'Seite Lädt...'
-            : `${texts.mapPageTitle} – ${texts.siteTitle}`}
+            : `${texts.resultPageTitle} – ${texts.siteTitle}`}
         </title>
       </Head>
       <ul className="pb-28">

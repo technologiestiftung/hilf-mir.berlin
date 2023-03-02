@@ -89,6 +89,7 @@ const defaultValue = {
   opened: '',
   alwaysOpened: '',
   mapPageTitle: '',
+  resultPageTitle: '',
   weekdayMonday: '',
   weekdayTuesday: '',
   weekdayWednesday: '',
