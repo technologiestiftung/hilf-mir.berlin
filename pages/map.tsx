@@ -14,6 +14,7 @@ import { useDistanceToUser } from '@lib/hooks/useDistanceToUser'
 import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
 import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
 import { getFilteredFacilities } from '@lib/facilityFilterUtil'
+import { Button } from '@components/Button'
 
 export const getStaticProps: GetStaticProps = async () => {
   const { texts, labels, records } = await loadData()
@@ -117,6 +118,28 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
             : `${texts.resultPageTitle} – ${texts.siteTitle}`}
         </title>
       </Head>
+      {labels.filter((label) => label.isActive).length > 0 && (
+        <div className="p-5 border-b border-gray-20 bg-gray-10 bg-opacity-25">
+          <p className="text-sm font-bold">{texts.resultPageIntro}</p>
+          <ul className="mt-2 md:mt-3 flex flex-wrap gap-1 md:gap-2">
+            {labels
+              .filter((label) => label.isActive)
+              .map((label) => (
+                <Button
+                  key={label.id}
+                  tag="button"
+                  disabled={true}
+                  scheme="primary"
+                  size="extrasmall"
+                  className="!bg-primary !text-white !cursor-default flex gap-x-1 items-center"
+                >
+                  {label.fields.text}
+                </Button>
+              ))}
+          </ul>
+        </div>
+      )}
+
       <ul className="pb-28">
         {filteredRecords.map((record) => (
           <FacilityListItem key={record.id} {...record} />
