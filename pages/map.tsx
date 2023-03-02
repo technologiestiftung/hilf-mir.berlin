@@ -3,7 +3,6 @@ import Head from 'next/head'
 import { useTexts } from '@lib/TextsContext'
 import { Page } from '@common/types/nextPage'
 import { MapLayout } from '@components/MapLayout'
-import classNames from '@lib/classNames'
 import { FacilityListItem } from '@components/FacilityListItem'
 import { mapRecordToMinimum, MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { GristLabelType } from '@common/types/gristData'
@@ -25,13 +24,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
   return {
     props: {
-      texts: {
-        ...texts,
-        mapPageTitle: texts.mapPageTitle.replace(
-          '#number',
-          `${records.length}`
-        ),
-      },
+      texts,
       records: recordsWithOnlyMinimum,
       labels,
     },
@@ -45,7 +38,7 @@ interface MapProps {
 }
 
 const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
-  const [urlState, setUrlState] = useUrlState()
+  const [urlState] = useUrlState()
   const texts = useTexts()
   const { isFallback } = useRouter()
   const { getDistanceToUser } = useDistanceToUser()
@@ -115,47 +108,16 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
     return setFilteredRecords(sortFacilities(filteredRecords))
   }, [urlState.tags?.join('-')])
 
-  const [pageTitle, setPageTitle] = useState(texts.mapPageTitle)
-
-  useEffect(() => {
-    setPageTitle(
-      texts.mapPageTitle.replace(/^\d\d?\d?/g, `${filteredRecords.length}`)
-    )
-  }, [filteredRecords, texts.mapPageTitle])
-
   return (
     <>
       <Head>
         <title>
-          {isFallback ? 'Seite Lädt...' : `${pageTitle} – ${texts.siteTitle}`}
+          {isFallback
+            ? 'Seite Lädt...'
+            : `${texts.mapPageTitle} – ${texts.siteTitle}`}
         </title>
       </Head>
-      <h1
-        className={classNames(
-          `hidden lg:block sticky top-0 z-10`,
-          `px-5 py-8 bg-white border-b border-gray-10`
-        )}
-      >
-        {isFallback ? `Seite Lädt...` : `${pageTitle}`}
-      </h1>
       <ul className="pb-28">
-        {!isFallback &&
-          (filteredRecords.length !== originalRecords.length ||
-            filteredRecords.length === 0) && (
-            <div className="p-5 text-lg border-y border-gray-20 bg-gray-10/50">
-              <button
-                onClick={() => setUrlState({ tags: [] })}
-                className={classNames(
-                  `cursor-pointer`,
-                  `underline transition-colors hover:text-primary`,
-                  `focus:outline-none focus:ring-2 focus:ring-primary`,
-                  `focus:ring-offset-2 focus:ring-offset-white`
-                )}
-              >
-                {texts.resetFilters}
-              </button>
-            </div>
-          )}
         {filteredRecords.map((record) => (
           <FacilityListItem key={record.id} {...record} />
         ))}
