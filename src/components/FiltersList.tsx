@@ -185,10 +185,16 @@ export const FiltersList: FC<{
           }
         >
           {(queryTagIds.length === 0 || queryTagIds.length === labels.length) &&
-            texts.filtersButtonTextResults}
+            texts.filtersButtonTextAllFilters}
           {queryTagIds.length > 0 &&
-            filteredFacilitiesCount >= 1 &&
-            texts.filtersButtonTextResults}
+            filteredFacilitiesCount === 1 &&
+            texts.filtersButtonTextFilteredSingular}
+          {queryTagIds.length > 0 &&
+            filteredFacilitiesCount > 1 &&
+            texts.filtersButtonTextFilteredPlural.replace(
+              '#number',
+              `${filteredFacilitiesCount}`
+            )}
           {queryTagIds.length > 0 &&
             filteredFacilitiesCount === 0 &&
             texts.filtersButtonTextFilteredNoResults}
