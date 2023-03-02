@@ -21,7 +21,7 @@ export const FiltersList: FC<{
   const labels = useFiltersWithActiveProp()
   const [urlState, updateUrlState] = useUrlState()
 
-  const tags = useMemo(() => urlState.tags || [], [urlState.tags])
+  const queryTagIds = useMemo(() => urlState.tags || [], [urlState.tags])
 
   const {
     latitude,
@@ -47,25 +47,25 @@ export const FiltersList: FC<{
     .map((label) => label.id)
 
   const [activeTargetGroupId, setActiveTargetGroupId] = useState(
-    tags.find((tag) => {
-      return targetGroupIds.includes(tag)
+    queryTagIds.find((tagId) => {
+      return targetGroupIds.includes(tagId)
     })
   )
 
   useEffect(() => {
-    if (tags.length === 0) return
+    if (queryTagIds.length === 0) return
 
-    const currentTargetGroupId = tags.find((tag) =>
-      targetGroupIds.includes(tag)
+    const currentTargetGroupId = queryTagIds.find((tagId) =>
+      targetGroupIds.includes(tagId)
     )
     if (currentTargetGroupId) {
       setActiveTargetGroupId(currentTargetGroupId)
     }
-  }, [tags, targetGroupIds])
+  }, [queryTagIds, targetGroupIds])
 
   const someGroupFiltersActive = labels
     .filter(({ fields }) => fields.group2 !== 'zielpublikum')
-    .some(({ id }) => tags.find((f) => f === id))
+    .some(({ id }) => queryTagIds.find((f) => f === id))
 
   const updateFilters = (newTags: number[]): void => {
     updateUrlState({ tags: newTags })
@@ -84,7 +84,7 @@ export const FiltersList: FC<{
           <button
             onClick={() =>
               updateFilters(
-                tags.filter((f) => {
+                queryTagIds.filter((f) => {
                   const label = labels.find(({ id }) => id === f)
                   return label?.fields.group2 === `zielpublikum`
                 }) || []
@@ -105,22 +105,29 @@ export const FiltersList: FC<{
         <div className="block w-full md:w-max z-10">
           <Listbox
             label={texts.filtersSearchTargetLabel}
-            options={targetGroups.map((group) => {
-              return {
-                value: group.id,
-                label: group.fields.text,
-              }
-            })}
+            options={targetGroups
+              .sort((a, b) => {
+                if (!a.fields.order) return 1
+                if (!b.fields.order) return -1
+
+                return a.fields.order - b.fields.order
+              })
+              .map((group) => {
+                return {
+                  value: group.id,
+                  label: group.fields.text,
+                }
+              })}
             activeOption={activeTargetGroupId || null}
             nullSelectionLabel={texts.noTargetPreferenceButtonText}
             onChange={(selectedValue) => {
               const hasValidTargetGroup = !!selectedValue
-              const targetGroupAlreadyInUrl = tags.some((tag) => {
-                return targetGroupIds.includes(tag)
+              const targetGroupAlreadyInUrl = queryTagIds.some((tagId) => {
+                return targetGroupIds.includes(tagId)
               })
 
-              const tagsWithoutOldTargetGroup = tags.filter((tag) => {
-                return !targetGroupIds.includes(tag)
+              const tagsWithoutOldTargetGroup = queryTagIds.filter((tagId) => {
+                return !targetGroupIds.includes(tagId)
               })
 
               switch (true) {
@@ -135,10 +142,10 @@ export const FiltersList: FC<{
                   setActiveTargetGroupId(undefined)
                   break
                 case !targetGroupAlreadyInUrl && hasValidTargetGroup:
-                  updateFilters([...tags, selectedValue as number])
+                  updateFilters([...queryTagIds, selectedValue as number])
                   break
                 case !targetGroupAlreadyInUrl && !hasValidTargetGroup:
-                  updateFilters([...tags])
+                  updateFilters([...queryTagIds])
                   setActiveTargetGroupId(undefined)
                   break
                 default:
@@ -168,25 +175,25 @@ export const FiltersList: FC<{
               },
             })
           }}
-          disabled={tags.length > 0 && filteredFacilitiesCount === 0}
+          disabled={queryTagIds.length > 0 && filteredFacilitiesCount === 0}
           tooltip={
-            tags.length > 0 && filteredFacilitiesCount === 0
+            queryTagIds.length > 0 && filteredFacilitiesCount === 0
               ? texts.filtersButtonTextFilteredNoResultsHint
               : ''
           }
         >
-          {(tags.length === 0 || tags.length === labels.length) &&
+          {(queryTagIds.length === 0 || queryTagIds.length === labels.length) &&
             texts.filtersButtonTextAllFilters}
-          {tags.length > 0 &&
+          {queryTagIds.length > 0 &&
             filteredFacilitiesCount === 1 &&
             texts.filtersButtonTextFilteredSingular}
-          {tags.length > 0 &&
+          {queryTagIds.length > 0 &&
             filteredFacilitiesCount > 1 &&
             texts.filtersButtonTextFilteredPlural.replace(
               '#number',
               `${filteredFacilitiesCount}`
             )}
-          {tags.length > 0 &&
+          {queryTagIds.length > 0 &&
             filteredFacilitiesCount === 0 &&
             texts.filtersButtonTextFilteredNoResults}
         </PrimaryButton>
