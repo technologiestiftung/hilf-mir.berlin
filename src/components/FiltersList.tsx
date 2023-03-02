@@ -21,7 +21,7 @@ export const FiltersList: FC<{
   const labels = useFiltersWithActiveProp()
   const [urlState, updateUrlState] = useUrlState()
 
-  const tags = useMemo(() => urlState.tags || [], [urlState.tags])
+  const queryTagIds = useMemo(() => urlState.tags || [], [urlState.tags])
 
   const {
     latitude,
@@ -42,7 +42,7 @@ export const FiltersList: FC<{
     ({ fields }) => fields.group2 === 'zielpublikum'
   )
   const someTargetFiltersActive = targetGroups.some((targetGroup) =>
-    tags.find((f) => f === targetGroup.id)
+    queryTagIds.find((f) => f === targetGroup.id)
   )
 
   const targetGroupIds = labels
@@ -50,25 +50,25 @@ export const FiltersList: FC<{
     .map((label) => label.id)
 
   const [activeTargetGroupId, setActiveTargetGroupId] = useState(
-    tags.find((tag) => {
-      return targetGroupIds.includes(tag)
+    queryTagIds.find((tagId) => {
+      return targetGroupIds.includes(tagId)
     })
   )
 
   useEffect(() => {
-    if (tags.length === 0) return
+    if (queryTagIds.length === 0) return
 
-    const currentTargetGroupId = tags.find((tag) =>
-      targetGroupIds.includes(tag)
+    const currentTargetGroupId = queryTagIds.find((tagId) =>
+      targetGroupIds.includes(tagId)
     )
     if (currentTargetGroupId) {
       setActiveTargetGroupId(currentTargetGroupId)
     }
-  }, [tags, targetGroupIds])
+  }, [queryTagIds, targetGroupIds])
 
   const someGroupFiltersActive = labels
     .filter(({ fields }) => fields.group2 !== 'zielpublikum')
-    .some(({ id }) => tags.find((f) => f === id))
+    .some(({ id }) => queryTagIds.find((f) => f === id))
 
   const updateFilters = (newTags: number[]): void => {
     updateUrlState({ tags: newTags })
@@ -87,7 +87,7 @@ export const FiltersList: FC<{
           <button
             onClick={() =>
               updateFilters(
-                tags.filter((f) => {
+                queryTagIds.filter((f) => {
                   const label = labels.find(({ id }) => id === f)
                   return label?.fields.group2 === `zielpublikum`
                 }) || []
@@ -117,20 +117,22 @@ export const FiltersList: FC<{
             })}
             activeValue={activeTargetGroupId || ''}
             onChange={(selectedValue) => {
-              const targetGroupAlreadyInUrl = tags.some((tag) => {
-                return targetGroupIds.includes(tag)
+              const targetGroupAlreadyInUrl = queryTagIds.some((tagId) => {
+                return targetGroupIds.includes(tagId)
               })
 
               if (targetGroupAlreadyInUrl) {
-                const tagsWithoutOldTargetGroup = tags.filter((tag) => {
-                  return !targetGroupIds.includes(tag)
-                })
+                const tagsWithoutOldTargetGroup = queryTagIds.filter(
+                  (tagId) => {
+                    return !targetGroupIds.includes(tagId)
+                  }
+                )
                 updateFilters([
                   ...tagsWithoutOldTargetGroup,
                   Number(selectedValue),
                 ])
               } else {
-                updateFilters([...tags, Number(selectedValue)])
+                updateFilters([...queryTagIds, Number(selectedValue)])
               }
             }}
           />
@@ -139,7 +141,7 @@ export const FiltersList: FC<{
           <button
             onClick={() => {
               updateFilters(
-                tags.filter((f) => {
+                queryTagIds.filter((f) => {
                   return !targetGroupIds.includes(f)
                 }) || []
               )
@@ -175,19 +177,19 @@ export const FiltersList: FC<{
               },
             })
           }}
-          disabled={tags.length > 0 && filteredFacilitiesCount === 0}
+          disabled={queryTagIds.length > 0 && filteredFacilitiesCount === 0}
           tooltip={
-            tags.length > 0 && filteredFacilitiesCount === 0
+            queryTagIds.length > 0 && filteredFacilitiesCount === 0
               ? texts.filtersButtonTextFilteredNoResultsHint
               : ''
           }
         >
-          {(tags.length === 0 || tags.length === labels.length) &&
+          {(queryTagIds.length === 0 || queryTagIds.length === labels.length) &&
             texts.filtersButtonTextResults}
-          {tags.length > 0 &&
+          {queryTagIds.length > 0 &&
             filteredFacilitiesCount >= 1 &&
             texts.filtersButtonTextResults}
-          {tags.length > 0 &&
+          {queryTagIds.length > 0 &&
             filteredFacilitiesCount === 0 &&
             texts.filtersButtonTextFilteredNoResults}
         </PrimaryButton>
