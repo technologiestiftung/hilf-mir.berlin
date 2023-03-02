@@ -75,6 +75,7 @@ const defaultValue = {
   emergencyTrepotowKoepenickPhoneNumber: '',
   welcomeFiltersHeadline: '',
   welcomeFiltersText: '',
+  filtersButtonTextResults: '',
   filtersButtonTextFilteredSingular: '',
   filtersButtonTextFilteredPlural: '',
   filtersButtonTextFilteredNoResults: '',

@@ -183,16 +183,10 @@ export const FiltersList: FC<{
           }
         >
           {(tags.length === 0 || tags.length === labels.length) &&
-            texts.filtersButtonTextAllFilters}
+            texts.filtersButtonTextResults}
           {tags.length > 0 &&
-            filteredFacilitiesCount === 1 &&
-            texts.filtersButtonTextFilteredSingular}
-          {tags.length > 0 &&
-            filteredFacilitiesCount > 1 &&
-            texts.filtersButtonTextFilteredPlural.replace(
-              '#number',
-              `${filteredFacilitiesCount}`
-            )}
+            filteredFacilitiesCount >= 1 &&
+            texts.filtersButtonTextResults}
           {tags.length > 0 &&
             filteredFacilitiesCount === 0 &&
             texts.filtersButtonTextFilteredNoResults}
