@@ -109,12 +109,19 @@ export const FiltersList: FC<{
           <RadioGroup
             className="mb-5"
             label={texts.filtersSearchTargetLabel}
-            options={targetGroups.map((group) => {
-              return {
-                value: `${group.id}`,
-                label: group.fields.text,
-              }
-            })}
+            options={targetGroups
+              .sort((a, b) => {
+                if (!a.fields.order) return 1
+                if (!b.fields.order) return -1
+
+                return a.fields.order - b.fields.order
+              })
+              .map((group) => {
+                return {
+                  value: `${group.id}`,
+                  label: group.fields.text,
+                }
+              })}
             activeValue={activeTargetGroupId || ''}
             onChange={(selectedValue) => {
               const targetGroupAlreadyInUrl = tags.some((tag) => {
