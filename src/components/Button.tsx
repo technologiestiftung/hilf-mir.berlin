@@ -10,6 +10,7 @@ interface ButtonType {
   href?: string
   query?: string | ParsedUrlQueryInput | null
   onClick?: () => void
+  disabled?: boolean
   className?: string
 }
 
@@ -45,6 +46,7 @@ export const Button: FC<ButtonType> = ({
   query,
   onClick,
   className: additionalClassNames = '',
+  disabled = false,
   children,
 }) => {
   const SIZE_CLASSES = getSizeClasses(size)
@@ -90,6 +92,7 @@ export const Button: FC<ButtonType> = ({
           CLASSES,
           'disabled:bg-gray-20 disabled:text-gray-60 disabled:cursor-not-allowed'
         )}
+        disabled={disabled}
       >
         {children}
       </button>
