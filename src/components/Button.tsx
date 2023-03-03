@@ -58,7 +58,20 @@ export const Button: FC<ButtonType> = ({
     additionalClassNames
   )
 
-  if (tag === 'a') {
+  const isExternalLink =
+    tag === 'a' && !(href?.startsWith('/') || href?.startsWith('#'))
+
+  const isInternalLink = !isExternalLink
+
+  if (isExternalLink) {
+    return (
+      <a href={href} className={CLASSES}>
+        {children}
+      </a>
+    )
+  }
+
+  if (isInternalLink) {
     return (
       <Link
         href={{
