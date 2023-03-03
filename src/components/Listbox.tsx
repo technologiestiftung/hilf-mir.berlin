@@ -30,39 +30,47 @@ export const Listbox: FC<ListboxType> = ({
     onChange(selectedOption)
 
   const mergedOptions = [{ label: nullSelectionLabel, value: null }, ...options]
+  const selectedOption = mergedOptions.find(
+    (option) => option.value === activeOption
+  )
 
   return (
-    <div className={className}>
+    <div className={classNames(className, 'w-full')}>
       <HeadlessListbox value={activeOption} onChange={handleChange}>
         <HeadlessListbox.Label
-          className={classNames(
-            'w-full flex justify-between',
-            'font-bold text-lg'
-          )}
+          className={classNames('w-full flex justify-between', 'text-lg')}
         >
           {label}
         </HeadlessListbox.Label>
-        <div className="relative mt-2">
+        <div className="relative mt-2 w-full">
           <HeadlessListbox.Button
             className={classNames(
-              'relative w-full py-1 pl-3 pr-10 cursor-pointer',
+              'relative w-full py-1 pl-3 cursor-pointer',
               'text-lg text-left',
-              'bg-white border border-gray-20 rounded',
+              'border rounded',
+              'grid grid-cols-[1fr,auto] gap-x-2',
+              selectedOption?.value
+                ? 'bg-purple-500 text-white border-purple-500'
+                : 'bg-white text-gray-80 border-gray-20',
               'focus:outline-none focus-visible:border-purple-500 focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white'
             )}
           >
-            <span className="block truncate">
-              {mergedOptions.find((option) => option.value === activeOption)
-                ?.label || nullSelectionLabel}
+            <span className="truncate">
+              {selectedOption?.label || nullSelectionLabel}
             </span>
             <span
               className={classNames(
-                'absolute inset-y-0 right-0 pr-2',
+                'pr-2',
                 'flex items-center',
                 'pointer-events-none'
               )}
             >
-              <ChevronUpDownIcon className="w-4 h-4 text-gray-40" />
+              <ChevronUpDownIcon
+                className={classNames(
+                  'w-4 h-4',
+                  selectedOption?.value ? 'text-white' : 'text-gray-40'
+                )}
+              />
             </span>
           </HeadlessListbox.Button>
           <Transition

@@ -102,7 +102,7 @@ export const FiltersList: FC<{
         )}
       </div>
       <div className="grid">
-        <div className="block w-full md:w-max z-10">
+        <div className="block w-full md:w-[324px] z-10">
           <Listbox
             label={texts.filtersSearchTargetLabel}
             options={targetGroups
