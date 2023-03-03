@@ -9,8 +9,8 @@ import { PrimaryButton } from './PrimaryButton'
 import { useRouter } from 'next/router'
 import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
 import { FiltersTagsList } from './FiltersTagsList'
-import { RadioGroup } from './RadioGroup'
 import { useFilteredFacilitiesCount } from '@lib/hooks/useFilteredFacilitiesCount'
+import { Listbox } from './Listbox'
 
 export const FiltersList: FC<{
   recordsWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
@@ -40,9 +40,6 @@ export const FiltersList: FC<{
   const group3 = labels.filter(({ fields }) => fields.group2 === 'gruppe-3')
   const targetGroups = labels.filter(
     ({ fields }) => fields.group2 === 'zielpublikum'
-  )
-  const someTargetFiltersActive = targetGroups.some((targetGroup) =>
-    queryTagIds.find((f) => f === targetGroup.id)
   )
 
   const targetGroupIds = labels
@@ -76,7 +73,7 @@ export const FiltersList: FC<{
 
   return (
     <div className="pb-20 lg:pb-0">
-      <div className="md:pt-10 flex flex-wrap gap-x-8 md:pb-8">
+      <div className="md:pt-10 flex flex-wrap gap-x-8 pb-6 md:pb-8">
         <ul className="flex flex-wrap gap-2 place-content-start mb-5">
           <FiltersTagsList
             filters={[...group1, ...group2, ...group3]}
@@ -105,9 +102,8 @@ export const FiltersList: FC<{
         )}
       </div>
       <div className="grid">
-        <div className="block">
-          <RadioGroup
-            className="mb-5"
+        <div className="block w-full md:w-[324px] z-10">
+          <Listbox
             label={texts.filtersSearchTargetLabel}
             options={targetGroups
               .sort((a, b) => {
@@ -118,52 +114,47 @@ export const FiltersList: FC<{
               })
               .map((group) => {
                 return {
-                  value: `${group.id}`,
+                  value: group.id,
                   label: group.fields.text,
                 }
               })}
-            activeValue={activeTargetGroupId || ''}
+            activeValue={activeTargetGroupId || null}
+            nullSelectionLabel={texts.noTargetPreferenceButtonText}
             onChange={(selectedValue) => {
+              const hasValidTargetGroup = !!selectedValue
               const targetGroupAlreadyInUrl = queryTagIds.some((tagId) => {
                 return targetGroupIds.includes(tagId)
               })
 
-              if (targetGroupAlreadyInUrl) {
-                const tagsWithoutOldTargetGroup = queryTagIds.filter(
-                  (tagId) => {
-                    return !targetGroupIds.includes(tagId)
-                  }
-                )
-                updateFilters([
-                  ...tagsWithoutOldTargetGroup,
-                  Number(selectedValue),
-                ])
-              } else {
-                updateFilters([...queryTagIds, Number(selectedValue)])
+              const tagsWithoutOldTargetGroup = queryTagIds.filter((tagId) => {
+                return !targetGroupIds.includes(tagId)
+              })
+
+              switch (true) {
+                case targetGroupAlreadyInUrl && hasValidTargetGroup:
+                  updateFilters([
+                    ...tagsWithoutOldTargetGroup,
+                    selectedValue as number,
+                  ])
+                  break
+                case targetGroupAlreadyInUrl && !hasValidTargetGroup:
+                  updateFilters([...tagsWithoutOldTargetGroup])
+                  setActiveTargetGroupId(undefined)
+                  break
+                case !targetGroupAlreadyInUrl && hasValidTargetGroup:
+                  updateFilters([...queryTagIds, selectedValue as number])
+                  break
+                case !targetGroupAlreadyInUrl && !hasValidTargetGroup:
+                  updateFilters([...queryTagIds])
+                  setActiveTargetGroupId(undefined)
+                  break
+                default:
+                  break
               }
             }}
+            className="mb-12"
           />
         </div>
-        {someTargetFiltersActive && (
-          <button
-            onClick={() => {
-              updateFilters(
-                queryTagIds.filter((f) => {
-                  return !targetGroupIds.includes(f)
-                }) || []
-              )
-              setActiveTargetGroupId(undefined)
-            }}
-            className={classNames(
-              `text-lg leading-6 text-left font-normal mb-8`,
-              `focus:outline-none focus:ring-2 focus:ring-primary`,
-              `focus:ring-offset-2 focus:ring-offset-white`,
-              `underline text-gray-80 hover-primary transition-colors`
-            )}
-          >
-            {texts.reset}
-          </button>
-        )}
         <SwitchButton
           value={useGeolocation}
           onToggle={setGeolocationUsage}
@@ -173,7 +164,7 @@ export const FiltersList: FC<{
           {texts.filtersGeoSearchLabel}
         </SwitchButton>
         <PrimaryButton
-          className="w-max"
+          className="w-full md:w-max"
           onClick={() => {
             onSubmit()
             void push({

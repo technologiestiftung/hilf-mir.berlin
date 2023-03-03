@@ -117,6 +117,7 @@ const defaultValue = {
   disclaimerPrefix: '',
   disclaimerContent: '',
   moreInfos: '',
+  noTargetPreferenceButtonText: ''
 }
 
 export type TextsMapType = typeof defaultValue
