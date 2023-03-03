@@ -1,11 +1,14 @@
 import { FC } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { MinimalRecordType } from '@lib/mapRecordToMinimum'
-import { FacilityCarouselSlide } from './FacilityCarouselSlide'
-
 // eslint-disable-next-line import/no-unresolved
 import 'swiper/css'
 import classNames from '@lib/classNames'
+import { Card } from './Card'
+import { Button } from './Button'
+import { Arrow } from './icons/Arrow'
+import { useUrlState } from '@lib/UrlStateContext'
+import { useTexts } from '@lib/TextsContext'
 
 interface FacilityCarouselPropsType {
   facilities: MinimalRecordType[]
@@ -14,6 +17,9 @@ interface FacilityCarouselPropsType {
 export const FacilityCarousel: FC<FacilityCarouselPropsType> = ({
   facilities,
 }) => {
+  const [urlState] = useUrlState()
+  const texts = useTexts()
+
   if (facilities.length === 0) return null
   return (
     <div
@@ -42,7 +48,30 @@ export const FacilityCarousel: FC<FacilityCarouselPropsType> = ({
           >
             {facilities.map((facility) => (
               <SwiperSlide key={facility.id} className="!h-auto">
-                <FacilityCarouselSlide {...facility} />
+                <Card
+                  title={facility.title}
+                  footer={
+                    <div className="flex justify-end">
+                      <Button
+                        tag="a"
+                        href={`/${facility.id}`}
+                        query={{
+                          ...urlState,
+                          latitude: facility.latitude,
+                          longitude: facility.longitude,
+                        }}
+                        size="small"
+                        scheme="primary"
+                        className="w-1/2 flex flex-nowrap gap-x-2 items-center"
+                      >
+                        {texts.moreInfos}
+                        <Arrow orientation="right" className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  }
+                >
+                  <p className="line-clamp-4">{facility.description}</p>
+                </Card>
               </SwiperSlide>
             ))}
           </Swiper>
