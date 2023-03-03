@@ -26,7 +26,7 @@ export const MapLayout: FC<{
 }> = ({ children, records, labels }) => {
   const { query, pathname, isFallback } = useRouter()
   const texts = useTexts()
-  const [listViewOpen, setListViewOpen] = useState<boolean>(false)
+  const [listViewOpen, setListViewOpen] = useState<boolean>(true)
   const [mapCenter, setMapCenter] = useState<
     [lng: number, lat: number] | undefined
   >()

@@ -142,7 +142,16 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
 
       <ul className="pb-28">
         {filteredRecords.map((record) => (
-          <FacilityListItem key={record.id} {...record} />
+          <FacilityListItem
+            key={record.id}
+            id={record.id}
+            title={record.title}
+            phone={record.phone?.split(',')[0]}
+            facility={record}
+            languages={record.languages}
+          >
+            {record.description}
+          </FacilityListItem>
         ))}
       </ul>
     </>

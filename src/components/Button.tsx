@@ -1,4 +1,6 @@
 import classNames from '@lib/classNames'
+import Link from 'next/link'
+import { ParsedUrlQueryInput } from 'querystring'
 import { FC } from 'react'
 
 interface ButtonType {
@@ -6,6 +8,7 @@ interface ButtonType {
   scheme?: 'primary' | 'secondary' | 'link'
   size?: 'large' | 'medium' | 'small' | 'extrasmall'
   href?: string
+  query?: string | ParsedUrlQueryInput | null
   onClick?: () => void
   disabled?: boolean
   className?: string
@@ -28,10 +31,10 @@ const getSizeClasses = (size: ButtonType['size']): string => {
 const getSchemeClasses = (scheme: ButtonType['scheme']): string => {
   switch (scheme) {
     case 'primary':
-      return 'bg-purple-500 text-white'
+      return 'bg-purple-500 hover:bg-purple-400 text-white transition-colors'
     // case 'secondary':
     default:
-      return 'bg-white text-gray-80 border border-gray-20'
+      return 'bg-white hover:bg-gray-10 text-gray-80 border border-gray-20 transition-colors'
   }
 }
 
@@ -40,6 +43,7 @@ export const Button: FC<ButtonType> = ({
   scheme = 'secondary',
   size = 'medium',
   href,
+  query,
   onClick,
   className: additionalClassNames = '',
   disabled = false,
@@ -56,11 +60,29 @@ export const Button: FC<ButtonType> = ({
     additionalClassNames
   )
 
-  if (tag === 'a') {
+  const isExternalLink =
+    tag === 'a' && !(href?.startsWith('/') || href?.startsWith('#'))
+
+  const isInternalLink = !isExternalLink
+
+  if (isExternalLink) {
     return (
       <a href={href} className={CLASSES}>
         {children}
       </a>
+    )
+  }
+
+  if (isInternalLink) {
+    return (
+      <Link
+        href={{
+          pathname: href,
+          query: query,
+        }}
+      >
+        <a className={CLASSES}>{children}</a>
+      </Link>
     )
   } else {
     return (

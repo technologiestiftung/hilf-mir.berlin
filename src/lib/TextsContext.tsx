@@ -116,6 +116,7 @@ const defaultValue = {
   multipleFacilitiesPopupTitle: '',
   disclaimerPrefix: '',
   disclaimerContent: '',
+  moreInfos: '',
   noTargetPreferenceButtonText: '',
 }
 
