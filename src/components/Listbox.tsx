@@ -61,7 +61,7 @@ export const Listbox: FC<ListboxType> = ({
             <span
               className={classNames(
                 'pr-2',
-                'flex items-center',
+                'w-full h-full flex items-center',
                 'pointer-events-none'
               )}
             >
