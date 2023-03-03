@@ -64,7 +64,7 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
             </div>
           )}
         </header>
-        {children && <p className="px-5 pt-0 line-clamp-3">{children}</p>}
+        {children && <p className="px-5 pt-0 line-clamp-4">{children}</p>}
         {languages && languages.length > 0 && (
           <div className="mt-4 px-5 flex flex-nowrap gap-x-2">
             <Globe className="w-5 h-5 text-gray-40 shrink-0 translate-y-0.5" />
