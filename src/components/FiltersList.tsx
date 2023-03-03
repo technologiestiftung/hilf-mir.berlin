@@ -118,7 +118,7 @@ export const FiltersList: FC<{
                   label: group.fields.text,
                 }
               })}
-            activeOption={activeTargetGroupId || null}
+            activeValue={activeTargetGroupId || null}
             nullSelectionLabel={texts.noTargetPreferenceButtonText}
             onChange={(selectedValue) => {
               const hasValidTargetGroup = !!selectedValue

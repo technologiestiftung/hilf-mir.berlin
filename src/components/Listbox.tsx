@@ -12,7 +12,7 @@ interface ListboxOptionType {
 interface ListboxType {
   label: string
   options: ListboxOptionType[]
-  activeOption: number | null
+  activeValue: number | null
   onChange?: (selectedValue: number | null) => void
   nullSelectionLabel?: string
   className?: string
@@ -21,7 +21,7 @@ interface ListboxType {
 export const Listbox: FC<ListboxType> = ({
   label,
   options,
-  activeOption,
+  activeValue,
   onChange = () => undefined,
   nullSelectionLabel = 'Keine Präferenz',
   className = '',
@@ -31,12 +31,12 @@ export const Listbox: FC<ListboxType> = ({
 
   const mergedOptions = [{ label: nullSelectionLabel, value: null }, ...options]
   const selectedOption = mergedOptions.find(
-    (option) => option.value === activeOption
+    (option) => option.value === activeValue
   )
 
   return (
     <div className={classNames(className, 'w-full')}>
-      <HeadlessListbox value={activeOption} onChange={handleChange}>
+      <HeadlessListbox value={activeValue} onChange={handleChange}>
         <HeadlessListbox.Label
           className={classNames('w-full flex justify-between', 'text-lg')}
         >
