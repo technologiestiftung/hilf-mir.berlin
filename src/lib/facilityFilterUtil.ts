@@ -22,16 +22,16 @@ export const isFaclilityActive = ({
   facilityLabels,
 }: IsFaclilityActivePropType): boolean => {
   if (!isFilteredByTopic && !isFilteredByTarget) return true
-  const hasSomeOfTheActiveTopics =
-    activeTopcisLabels?.some((tag) => facilityLabels.includes(tag.id)) || false
+  const hasAllOfTheActiveTopics =
+    activeTopcisLabels?.every((tag) => facilityLabels.includes(tag.id)) || false
   const hasAnActiveTarget =
     (activeTargetLabels[0] &&
       facilityLabels.includes(activeTargetLabels[0].id)) ||
     false
 
   if (!isFilteredByTopic && isFilteredByTarget) return hasAnActiveTarget
-  if (isFilteredByTopic && !isFilteredByTarget) return hasSomeOfTheActiveTopics
-  return hasSomeOfTheActiveTopics && hasAnActiveTarget
+  if (isFilteredByTopic && !isFilteredByTarget) return hasAllOfTheActiveTopics
+  return hasAllOfTheActiveTopics && hasAnActiveTarget
 }
 
 export const getActiveLabelGroups = (labels: GristLabelType[]) => ({
