@@ -3,7 +3,7 @@ import Head from 'next/head'
 import { useTexts } from '@lib/TextsContext'
 import { Page } from '@common/types/nextPage'
 import { MapLayout } from '@components/MapLayout'
-import { FacilityListItem } from '@components/FacilityListItem'
+import { FacilityCard } from '@components/FacilityCard'
 import { mapRecordToMinimum, MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { GristLabelType } from '@common/types/gristData'
 import { useUrlState } from '@lib/UrlStateContext'
@@ -142,16 +142,17 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
 
       <ul className="pb-28">
         {filteredRecords.map((record) => (
-          <FacilityListItem
-            key={record.id}
-            id={record.id}
-            title={record.title}
-            phone={record.phone?.split(',')[0]}
-            facility={record}
-            languages={record.languages}
-          >
-            {record.description}
-          </FacilityListItem>
+          <li key={record.id}>
+            <FacilityCard
+              id={record.id}
+              title={record.title}
+              phone={record.phone?.split(',')[0]}
+              facility={record}
+              languages={record.languages}
+            >
+              {record.description}
+            </FacilityCard>
+          </li>
         ))}
       </ul>
     </>
