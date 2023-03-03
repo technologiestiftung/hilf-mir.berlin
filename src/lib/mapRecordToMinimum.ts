@@ -20,6 +20,7 @@ export interface MinimalRecordType
   languages: string[]
   open247: boolean
   openingTimesText: string
+  phone: string
   description: string
 }
 
@@ -40,6 +41,7 @@ export const mapRecordToMinimum = (record: TableRowType): MinimalRecordType => {
       allowedAttributes: {},
       disallowedTagsMode: 'discard',
     }),
+    phone: record.fields.Telefonnummer,
   }
 }
 
