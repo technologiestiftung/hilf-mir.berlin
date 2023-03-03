@@ -8,6 +8,7 @@ import { Button } from './Button'
 import { Phone } from './icons/Phone'
 import { Globe } from './icons/Globe'
 import { useIsFacilityOpened } from '@lib/hooks/useIsFacilityOpened'
+import { useUrlState } from '@lib/UrlStateContext'
 
 interface FacilityListItemPropsType {
   id: number
@@ -32,6 +33,7 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
   facility,
   children,
 }) => {
+  const [urlState] = useUrlState()
   const texts = useTexts()
   const open = useIsFacilityOpened(facility)
   const { getDistanceToUser } = useDistanceToUser()
@@ -91,6 +93,11 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
           <Button
             tag="a"
             href={`/${id}`}
+            query={{
+              ...urlState,
+              latitude: facility.latitude,
+              longitude: facility.longitude,
+            }}
             size="small"
             scheme="primary"
             className="w-1/2 flex flex-nowrap gap-x-2 items-center"

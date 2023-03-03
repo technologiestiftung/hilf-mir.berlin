@@ -1,4 +1,6 @@
 import classNames from '@lib/classNames'
+import Link from 'next/link'
+import { ParsedUrlQueryInput } from 'querystring'
 import { FC } from 'react'
 
 interface ButtonType {
@@ -6,6 +8,7 @@ interface ButtonType {
   scheme?: 'primary' | 'secondary' | 'link'
   size?: 'large' | 'medium' | 'small' | 'extrasmall'
   href?: string
+  query?: string | ParsedUrlQueryInput | null
   onClick?: () => void
   className?: string
 }
@@ -39,6 +42,7 @@ export const Button: FC<ButtonType> = ({
   scheme = 'secondary',
   size = 'medium',
   href,
+  query,
   onClick,
   className: additionalClassNames = '',
   children,
@@ -56,9 +60,14 @@ export const Button: FC<ButtonType> = ({
 
   if (tag === 'a') {
     return (
-      <a href={href} className={CLASSES}>
-        {children}
-      </a>
+      <Link
+        href={{
+          pathname: href,
+          query: query,
+        }}
+      >
+        <a className={CLASSES}>{children}</a>
+      </Link>
     )
   } else {
     return (
