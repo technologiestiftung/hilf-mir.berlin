@@ -103,7 +103,7 @@ export const FacilityListItem: FC<FacilityListItemPropsType> = ({
             className="w-1/2 flex flex-nowrap gap-x-2 items-center"
           >
             {texts.moreInfos}
-            <Arrow orientation="right" className="w-5 h-5" />
+            <Arrow orientation="right" className="w-4 h-4" />
           </Button>
         </div>
       </div>
