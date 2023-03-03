@@ -116,6 +116,7 @@ const defaultValue = {
   multipleFacilitiesPopupTitle: '',
   disclaimerPrefix: '',
   disclaimerContent: '',
+  noTargetPreferenceButtonText: '',
 }
 
 export type TextsMapType = typeof defaultValue
