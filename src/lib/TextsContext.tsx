@@ -113,6 +113,7 @@ const defaultValue = {
   multipleFacilitiesPopupTitle: '',
   disclaimerPrefix: '',
   disclaimerContent: '',
+  moreInfos: '',
 }
 
 export type TextsMapType = typeof defaultValue
