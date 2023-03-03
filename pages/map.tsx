@@ -3,7 +3,6 @@ import Head from 'next/head'
 import { useTexts } from '@lib/TextsContext'
 import { Page } from '@common/types/nextPage'
 import { MapLayout } from '@components/MapLayout'
-import { FacilityCard } from '@components/FacilityCard'
 import { mapRecordToMinimum, MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { GristLabelType } from '@common/types/gristData'
 import { useUrlState } from '@lib/UrlStateContext'
@@ -15,6 +14,7 @@ import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
 import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
 import { getFilteredFacilities } from '@lib/facilityFilterUtil'
 import { Button } from '@components/Button'
+import { FacilityListItem } from '@components/FacilityListItem'
 
 export const getStaticProps: GetStaticProps = async () => {
   const { texts, labels, records } = await loadData()
@@ -143,15 +143,7 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
       <ul className="pb-28">
         {filteredRecords.map((record) => (
           <li key={record.id}>
-            <FacilityCard
-              id={record.id}
-              title={record.title}
-              phone={record.phone?.split(',')[0]}
-              facility={record}
-              languages={record.languages}
-            >
-              {record.description}
-            </FacilityCard>
+            <FacilityListItem facility={record} />
           </li>
         ))}
       </ul>
