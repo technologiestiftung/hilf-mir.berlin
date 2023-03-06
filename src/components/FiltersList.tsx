@@ -186,7 +186,7 @@ export const FiltersList: FC<{
           scheme="primary"
           size="large"
           className={classNames(
-            'w-full md:w-max',
+            'w-full md:w-max md:min-w-[324px]',
             'justify-between items-center gap-x-5',
             'group'
           )}
