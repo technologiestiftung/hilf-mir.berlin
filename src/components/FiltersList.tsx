@@ -5,12 +5,13 @@ import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
 import { useTexts } from '@lib/TextsContext'
 import { FC, useEffect, useMemo, useState } from 'react'
 import { SwitchButton } from './SwitchButton'
-import { PrimaryButton } from './PrimaryButton'
 import { useRouter } from 'next/router'
 import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
 import { FiltersTagsList } from './FiltersTagsList'
 import { useFilteredFacilitiesCount } from '@lib/hooks/useFilteredFacilitiesCount'
 import { Listbox } from './Listbox'
+import { Button } from './Button'
+import { Arrow } from './icons/Arrow'
 
 export const FiltersList: FC<{
   recordsWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
@@ -69,6 +70,24 @@ export const FiltersList: FC<{
 
   const updateFilters = (newTags: number[]): void => {
     updateUrlState({ tags: newTags })
+  }
+
+  const getSubmitText = (): string => {
+    switch (true) {
+      case queryTagIds.length === 0 || queryTagIds.length === labels.length:
+        return texts.filtersButtonTextAllFilters
+      case queryTagIds.length > 0 && filteredFacilitiesCount === 1:
+        return texts.filtersButtonTextFilteredSingular
+      case queryTagIds.length > 0 && filteredFacilitiesCount > 1:
+        return texts.filtersButtonTextFilteredPlural.replace(
+          '#number',
+          `${filteredFacilitiesCount}`
+        )
+      case queryTagIds.length > 0 && filteredFacilitiesCount === 0:
+        return texts.filtersButtonTextFilteredNoResults
+      default:
+        return ''
+    }
   }
 
   return (
@@ -163,8 +182,10 @@ export const FiltersList: FC<{
         >
           {texts.filtersGeoSearchLabel}
         </SwitchButton>
-        <PrimaryButton
-          className="w-full md:w-max"
+        <Button
+          scheme="primary"
+          size="large"
+          className={classNames('w-full md:w-max md:min-w-[324px]', 'group')}
           onClick={() => {
             onSubmit()
             void push({
@@ -175,28 +196,23 @@ export const FiltersList: FC<{
               },
             })
           }}
+          icon={
+            <Arrow
+              className={classNames(
+                'transition-transform group-hover:translate-x-0.5 group-disabled:group-hover:translate-x-0'
+              )}
+            />
+          }
           disabled={queryTagIds.length > 0 && filteredFacilitiesCount === 0}
           tooltip={
-            queryTagIds.length > 0 && filteredFacilitiesCount === 0
-              ? texts.filtersButtonTextFilteredNoResultsHint
-              : ''
+            queryTagIds.length > 0 &&
+            filteredFacilitiesCount === 0 && (
+              <span>{texts.filtersButtonTextFilteredNoResultsHint}</span>
+            )
           }
         >
-          {(queryTagIds.length === 0 || queryTagIds.length === labels.length) &&
-            texts.filtersButtonTextAllFilters}
-          {queryTagIds.length > 0 &&
-            filteredFacilitiesCount === 1 &&
-            texts.filtersButtonTextFilteredSingular}
-          {queryTagIds.length > 0 &&
-            filteredFacilitiesCount > 1 &&
-            texts.filtersButtonTextFilteredPlural.replace(
-              '#number',
-              `${filteredFacilitiesCount}`
-            )}
-          {queryTagIds.length > 0 &&
-            filteredFacilitiesCount === 0 &&
-            texts.filtersButtonTextFilteredNoResults}
-        </PrimaryButton>
+          {getSubmitText()}
+        </Button>
       </div>
     </div>
   )

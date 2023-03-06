@@ -2,14 +2,14 @@ import { useTexts } from '@lib/TextsContext'
 import Image from 'next/image'
 import { FC } from 'react'
 import introImage from '../images/intro-header.png'
-import { PrimaryButton } from '@components/PrimaryButton'
-import { SecondaryButton } from '@components/SecondaryButton'
 import { Phone } from '@components/icons/Phone'
 import { useRouter } from 'next/router'
 import classNames from '@lib/classNames'
 import { useIsMobile } from '@lib/hooks/useIsMobile'
 import { LegalFooter } from './LegalFooter'
 import { Footer } from './Footer'
+import { Button } from './Button'
+import { Arrow } from './icons/Arrow'
 
 export const WelcomeScreen: FC<{
   onShowOffers: () => void
@@ -32,26 +32,55 @@ export const WelcomeScreen: FC<{
                 <Image src={introImage} layout="fill" objectFit="cover" />
               </section>
             </div>
-            <h1 className="p-5 pt-6 md:px-8 md:pt-12 text-4xl md:text-5xl">
-              {texts.homeWelcomeTitle}
-            </h1>
-            <p
-              className="px-5 text-lg leading-snug md:px-8 bp-8 max-w-prose md:mb-8"
-              dangerouslySetInnerHTML={{ __html: texts.homeWelcomeText }}
-            />
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr,auto] gap-x-16 items-end p-5 pt-6 md:px-8 md:pt-12 md:mb-8">
+              <div>
+                <h1 className="text-4xl md:text-5xl">
+                  {texts.homeWelcomeTitle}
+                </h1>
+                <p
+                  className="mt-4 text-lg leading-snug max-w-prose"
+                  dangerouslySetInnerHTML={{ __html: texts.homeWelcomeText }}
+                />
+              </div>
+              {!isMobile && (
+                <Button
+                  tag="a"
+                  size="large"
+                  className={classNames('font-normal', 'group')}
+                  icon={<Phone className={classNames('text-purple-500')} />}
+                  href="/sofortige-hilfe"
+                >
+                  {texts.directHelpButtonText}
+                </Button>
+              )}
+            </div>
           </div>
 
           {isMobile && (
             <div className="flex flex-col p-5 pt-8 pb-20 gap-2">
-              <PrimaryButton onClick={onShowOffers}>
+              <Button
+                onClick={onShowOffers}
+                scheme="primary"
+                size="large"
+                className={classNames('group')}
+                icon={
+                  <Arrow
+                    className={classNames(
+                      'transition-transform group-hover:translate-x-0.5 group-disabled:group-hover:translate-x-0'
+                    )}
+                  />
+                }
+              >
                 {texts.findOffersButtonText}
-              </PrimaryButton>
-              <SecondaryButton
+              </Button>
+              <Button
+                size="large"
+                className="group"
+                icon={<Phone className={classNames('text-purple-500')} />}
                 onClick={() => void push(`/sofortige-hilfe`)}
-                icon={<Phone />}
               >
                 {texts.directHelpButtonText}
-              </SecondaryButton>
+              </Button>
               <a
                 href={texts.moreOffersKVBLinkUrl}
                 target="_blank"
