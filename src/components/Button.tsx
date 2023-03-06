@@ -17,7 +17,7 @@ interface ButtonType {
 const getSizeClasses = (size: ButtonType['size']): string => {
   switch (size) {
     case 'large':
-      return 'text-2xl py-3 px-5 rounded-lg'
+      return 'text-2xl py-3 px-5 rounded'
     case 'small':
       return 'text-base py-2 px-3 rounded'
     case 'extrasmall':
@@ -44,7 +44,7 @@ export const Button: FC<ButtonType> = ({
   size = 'medium',
   href,
   query,
-  onClick,
+  onClick = () => undefined,
   className: additionalClassNames = '',
   disabled = false,
   children,
@@ -60,6 +60,8 @@ export const Button: FC<ButtonType> = ({
     additionalClassNames
   )
 
+  const isButton = tag === 'button' && typeof onClick !== 'undefined'
+
   const isExternalLink =
     tag === 'a' && !(href?.startsWith('/') || href?.startsWith('#'))
 
@@ -73,7 +75,7 @@ export const Button: FC<ButtonType> = ({
     )
   }
 
-  if (isInternalLink) {
+  if (isInternalLink && !isButton) {
     return (
       <Link
         href={{
@@ -87,7 +89,7 @@ export const Button: FC<ButtonType> = ({
   } else {
     return (
       <button
-        onClick={() => onClick && onClick()}
+        onClick={() => onClick()}
         className={classNames(
           CLASSES,
           'disabled:bg-gray-20 disabled:text-gray-60 disabled:cursor-not-allowed'
