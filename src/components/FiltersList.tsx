@@ -201,6 +201,12 @@ export const FiltersList: FC<{
             })
           }}
           disabled={queryTagIds.length > 0 && filteredFacilitiesCount === 0}
+          tooltip={
+            queryTagIds.length > 0 &&
+            filteredFacilitiesCount === 0 && (
+              <span>{texts.filtersButtonTextFilteredNoResultsHint}</span>
+            )
+          }
         >
           {getSubmitText()}{' '}
           <Arrow
