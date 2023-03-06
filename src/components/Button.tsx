@@ -1,7 +1,7 @@
 import classNames from '@lib/classNames'
 import Link from 'next/link'
 import { ParsedUrlQueryInput } from 'querystring'
-import { FC } from 'react'
+import { FC, ReactNode } from 'react'
 
 interface ButtonType {
   tag?: 'button' | 'a'
@@ -11,6 +11,7 @@ interface ButtonType {
   query?: string | ParsedUrlQueryInput | null
   onClick?: () => void
   disabled?: boolean
+  tooltip?: ReactNode
   className?: string
 }
 
@@ -47,6 +48,7 @@ export const Button: FC<ButtonType> = ({
   onClick = () => undefined,
   className: additionalClassNames = '',
   disabled = false,
+  tooltip,
   children,
 }) => {
   const SIZE_CLASSES = getSizeClasses(size)
@@ -68,6 +70,9 @@ export const Button: FC<ButtonType> = ({
   const isInternalLink = !isExternalLink
 
   if (isExternalLink) {
+    if (tooltip)
+      console.error('Tooltip is currently not supported for <a> tags.')
+
     return (
       <a href={href} className={CLASSES}>
         {children}
@@ -76,6 +81,9 @@ export const Button: FC<ButtonType> = ({
   }
 
   if (isInternalLink && !isButton) {
+    if (tooltip)
+      console.error('Tooltip is currently not supported for <a> tags.')
+
     return (
       <Link
         href={{
@@ -92,11 +100,23 @@ export const Button: FC<ButtonType> = ({
         onClick={() => onClick()}
         className={classNames(
           CLASSES,
+          'relative',
           'disabled:bg-gray-20 disabled:text-gray-60 disabled:cursor-not-allowed'
         )}
         disabled={disabled}
       >
         {children}
+        {tooltip && (
+          <span
+            className={classNames(
+              `absolute -top-2 left-1/2 -translate-x-1/2 -translate-y-full`,
+              `px-2 py-1 text-white bg-black opacity-0 pointer-events-none`,
+              `group-hover:opacity-100 transition-colors text-sm leading-tight`
+            )}
+          >
+            {tooltip}
+          </span>
+        )}
       </button>
     )
   }
