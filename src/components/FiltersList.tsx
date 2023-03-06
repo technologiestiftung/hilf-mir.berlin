@@ -185,11 +185,7 @@ export const FiltersList: FC<{
         <Button
           scheme="primary"
           size="large"
-          className={classNames(
-            'w-full md:w-max md:min-w-[324px]',
-            'justify-between items-center gap-x-5',
-            'group'
-          )}
+          className={classNames('w-full md:w-max md:min-w-[324px]', 'group')}
           onClick={() => {
             onSubmit()
             void push({
@@ -200,6 +196,13 @@ export const FiltersList: FC<{
               },
             })
           }}
+          icon={
+            <Arrow
+              className={classNames(
+                'transition-transform group-hover:translate-x-0.5 group-disabled:group-hover:translate-x-0'
+              )}
+            />
+          }
           disabled={queryTagIds.length > 0 && filteredFacilitiesCount === 0}
           tooltip={
             queryTagIds.length > 0 &&
@@ -208,12 +211,7 @@ export const FiltersList: FC<{
             )
           }
         >
-          {getSubmitText()}{' '}
-          <Arrow
-            className={classNames(
-              'transition-transform group-hover:translate-x-0.5 group-disabled:group-hover:translate-x-0'
-            )}
-          />
+          {getSubmitText()}
         </Button>
       </div>
     </div>

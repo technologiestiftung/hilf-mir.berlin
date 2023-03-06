@@ -62,7 +62,7 @@ export const FacilityCarousel: FC<FacilityCarouselPropsType> = ({
                         }}
                         size="small"
                         scheme="primary"
-                        className="w-1/2 flex flex-nowrap gap-x-2 items-center"
+                        className="w-1/2"
                       >
                         {texts.moreInfos}
                         <Arrow orientation="right" className="w-4 h-4" />

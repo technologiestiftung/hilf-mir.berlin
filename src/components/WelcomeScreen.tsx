@@ -46,15 +46,11 @@ export const WelcomeScreen: FC<{
                 <Button
                   tag="a"
                   size="large"
-                  className={classNames(
-                    'font-normal',
-                    'justify-between items-center gap-x-5',
-                    'group'
-                  )}
+                  className={classNames('font-normal', 'group')}
+                  icon={<Phone className={classNames('text-purple-500')} />}
                   href="/sofortige-hilfe"
                 >
                   {texts.directHelpButtonText}
-                  <Phone className={classNames('text-purple-500')} />
                 </Button>
               )}
             </div>
@@ -66,28 +62,24 @@ export const WelcomeScreen: FC<{
                 onClick={onShowOffers}
                 scheme="primary"
                 size="large"
-                className={classNames(
-                  'justify-between items-center gap-x-5',
-                  'group'
-                )}
+                className={classNames('group')}
+                icon={
+                  <Arrow
+                    className={classNames(
+                      'transition-transform group-hover:translate-x-0.5 group-disabled:group-hover:translate-x-0'
+                    )}
+                  />
+                }
               >
                 {texts.findOffersButtonText}
-                <Arrow
-                  className={classNames(
-                    'transition-transform group-hover:translate-x-0.5 group-disabled:group-hover:translate-x-0'
-                  )}
-                />
               </Button>
               <Button
                 size="large"
-                className={classNames(
-                  'justify-between items-center gap-x-5',
-                  'group'
-                )}
+                className="group"
+                icon={<Phone className={classNames('text-purple-500')} />}
                 onClick={() => void push(`/sofortige-hilfe`)}
               >
                 {texts.directHelpButtonText}
-                <Phone className={classNames('text-purple-500')} />
               </Button>
               <a
                 href={texts.moreOffersKVBLinkUrl}

@@ -11,6 +11,7 @@ interface ButtonType {
   query?: string | ParsedUrlQueryInput | null
   onClick?: () => void
   disabled?: boolean
+  icon?: ReactNode
   tooltip?: ReactNode
   className?: string
 }
@@ -18,14 +19,14 @@ interface ButtonType {
 const getSizeClasses = (size: ButtonType['size']): string => {
   switch (size) {
     case 'large':
-      return 'text-2xl py-3 px-5 rounded'
+      return 'text-2xl py-3 px-5 rounded gap-x-5'
     case 'small':
-      return 'text-base py-2 px-3 rounded'
+      return 'text-base py-2 px-3 rounded gap-x-2'
     case 'extrasmall':
-      return 'text-sm py-1 px-2 rounded'
+      return 'text-sm py-1 px-2 rounded gap-x-2'
     // case 'secondary':
     default:
-      return 'text-lg py-2 px-4 rounded'
+      return 'text-lg py-2 px-4 rounded gap-x-3'
   }
 }
 
@@ -48,17 +49,23 @@ export const Button: FC<ButtonType> = ({
   onClick = () => undefined,
   className: additionalClassNames = '',
   disabled = false,
+  icon,
   tooltip,
   children,
 }) => {
   const SIZE_CLASSES = getSizeClasses(size)
   const SCHEME_CLASSES = getSchemeClasses(scheme)
+  const LAYOUT_CLASSES = classNames(
+    'flex items-center',
+    icon ? 'justify-between' : 'justify-center'
+  )
 
-  const CLASSES = classNames(
-    'text-center flex justify-center',
+  const SHARED_CLASSES = classNames(
+    'text-center',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white',
     SIZE_CLASSES,
     SCHEME_CLASSES,
+    LAYOUT_CLASSES,
     additionalClassNames
   )
 
@@ -74,8 +81,9 @@ export const Button: FC<ButtonType> = ({
       console.error('Tooltip is currently not supported for <a> tags.')
 
     return (
-      <a href={href} className={CLASSES}>
+      <a href={href} className={SHARED_CLASSES}>
         {children}
+        {icon}
       </a>
     )
   }
@@ -91,7 +99,10 @@ export const Button: FC<ButtonType> = ({
           query: query,
         }}
       >
-        <a className={CLASSES}>{children}</a>
+        <a className={SHARED_CLASSES}>
+          {children}
+          {icon}
+        </a>
       </Link>
     )
   } else {
@@ -99,13 +110,14 @@ export const Button: FC<ButtonType> = ({
       <button
         onClick={() => onClick()}
         className={classNames(
-          CLASSES,
+          SHARED_CLASSES,
           'relative',
           'disabled:bg-gray-20 disabled:text-gray-60 disabled:cursor-not-allowed'
         )}
         disabled={disabled}
       >
         {children}
+        {icon}
         {tooltip && (
           <span
             className={classNames(
