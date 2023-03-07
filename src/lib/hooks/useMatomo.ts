@@ -45,10 +45,12 @@ const replaceNewScript = (newNoscript: HTMLElement): void => {
 }
 
 export const useMatomo = (): void => {
-  const { pathname } = useRouter()
+  const { asPath } = useRouter()
 
   useEffect(() => {
-    const newScript = createImageNoscript(pathname)
+    const parsedPath = asPath.split('?')[0]
+
+    const newScript = createImageNoscript(parsedPath)
     newScript && replaceNewScript(newScript)
-  }, [pathname])
+  }, [asPath])
 }
