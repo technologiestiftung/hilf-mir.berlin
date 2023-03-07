@@ -1,27 +1,54 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
+const MATOMO_URL =
+  process.env.NEXT_PUBLIC_MATOMO_URL || 'https://piwik.example.com'
+const MATOMO_SITE_ID = process.env.NEXT_PUBLIC_MATOMO_SITE_ID
+
+const createImageNoscript = (pathname = ''): HTMLElement | undefined => {
+  if (!MATOMO_SITE_ID) return
+  const newNoscript = document.createElement('noscript')
+  const newParagraph = document.createElement('p')
+  const newImage = document.createElement('img')
+
+  newImage.src = [
+    `${MATOMO_URL}/matomo.php?idsite=${MATOMO_SITE_ID}`,
+    `rec=1`,
+    `action_name=${encodeURIComponent(
+      `pageview/${pathname.replace('/', '') || 'home'}`
+    )}`,
+    `url=${encodeURIComponent(`${window.location.origin}${pathname}`)}`,
+    `rand=${Date.now()}`,
+  ].join('&')
+  newImage.setAttribute('style', 'border:0;')
+  newImage.alt = ''
+
+  newParagraph.appendChild(newImage)
+  newNoscript.appendChild(newParagraph)
+
+  return newNoscript
+}
+
+const replaceNewScript = (newNoscript: HTMLElement): void => {
+  const oldNewScript = document.getElementById('matomo-image')
+  if (oldNewScript) oldNewScript.remove()
+  const allScripts = document.getElementsByTagName('script')
+  const lastScript = allScripts[allScripts.length - 1]
+
+  newNoscript.setAttribute('id', 'matomo-image')
+
+  if (lastScript && lastScript.parentNode) {
+    lastScript.parentNode.append(newNoscript, lastScript)
+  } else {
+    document.body.appendChild(newNoscript)
+  }
+}
+
 export const useMatomo = (): void => {
+  const { pathname } = useRouter()
+
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const _paq = (window._paq = window._paq || [])
-    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-    _paq.push(['trackPageView'])
-    _paq.push(['enableLinkTracking'])
-    _paq.push(['requireCookieConsent'])
-    ;(function () {
-      const u = 'https://piwik.technologiestiftung-berlin.de/'
-      _paq.push(['setTrackerUrl', u + 'matomo.php'])
-      _paq.push(['setSiteId', '28'])
-      const d = document,
-        g = d.createElement('script'),
-        s = d.getElementsByTagName('script')[0]
-      g.async = true
-      g.src = u + 'matomo.js'
-      s.parentNode?.insertBefore(g, s)
-    })()
-  }, [])
+    const newScript = createImageNoscript(pathname)
+    newScript && replaceNewScript(newScript)
+  }, [pathname])
 }
