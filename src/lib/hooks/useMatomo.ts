@@ -3,9 +3,10 @@ import { useEffect } from 'react'
 
 const MATOMO_URL =
   process.env.NEXT_PUBLIC_MATOMO_URL || 'https://piwik.example.com'
-const MATOMO_SITE_ID = process.env.NEXT_PUBLIC_MATOMO_SITE_ID || '1'
+const MATOMO_SITE_ID = process.env.NEXT_PUBLIC_MATOMO_SITE_ID
 
-const createImageNoscript = (pathname = ''): HTMLElement => {
+const createImageNoscript = (pathname = ''): HTMLElement | undefined => {
+  if (!MATOMO_SITE_ID) return
   const newNoscript = document.createElement('noscript')
   const newParagraph = document.createElement('p')
   const newImage = document.createElement('img')
@@ -48,6 +49,6 @@ export const useMatomo = (): void => {
 
   useEffect(() => {
     const newScript = createImageNoscript(pathname)
-    replaceNewScript(newScript)
+    newScript && replaceNewScript(newScript)
   }, [pathname])
 }
