@@ -6,6 +6,7 @@ import { Page } from '@common/types/nextPage'
 import Head from 'next/head'
 import { UrlStateProvider } from '@lib/UrlStateContext'
 import { UserGeolocationProvider } from '@lib/hooks/useUserGeolocation'
+import { useMatomo } from '@lib/hooks/useMatomo'
 
 interface PagePropsType {
   texts: TextsMapType
@@ -16,6 +17,7 @@ interface AppPropsType extends AppProps {
 }
 
 const App = ({ Component, pageProps }: AppPropsType): JSX.Element => {
+  useMatomo()
   const getLayout = Component.getLayout ?? ((page) => page)
   const Layout = Component.layout ?? (({ children }) => <>{children}</>)
   return (
