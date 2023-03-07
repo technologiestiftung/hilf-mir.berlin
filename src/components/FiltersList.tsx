@@ -5,12 +5,13 @@ import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
 import { useTexts } from '@lib/TextsContext'
 import { FC, useEffect, useMemo, useState } from 'react'
 import { SwitchButton } from './SwitchButton'
-import { PrimaryButton } from './PrimaryButton'
 import { useRouter } from 'next/router'
 import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
 import { FiltersTagsList } from './FiltersTagsList'
-import { RadioGroup } from './RadioGroup'
 import { useFilteredFacilitiesCount } from '@lib/hooks/useFilteredFacilitiesCount'
+import { Listbox } from './Listbox'
+import { Button } from './Button'
+import { Arrow } from './icons/Arrow'
 
 export const FiltersList: FC<{
   recordsWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
@@ -21,7 +22,7 @@ export const FiltersList: FC<{
   const labels = useFiltersWithActiveProp()
   const [urlState, updateUrlState] = useUrlState()
 
-  const tags = useMemo(() => urlState.tags || [], [urlState.tags])
+  const queryTagIds = useMemo(() => urlState.tags || [], [urlState.tags])
 
   const {
     latitude,
@@ -41,42 +42,57 @@ export const FiltersList: FC<{
   const targetGroups = labels.filter(
     ({ fields }) => fields.group2 === 'zielpublikum'
   )
-  const someTargetFiltersActive = targetGroups.some((targetGroup) =>
-    tags.find((f) => f === targetGroup.id)
-  )
 
   const targetGroupIds = labels
     .filter((label) => label.fields.group2 === 'zielpublikum')
     .map((label) => label.id)
 
   const [activeTargetGroupId, setActiveTargetGroupId] = useState(
-    tags.find((tag) => {
-      return targetGroupIds.includes(tag)
+    queryTagIds.find((tagId) => {
+      return targetGroupIds.includes(tagId)
     })
   )
 
   useEffect(() => {
-    if (tags.length === 0) return
+    if (queryTagIds.length === 0) return
 
-    const currentTargetGroupId = tags.find((tag) =>
-      targetGroupIds.includes(tag)
+    const currentTargetGroupId = queryTagIds.find((tagId) =>
+      targetGroupIds.includes(tagId)
     )
     if (currentTargetGroupId) {
       setActiveTargetGroupId(currentTargetGroupId)
     }
-  }, [tags, targetGroupIds])
+  }, [queryTagIds, targetGroupIds])
 
   const someGroupFiltersActive = labels
     .filter(({ fields }) => fields.group2 !== 'zielpublikum')
-    .some(({ id }) => tags.find((f) => f === id))
+    .some(({ id }) => queryTagIds.find((f) => f === id))
 
   const updateFilters = (newTags: number[]): void => {
     updateUrlState({ tags: newTags })
   }
 
+  const getSubmitText = (): string => {
+    switch (true) {
+      case queryTagIds.length === 0 || queryTagIds.length === labels.length:
+        return texts.filtersButtonTextAllFilters
+      case queryTagIds.length > 0 && filteredFacilitiesCount === 1:
+        return texts.filtersButtonTextFilteredSingular
+      case queryTagIds.length > 0 && filteredFacilitiesCount > 1:
+        return texts.filtersButtonTextFilteredPlural.replace(
+          '#number',
+          `${filteredFacilitiesCount}`
+        )
+      case queryTagIds.length > 0 && filteredFacilitiesCount === 0:
+        return texts.filtersButtonTextFilteredNoResults
+      default:
+        return ''
+    }
+  }
+
   return (
     <div className="pb-20 lg:pb-0">
-      <div className="md:pt-10 flex flex-wrap gap-x-8 md:pb-8">
+      <div className="md:pt-10 flex flex-wrap gap-x-8 pb-6 md:pb-8">
         <ul className="flex flex-wrap gap-2 place-content-start mb-5">
           <FiltersTagsList
             filters={[...group1, ...group2, ...group3]}
@@ -87,7 +103,7 @@ export const FiltersList: FC<{
           <button
             onClick={() =>
               updateFilters(
-                tags.filter((f) => {
+                queryTagIds.filter((f) => {
                   const label = labels.find(({ id }) => id === f)
                   return label?.fields.group2 === `zielpublikum`
                 }) || []
@@ -105,56 +121,59 @@ export const FiltersList: FC<{
         )}
       </div>
       <div className="grid">
-        <div className="block">
-          <RadioGroup
-            className="mb-5"
+        <div className="block w-full md:w-[324px] z-10">
+          <Listbox
             label={texts.filtersSearchTargetLabel}
-            options={targetGroups.map((group) => {
-              return {
-                value: `${group.id}`,
-                label: group.fields.text,
-              }
-            })}
-            activeValue={activeTargetGroupId || ''}
+            options={targetGroups
+              .sort((a, b) => {
+                if (!a.fields.order) return 1
+                if (!b.fields.order) return -1
+
+                return a.fields.order - b.fields.order
+              })
+              .map((group) => {
+                return {
+                  value: group.id,
+                  label: group.fields.text,
+                }
+              })}
+            activeValue={activeTargetGroupId || null}
+            nullSelectionLabel={texts.noTargetPreferenceButtonText}
             onChange={(selectedValue) => {
-              const targetGroupAlreadyInUrl = tags.some((tag) => {
-                return targetGroupIds.includes(tag)
+              const hasValidTargetGroup = !!selectedValue
+              const targetGroupAlreadyInUrl = queryTagIds.some((tagId) => {
+                return targetGroupIds.includes(tagId)
               })
 
-              if (targetGroupAlreadyInUrl) {
-                const tagsWithoutOldTargetGroup = tags.filter((tag) => {
-                  return !targetGroupIds.includes(tag)
-                })
-                updateFilters([
-                  ...tagsWithoutOldTargetGroup,
-                  Number(selectedValue),
-                ])
-              } else {
-                updateFilters([...tags, Number(selectedValue)])
+              const tagsWithoutOldTargetGroup = queryTagIds.filter((tagId) => {
+                return !targetGroupIds.includes(tagId)
+              })
+
+              switch (true) {
+                case targetGroupAlreadyInUrl && hasValidTargetGroup:
+                  updateFilters([
+                    ...tagsWithoutOldTargetGroup,
+                    selectedValue as number,
+                  ])
+                  break
+                case targetGroupAlreadyInUrl && !hasValidTargetGroup:
+                  updateFilters([...tagsWithoutOldTargetGroup])
+                  setActiveTargetGroupId(undefined)
+                  break
+                case !targetGroupAlreadyInUrl && hasValidTargetGroup:
+                  updateFilters([...queryTagIds, selectedValue as number])
+                  break
+                case !targetGroupAlreadyInUrl && !hasValidTargetGroup:
+                  updateFilters([...queryTagIds])
+                  setActiveTargetGroupId(undefined)
+                  break
+                default:
+                  break
               }
             }}
+            className="mb-12"
           />
         </div>
-        {someTargetFiltersActive && (
-          <button
-            onClick={() => {
-              updateFilters(
-                tags.filter((f) => {
-                  return !targetGroupIds.includes(f)
-                }) || []
-              )
-              setActiveTargetGroupId(undefined)
-            }}
-            className={classNames(
-              `text-lg leading-6 text-left font-normal mb-8`,
-              `focus:outline-none focus:ring-2 focus:ring-primary`,
-              `focus:ring-offset-2 focus:ring-offset-white`,
-              `underline text-gray-80 hover-primary transition-colors`
-            )}
-          >
-            {texts.reset}
-          </button>
-        )}
         <SwitchButton
           value={useGeolocation}
           onToggle={setGeolocationUsage}
@@ -163,8 +182,10 @@ export const FiltersList: FC<{
         >
           {texts.filtersGeoSearchLabel}
         </SwitchButton>
-        <PrimaryButton
-          className="w-max"
+        <Button
+          scheme="primary"
+          size="large"
+          className={classNames('w-full md:w-max md:min-w-[324px]', 'group')}
           onClick={() => {
             onSubmit()
             void push({
@@ -175,28 +196,23 @@ export const FiltersList: FC<{
               },
             })
           }}
-          disabled={tags.length > 0 && filteredFacilitiesCount === 0}
+          icon={
+            <Arrow
+              className={classNames(
+                'transition-transform group-hover:translate-x-0.5 group-disabled:group-hover:translate-x-0'
+              )}
+            />
+          }
+          disabled={queryTagIds.length > 0 && filteredFacilitiesCount === 0}
           tooltip={
-            tags.length > 0 && filteredFacilitiesCount === 0
-              ? texts.filtersButtonTextFilteredNoResultsHint
-              : ''
+            queryTagIds.length > 0 &&
+            filteredFacilitiesCount === 0 && (
+              <span>{texts.filtersButtonTextFilteredNoResultsHint}</span>
+            )
           }
         >
-          {(tags.length === 0 || tags.length === labels.length) &&
-            texts.filtersButtonTextAllFilters}
-          {tags.length > 0 &&
-            filteredFacilitiesCount === 1 &&
-            texts.filtersButtonTextFilteredSingular}
-          {tags.length > 0 &&
-            filteredFacilitiesCount > 1 &&
-            texts.filtersButtonTextFilteredPlural.replace(
-              '#number',
-              `${filteredFacilitiesCount}`
-            )}
-          {tags.length > 0 &&
-            filteredFacilitiesCount === 0 &&
-            texts.filtersButtonTextFilteredNoResults}
-        </PrimaryButton>
+          {getSubmitText()}
+        </Button>
       </div>
     </div>
   )

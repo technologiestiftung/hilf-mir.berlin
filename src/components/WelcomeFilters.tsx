@@ -5,9 +5,6 @@ import { TableRowType } from '@common/types/gristData'
 import { FiltersList } from './FiltersList'
 import { useIsMobile } from '@lib/hooks/useIsMobile'
 import { LegalFooter } from './LegalFooter'
-import { SecondaryButton } from './SecondaryButton'
-import { useRouter } from 'next/router'
-import { Phone } from './icons/Phone'
 import classNames from '@lib/classNames'
 import { TextLink } from './TextLink'
 import { Footer } from './Footer'
@@ -17,7 +14,6 @@ export const WelcomeFilters: FC<{
   recordsWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
 }> = ({ onGoBack, recordsWithOnlyLabels }) => {
   const texts = useTexts()
-  const { push } = useRouter()
   const isMobile = useIsMobile()
 
   return (
@@ -41,12 +37,6 @@ export const WelcomeFilters: FC<{
               )}
             >
               {texts.welcomeFiltersHeadline}
-              <SecondaryButton
-                onClick={() => void push(`/sofortige-hilfe`)}
-                icon={<Phone />}
-              >
-                {texts.directHelpButtonText}
-              </SecondaryButton>
             </h2>
           )}
           <p

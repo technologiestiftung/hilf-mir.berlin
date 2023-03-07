@@ -28,7 +28,7 @@ export const BackButton: FC<BackButtonPropsType> = (props) => {
     'aria-label': texts.backText,
   }
   return (
-    <div className="p-2 sticky bg-white top-0 z-10">
+    <div className="p-2 sticky bg-white top-0 z-20">
       {'href' in props && typeof props.href !== undefined && (
         <Link {...props} href={props.href || ''}>
           <a {...commonProps}>{content}</a>

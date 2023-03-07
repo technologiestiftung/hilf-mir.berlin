@@ -1,95 +1,96 @@
 import classNames from '@lib/classNames'
 import { useDistanceToUser } from '@lib/hooks/useDistanceToUser'
 import { useIsFacilityOpened } from '@lib/hooks/useIsFacilityOpened'
-import { useUrlState } from '@lib/UrlStateContext'
 import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { useTexts } from '@lib/TextsContext'
-import Link from 'next/link'
+import { useUrlState } from '@lib/UrlStateContext'
 import { FC } from 'react'
+import { Button } from './Button'
+import { Card } from './Card'
 import { Arrow } from './icons/Arrow'
-import { FacilityLabels } from './FacilityLabels'
+import { Globe } from './icons/Globe'
+import { Phone } from './icons/Phone'
 
-interface FacilityListItemPropsType extends MinimalRecordType {
+interface FacilityListItemType {
+  facility: MinimalRecordType
   className?: string
 }
 
-export const FacilityListItem: FC<FacilityListItemPropsType> = ({
-  className = ``,
-  ...record
+export const FacilityListItem: FC<FacilityListItemType> = ({
+  facility,
+  className = '',
 }) => {
   const [urlState] = useUrlState()
-  const { id, title, latitude, longitude, labels } = record
   const texts = useTexts()
+  const open = useIsFacilityOpened(facility)
   const { getDistanceToUser } = useDistanceToUser()
   const distance = getDistanceToUser({
-    latitude,
-    longitude,
+    latitude: facility.latitude,
+    longitude: facility.longitude,
   })
-  const isOpened = useIsFacilityOpened(record)
 
   return (
-    <li className={classNames(className)}>
-      <Link
-        href={{
-          pathname: `/${id}`,
-          query: { ...urlState, latitude: latitude, longitude: longitude },
-        }}
-      >
-        <a
-          className={classNames(
-            `border-b border-b-gray-20 block`,
-            `flex flex-col gap-1 bg-white group`,
-            `transition-colors hover:bg-gray-10/50`,
-            `focus:ring-inset focus:ring-2 focus:ring-primary`,
-            `focus:outline-none focus:border-b-primary`
-          )}
-        >
-          <header
-            className={classNames(
-              `border-b border-gray-10 p-5`,
-              labels.length > 0 && `pb-3`
+    <Card
+      title={facility.title}
+      className={classNames('pt-9 pb-9', 'border-t-0 border-x-0', className)}
+      header={
+        (distance || open) && (
+          <div className="flex text-lg gap-4">
+            {open && (
+              <small className="flex items-center text-success gap-2">
+                <span className="inline-block w-2 h-2 rounded-full bg-success"></span>
+                {texts.opened}
+              </small>
             )}
-          >
-            <h2
-              className={classNames(
-                `font-bold text-xl`,
-                `group-hover:text-primary transition-colors`,
-                `group-focus:text-primary`
-              )}
+            {distance && <small>{distance} km</small>}
+          </div>
+        )
+      }
+      footer={
+        <div className="flex flex-nowrap gap-3 justify-end max-w-lg">
+          {facility.phone?.split(',')[0] && (
+            <Button
+              tag="a"
+              href={`tel:${facility.phone?.split(',')[0]}`}
+              size="small"
+              className="w-1/2 flex flex-nowrap gap-x-2 items-center truncate"
             >
-              {title}
-            </h2>
-            {(distance || isOpened) && (
-              <div className="flex text-lg gap-4">
-                {isOpened && (
-                  <small className="flex items-center text-success gap-2">
-                    <span className="inline-block w-2 h-2 rounded-full bg-success"></span>
-                    {texts.opened}
-                  </small>
-                )}
-                {distance && <small>{distance} km</small>}
-              </div>
-            )}
-          </header>
-          {record.description?.length > 1 && (
-            <p className="px-5 pt-3 line-clamp-3">{record.description}</p>
+              <Phone className="w-5 h-5 text-purple-500 shrink-0" />
+              {facility.phone?.split(',')[0]}
+            </Button>
           )}
-          {labels.length > 0 && (
-            <footer className="mt-5 pb-7 grid grid-cols-1 gap-y-3">
-              <FacilityLabels labels={labels} languages={record.languages} />
-            </footer>
-          )}
-          <span
-            className={classNames(
-              'font-bold text-primary py-4 flex gap-2 justify-end text-right',
-              'border-t border-gray-10 px-5'
-            )}
+          <Button
+            tag="a"
+            href={`/${facility.id}`}
+            query={{
+              ...urlState,
+              latitude: facility.latitude,
+              longitude: facility.longitude,
+            }}
+            size="small"
+            scheme="primary"
+            className="w-1/2 flex flex-nowrap gap-x-2 items-center"
           >
-            {texts.openFacilityLinkText}
-            <Arrow orientation="right" className="scale-75" />
-          </span>
-        </a>
-      </Link>
-    </li>
+            {texts.moreInfos}
+            <Arrow orientation="right" className="w-4 h-4" />
+          </Button>
+        </div>
+      }
+    >
+      <p className="line-clamp-4">{facility.description}</p>
+      {facility.languages && facility.languages.length > 0 && (
+        <div className="mt-4 flex flex-nowrap gap-x-2">
+          <Globe className="w-5 h-5 text-gray-40 shrink-0 translate-y-0.5" />
+          <div>
+            {facility.languages.map((language, idx) => (
+              <span key={language} className="text-sm text-gray-80">
+                {language}
+                {idx !== facility.languages.length - 1 && ','}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+    </Card>
   )
 }

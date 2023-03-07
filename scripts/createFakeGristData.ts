@@ -26,6 +26,7 @@ const POST_RECORDS_URL = `${
 const fakeData: Omit<TableRowType, 'id'>[] = Array.from(Array(300)).map(() => {
   return {
     fields: {
+      Anzeigen: 1,
       ID2: 1,
       Anmeldung_gewunscht: 'ja',
       Art_der_Anmeldung: 'telefonisch',

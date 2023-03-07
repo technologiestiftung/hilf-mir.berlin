@@ -75,6 +75,7 @@ const defaultValue = {
   emergencyTrepotowKoepenickPhoneNumber: '',
   welcomeFiltersHeadline: '',
   welcomeFiltersText: '',
+  filtersButtonTextResults: '',
   filtersButtonTextFilteredSingular: '',
   filtersButtonTextFilteredPlural: '',
   filtersButtonTextFilteredNoResults: '',
@@ -88,6 +89,8 @@ const defaultValue = {
   opened: '',
   alwaysOpened: '',
   mapPageTitle: '',
+  resultPageTitle: '',
+  resultPageIntro: '',
   weekdayMonday: '',
   weekdayTuesday: '',
   weekdayWednesday: '',
@@ -113,6 +116,8 @@ const defaultValue = {
   multipleFacilitiesPopupTitle: '',
   disclaimerPrefix: '',
   disclaimerContent: '',
+  moreInfos: '',
+  noTargetPreferenceButtonText: '',
 }
 
 export type TextsMapType = typeof defaultValue
