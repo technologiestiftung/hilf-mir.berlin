@@ -15,6 +15,8 @@ export interface GristLabelType extends Record<string, unknown> {
 export interface TableRowType extends Record<string, unknown> {
   id: number
   fields: {
+    /** Yes (1), No (0) toggle to determine whether a row should be used in the frontend at all: */
+    Anzeigen: number | null
     /** Self-provided ID (not the one from Grist itself) */
     ID2: number
     Einrichtung: string
