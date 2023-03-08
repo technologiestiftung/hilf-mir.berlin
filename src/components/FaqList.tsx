@@ -181,15 +181,7 @@ const FAQS: {
     answer: (
       <>
         <p>
-          Die Idee, HILF-MIR Berlin zu entwickeln, entstand in der für
-          Gesundheit zuständigen Senatsverwaltung des Landes Berlins, welche
-          auch die Projektleitung und die inhaltliche Verantwortung übernimmt.
-          Zivilgesellschaft, Sozialunternehmen und Verwaltung entwickeln
-          gemeinsam HILF-MIR Berlin.
-        </p>
-        <p>
-          Das CityLAB Berlin verantwortet die Projektentwicklung und
-          programmiert HILF-MIR Berlin.
+        HILF-MIR Berlin ist ein Angebot des <a href="https://www.citylab-berlin.org">CityLAB Berlin</a> und wurde durch die Senatsverwaltung für Wissenschaft, Pflege und Gleichstellung unterstützt.
         </p>
       </>
     ),
