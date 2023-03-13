@@ -1,6 +1,6 @@
-# Wegweiser Berlin - frontend
+# HILF-MIR Berlin
 
-This repo hosts the code for the Wegweiser Berlin - a website for finding psychological and health-related facilities in Berlin.
+This repo hosts the code for the HILF-MIR Berlin - a website for finding psychological and health-related facilities in Berlin.
 
 ## Tech stack
 
