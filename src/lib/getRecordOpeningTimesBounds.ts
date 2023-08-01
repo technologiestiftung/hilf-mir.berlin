@@ -42,6 +42,11 @@ export const getRecordOpeningTimesBounds = (
     return { start: null, end: null }
   }
   const [from, to] = openningTimesForToday.split('-').map((s) => s.trim())
+  if (!from || !to) return { start: null, end: null }
+  const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
+  const fromValid = timeRegex.test(from)
+  const toValid = timeRegex.test(to)
+  if (!fromValid || !toValid) return { start: null, end: null }
   const start = getTodayAtTime(from, today).toISOString()
   const end = getTodayAtTime(to, today).toISOString()
   return { start, end }
