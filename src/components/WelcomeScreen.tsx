@@ -29,7 +29,12 @@ export const WelcomeScreen: FC<{
           <div>
             <div>
               <section className="w-full h-32 md:h-[202px] relative mb-6">
-                <Image src={introImage} layout="fill" objectFit="cover" />
+                <Image
+                  src={introImage}
+                  layout="fill"
+                  objectFit="cover"
+                  alt="Multiple tiles including different situations and locations in Berlin. Decoration only."
+                />
               </section>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-[1fr,auto] gap-x-16 items-end p-5 pt-6 md:px-8 md:pt-12 md:mb-8">
