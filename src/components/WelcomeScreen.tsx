@@ -1,5 +1,5 @@
 import { useTexts } from '@lib/TextsContext'
-import Image from 'next/image'
+import Image from 'next/legacy/image'
 import { FC } from 'react'
 import introImage from '../images/intro-header.png'
 import { Phone } from '@components/icons/Phone'
