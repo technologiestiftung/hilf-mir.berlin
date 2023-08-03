@@ -260,7 +260,7 @@ export const FaqList: FC = () => {
         return (
           <li key={question}>
             <p
-              className="font-bold text-xl cursor-pointer"
+              className="font-bold text-xl cursor-pointer hover:bg-purple-200"
               onClick={() => {
                 setExpandedQuestion(question)
               }}
