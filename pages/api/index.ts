@@ -1,10 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import detectCharacterEncoding from 'detect-character-encoding'
-import fs from 'fs'
-import path from 'path'
-import { mkdir, writeFile } from 'fs/promises'
-import { Readable } from 'stream'
-import { finished } from 'stream/promises'
 
 export const config = {
   // runtime: 'edge',
