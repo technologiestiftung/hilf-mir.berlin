@@ -259,14 +259,14 @@ export const FaqList: FC = () => {
       {FAQS.map(({ question, answer }) => {
         return (
           <li key={question}>
-            <p
-              className="font-bold text-xl cursor-pointer hover:bg-purple-200"
+            <button
+              className="text-black text-left font-bold text-xl cursor-pointer hover:bg-purple-200"
               onClick={() => {
                 setExpandedQuestion(question)
               }}
             >
               {question}
-            </p>
+            </button>
             <div className={expandedQuestion === question ? '' : 'hidden'}>
               {answer}
             </div>
