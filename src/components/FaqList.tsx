@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { FC, ReactNode } from 'react'
+import { FC, ReactNode, useState } from 'react'
 
 const FAQS: {
   question: string
@@ -181,7 +181,10 @@ const FAQS: {
     answer: (
       <>
         <p>
-        HILF-MIR Berlin ist ein Angebot des <a href="https://www.citylab-berlin.org">CityLAB Berlin</a> und wurde durch die Senatsverwaltung für Wissenschaft, Pflege und Gleichstellung unterstützt.
+          HILF-MIR Berlin ist ein Angebot des{' '}
+          <a href="https://www.citylab-berlin.org">CityLAB Berlin</a> und wurde
+          durch die Senatsverwaltung für Wissenschaft, Pflege und Gleichstellung
+          unterstützt.
         </p>
       </>
     ),
@@ -250,13 +253,23 @@ const FAQS: {
 ]
 
 export const FaqList: FC = () => {
+  const [expandedQuestion, setExpandedQuestion] = useState<string>()
   return (
     <ul className="prose prose-p:text-black prose-li:pl-0 prose-li:mt-8 prose-headings:font-bold">
       {FAQS.map(({ question, answer }) => {
         return (
           <li key={question}>
-            <p className="font-bold text-xl">{question}</p>
-            <div>{answer}</div>
+            <p
+              className="font-bold text-xl"
+              onClick={() => {
+                setExpandedQuestion(question)
+              }}
+            >
+              {question}
+            </p>
+            <div className={expandedQuestion === question ? '' : 'hidden'}>
+              {answer}
+            </div>
           </li>
         )
       })}
