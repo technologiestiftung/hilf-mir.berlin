@@ -98,11 +98,10 @@ export const Button: FC<ButtonType> = ({
           pathname: href,
           query: query,
         }}
+        className={SHARED_CLASSES}
       >
-        <a className={SHARED_CLASSES}>
-          {children}
-          {icon}
-        </a>
+        {children}
+        {icon}
       </Link>
     )
   } else {

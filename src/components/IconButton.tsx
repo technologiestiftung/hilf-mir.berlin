@@ -53,14 +53,13 @@ export const IconButtonLink: FC<IconButtonLinkPropsType> = ({
 }) => {
   const [urlState] = useUrlState()
   return (
-    <Link href={{ pathname: pathName, query: { ...urlState } }}>
-      <a
-        tabIndex={tabIndex}
-        className={classNames(className, ...commonClasses)}
-        aria-label={ariaLabel}
-      >
-        {children}
-      </a>
+    <Link
+      href={{ pathname: pathName, query: { ...urlState } }}
+      tabIndex={tabIndex}
+      className={classNames(className, ...commonClasses)}
+      aria-label={ariaLabel}
+    >
+      {children}
     </Link>
   )
 }
