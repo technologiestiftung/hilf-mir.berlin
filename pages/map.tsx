@@ -116,7 +116,7 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
     if (!prevItemId) return
     const listEl = document.getElementById(`facility-${prevItemId}`)
     if (!listEl) return
-    listEl.scrollIntoView({ behavior: 'instant' })
+    listEl.scrollIntoView({ behavior: 'instant' as ScrollBehavior })
     listEl?.focus()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
