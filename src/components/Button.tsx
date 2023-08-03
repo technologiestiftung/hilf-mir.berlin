@@ -1,6 +1,7 @@
+import { useUrlState } from '@lib/UrlStateContext'
 import classNames from '@lib/classNames'
 import Link from 'next/link'
-import { ParsedUrlQueryInput } from 'querystring'
+import { useRouter } from 'next/router'
 import { FC, ReactNode } from 'react'
 
 interface ButtonType {
@@ -8,7 +9,6 @@ interface ButtonType {
   scheme?: 'primary' | 'secondary' | 'link'
   size?: 'large' | 'medium' | 'small' | 'extrasmall'
   href?: string
-  query?: string | ParsedUrlQueryInput | null
   onClick?: () => void
   disabled?: boolean
   icon?: ReactNode
@@ -45,7 +45,6 @@ export const Button: FC<ButtonType> = ({
   scheme = 'secondary',
   size = 'medium',
   href,
-  query,
   onClick = () => undefined,
   className: additionalClassNames = '',
   disabled = false,
@@ -53,6 +52,9 @@ export const Button: FC<ButtonType> = ({
   tooltip,
   children,
 }) => {
+  const [urlState] = useUrlState()
+  const { asPath } = useRouter()
+  const query = { ...urlState, back: asPath.split('?')[0] }
   const SIZE_CLASSES = getSizeClasses(size)
   const SCHEME_CLASSES = getSchemeClasses(scheme)
   const LAYOUT_CLASSES = classNames(

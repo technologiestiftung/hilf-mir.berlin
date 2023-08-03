@@ -20,7 +20,9 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 const Info: Page = () => {
-  const { back, push } = useRouter()
+  const { query } = useRouter()
+
+  const { back, ...restQuery } = query
   return (
     <div>
       <Head>
@@ -28,7 +30,10 @@ const Info: Page = () => {
       </Head>
       <div className="min-h-screen mx-auto max-w-xl">
         <BackButton
-          onClick={() => (history.length > 2 ? void back() : void push('/'))}
+          href={{
+            pathname: typeof back === 'string' ? back : '/',
+            query: restQuery,
+          }}
         />
         <div
           className={classNames('p-5 md:p-8 flex flex-col gap-8 md:pt-[5vmin]')}
