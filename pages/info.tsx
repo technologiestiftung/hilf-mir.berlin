@@ -20,14 +20,16 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 const Info: Page = () => {
-  const { back } = useRouter()
+  const { back, push } = useRouter()
   return (
     <div>
       <Head>
         <title>Info - HILF-MIR Berlin</title>
       </Head>
       <div className="min-h-screen mx-auto max-w-xl">
-        <BackButton onClick={() => void back()} />
+        <BackButton
+          onClick={() => (history.length > 2 ? void back() : void push('/'))}
+        />
         <div
           className={classNames('p-5 md:p-8 flex flex-col gap-8 md:pt-[5vmin]')}
         >
