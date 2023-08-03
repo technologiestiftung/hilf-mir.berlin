@@ -6,9 +6,11 @@ import { Arrow } from './icons/Arrow'
 
 type BackButtonPropsType =
   | {
-      onClick?: DOMAttributes<HTMLButtonElement>['onClick']
+      onClick: DOMAttributes<HTMLButtonElement>['onClick']
     }
-  | Partial<LinkProps>
+  | {
+      href: LinkProps['href']
+    }
 
 export const BackButton: FC<BackButtonPropsType> = (props) => {
   const texts = useTexts()
@@ -27,14 +29,16 @@ export const BackButton: FC<BackButtonPropsType> = (props) => {
     ),
     'aria-label': texts.backText,
   }
+  const isLink = 'href' in props && typeof props.href !== undefined
+  const isButton = 'onClick' in props && typeof props.onClick !== undefined
   return (
     <div className="p-2 sticky bg-white top-0 z-20">
-      {'href' in props && typeof props.href !== undefined && (
-        <Link {...props} href={props.href || ''}>
-          <a {...commonProps}>{content}</a>
+      {isLink && !isButton && (
+        <Link {...commonProps} {...props} href={props.href || ''}>
+          {content}
         </Link>
       )}
-      {'onClick' in props && typeof props.onClick !== undefined && (
+      {isButton && !isLink && (
         <button onClick={props.onClick} {...commonProps}>
           {content}
         </button>
