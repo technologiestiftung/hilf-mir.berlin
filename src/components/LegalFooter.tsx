@@ -24,16 +24,15 @@ export const LegalFooter: FC = () => {
               `flex gap-x-6 gap-y-4 flex-wrap text-gray-40`
             )}
           >
-            <Link href="/info">
-              <a
-                className={classNames(
-                  `underline transition-colors hover:text-primary`,
-                  `focus:outline-none focus:ring-2 focus:ring-primary`,
-                  `focus:ring-offset-2 focus:ring-offset-white`
-                )}
-              >
-                {texts.footerInfoPageLinkText}
-              </a>
+            <Link
+              href="/info"
+              className={classNames(
+                `underline transition-colors hover:text-primary`,
+                `focus:outline-none focus:ring-2 focus:ring-primary`,
+                `focus:ring-offset-2 focus:ring-offset-white`
+              )}
+            >
+              {texts.footerInfoPageLinkText}
             </Link>
             <a
               className={classNames(

@@ -172,15 +172,14 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
               return (
                 <li key={idx} className="group">
                   {href && (
-                    <Link href={href}>
-                      <a
-                        className={classNames(
-                          containerClass,
-                          `hover:text-primary transition-colors`
-                        )}
-                      >
-                        {content}
-                      </a>
+                    <Link
+                      href={href}
+                      className={classNames(
+                        containerClass,
+                        `hover:text-primary transition-colors`
+                      )}
+                    >
+                      {content}
                     </Link>
                   )}
                   {!href && <div className={containerClass}>{content}</div>}
