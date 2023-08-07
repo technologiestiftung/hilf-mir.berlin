@@ -28,6 +28,7 @@ export const FacilityListItem: FC<FacilityListItemType> = ({
     latitude: facility.latitude,
     longitude: facility.longitude,
   })
+  const phone: string | undefined = facility.phone?.split(',')[0]
 
   return (
     <Card
@@ -48,15 +49,26 @@ export const FacilityListItem: FC<FacilityListItemType> = ({
       }
       footer={
         <div className="flex flex-nowrap gap-3 justify-end max-w-lg">
-          {facility.phone?.split(',')[0] && (
+          {phone && (
             <Button
               tag="a"
-              href={`tel:${facility.phone?.split(',')[0]}`}
+              href={`tel:${phone}`}
               size="small"
               className="w-1/2 flex flex-nowrap gap-x-2 items-center truncate"
             >
               <Phone className="w-5 h-5 text-purple-500 shrink-0" />
-              {facility.phone?.split(',')[0]}
+              {phone}
+            </Button>
+          )}
+          {!phone && facility.website && (
+            <Button
+              tag="a"
+              href={facility.website}
+              openInNewTab={false}
+              size="small"
+              className="w-1/2 flex flex-nowrap gap-x-2 items-center truncate"
+            >
+              Website
             </Button>
           )}
           <Button

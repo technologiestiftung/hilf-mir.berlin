@@ -14,6 +14,7 @@ interface ButtonType {
   icon?: ReactNode
   tooltip?: ReactNode
   className?: string
+  openInNewTab?: boolean
 }
 
 const getSizeClasses = (size: ButtonType['size']): string => {
@@ -52,6 +53,7 @@ export const Button: FC<ButtonType> = ({
   icon,
   tooltip,
   children,
+  openInNewTab,
 }) => {
   const SIZE_CLASSES = getSizeClasses(size)
   const SCHEME_CLASSES = getSchemeClasses(scheme)
@@ -81,7 +83,12 @@ export const Button: FC<ButtonType> = ({
       console.error('Tooltip is currently not supported for <a> tags.')
 
     return (
-      <a href={href} className={SHARED_CLASSES}>
+      <a
+        href={href}
+        className={SHARED_CLASSES}
+        target={openInNewTab ? '_blank' : ''}
+        rel={openInNewTab ? 'noopener noreferrer' : ''}
+      >
         {children}
         {icon}
       </a>
