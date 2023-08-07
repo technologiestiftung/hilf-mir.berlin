@@ -29,10 +29,8 @@ const handler = async (
       .status(400)
       .json({ result: null, error: 'Missing query parameter "q"' })
   }
-  // const data = await loadCacheData()
   const filePath = path.resolve(process.cwd(), './data/records.json')
   // check if the file ath te path exists
-  console.log(filePath)
   if (!existsSync(filePath)) {
     return res
       .status(500)
