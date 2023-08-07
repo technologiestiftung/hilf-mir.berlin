@@ -43,7 +43,7 @@ export const mapRecordToMinimum = (record: TableRowType): MinimalRecordType => {
       disallowedTagsMode: 'discard',
     }),
     phone: record.fields.Telefonnummer,
-    website: record.fields.Website
+    website: record.fields.Website,
   }
 }
 
