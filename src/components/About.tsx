@@ -20,9 +20,9 @@ export const About: FC = () => {
         übersichtlichen Liste.
       </p>
       <p>
-        HILF-MIR Berlin ist ein Informationsangebot von CityLAB Berlin,
-        welches mit der Unterstützung der Senatsverwaltung für Wissenschaft,
-        Gesundheit, Pflege und Gleichstellung entwickelt wurde.
+        HILF-MIR Berlin ist ein Informationsangebot von CityLAB Berlin, welches
+        mit der Unterstützung der Senatsverwaltung für Wissenschaft, Gesundheit
+        und Pflege entwickelt wurde.
       </p>
     </>
   )

@@ -181,7 +181,7 @@ const FAQS: {
     answer: (
       <>
         <p>
-        HILF-MIR Berlin ist ein Angebot des <a href="https://www.citylab-berlin.org">CityLAB Berlin</a> und wurde durch die Senatsverwaltung für Wissenschaft, Pflege und Gleichstellung unterstützt.
+        HILF-MIR Berlin ist ein Angebot des <a href="https://www.citylab-berlin.org">CityLAB Berlin</a> und wurde durch die Senatsverwaltung für Wissenschaft, Gesundheit und Pflege unterstützt.
         </p>
       </>
     ),
