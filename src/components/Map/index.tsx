@@ -28,7 +28,6 @@ import { useOnMapFeatureMove } from '@lib/hooks/useOnMapFeatureMove'
 import { useMapUserGeolocationMarker } from '@lib/hooks/useMapUserGeolocationMarker'
 import { useInitialViewport } from '@lib/hooks/useInitialViewport'
 import { useMapHighlightMarker } from '@lib/hooks/useMapHighlightMarker'
-import { useMapSearchMarker } from '@lib/hooks/useMapSearchMarker'
 import { useMaplibreMap } from '@lib/hooks/useMaplibreMap'
 import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
 import {
@@ -47,7 +46,6 @@ interface MapType {
    * Also, a highlighted marker will be drawn to the map.
    */
   highlightedCenter?: [longitude: number, latitude: number]
-  searchCenter?: [longitude: number, latitude: number]
 }
 
 const easeInOutQuad = (t: number): number =>
@@ -74,7 +72,6 @@ export const FacilitiesMap: FC<MapType> = ({
   onClickAnywhere = () => undefined,
   onMoveStart = () => undefined,
   highlightedCenter,
-  searchCenter,
 }) => {
   const { query, push } = useRouter()
   const texts = useTexts()
@@ -95,15 +92,6 @@ export const FacilitiesMap: FC<MapType> = ({
   const labels = useFiltersWithActiveProp()
 
   const [urlState, setUrlState] = useUrlState()
-
-  const highlightedSearchViewport = searchCenter
-    ? {
-        latitude: searchCenter[1],
-        longitude: searchCenter[0],
-        zoom: MAP_CONFIG.zoomedInZoom,
-      }
-    : null
-  useMapSearchMarker(map, highlightedSearchViewport)
 
   const id = typeof query.id === 'string' ? parseInt(query.id, 10) : undefined
   const currentFacilityIdPageIsSpiderfied =

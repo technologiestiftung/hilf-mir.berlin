@@ -1,23 +1,19 @@
 import classNames from '@lib/classNames'
-import { FeatureType } from '@lib/requests/geocode'
 import { useTexts } from '@lib/TextsContext'
 import { useUrlState } from '@lib/UrlStateContext'
 import { FC } from 'react'
 import { IconButtonLink } from './IconButton'
 import { House } from './icons/House'
-import { Search } from './Search'
 
 interface MapHeaderPropsType {
   filterSidebarIsOpened: boolean
   listViewOpen: boolean
   setFilterSidebarIsOpened: (newState: boolean) => void
-  handleSearchResult: ((place: FeatureType) => void) | undefined
 }
 
 export const MapHeader: FC<MapHeaderPropsType> = ({
   filterSidebarIsOpened,
   setFilterSidebarIsOpened,
-  handleSearchResult,
   listViewOpen,
 }) => {
   const [urlState] = useUrlState()
@@ -47,7 +43,6 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
       <div
         className={classNames(
           `flex fixed top-4 right-4 transition-transform z-30 md:gap-5`,
-          `w-full max-w-[calc(100vw-2rem)] md:max-w-xs lg:max-w-sm justify-between`,
           filterSidebarIsOpened
             ? `2xl:-translate-x-sidebarW`
             : `2xl:translate-x-0`
@@ -64,14 +59,6 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
         >
           <House />
         </IconButtonLink>
-        <div
-          className={classNames(
-            'w-full',
-            listViewOpen && 'opacity-0 lg:opacity-100'
-          )}
-        >
-          <Search onSelectResult={handleSearchResult} />
-        </div>
 
         <button
           onClick={() => setFilterSidebarIsOpened(!filterSidebarIsOpened)}
