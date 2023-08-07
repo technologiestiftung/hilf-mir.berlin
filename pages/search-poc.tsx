@@ -13,12 +13,12 @@ const Search: Page = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [searchResults, setSearchResults] = useState<SearchResult | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const [_, setError] = useState('')
+  const [error, setError] = useState<Error | null>()
 
   const search = useCallback(async () => {
     const response = await fetch(`/api/search?q=${searchTerm}`)
     if (!response.ok) {
-      setError('Something went wrong')
+      setError(new Error('Something went wrong'))
       return
     }
     const data = (await response.json()) as SearchResult
@@ -43,7 +43,7 @@ const Search: Page = () => {
 
               search()
                 .catch(() => {
-                  setError('Error on search')
+                  setError(new Error('Error on search'))
                 })
                 .finally(() => {
                   setIsLoading(false)
@@ -60,6 +60,7 @@ const Search: Page = () => {
                 {`${item.id}: ${item.fields.Einrichtung}`}
               </div>
             ))}
+          {error && <div>{error.message}</div>}
         </div>
       </div>
     </div>
