@@ -1,4 +1,3 @@
-import { FeatureType } from '@lib/requests/geocode'
 import { FC, useEffect, useState } from 'react'
 import { FacilitiesMap } from './Map'
 import classNames from '@lib/classNames'
