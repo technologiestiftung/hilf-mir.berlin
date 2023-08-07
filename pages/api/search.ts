@@ -7,9 +7,27 @@ import { existsSync } from 'fs'
 const searchData = (data: TableRowType[], keyword: string): TableRowType[] => {
   return data.filter((item) => {
     // Convert each field value into a string and join them together.
-    const str = Object.values(item.fields)
-      .map((value) => String(value))
-      .join(' ')
+    // const str = Object.values(item.fields)
+    //   .map((value) => String(value))
+    //   .join(' ')
+    // only filter specific fields
+    const str = [
+      item.fields.Einrichtung,
+      item.fields.Schlagworte.join(' '),
+      item.fields.Zielgruppen,
+      item.fields.Trager,
+      item.fields.Kategorie,
+      item.fields.Sprachen,
+      item.fields.Uber_uns,
+      item.fields.Strasse,
+      item.fields.Hausnummer,
+      item.fields.Zusatz,
+      item.fields.PLZ,
+      item.fields.Bezirk,
+      item.fields.Stadtteil,
+      item.fields.Telefonnummer,
+      item.fields.EMail,
+    ].join(' ')
 
     // Return true if the keyword exists in str.
     return str.toLowerCase().includes(keyword.toLowerCase())
