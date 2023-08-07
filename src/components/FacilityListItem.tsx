@@ -64,7 +64,7 @@ export const FacilityListItem: FC<FacilityListItemType> = ({
             <Button
               tag="a"
               href={facility.website}
-              openInNewTab={false}
+              openInNewTab={true}
               size="small"
               className="w-1/2 flex flex-nowrap gap-x-2 items-center truncate"
             >
