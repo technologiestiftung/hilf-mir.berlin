@@ -14,7 +14,6 @@ interface ButtonType {
   icon?: ReactNode
   tooltip?: ReactNode
   className?: string
-  openInNewTab?: boolean
 }
 
 const getSizeClasses = (size: ButtonType['size']): string => {
