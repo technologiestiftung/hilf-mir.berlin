@@ -32,7 +32,7 @@
 }
 
 html, body {
-  @apply overflow-x-hidden font-sans bg-white;
+  @apply overflow-x-hidden font-sans bg-white text-black;
   -webkit-hyphens: auto;
   -ms-hyphens: auto;
   hyphens: auto;
@@ -41,7 +41,7 @@ html, body {
 }
 
 *:focus-visible {
-  @apply outline outline-2 outline-primary;
+  @apply outline-none ring-2 ring-primary ring-offset-4 ring-offset-white rounded-sm;
 }
 
 h1 {
@@ -54,7 +54,7 @@ html .maplibregl-map {
 }
 
 .maplibregl-canvas-container canvas {
-  @apply focus:outline-none;
+  @apply focus-visible:outline-none;
 }
 
 .maplibregl-canvas-container {

@@ -1,5 +1,8 @@
 /* eslint-disable prettier/prettier */
+import { Disclosure } from '@headlessui/react'
+import classNames from '@lib/classNames'
 import { FC, ReactNode } from 'react'
+import { Chevron } from './icons/Chevron'
 
 const FAQS: {
   question: string
@@ -181,7 +184,10 @@ const FAQS: {
     answer: (
       <>
         <p>
-        HILF-MIR Berlin ist ein Angebot des <a href="https://www.citylab-berlin.org">CityLAB Berlin</a> und wurde durch die Senatsverwaltung für Wissenschaft, Gesundheit und Pflege unterstützt.
+          HILF-MIR Berlin ist ein Angebot des{' '}
+          <a href="https://www.citylab-berlin.org">CityLAB Berlin</a> und wurde
+          durch die Senatsverwaltung für Wissenschaft, Pflege und Gleichstellung
+          unterstützt.
         </p>
       </>
     ),
@@ -251,13 +257,46 @@ const FAQS: {
 
 export const FaqList: FC = () => {
   return (
-    <ul className="prose prose-p:text-black prose-li:pl-0 prose-li:mt-8 prose-headings:font-bold">
+    <ul
+      className={classNames(
+        `prose prose-p:text-black prose-li:pl-0 prose-li:mt-4 prose-headings:font-bold`,
+        `prose-p:mt-2 prose-p:mb-8 w-[calc(100%+1.5rem)] -ml-3`
+      )}
+      aria-label="FAQ Questions"
+    >
       {FAQS.map(({ question, answer }) => {
         return (
-          <li key={question}>
-            <p className="font-bold text-xl">{question}</p>
-            <div>{answer}</div>
-          </li>
+          <Disclosure
+            as="li"
+            key={question}
+            aria-label="FAQ Question"
+            className="w-full"
+          >
+            {({ open }) => (
+              <>
+                <Disclosure.Button
+                  aria-label="Toggle FAQ Answer"
+                  className={classNames(
+                    `text-black text-left font-bold text-xl cursor-pointer hover:bg-purple-200`,
+                    `w-full px-3 py-2 rounded transition-colors grid grid-cols-[1fr,auto] items-center`,
+                    `gap-4`
+                  )}
+                >
+                  <span>{question}</span>
+                  <Chevron
+                    orientation={open ? 'up' : 'down'}
+                    className={`text-purple-500 scale-90`}
+                  />
+                </Disclosure.Button>
+                <Disclosure.Panel
+                  aria-label="FAQ Answer"
+                  className={classNames(!open && 'hidden', `px-4 mt-0`)}
+                >
+                  {answer}
+                </Disclosure.Panel>
+              </>
+            )}
+          </Disclosure>
         )
       })}
     </ul>
