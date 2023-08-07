@@ -9,14 +9,19 @@ interface SearchResult {
   params: Record<string, string>
 }
 
+const filterOptions = ['Beratung', 'Klinik', 'Amt', 'Online', 'Selbsthilfe']
+
 const Search: Page = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [searchResults, setSearchResults] = useState<SearchResult | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<Error | null>()
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([])
 
   const search = useCallback(async () => {
-    const response = await fetch(`/api/search?q=${searchTerm}`)
+    const response = await fetch(
+      `/api/search?query=${searchTerm}&filters=${selectedFilters.join(',')}`
+    )
     if (!response.ok) {
       const e = await response.text()
       setError(new Error(e))
@@ -25,7 +30,7 @@ const Search: Page = () => {
     const data = (await response.json()) as SearchResult
     console.log(data)
     setSearchResults(data)
-  }, [searchTerm])
+  }, [searchTerm, selectedFilters])
 
   return (
     <div>
@@ -53,7 +58,33 @@ const Search: Page = () => {
           }}
         />
         <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col justify-center">
+            {filterOptions.map((option) => (
+              <label key={option}>
+                <input
+                  type="checkbox"
+                  value={option}
+                  checked={selectedFilters.includes(option)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setSelectedFilters([...selectedFilters, option])
+                    } else {
+                      setSelectedFilters(
+                        selectedFilters.filter((f) => f !== option)
+                      )
+                    }
+                  }}
+                />
+                {option}
+              </label>
+            ))}
+          </div>
           {isLoading && <div>Loading...</div>}
+          {searchResults &&
+            searchResults.result &&
+            searchResults.result.length === 0 && (
+              <>{'nothing found that matches'}</>
+            )}
           {searchResults &&
             searchResults.result &&
             searchResults.result.map((item: TableRowType) => (
