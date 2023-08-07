@@ -24,7 +24,7 @@ export const useUrlState = (): [UrlStateType, SetUrlStateHandlerType] =>
   useContext(UrlStateContext) as [UrlStateType, SetUrlStateHandlerType]
 
 export const UrlStateProvider: FC = ({ children }) => {
-  const { query, pathname } = useRouter()
+  const { query, pathname, push } = useRouter()
   const mappedQuery = mapRawQueryToState(query)
   const [latitude, setLatitude] = useState<number | undefined>(
     mappedQuery.latitude
@@ -40,11 +40,14 @@ export const UrlStateProvider: FC = ({ children }) => {
     setLongitude(mappedQuery.longitude)
     setZoom(mappedQuery.zoom)
     setTags(mappedQuery.tags)
+    console.log('mappedQuery', mappedQuery)
+    console.log('query', query)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query])
 
   const updateUrlState = useCallback(
     (newState: Partial<PageQueryType>) => {
+      console.log('newState', newState)
       const paramsString = new URLSearchParams({
         ...removeNullAndUndefinedFromQuery({
           latitude,
@@ -56,22 +59,23 @@ export const UrlStateProvider: FC = ({ children }) => {
       } as Record<string, string>).toString()
       const path = typeof query.id === 'string' ? `/${query.id}` : pathname
       const as = `${path}?${paramsString}`
-      window.history.replaceState(
+      void push(
         {
-          ...window.history.state,
-          ...newState,
-          as,
-          url: pathname,
+          pathname: path,
+          query: {
+            ...query,
+            ...newState,
+          },
         },
-        '',
-        as
+        as,
+        { shallow: true }
       )
       if (newState.latitude) setLatitude(newState.latitude)
       if (newState.longitude) setLongitude(newState.longitude)
       if (newState.zoom) setZoom(newState.zoom)
       if (newState.tags) setTags(newState.tags)
     },
-    [latitude, longitude, pathname, tags, zoom, query.id]
+    [latitude, longitude, zoom, tags, query, pathname, push]
   )
 
   const state = {
