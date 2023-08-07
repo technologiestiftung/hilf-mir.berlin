@@ -40,3 +40,4 @@ yarn-error.log*
 
 # cache data
 data
+.vscode/settings.json
