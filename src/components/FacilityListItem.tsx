@@ -10,6 +10,7 @@ import { Card } from './Card'
 import { Arrow } from './icons/Arrow'
 import { Globe } from './icons/Globe'
 import { Phone } from './icons/Phone'
+import { ExternalLink } from './icons/ExternalLink'
 
 interface FacilityListItemType {
   facility: MinimalRecordType
@@ -68,6 +69,7 @@ export const FacilityListItem: FC<FacilityListItemType> = ({
               size="small"
               className="w-1/2 flex flex-nowrap gap-x-2 items-center truncate"
             >
+              <ExternalLink className="w-5 h-5 text-purple-500 shrink-0" />
               Website
             </Button>
           )}
