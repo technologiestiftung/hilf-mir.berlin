@@ -37,15 +37,14 @@ const handler = async (
       .json({ result: null, error: 'data/records.json File not found' })
   }
 
-  const content = await fs.readFile(filePath, 'utf8')
-
   try {
+    const content = await fs.readFile(filePath, 'utf8')
     const data = JSON.parse(content) as TableRowType[]
     const result = searchData(data, params.q)
     return res.status(200).json({ params, result })
   } catch (error: unknown) {
-    if (!(error instanceof Error)) {
-      return res.status(500).json({ result: null, error })
+    if (error instanceof Error) {
+      return res.status(500).json({ result: null, error: error.message })
     } else {
       return res
         .status(500)
