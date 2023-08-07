@@ -1,6 +1,8 @@
 import { TableRowType } from '@common/types/gristData'
-import { loadCacheData } from '@lib/loadCacheData'
 import { NextApiRequest, NextApiResponse } from 'next'
+import path from 'path'
+import fs from 'fs/promises'
+import { existsSync } from 'fs'
 
 const searchData = (data: TableRowType[], keyword: string): TableRowType[] => {
   return data.filter((item) => {
@@ -27,12 +29,33 @@ const handler = async (
       .status(400)
       .json({ result: null, error: 'Missing query parameter "q"' })
   }
-  const data = await loadCacheData()
+  // const data = await loadCacheData()
+  const filePath = path.resolve(process.cwd(), './data/records.json')
+  // check if the file ath te path exists
+  console.log(filePath)
+  if (!existsSync(filePath)) {
+    return res
+      .status(500)
+      .json({ result: null, error: 'data/records.json File not found' })
+  }
+
+  const content = await fs.readFile(filePath, 'utf8')
+
+  try {
+    const data = JSON.parse(content) as TableRowType[]
+    const result = searchData(data, params.q)
+    return res.status(200).json({ params, result })
+  } catch (error: unknown) {
+    if (!(error instanceof Error)) {
+      return res.status(500).json({ result: null, error })
+    } else {
+      return res
+        .status(500)
+        .json({ result: null, error: new Error('unknown error') })
+    }
+  }
+
   // console.log(data.records)
-
-  const result = searchData(data.records, params.q)
-
-  return res.status(200).json({ params, result })
 }
 
 export default handler

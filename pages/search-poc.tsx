@@ -18,7 +18,8 @@ const Search: Page = () => {
   const search = useCallback(async () => {
     const response = await fetch(`/api/search?q=${searchTerm}`)
     if (!response.ok) {
-      setError(new Error('Something went wrong'))
+      const e = await response.text()
+      setError(new Error(e))
       return
     }
     const data = (await response.json()) as SearchResult
