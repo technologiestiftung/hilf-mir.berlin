@@ -15,6 +15,7 @@ import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
 import { getFilteredFacilities } from '@lib/facilityFilterUtil'
 import { Button } from '@components/Button'
 import { FacilityListItem } from '@components/FacilityListItem'
+import { useActiveIdsBySearchTerm } from '@lib/hooks/useActiveIdsBySearchTerm'
 
 export const getStaticProps: GetStaticProps = async () => {
   const { texts, labels, records } = await loadData()
@@ -47,6 +48,7 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
   const labels = useFiltersWithActiveProp()
   const [filteredRecords, setFilteredRecords] =
     useState<MinimalRecordType[]>(originalRecords)
+  const activeIdsBySearchTerm = useActiveIdsBySearchTerm()
 
   const sortByTagsCount = useCallback(
     (a: MinimalRecordType, b: MinimalRecordType) => {
@@ -105,9 +107,11 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
     const filteredRecords = getFilteredFacilities({
       facilities: originalRecords,
       labels,
+      activeIdsBySearchTerm: activeIdsBySearchTerm.ids,
     })
     return setFilteredRecords(sortFacilities(filteredRecords))
-  }, [urlState.tags?.join('-')])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlState.tags?.join('-'), activeIdsBySearchTerm.key])
 
   return (
     <>

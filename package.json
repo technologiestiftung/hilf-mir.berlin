@@ -23,6 +23,7 @@
     "react-dom": "18.2.0",
     "sanitize-html": "2.7.3",
     "swiper": "8.4.5",
+    "swr": "2.2.0",
     "use-debounce": "9.0.2"
   },
   "devDependencies": {

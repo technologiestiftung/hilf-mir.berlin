@@ -1,8 +1,7 @@
-import { TableRowType } from '@common/types/gristData'
 import classNames from '@lib/classNames'
 import {
-  parseSearchTermCategories,
-  parseSearchTermUrlCategories,
+  urlSearchCategoriesToStateSearchCategories,
+  stateSearchCategoriesToUrlSearchCategories,
   useUrlState,
 } from '@lib/UrlStateContext'
 import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
@@ -12,14 +11,17 @@ import { SwitchButton } from './SwitchButton'
 import { useRouter } from 'next/router'
 import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
 import { FiltersTagsList } from './FiltersTagsList'
-import { useFilteredFacilitiesCount } from '@lib/hooks/useFilteredFacilitiesCount'
+import {
+  RecordsWithOnlyLabelsType,
+  useFilteredFacilitiesCount,
+} from '@lib/hooks/useFilteredFacilitiesCount'
 import { Listbox } from './Listbox'
 import { Button } from './Button'
 import { Arrow } from './icons/Arrow'
 import TextSearch from './TextSearch'
 
 export const FiltersList: FC<{
-  recordsWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
+  recordsWithOnlyLabels: RecordsWithOnlyLabelsType[]
   onSubmit?: () => void
 }> = ({ recordsWithOnlyLabels, onSubmit = () => undefined }) => {
   const { push } = useRouter()
@@ -78,20 +80,18 @@ export const FiltersList: FC<{
   }
 
   const getSubmitText = (): string => {
-    switch (true) {
-      case queryTagIds.length === 0 || queryTagIds.length === labels.length:
+    switch (filteredFacilitiesCount) {
+      case recordsWithOnlyLabels.length:
         return texts.filtersButtonTextAllFilters
-      case queryTagIds.length > 0 && filteredFacilitiesCount === 1:
+      case 1:
         return texts.filtersButtonTextFilteredSingular
-      case queryTagIds.length > 0 && filteredFacilitiesCount > 1:
+      case 0:
+        return texts.filtersButtonTextFilteredNoResults
+      default:
         return texts.filtersButtonTextFilteredPlural.replace(
           '#number',
           `${filteredFacilitiesCount}`
         )
-      case queryTagIds.length > 0 && filteredFacilitiesCount === 0:
-        return texts.filtersButtonTextFilteredNoResults
-      default:
-        return ''
     }
   }
 
@@ -132,11 +132,14 @@ export const FiltersList: FC<{
             updateUrlState({
               ...urlState,
               q: text,
-              qCategories: parseSearchTermCategories(categories),
+              qCategories:
+                stateSearchCategoriesToUrlSearchCategories(categories),
             })
           }
           text={urlState.q || ''}
-          categories={parseSearchTermUrlCategories(urlState.qCategories)}
+          categories={urlSearchCategoriesToStateSearchCategories(
+            urlState.qCategories
+          )}
         />
         <div className="block w-full md:w-[324px] z-10">
           <Listbox

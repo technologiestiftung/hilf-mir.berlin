@@ -47,20 +47,20 @@ export const UrlStateProvider: FC = ({ children }) => {
   return <Provider value={[mappedQuery, updateUrlState]}>{children}</Provider>
 }
 
-export function parseSearchTermUrlCategories(
+export function urlSearchCategoriesToStateSearchCategories(
   qCategories: PageQueryType['qCategories']
 ): Partial<ParsedSearchTermCategoriesType> {
-  if (!qCategories) return {}
+  const noCategories = !qCategories || qCategories.length === 0
   return {
-    categorySelfHelp: qCategories.includes(1),
-    categoryAdvising: qCategories.includes(2),
-    categoryClinics: qCategories.includes(3),
-    categoryDisctrictOfficeHelp: qCategories.includes(4),
-    categoryOnlineOffers: qCategories.includes(5),
+    categorySelfHelp: noCategories || qCategories.includes(1),
+    categoryAdvising: noCategories || qCategories.includes(2),
+    categoryClinics: noCategories || qCategories.includes(3),
+    categoryDisctrictOfficeHelp: noCategories || qCategories.includes(4),
+    categoryOnlineOffers: noCategories || qCategories.includes(5),
   }
 }
 
-export function parseSearchTermCategories(
+export function stateSearchCategoriesToUrlSearchCategories(
   searchTermCategories: Partial<ParsedSearchTermCategoriesType> | undefined
 ): PageQueryType['qCategories'] {
   if (!searchTermCategories) return undefined

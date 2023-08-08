@@ -199,7 +199,10 @@ export const MapLayout: FC<{
               </h3>
               <div className="p-5">
                 <FiltersList
-                  recordsWithOnlyLabels={(records || []).map((r) => r.labels)}
+                  recordsWithOnlyLabels={(records || []).map((r) => [
+                    r.id,
+                    r.labels,
+                  ])}
                   onSubmit={() => setFilterSidebarIsOpened(false)}
                 />
               </div>
