@@ -1,10 +1,13 @@
 import { removeNullAndUndefinedFromQuery } from '@lib/removeNullAndUndefinedFromQuery'
 
+type qCategoryType = 1 | 2 | 3 | 4 | 5
 export interface PageQueryType {
   latitude?: number
   longitude?: number
   zoom?: number
   tags?: number[]
+  q?: string
+  qCategories?: qCategoryType[]
 }
 
 const isNumber = (val: unknown): boolean =>
@@ -16,6 +19,11 @@ const parseSingleNumber = (
   if (!val) return null
   if (typeof val === 'string') return parseFloat(val) || null
   if (isNumber(val)) return Number(val)
+  return null
+}
+
+const parseString = (val: string | string[] | undefined): string | null => {
+  if (typeof val === 'string') return val
   return null
 }
 
@@ -53,4 +61,6 @@ export const mapRawQueryToState = (
     longitude: parseSingleNumber(rawQuery.longitude),
     zoom: parseSingleNumber(rawQuery.zoom),
     tags: parseNumbersArray(rawQuery.tags),
+    q: parseString(rawQuery.q),
+    qCategories: parseNumbersArray(rawQuery.qCategories),
   })

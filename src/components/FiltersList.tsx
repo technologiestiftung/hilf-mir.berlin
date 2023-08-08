@@ -1,6 +1,10 @@
 import { TableRowType } from '@common/types/gristData'
 import classNames from '@lib/classNames'
-import { useUrlState } from '@lib/UrlStateContext'
+import {
+  parseSearchTermCategories,
+  parseSearchTermUrlCategories,
+  useUrlState,
+} from '@lib/UrlStateContext'
 import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
 import { useTexts } from '@lib/TextsContext'
 import { FC, useEffect, useMemo, useState } from 'react'
@@ -12,6 +16,7 @@ import { useFilteredFacilitiesCount } from '@lib/hooks/useFilteredFacilitiesCoun
 import { Listbox } from './Listbox'
 import { Button } from './Button'
 import { Arrow } from './icons/Arrow'
+import TextSearch from './TextSearch'
 
 export const FiltersList: FC<{
   recordsWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
@@ -120,7 +125,19 @@ export const FiltersList: FC<{
           </button>
         )}
       </div>
-      <div className="grid">
+      <p className="text-lg mb-6">{texts.optionalFurtherSearchIntroText}</p>
+      <div className="flex gap-8 flex-wrap text-lg mb-6">
+        <TextSearch
+          onChange={({ text, categories }) =>
+            updateUrlState({
+              ...urlState,
+              q: text,
+              qCategories: parseSearchTermCategories(categories),
+            })
+          }
+          text={urlState.q || ''}
+          categories={parseSearchTermUrlCategories(urlState.qCategories)}
+        />
         <div className="block w-full md:w-[324px] z-10">
           <Listbox
             label={texts.filtersSearchTargetLabel}
@@ -174,46 +191,47 @@ export const FiltersList: FC<{
             className="mb-12"
           />
         </div>
-        <SwitchButton
-          value={useGeolocation}
-          onToggle={setGeolocationUsage}
-          disabled={geolocationIsForbidden}
-          tooltip={geolocationIsForbidden ? texts.geolocationForbidden : ``}
-        >
-          {texts.filtersGeoSearchLabel}
-        </SwitchButton>
-        <Button
-          scheme="primary"
-          size="large"
-          className={classNames('w-full md:w-max md:min-w-[324px]', 'group')}
-          onClick={() => {
-            onSubmit()
-            void push({
-              pathname: '/map',
-              query: {
-                ...urlState,
-                ...(latitude && longitude ? { latitude, longitude } : {}),
-              },
-            })
-          }}
-          icon={
-            <Arrow
-              className={classNames(
-                'transition-transform group-hover:translate-x-0.5 group-disabled:group-hover:translate-x-0'
-              )}
-            />
-          }
-          disabled={queryTagIds.length > 0 && filteredFacilitiesCount === 0}
-          tooltip={
-            queryTagIds.length > 0 &&
-            filteredFacilitiesCount === 0 && (
-              <span>{texts.filtersButtonTextFilteredNoResultsHint}</span>
-            )
-          }
-        >
-          {getSubmitText()}
-        </Button>
       </div>
+
+      <SwitchButton
+        value={useGeolocation}
+        onToggle={setGeolocationUsage}
+        disabled={geolocationIsForbidden}
+        tooltip={geolocationIsForbidden ? texts.geolocationForbidden : ``}
+      >
+        {texts.filtersGeoSearchLabel}
+      </SwitchButton>
+      <Button
+        scheme="primary"
+        size="large"
+        className={classNames('w-full md:w-max md:min-w-[324px]', 'group')}
+        onClick={() => {
+          onSubmit()
+          void push({
+            pathname: '/map',
+            query: {
+              ...urlState,
+              ...(latitude && longitude ? { latitude, longitude } : {}),
+            },
+          })
+        }}
+        icon={
+          <Arrow
+            className={classNames(
+              'transition-transform group-hover:translate-x-0.5 group-disabled:group-hover:translate-x-0'
+            )}
+          />
+        }
+        disabled={queryTagIds.length > 0 && filteredFacilitiesCount === 0}
+        tooltip={
+          queryTagIds.length > 0 &&
+          filteredFacilitiesCount === 0 && (
+            <span>{texts.filtersButtonTextFilteredNoResultsHint}</span>
+          )
+        }
+      >
+        {getSubmitText()}
+      </Button>
     </div>
   )
 }

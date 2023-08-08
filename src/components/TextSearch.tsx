@@ -1,0 +1,106 @@
+import { useTexts } from '@lib/TextsContext'
+import React, { useEffect, useState } from 'react'
+import TextInput from './TextInput'
+import Checkbox from './Checkbox'
+
+type CategoriesType = Partial<{
+  categorySelfHelp: boolean
+  categoryAdvising: boolean
+  categoryClinics: boolean
+  categoryOnlineOffers: boolean
+  categoryDisctrictOfficeHelp: boolean
+}>
+interface StateType {
+  text: string
+  categories: CategoriesType
+}
+
+interface TextSearchProps extends StateType {
+  onChange: (state: Partial<StateType>) => void
+}
+
+function TextSearch({
+  text: initialText,
+  categories,
+  onChange,
+}: TextSearchProps): JSX.Element {
+  const texts = useTexts()
+  const [text, setText] = useState(initialText || '')
+
+  useEffect(() => {
+    setText(initialText || '')
+  }, [initialText])
+
+  const checkboxes = [
+    {
+      id: 'categorySelfHelp',
+      labelText: texts.textSearchCategorySelfHelp,
+    },
+    {
+      id: 'categoryAdvising',
+      labelText: texts.textSearchCategoryAdvising,
+    },
+    {
+      id: 'categoryClinics',
+      labelText: texts.textSearchCategoryClinics,
+    },
+    {
+      id: 'categoryOnlineOffers',
+      labelText: texts.textSearchCategoryOnlineOffers,
+    },
+    {
+      id: 'categoryDisctrictOfficeHelp',
+      labelText: texts.textSearchCategoryDisctrictOfficeHelp,
+    },
+  ]
+
+  return (
+    <fieldset className="w-full md:w-[324px]" aria-labelledby="textSearchLabel">
+      <TextInput
+        id="textSearch"
+        className="mb-2"
+        min={3}
+        labelText={texts.textSearchLabel}
+        placeholder={texts.textSearchPlaceholder}
+        onChange={(evt) => {
+          setText(evt.target.value)
+        }}
+        onBlur={() => {
+          onChange({ categories, text })
+        }}
+        onKeyDown={(evt) => {
+          if (evt.key === 'Enter') {
+            onChange({ categories, text })
+          }
+        }}
+        value={text}
+      />
+      {checkboxes.map(({ id, labelText }) => (
+        <Checkbox
+          key={id}
+          id={id}
+          labelText={labelText}
+          onChange={(evt) => {
+            const checked = evt.target.checked
+            const newCategories = { ...categories, [id]: checked }
+            const allUnchecked = Object.values(newCategories).every(
+              (value) => !value
+            )
+            const allChecked = Object.keys(categories).reduce(
+              (acc, key) => ({ ...acc, [key]: true }),
+              {}
+            )
+            const allWhenAllUnchecked = {
+              categories: allUnchecked ? allChecked : newCategories,
+              text,
+            }
+            onChange(allWhenAllUnchecked)
+          }}
+          checked={!!categories[id as keyof CategoriesType]}
+        />
+      ))}
+    </fieldset>
+  )
+}
+
+export default TextSearch

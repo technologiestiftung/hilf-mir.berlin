@@ -1,84 +1,75 @@
 import { useRouter } from 'next/router'
-import {
-  createContext,
-  FC,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { createContext, FC, useCallback, useContext } from 'react'
 import { mapRawQueryToState, PageQueryType } from './mapRawQueryToState'
-import { removeNullAndUndefinedFromQuery } from './removeNullAndUndefinedFromQuery'
 
-type UrlStateType = PageQueryType
-type SetUrlStateHandlerType = (newState: Partial<PageQueryType>) => void
+type ParsedSearchTermCategoriesType = {
+  categorySelfHelp: boolean
+  categoryAdvising: boolean
+  categoryClinics: boolean
+  categoryDisctrictOfficeHelp: boolean
+  categoryOnlineOffers: boolean
+}
 
-const UrlStateContext = createContext<[UrlStateType, SetUrlStateHandlerType]>([
+type SetUrlStateHandlerType = (newState: PageQueryType) => void
+
+const UrlStateContext = createContext<[PageQueryType, SetUrlStateHandlerType]>([
   {},
   () => undefined,
 ])
 
 const Provider = UrlStateContext.Provider
 
-export const useUrlState = (): [UrlStateType, SetUrlStateHandlerType] =>
-  useContext(UrlStateContext) as [UrlStateType, SetUrlStateHandlerType]
+export const useUrlState = (): [PageQueryType, SetUrlStateHandlerType] =>
+  useContext(UrlStateContext) as [PageQueryType, SetUrlStateHandlerType]
 
 export const UrlStateProvider: FC = ({ children }) => {
-  const { query, pathname } = useRouter()
+  const { query, pathname, push } = useRouter()
   const mappedQuery = mapRawQueryToState(query)
-  const [latitude, setLatitude] = useState<number | undefined>(
-    mappedQuery.latitude
-  )
-  const [longitude, setLongitude] = useState<number | undefined>(
-    mappedQuery.longitude
-  )
-  const [zoom, setZoom] = useState<number | undefined>(mappedQuery.zoom)
-  const [tags, setTags] = useState<number[] | undefined>(mappedQuery.tags)
-
-  useEffect(() => {
-    setLatitude(mappedQuery.latitude)
-    setLongitude(mappedQuery.longitude)
-    setZoom(mappedQuery.zoom)
-    setTags(mappedQuery.tags)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query])
 
   const updateUrlState = useCallback(
-    (newState: Partial<PageQueryType>) => {
-      const paramsString = new URLSearchParams({
-        ...removeNullAndUndefinedFromQuery({
-          latitude,
-          longitude,
-          zoom,
-          tags,
-          ...newState,
-        }),
-      } as Record<string, string>).toString()
+    (newState: PageQueryType) => {
       const path = typeof query.id === 'string' ? `/${query.id}` : pathname
-      const as = `${path}?${paramsString}`
-      window.history.replaceState(
+      void push(
         {
-          ...window.history.state,
-          ...newState,
-          as,
-          url: pathname,
+          pathname: path,
+          query: {
+            ...query,
+            ...newState,
+          },
         },
-        '',
-        as
+        undefined,
+        { shallow: true }
       )
-      if (newState.latitude) setLatitude(newState.latitude)
-      if (newState.longitude) setLongitude(newState.longitude)
-      if (newState.zoom) setZoom(newState.zoom)
-      if (newState.tags) setTags(newState.tags)
     },
-    [latitude, longitude, pathname, tags, zoom, query.id]
+    [query, pathname, push]
   )
 
-  const state = {
-    latitude,
-    longitude,
-    zoom,
-    tags: tags || [],
+  return <Provider value={[mappedQuery, updateUrlState]}>{children}</Provider>
+}
+
+export function parseSearchTermUrlCategories(
+  qCategories: PageQueryType['qCategories']
+): Partial<ParsedSearchTermCategoriesType> {
+  if (!qCategories) return {}
+  return {
+    categorySelfHelp: qCategories.includes(1),
+    categoryAdvising: qCategories.includes(2),
+    categoryClinics: qCategories.includes(3),
+    categoryDisctrictOfficeHelp: qCategories.includes(4),
+    categoryOnlineOffers: qCategories.includes(5),
   }
-  return <Provider value={[state, updateUrlState]}>{children}</Provider>
+}
+
+export function parseSearchTermCategories(
+  searchTermCategories: Partial<ParsedSearchTermCategoriesType> | undefined
+): PageQueryType['qCategories'] {
+  if (!searchTermCategories) return undefined
+  if (Object.entries(searchTermCategories).length === 0) return undefined
+  return [
+    searchTermCategories.categorySelfHelp && 1,
+    searchTermCategories.categoryAdvising && 2,
+    searchTermCategories.categoryClinics && 3,
+    searchTermCategories.categoryDisctrictOfficeHelp && 4,
+    searchTermCategories.categoryOnlineOffers && 5,
+  ].filter(Boolean) as PageQueryType['qCategories']
 }
