@@ -96,7 +96,7 @@ export const FiltersList: FC<{
   }
 
   return (
-    <div className="pb-20 lg:pb-0">
+    <div className="pb-20 lg:pb-0 @container">
       <div className="md:pt-10 flex flex-wrap gap-x-8 pb-6 md:pb-8">
         <ul className="flex flex-wrap gap-2 place-content-start mb-5">
           <FiltersTagsList
@@ -141,7 +141,7 @@ export const FiltersList: FC<{
             urlState.qCategories
           )}
         />
-        <div className="block w-full md:w-[324px] z-10">
+        <div className="block w-full @md:w-[324px] z-10">
           <Listbox
             label={texts.filtersSearchTargetLabel}
             options={targetGroups

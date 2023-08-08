@@ -1,4 +1,4 @@
-import { useTexts } from '@lib/TextsContext'
+import { TextsMapType, useTexts } from '@lib/TextsContext'
 import React, { useEffect, useState } from 'react'
 import TextInput from './TextInput'
 import Checkbox from './Checkbox'
@@ -19,6 +19,8 @@ interface TextSearchProps extends StateType {
   onChange: (state: Partial<StateType>) => void
 }
 
+type CategoriesTextMapType = Record<keyof CategoriesType, string>
+
 function TextSearch({
   text: initialText,
   categories,
@@ -31,43 +33,25 @@ function TextSearch({
     setText(initialText || '')
   }, [initialText])
 
-  const checkboxes = [
-    {
-      id: 'categorySelfHelp',
-      labelText: texts.textSearchCategorySelfHelp,
-    },
-    {
-      id: 'categoryAdvising',
-      labelText: texts.textSearchCategoryAdvising,
-    },
-    {
-      id: 'categoryClinics',
-      labelText: texts.textSearchCategoryClinics,
-    },
-    {
-      id: 'categoryOnlineOffers',
-      labelText: texts.textSearchCategoryOnlineOffers,
-    },
-    {
-      id: 'categoryDisctrictOfficeHelp',
-      labelText: texts.textSearchCategoryDisctrictOfficeHelp,
-    },
-  ]
+  const categoriesTexts = getCategoriesTexts(texts)
+  const checkboxes = Object.keys(categoriesTexts).map((categoryKey) => ({
+    id: categoryKey,
+    labelText: categoriesTexts[categoryKey as keyof CategoriesTextMapType],
+  }))
 
   return (
-    <fieldset className="w-full md:w-[324px]" aria-labelledby="textSearchLabel">
+    <fieldset
+      className="w-full @md:w-[324px]"
+      aria-labelledby="textSearchLabel"
+    >
       <TextInput
         id="textSearch"
         className="mb-2"
         min={3}
         labelText={texts.textSearchLabel}
         placeholder={texts.textSearchPlaceholder}
-        onChange={(evt) => {
-          setText(evt.target.value)
-        }}
-        onBlur={() => {
-          onChange({ categories, text })
-        }}
+        onChange={(evt) => setText(evt.target.value)}
+        onBlur={() => onChange({ categories, text })}
         onKeyDown={(evt) => {
           if (evt.key === 'Enter') {
             onChange({ categories, text })
@@ -101,6 +85,18 @@ function TextSearch({
       ))}
     </fieldset>
   )
+}
+
+export const getCategoriesTexts = (
+  texts: TextsMapType
+): CategoriesTextMapType => {
+  return {
+    categorySelfHelp: texts.textSearchCategorySelfHelp,
+    categoryAdvising: texts.textSearchCategoryAdvising,
+    categoryClinics: texts.textSearchCategoryClinics,
+    categoryOnlineOffers: texts.textSearchCategoryOnlineOffers,
+    categoryDisctrictOfficeHelp: texts.textSearchCategoryDisctrictOfficeHelp,
+  }
 }
 
 export default TextSearch
