@@ -16,6 +16,7 @@ interface ListboxType {
   onChange?: (selectedValue: number | null) => void
   nullSelectionLabel?: string
   className?: string
+  disabled?: boolean
 }
 
 export const Listbox: FC<ListboxType> = ({
@@ -25,18 +26,23 @@ export const Listbox: FC<ListboxType> = ({
   onChange = () => undefined,
   nullSelectionLabel = 'Keine Präferenz',
   className = '',
+  disabled = false,
 }) => {
   const handleChange = (selectedOption: number): void =>
     onChange(selectedOption)
 
-  const mergedOptions = [{ label: nullSelectionLabel, value: null }, ...options]
-  const selectedOption = mergedOptions.find(
-    (option) => option.value === activeValue
-  )
+  const nullSection = { label: nullSelectionLabel, value: null }
+  const mergedOptions = [nullSection, ...options]
+  const selectedOption =
+    mergedOptions.find((option) => option.value === activeValue) || nullSection
 
   return (
     <div className={classNames(className, 'w-full')}>
-      <HeadlessListbox value={activeValue} onChange={handleChange}>
+      <HeadlessListbox
+        value={activeValue}
+        onChange={handleChange}
+        disabled={disabled}
+      >
         <HeadlessListbox.Label
           className={classNames('w-full flex justify-between', 'text-lg')}
         >

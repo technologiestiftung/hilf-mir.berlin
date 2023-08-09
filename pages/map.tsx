@@ -103,6 +103,7 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
     [getDistanceToUser, useGeolocation, defaultSort, sortByTagsCount]
   )
 
+  const tagsKey = urlState.tags?.join('-') || ''
   useEffect(() => {
     const filteredRecords = getFilteredFacilities({
       facilities: originalRecords,
@@ -111,7 +112,7 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
     })
     return setFilteredRecords(sortFacilities(filteredRecords))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [urlState.tags?.join('-'), activeIdsBySearchTerm.key])
+  }, [tagsKey, activeIdsBySearchTerm.key, activeIdsBySearchTerm.isLoading])
 
   return (
     <>

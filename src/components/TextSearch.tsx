@@ -17,6 +17,7 @@ interface StateType {
 
 interface TextSearchProps extends StateType {
   onChange: (state: Partial<StateType>) => void
+  disabled?: boolean
 }
 
 type CategoriesTextMapType = Record<keyof CategoriesType, string>
@@ -25,6 +26,7 @@ function TextSearch({
   text: initialText,
   categories,
   onChange,
+  disabled = false,
 }: TextSearchProps): JSX.Element {
   const texts = useTexts()
   const [text, setText] = useState(initialText || '')
@@ -43,6 +45,7 @@ function TextSearch({
     <fieldset
       className="w-full @md:w-[324px]"
       aria-labelledby="textSearchLabel"
+      disabled={disabled}
     >
       <TextInput
         id="textSearch"
@@ -58,12 +61,14 @@ function TextSearch({
           }
         }}
         value={text}
+        disabled={disabled}
       />
       {checkboxes.map(({ id, labelText }) => (
         <Checkbox
           key={id}
           id={id}
           labelText={labelText}
+          disabled={disabled}
           onChange={(evt) => {
             onChange({
               text,

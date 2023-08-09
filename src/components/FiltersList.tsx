@@ -20,6 +20,7 @@ import { Button } from './Button'
 import { Arrow } from './icons/Arrow'
 import TextSearch from './TextSearch'
 import { useActiveIdsBySearchTerm } from '@lib/hooks/useActiveIdsBySearchTerm'
+import { Spinner } from './icons/Spinner'
 
 export const FiltersList: FC<{
   recordsWithOnlyLabels: RecordsWithOnlyLabelsType[]
@@ -44,6 +45,7 @@ export const FiltersList: FC<{
     recordsWithOnlyLabels
   )
   const { isLoading: textSearchLoading, total } = useActiveIdsBySearchTerm()
+  const fieldsDisabled = textSearchLoading
 
   const group1 = labels.filter(({ fields }) => fields.group2 === 'gruppe-1')
   const group2 = labels.filter(({ fields }) => fields.group2 === 'gruppe-2')
@@ -57,21 +59,17 @@ export const FiltersList: FC<{
     .map((label) => label.id)
 
   const [activeTargetGroupId, setActiveTargetGroupId] = useState(
-    queryTagIds.find((tagId) => {
-      return targetGroupIds.includes(tagId)
-    })
+    queryTagIds.find((tagId) => targetGroupIds.includes(tagId)) || null
   )
 
+  const tagsKey = queryTagIds.join('-')
   useEffect(() => {
-    if (queryTagIds.length === 0) return
-
     const currentTargetGroupId = queryTagIds.find((tagId) =>
       targetGroupIds.includes(tagId)
     )
-    if (currentTargetGroupId) {
-      setActiveTargetGroupId(currentTargetGroupId)
-    }
-  }, [queryTagIds, targetGroupIds])
+    setActiveTargetGroupId(currentTargetGroupId || null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tagsKey, targetGroupIds])
 
   const someGroupFiltersActive = labels
     .filter(({ fields }) => fields.group2 !== 'zielpublikum')
@@ -88,10 +86,12 @@ export const FiltersList: FC<{
           <FiltersTagsList
             filters={[...group1, ...group2, ...group3]}
             onLabelClick={updateFilters}
+            disabled={fieldsDisabled}
           />
         </ul>
         {someGroupFiltersActive && (
           <button
+            disabled={fieldsDisabled}
             onClick={() =>
               updateFilters(
                 queryTagIds.filter((f) => {
@@ -102,9 +102,13 @@ export const FiltersList: FC<{
             }
             className={classNames(
               `text-lg leading-6 text-left font-normal mb-8`,
-              `focus:outline-none focus:ring-2 focus:ring-primary`,
-              `focus:ring-offset-2 focus:ring-offset-white`,
-              `underline text-gray-80 hover-primary transition-colors`
+              !fieldsDisabled && [
+                `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary`,
+                `focus-visible:ring-offset-2 focus-visible:ring-offset-white`,
+                `underline text-gray-80 hover-primary`,
+              ],
+              fieldsDisabled && `text-gray-40`,
+              `transition motion-reduce:transition-none`
             )}
           >
             {texts.reset}
@@ -126,10 +130,12 @@ export const FiltersList: FC<{
           categories={urlSearchCategoriesToStateSearchCategories(
             urlState.qCategories
           )}
+          disabled={fieldsDisabled}
         />
         <div className="block w-full @md:w-[324px] z-10">
           <Listbox
             label={texts.filtersSearchTargetLabel}
+            disabled={fieldsDisabled}
             options={targetGroups
               .sort((a, b) => {
                 if (!a.fields.order) return 1
@@ -164,14 +170,14 @@ export const FiltersList: FC<{
                   break
                 case targetGroupAlreadyInUrl && !hasValidTargetGroup:
                   updateFilters([...tagsWithoutOldTargetGroup])
-                  setActiveTargetGroupId(undefined)
+                  setActiveTargetGroupId(null)
                   break
                 case !targetGroupAlreadyInUrl && hasValidTargetGroup:
                   updateFilters([...queryTagIds, selectedValue as number])
                   break
                 case !targetGroupAlreadyInUrl && !hasValidTargetGroup:
                   updateFilters([...queryTagIds])
-                  setActiveTargetGroupId(undefined)
+                  setActiveTargetGroupId(null)
                   break
                 default:
                   break
@@ -185,7 +191,7 @@ export const FiltersList: FC<{
       <SwitchButton
         value={useGeolocation}
         onToggle={setGeolocationUsage}
-        disabled={geolocationIsForbidden}
+        disabled={geolocationIsForbidden || fieldsDisabled}
         tooltip={geolocationIsForbidden ? texts.geolocationForbidden : ``}
       >
         {texts.filtersGeoSearchLabel}
@@ -205,13 +211,17 @@ export const FiltersList: FC<{
           })
         }}
         icon={
-          <Arrow
-            className={classNames(
-              'transition-transform group-hover:translate-x-0.5 group-disabled:group-hover:translate-x-0'
-            )}
-          />
+          textSearchLoading ? (
+            <Spinner className={classNames('animate-spin')} />
+          ) : (
+            <Arrow
+              className={classNames(
+                'transition-transform group-hover:translate-x-0.5 group-disabled:group-hover:translate-x-0'
+              )}
+            />
+          )
         }
-        disabled={filteredFacilitiesCount === 0}
+        disabled={filteredFacilitiesCount === 0 || fieldsDisabled}
         tooltip={
           filteredFacilitiesCount === 0 && (
             <span>{texts.filtersButtonTextFilteredNoResultsHint}</span>

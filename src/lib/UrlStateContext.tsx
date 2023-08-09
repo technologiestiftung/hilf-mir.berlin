@@ -48,8 +48,17 @@ export const UrlStateProvider: FC = ({ children }) => {
     if (typeof window === 'undefined') return
     const urlParams = new URLSearchParams(window.location.search)
     if (urlParams.get('qCategories')) return
+    const parsedQuery = mapRawQueryToState({
+      q: urlParams.get('q') || undefined,
+      qCategories: urlParams.getAll('qCategories') || undefined,
+      tags: urlParams.getAll('tags') || undefined,
+      back: urlParams.get('back') || undefined,
+      latitude: urlParams.get('latitude') || undefined,
+      longitude: urlParams.get('longitude') || undefined,
+      zoom: urlParams.get('zoom') || undefined,
+    })
     updateUrlState({
-      ...query,
+      ...parsedQuery,
       qCategories: stateSearchCategoriesToUrlSearchCategories({
         categorySelfHelp: true,
         categoryAdvising: true,
