@@ -1,7 +1,6 @@
 import classNames from '@lib/classNames'
 import { FeatureType } from '@lib/requests/geocode'
 import { useTexts } from '@lib/TextsContext'
-import { useUrlState } from '@lib/UrlStateContext'
 import { FC } from 'react'
 import { IconButtonLink } from './IconButton'
 import { House } from './icons/House'
@@ -20,7 +19,6 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
   handleSearchResult,
   listViewOpen,
 }) => {
-  const [urlState] = useUrlState()
   const texts = useTexts()
 
   return (
@@ -73,36 +71,31 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
           <Search onSelectResult={handleSearchResult} />
         </div>
 
-        <button
-          onClick={() => setFilterSidebarIsOpened(!filterSidebarIsOpened)}
-          className={classNames(
-            `flex items-center group relative border-gray-20`,
-            `focus:border-l focus:z-20 focus:rounded`,
-            `focus:outline-none focus:ring-2 focus:ring-primary`,
-            `focus:ring-offset-2 focus:ring-offset-white`
-          )}
-        >
-          <span
+        {!filterSidebarIsOpened && (
+          <button
+            onClick={() => setFilterSidebarIsOpened(!filterSidebarIsOpened)}
             className={classNames(
-              `border-t border-b border-r md:border-l border-gray-20 font-bold`,
-              listViewOpen && `border-l lg:border-l-0`,
-              `px-4 py-2.5 h-12 text-xl`,
-              `rounded group-focus:rounded`,
-              !listViewOpen && `rounded-l-none md:rounded-l`,
-              !listViewOpen && `shadow-md shadow-black/5`,
-              `text-left whitespace-nowrap items-center`,
-              `transition-colors group-hover:bg-primary group-hover:text-white`,
-              urlState.tags && urlState.tags.length > 0
-                ? `bg-primary text-white`
-                : `bg-white`
+              `flex items-center group relative border-gray-20`,
+              `focus:border-l focus:z-20 focus:rounded`,
+              `focus:outline-none focus:ring-2 focus:ring-primary`,
+              `focus:ring-offset-2 focus:ring-offset-white`
             )}
           >
-            {urlState.tags && urlState.tags.length > 0
-              ? `${urlState.tags.length} `
-              : ''}
-            {texts.filterLabel}
-          </span>
-        </button>
+            <span
+              className={classNames(
+                `border border-gray-20 font-bold`,
+                `px-4 py-2.5 h-12 text-xl`,
+                `rounded group-focus:rounded`,
+                !listViewOpen && `shadow-md shadow-black/5`,
+                `text-left whitespace-nowrap items-center`,
+                `transition-colors group-hover:bg-primary group-hover:text-white`,
+                `bg-white`
+              )}
+            >
+              {texts.filterLabel}
+            </span>
+          </button>
+        )}
       </div>
     </>
   )
