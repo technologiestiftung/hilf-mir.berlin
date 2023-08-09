@@ -71,7 +71,6 @@ function TextSearch({
         <TextInput
           ref={inputRef}
           id="textSearch"
-          className="mb-2"
           min={3}
           labelText={texts.textSearchLabel}
           placeholder={texts.textSearchPlaceholder}
