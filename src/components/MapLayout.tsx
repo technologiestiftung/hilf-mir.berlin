@@ -1,4 +1,3 @@
-import { FeatureType } from '@lib/requests/geocode'
 import { FC, useEffect, useState } from 'react'
 import { FacilitiesMap } from './Map'
 import classNames from '@lib/classNames'
@@ -30,14 +29,11 @@ export const MapLayout: FC<{
   const [mapCenter, setMapCenter] = useState<
     [lng: number, lat: number] | undefined
   >()
-  const [searchCenter, setSearchCenter] = useState<
-    [lng: number, lat: number] | undefined
-  >()
   const [selectedFacilities, setSelectedFacilities] = useState<
     MinimalRecordType[]
   >([])
   const [filterSidebarIsOpened, setFilterSidebarIsOpened] = useState(false)
-  const [urlState, setUrlState] = useUrlState()
+  const [urlState] = useUrlState()
   const [hasScrolled, setHasScrolled] = useState<boolean>(false)
   const isMobile = useIsMobile()
 
@@ -62,14 +58,6 @@ export const MapLayout: FC<{
   const handleMarkerClick = (facilities: MinimalRecordType[]): void => {
     setSelectedFacilities(facilities)
     if (!records) return
-  }
-
-  const handleSearchResult = (place: FeatureType): void => {
-    setSearchCenter(place.center)
-    setUrlState({
-      longitude: place.center[0],
-      latitude: place.center[1],
-    })
   }
 
   useEffect(() => {
@@ -105,7 +93,6 @@ export const MapLayout: FC<{
                 setSelectedFacilities([])
               }}
               highlightedCenter={mapCenter}
-              searchCenter={searchCenter}
             />
             {[selectedFacilities[0]].filter(Boolean).map(({ id }) => (
               <div
@@ -166,7 +153,6 @@ export const MapLayout: FC<{
         </aside>
         {!isFallback && showMapUi && (
           <MapHeader
-            handleSearchResult={handleSearchResult}
             filterSidebarIsOpened={filterSidebarIsOpened}
             setFilterSidebarIsOpened={setFilterSidebarIsOpened}
             listViewOpen={listViewOpen}
