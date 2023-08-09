@@ -30,7 +30,7 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
       <IconButtonLink
         pathName="/"
         className={classNames(
-          'flex border-r-0 md:border-r',
+          'flex border',
           `fixed lg:left-sidebarW ml-4 top-4 z-30`,
           !listViewOpen && `shadow-md shadow-black/5`
         )}
@@ -46,43 +46,32 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
             : `2xl:translate-x-0`
         )}
       >
-        <IconButtonLink
-          pathName="/"
+        <button
+          onClick={() => setFilterSidebarIsOpened(!filterSidebarIsOpened)}
           className={classNames(
-            'flex md:hidden border-r md:rounded-r focus:rounded',
-            !listViewOpen &&
-              '!border-r-trasparent !focus:border-r-gray-20 rounded-r-none'
+            `transition motion-reduce:transition-none`,
+            `flex items-center group relative border-gray-20`,
+            `focus-visible:border-l focus-visible:z-20 focus-visible:rounded`,
+            `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary`,
+            `focus-visible:ring-offset-2 focus-visible:ring-offset-white`,
+            filterSidebarIsOpened ? `opacity-0` : `opacity-100`
           )}
-          aria-label={texts.backToHome}
+          tabIndex={filterSidebarIsOpened ? -1 : 0}
         >
-          <House />
-        </IconButtonLink>
-
-        {!filterSidebarIsOpened && (
-          <button
-            onClick={() => setFilterSidebarIsOpened(!filterSidebarIsOpened)}
+          <span
             className={classNames(
-              `flex items-center group relative border-gray-20`,
-              `focus:border-l focus:z-20 focus:rounded`,
-              `focus:outline-none focus:ring-2 focus:ring-primary`,
-              `focus:ring-offset-2 focus:ring-offset-white`
+              `border border-gray-20 font-bold`,
+              `px-4 py-2.5 h-12 text-xl`,
+              `rounded group-focus:rounded`,
+              !listViewOpen && `shadow-md shadow-black/5`,
+              `text-left whitespace-nowrap items-center`,
+              `transition-colors group-hover:bg-primary group-hover:text-white`,
+              `bg-white`
             )}
           >
-            <span
-              className={classNames(
-                `border border-gray-20 font-bold`,
-                `px-4 py-2.5 h-12 text-xl`,
-                `rounded group-focus:rounded`,
-                !listViewOpen && `shadow-md shadow-black/5`,
-                `text-left whitespace-nowrap items-center`,
-                `transition-colors group-hover:bg-primary group-hover:text-white`,
-                `bg-white`
-              )}
-            >
-              {texts.filterLabel}
-            </span>
-          </button>
-        )}
+            {texts.filterLabel}
+          </span>
+        </button>
       </div>
     </>
   )
