@@ -2,6 +2,8 @@ import { useRouter } from 'next/router'
 import { createContext, FC, useCallback, useContext, useEffect } from 'react'
 import { mapRawQueryToState, PageQueryType } from './mapRawQueryToState'
 
+export const MAX_TEXT_SEARCH_STRING_LENGTH = 100
+
 type ParsedSearchTermCategoriesType = {
   categorySelfHelp: boolean
   categoryAdvising: boolean
@@ -35,6 +37,9 @@ export const UrlStateProvider: FC = ({ children }) => {
           query: {
             ...query,
             ...newState,
+            q: newState.q
+              ? newState.q.slice(0, MAX_TEXT_SEARCH_STRING_LENGTH)
+              : undefined,
           },
         },
         undefined,

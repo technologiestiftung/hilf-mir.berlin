@@ -1,3 +1,4 @@
+import { MAX_TEXT_SEARCH_STRING_LENGTH } from '@lib/UrlStateContext'
 import { removeNullAndUndefinedFromQuery } from '@lib/removeNullAndUndefinedFromQuery'
 
 type qCategoryType = 1 | 2 | 3 | 4 | 5
@@ -23,7 +24,8 @@ const parseSingleNumber = (
 }
 
 const parseString = (val: string | string[] | undefined): string | null => {
-  if (typeof val === 'string') return val
+  if (typeof val === 'string')
+    return val.slice(0, MAX_TEXT_SEARCH_STRING_LENGTH)
   return null
 }
 
