@@ -65,20 +65,13 @@ function TextSearch({
           id={id}
           labelText={labelText}
           onChange={(evt) => {
-            const checked = evt.target.checked
-            const newCategories = { ...categories, [id]: checked }
-            const allUnchecked = Object.values(newCategories).every(
-              (value) => !value
-            )
-            const allChecked = Object.keys(categories).reduce(
-              (acc, key) => ({ ...acc, [key]: true }),
-              {}
-            )
-            const allWhenAllUnchecked = {
-              categories: allUnchecked ? allChecked : newCategories,
+            onChange({
               text,
-            }
-            onChange(allWhenAllUnchecked)
+              categories: {
+                ...categories,
+                [id]: evt.target.checked,
+              },
+            })
           }}
           checked={!!categories[id as keyof CategoriesType]}
         />

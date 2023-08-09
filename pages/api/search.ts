@@ -13,8 +13,8 @@ const searchData = ({
   query: string
   filters: string[]
 }): TableRowType[] => {
-  if ((!query && filters.length === 0) || (!query && filters.length === 5))
-    return data
+  if (filters.length === 0) return []
+  if (!query && filters.length === 5) return data
   return data.filter((item) => {
     // check if item.fields.Typ is in the filters array
     if (filters.length > 0 && !filters.includes(item.fields.Typ)) {
@@ -85,7 +85,7 @@ const handler = async (
     const content = await fs.readFile(filePath, 'utf8')
     const data = JSON.parse(content) as TableRowType[]
     const result = searchData({ data, query: params.query, filters })
-    return res.status(200).json({ params, result })
+    return res.status(200).json({ params, result, total: data.length })
   } catch (error: unknown) {
     if (error instanceof Error) {
       return res.status(500).json({ result: null, error: error.message })

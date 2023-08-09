@@ -14,7 +14,6 @@ function ActiveFiltersList(): JSX.Element | null {
   const [urlState] = useUrlState()
   const labels = useFiltersWithActiveProp()
   const categoriesTexts = getCategoriesTexts(texts)
-  const categoriesCount = Object.keys(categoriesTexts).length
   const categories = urlSearchCategoriesToStateSearchCategories(
     urlState.qCategories
   )
@@ -30,7 +29,7 @@ function ActiveFiltersList(): JSX.Element | null {
 
   const allFilters = [
     ...(urlState.q ? [{ id: 'search', fields: { text: urlState.q } }] : []),
-    ...(categoryFilters.length < categoriesCount ? categoryFilters : []),
+    ...categoryFilters,
     ...labels.filter((label) => label.isActive),
   ] as GristLabelType[]
 

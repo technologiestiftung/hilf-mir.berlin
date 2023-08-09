@@ -5,7 +5,7 @@ import {
   useUrlState,
 } from '@lib/UrlStateContext'
 import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
-import { useTexts } from '@lib/TextsContext'
+import { TextsMapType, useTexts } from '@lib/TextsContext'
 import { FC, useEffect, useMemo, useState } from 'react'
 import { SwitchButton } from './SwitchButton'
 import { useRouter } from 'next/router'
@@ -19,6 +19,7 @@ import { Listbox } from './Listbox'
 import { Button } from './Button'
 import { Arrow } from './icons/Arrow'
 import TextSearch from './TextSearch'
+import { useActiveIdsBySearchTerm } from '@lib/hooks/useActiveIdsBySearchTerm'
 
 export const FiltersList: FC<{
   recordsWithOnlyLabels: RecordsWithOnlyLabelsType[]
@@ -42,6 +43,7 @@ export const FiltersList: FC<{
   const filteredFacilitiesCount = useFilteredFacilitiesCount(
     recordsWithOnlyLabels
   )
+  const { isLoading: textSearchLoading, total } = useActiveIdsBySearchTerm()
 
   const group1 = labels.filter(({ fields }) => fields.group2 === 'gruppe-1')
   const group2 = labels.filter(({ fields }) => fields.group2 === 'gruppe-2')
@@ -79,25 +81,9 @@ export const FiltersList: FC<{
     updateUrlState({ tags: newTags })
   }
 
-  const getSubmitText = (): string => {
-    switch (filteredFacilitiesCount) {
-      case recordsWithOnlyLabels.length:
-        return texts.filtersButtonTextAllFilters
-      case 1:
-        return texts.filtersButtonTextFilteredSingular
-      case 0:
-        return texts.filtersButtonTextFilteredNoResults
-      default:
-        return texts.filtersButtonTextFilteredPlural.replace(
-          '#number',
-          `${filteredFacilitiesCount}`
-        )
-    }
-  }
-
   return (
     <div className="pb-20 lg:pb-0 @container">
-      <div className="md:pt-10 flex flex-wrap gap-x-8 pb-6 md:pb-8">
+      <div className="@md:pt-10 flex flex-wrap gap-x-8 pb-6 @md:pb-8">
         <ul className="flex flex-wrap gap-2 place-content-start mb-5">
           <FiltersTagsList
             filters={[...group1, ...group2, ...group3]}
@@ -207,7 +193,7 @@ export const FiltersList: FC<{
       <Button
         scheme="primary"
         size="large"
-        className={classNames('w-full md:w-max md:min-w-[324px]', 'group')}
+        className={classNames('w-full @md:w-max @md:min-w-[324px]', 'group')}
         onClick={() => {
           onSubmit()
           void push({
@@ -225,16 +211,38 @@ export const FiltersList: FC<{
             )}
           />
         }
-        disabled={queryTagIds.length > 0 && filteredFacilitiesCount === 0}
+        disabled={filteredFacilitiesCount === 0}
         tooltip={
-          queryTagIds.length > 0 &&
           filteredFacilitiesCount === 0 && (
             <span>{texts.filtersButtonTextFilteredNoResultsHint}</span>
           )
         }
       >
-        {getSubmitText()}
+        {getSubmitText({
+          texts,
+          isLoading: textSearchLoading,
+          count: filteredFacilitiesCount,
+          total,
+        })}
       </Button>
     </div>
   )
+}
+
+function getSubmitText({
+  texts,
+  isLoading = false,
+  count,
+  total,
+}: {
+  texts: TextsMapType
+  isLoading?: boolean
+  count: number
+  total: number
+}): string {
+  if (isLoading) return texts.filtersButtonLoading
+  if (count === 0) return texts.filtersButtonTextFilteredNoResults
+  if (count === 1) return texts.filtersButtonTextFilteredSingular
+  if (count === total) return texts.filtersButtonTextAllFilters
+  return texts.filtersButtonTextFilteredPlural.replace('#number', `${count}`)
 }

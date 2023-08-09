@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { createContext, FC, useCallback, useContext } from 'react'
+import { createContext, FC, useCallback, useContext, useEffect } from 'react'
 import { mapRawQueryToState, PageQueryType } from './mapRawQueryToState'
 
 type ParsedSearchTermCategoriesType = {
@@ -44,27 +44,40 @@ export const UrlStateProvider: FC = ({ children }) => {
     [query, pathname, push]
   )
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const urlParams = new URLSearchParams(window.location.search)
+    if (urlParams.get('qCategories')) return
+    updateUrlState({
+      ...query,
+      qCategories: stateSearchCategoriesToUrlSearchCategories({
+        categorySelfHelp: true,
+        categoryAdvising: true,
+      }),
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return <Provider value={[mappedQuery, updateUrlState]}>{children}</Provider>
 }
 
 export function urlSearchCategoriesToStateSearchCategories(
   qCategories: PageQueryType['qCategories']
 ): Partial<ParsedSearchTermCategoriesType> {
-  const noCategories = !qCategories || qCategories.length === 0
   return {
-    categorySelfHelp: noCategories || qCategories.includes(1),
-    categoryAdvising: noCategories || qCategories.includes(2),
-    categoryClinics: noCategories || qCategories.includes(3),
-    categoryDisctrictOfficeHelp: noCategories || qCategories.includes(4),
-    categoryOnlineOffers: noCategories || qCategories.includes(5),
+    categorySelfHelp: !!qCategories?.includes(1),
+    categoryAdvising: !!qCategories?.includes(2),
+    categoryClinics: !!qCategories?.includes(3),
+    categoryDisctrictOfficeHelp: !!qCategories?.includes(4),
+    categoryOnlineOffers: !!qCategories?.includes(5),
   }
 }
 
 export function stateSearchCategoriesToUrlSearchCategories(
   searchTermCategories: Partial<ParsedSearchTermCategoriesType> | undefined
 ): PageQueryType['qCategories'] {
-  if (!searchTermCategories) return undefined
-  if (Object.entries(searchTermCategories).length === 0) return undefined
+  if (typeof searchTermCategories === 'undefined') return undefined
+  if (Object.entries(searchTermCategories).length === 0) return []
   return [
     searchTermCategories.categorySelfHelp && 1,
     searchTermCategories.categoryAdvising && 2,

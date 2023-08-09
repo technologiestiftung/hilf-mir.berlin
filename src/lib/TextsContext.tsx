@@ -126,6 +126,7 @@ const defaultValue = {
   textSearchCategoryOnlineOffers: '',
   textSearchCategoryDisctrictOfficeHelp: '',
   optionalFurtherSearchIntroText: '',
+  filtersButtonLoading: '',
 }
 
 export type TextsMapType = typeof defaultValue

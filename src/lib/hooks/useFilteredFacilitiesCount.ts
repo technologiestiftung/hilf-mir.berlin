@@ -38,7 +38,7 @@ export const useFilteredFacilitiesCount = (
     })
 
     if (isNotFilteredAtAll) {
-      setFilteredFacilities(facilitiesWithOnlyLabels)
+      setFilteredFacilities([])
       return
     }
 

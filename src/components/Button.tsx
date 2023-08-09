@@ -61,7 +61,7 @@ export const Button: FC<ButtonType> = ({
   )
 
   const SHARED_CLASSES = classNames(
-    'text-center',
+    'text-center group',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white',
     SIZE_CLASSES,
     SCHEME_CLASSES,
@@ -120,9 +120,10 @@ export const Button: FC<ButtonType> = ({
         {tooltip && (
           <span
             className={classNames(
-              `absolute -top-2 left-1/2 -translate-x-1/2 -translate-y-full`,
+              `absolute -top-2 left-1/2 -translate-x-1/2 -translate-y-full w-full`,
               `px-2 py-1 text-white bg-black opacity-0 pointer-events-none`,
-              `group-hover:opacity-100 transition-colors text-sm leading-tight`
+              `group-hover:opacity-100 text-sm leading-tight text-left`,
+              `transition-opacity motion-reduce:transition-none`
             )}
           >
             {tooltip}
