@@ -28,7 +28,7 @@ export const Label: FC<{
           `py-1.5 text-lg flex gap-2 text-left leading-6 pl-2 pr-3 rounded`,
           `transition motion-reduce:transition-none`,
           isActive &&
-            isActive &&
+            isInteractive &&
             !disabled &&
             `bg-primary border-primary text-white hover:bg-purple-400`,
           (!isInteractive || disabled) && `ring-1 ring-inset ring-gray-20`,
