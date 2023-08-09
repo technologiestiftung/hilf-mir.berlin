@@ -31,7 +31,7 @@ export const UrlStateProvider: FC = ({ children }) => {
   const updateUrlState = useCallback(
     (newState: PageQueryType) => {
       const path = typeof query.id === 'string' ? `/${query.id}` : pathname
-      const q = newState.q || query.q
+      const q = newState.q ?? query.q
       void push(
         {
           pathname: path,
