@@ -5,7 +5,6 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useState,
 } from 'react'
 import { mapRawQueryToState, PageQueryType } from './mapRawQueryToState'
@@ -34,7 +33,7 @@ export const useUrlState = (): [PageQueryType, SetUrlStateHandlerType] =>
 
 export const UrlStateProvider: FC = ({ children }) => {
   const { query, pathname } = useRouter()
-  const mappedQuery = useMemo(() => mapRawQueryToState(query), [query])
+  const mappedQuery = mapRawQueryToState(query)
   const [latitude, setLatitude] = useState<number | undefined>(
     mappedQuery.latitude
   )
@@ -60,20 +59,21 @@ export const UrlStateProvider: FC = ({ children }) => {
         qCategories,
         back,
         ...newState,
-        q: truncateSearchTerm(newState.q) || q,
+        q: newState.q ? truncateSearchTerm(newState.q) : q,
       })
       const paramsString = new URLSearchParams(
         state as Record<string, string>
       ).toString()
       const as = `${path}?${paramsString}`
-      void push(
+      window.history.replaceState(
         {
           ...window.history.state,
+          ...state,
           as,
-          url: pathname,
+          url: as,
         },
-        as,
-        { shallow: true }
+        '',
+        as
       )
       if (newState.latitude) setLatitude(newState.latitude)
       if (newState.longitude) setLongitude(newState.longitude)
