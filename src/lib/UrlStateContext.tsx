@@ -9,7 +9,7 @@ import {
 } from 'react'
 import { mapRawQueryToState, PageQueryType } from './mapRawQueryToState'
 import { truncateSearchTerm } from './facilityFilterUtil'
-import { removeNullAndUndefinedFromQuery } from './removeNullAndUndefinedFromQuery'
+import { removeFalsyFromQuery } from './removeNullAndUndefinedFromQuery'
 
 type ParsedSearchTermCategoriesType = {
   categorySelfHelp: boolean
@@ -51,7 +51,7 @@ export const UrlStateProvider: FC = ({ children }) => {
   const updateUrlState = useCallback(
     (newState: PageQueryType) => {
       const path = typeof query.id === 'string' ? `/${query.id}` : pathname
-      const state = removeNullAndUndefinedFromQuery({
+      const state = removeFalsyFromQuery({
         latitude,
         longitude,
         zoom,
@@ -64,7 +64,7 @@ export const UrlStateProvider: FC = ({ children }) => {
       const paramsString = new URLSearchParams(
         state as Record<string, string>
       ).toString()
-      const as = `${path}?${paramsString}`
+      const as = [path, paramsString].filter(Boolean).join('?')
       window.history.replaceState(
         {
           ...window.history.state,
