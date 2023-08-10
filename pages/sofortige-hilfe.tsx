@@ -26,7 +26,7 @@ const Home: NextPage = () => {
   const [selectedNeighborhood, setSelectedNeighborhood] = useState(
     neigborhoodKeys[0]
   )
-  const { back } = useRouter()
+  const { query } = useRouter()
 
   const isEmergencyTime = useIsEmergencyTime()
 
@@ -43,6 +43,7 @@ const Home: NextPage = () => {
         ) as keyof typeof texts
       ]
 
+  console.log(query)
   return (
     <>
       <Head>
@@ -51,7 +52,12 @@ const Home: NextPage = () => {
         </title>
       </Head>
       <div className="min-h-screen mx-auto max-w-xl">
-        <BackButton onClick={() => void back()} />
+        <BackButton
+          href={{
+            pathname: typeof query.back === 'string' ? query.back : '/',
+            query,
+          }}
+        />
         <div className="p-5 md:p-8 flex flex-col gap-8 md:pt-[5vmin]">
           <h1 className="relative pr-16">
             {texts.directHelpButtonText}

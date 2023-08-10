@@ -66,14 +66,14 @@ export const UrlStateProvider: FC = ({ children }) => {
         state as Record<string, string>
       ).toString()
       const as = `${path}?${paramsString}`
-      window.history.replaceState(
+      void push(
         {
           ...window.history.state,
           as,
           url: pathname,
         },
-        '',
-        as
+        as,
+        { shallow: true }
       )
       if (newState.latitude) setLatitude(newState.latitude)
       if (newState.longitude) setLongitude(newState.longitude)
