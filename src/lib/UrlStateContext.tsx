@@ -5,7 +5,6 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useRef,
   useState,
 } from 'react'
 import { mapRawQueryToState, PageQueryType } from './mapRawQueryToState'
@@ -34,7 +33,6 @@ export const useUrlState = (): [PageQueryType, SetUrlStateHandlerType] =>
 
 export const UrlStateProvider: FC = ({ children }) => {
   const { query, pathname } = useRouter()
-  const isInitalized = useRef(false)
   const mappedQuery = mapRawQueryToState(query)
   const [latitude, setLatitude] = useState<number | undefined>(
     mappedQuery.latitude
@@ -101,7 +99,7 @@ export const UrlStateProvider: FC = ({ children }) => {
   }, [query])
 
   useEffect(() => {
-    if (typeof window === 'undefined' || isInitalized.current) return
+    if (typeof window === 'undefined') return
     const urlParams = new URLSearchParams(window.location.search)
     if (!urlParams.get('qCategories')) {
       const query = mapRawQueryToState({
@@ -118,9 +116,8 @@ export const UrlStateProvider: FC = ({ children }) => {
       })
       updateUrlState(query)
     }
-    isInitalized.current = true
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [query.id, pathname])
 
   const state = {
     latitude,
