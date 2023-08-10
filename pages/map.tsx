@@ -42,7 +42,7 @@ interface MapProps {
 const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
   const [urlState] = useUrlState()
   const texts = useTexts()
-  const { isFallback } = useRouter()
+  const { query, isFallback } = useRouter()
   const { getDistanceToUser } = useDistanceToUser()
   const { useGeolocation } = useUserGeolocation()
   const labels = useFiltersWithActiveProp()
@@ -113,6 +113,17 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
     return setFilteredRecords(sortFacilities(filteredRecords))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tagsKey, activeIdsBySearchTerm.key, activeIdsBySearchTerm.isLoading])
+
+  useEffect(() => {
+    if (!query.back || typeof query.back !== 'string') return
+    const prevItemId = query.back.replace('/', '')
+    if (!prevItemId) return
+    const listEl = document.getElementById(`facility-${prevItemId}`)
+    if (!listEl) return
+    listEl.scrollIntoView({ behavior: 'instant' as ScrollBehavior })
+    listEl?.focus()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <>
