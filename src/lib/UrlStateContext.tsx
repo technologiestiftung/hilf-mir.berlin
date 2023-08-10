@@ -1,8 +1,16 @@
 import { useRouter } from 'next/router'
-import { createContext, FC, useCallback, useContext, useEffect } from 'react'
+import {
+  createContext,
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { mapRawQueryToState, PageQueryType } from './mapRawQueryToState'
-
-export const MAX_TEXT_SEARCH_STRING_LENGTH = 100
+import { truncateSearchTerm } from './facilityFilterUtil'
+import { removeNullAndUndefinedFromQuery } from './removeNullAndUndefinedFromQuery'
 
 type ParsedSearchTermCategoriesType = {
   categorySelfHelp: boolean
@@ -25,41 +33,87 @@ export const useUrlState = (): [PageQueryType, SetUrlStateHandlerType] =>
   useContext(UrlStateContext) as [PageQueryType, SetUrlStateHandlerType]
 
 export const UrlStateProvider: FC = ({ children }) => {
-  const { query, pathname, push } = useRouter()
-  const mappedQuery = mapRawQueryToState(query)
+  const { query, pathname } = useRouter()
+  const mappedQuery = useMemo(() => mapRawQueryToState(query), [query])
+  const [latitude, setLatitude] = useState<number | undefined>(
+    mappedQuery.latitude
+  )
+  const [longitude, setLongitude] = useState<number | undefined>(
+    mappedQuery.longitude
+  )
+  const [zoom, setZoom] = useState<number | undefined>(mappedQuery.zoom)
+  const [tags, setTags] = useState<number[] | undefined>(mappedQuery.tags)
+  const [back, setBack] = useState<string | undefined>(mappedQuery.back)
+  const [q, setQ] = useState<string | undefined>(mappedQuery.q)
+  const [qCategories, setQCategories] = useState<
+    PageQueryType['qCategories'] | undefined
+  >(mappedQuery.qCategories)
 
   const updateUrlState = useCallback(
     (newState: PageQueryType) => {
       const path = typeof query.id === 'string' ? `/${query.id}` : pathname
-      const q = newState.q ?? query.q
-      void push(
+      const newQuery = {
+        ...newState,
+        ...(typeof newState.q !== 'undefined'
+          ? { q: truncateSearchTerm(newState.q) }
+          : {}),
+      }
+      const paramsString = new URLSearchParams({
+        ...removeNullAndUndefinedFromQuery({
+          latitude,
+          longitude,
+          zoom,
+          tags,
+          q,
+          qCategories,
+          back,
+          ...newState,
+        }),
+      } as Record<string, string>).toString()
+      const as = `${path}?${paramsString}`
+      window.history.replaceState(
         {
-          pathname: path,
-          query: {
-            ...query,
-            ...newState,
-            q: q ? q.slice(0, MAX_TEXT_SEARCH_STRING_LENGTH) : undefined,
-          },
+          ...window.history.state,
+          ...newQuery,
+          as,
+          url: pathname,
         },
-        undefined,
-        { shallow: true }
+        '',
+        as
       )
+      if (newState.latitude) setLatitude(newState.latitude)
+      if (newState.longitude) setLongitude(newState.longitude)
+      if (newState.zoom) setZoom(newState.zoom)
+      if (newState.tags) setTags(newState.tags)
+      if (newState.back) setBack(newState.back)
+      if (newState.q) setQ(newState.q)
+      if (newState.qCategories) setQCategories(newState.qCategories)
     },
-    [query, pathname, push]
+    [query.id, pathname, latitude, longitude, zoom, tags, q, qCategories, back]
   )
+
+  useEffect(() => {
+    setLatitude(mappedQuery.latitude)
+    setLongitude(mappedQuery.longitude)
+    setZoom(mappedQuery.zoom)
+    setTags(mappedQuery.tags)
+    setBack(mappedQuery.back)
+    setQ(mappedQuery.q)
+    setQCategories(mappedQuery.qCategories)
+  }, [mappedQuery])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
     const urlParams = new URLSearchParams(window.location.search)
     if (urlParams.get('qCategories')) return
     const parsedQuery = mapRawQueryToState({
-      q: urlParams.get('q') || undefined,
-      qCategories: urlParams.getAll('qCategories') || undefined,
-      tags: urlParams.getAll('tags') || undefined,
-      back: urlParams.get('back') || undefined,
       latitude: urlParams.get('latitude') || undefined,
       longitude: urlParams.get('longitude') || undefined,
       zoom: urlParams.get('zoom') || undefined,
+      tags: urlParams.getAll('tags') || undefined,
+      back: urlParams.get('back') || undefined,
+      q: urlParams.get('q') || undefined,
+      qCategories: urlParams.getAll('qCategories') || undefined,
     })
     updateUrlState({
       ...parsedQuery,
@@ -71,7 +125,17 @@ export const UrlStateProvider: FC = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  return <Provider value={[mappedQuery, updateUrlState]}>{children}</Provider>
+  const state = {
+    latitude,
+    longitude,
+    zoom,
+    tags: tags || [],
+    back,
+    q: q || '',
+    qCategories: qCategories || [],
+  }
+
+  return <Provider value={[state, updateUrlState]}>{children}</Provider>
 }
 
 export function urlSearchCategoriesToStateSearchCategories(

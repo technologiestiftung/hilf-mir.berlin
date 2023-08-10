@@ -1,4 +1,4 @@
-import { MAX_TEXT_SEARCH_STRING_LENGTH } from '@lib/UrlStateContext'
+import { truncateSearchTerm } from '@lib/facilityFilterUtil'
 import { removeNullAndUndefinedFromQuery } from '@lib/removeNullAndUndefinedFromQuery'
 
 type qCategoryType = 1 | 2 | 3 | 4 | 5
@@ -9,6 +9,7 @@ export interface PageQueryType {
   tags?: number[]
   q?: string
   qCategories?: qCategoryType[]
+  back?: string
 }
 
 const isNumber = (val: unknown): boolean =>
@@ -20,12 +21,6 @@ const parseSingleNumber = (
   if (!val) return null
   if (typeof val === 'string') return parseFloat(val) || null
   if (isNumber(val)) return Number(val)
-  return null
-}
-
-const parseString = (val: string | string[] | undefined): string | null => {
-  if (typeof val === 'string')
-    return val.slice(0, MAX_TEXT_SEARCH_STRING_LENGTH)
   return null
 }
 
@@ -63,6 +58,6 @@ export const mapRawQueryToState = (
     longitude: parseSingleNumber(rawQuery.longitude),
     zoom: parseSingleNumber(rawQuery.zoom),
     tags: parseNumbersArray(rawQuery.tags),
-    q: parseString(rawQuery.q),
-    qCategories: parseNumbersArray(rawQuery.qCategories),
+    q: truncateSearchTerm(rawQuery.q),
+    qCategories: parseNumbersArray(rawQuery.qCategories) as qCategoryType[],
   })
