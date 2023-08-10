@@ -59,7 +59,7 @@ export const UrlStateProvider: FC = ({ children }) => {
         qCategories,
         back,
         ...newState,
-        q: truncateSearchTerm(newState.q ?? q),
+        q: truncateSearchTerm(newState.q),
       })
       const paramsString = new URLSearchParams(
         state as Record<string, string>
@@ -75,15 +75,15 @@ export const UrlStateProvider: FC = ({ children }) => {
         '',
         as
       )
-      if (newState.latitude) setLatitude(newState.latitude)
-      if (newState.longitude) setLongitude(newState.longitude)
-      if (newState.zoom) setZoom(newState.zoom)
-      if (newState.tags) setTags(newState.tags)
-      if (newState.back) setBack(newState.back)
-      if (newState.q) setQ(newState.q)
-      if (newState.qCategories) setQCategories(newState.qCategories)
+      setLatitude(state.latitude)
+      setLongitude(state.longitude)
+      setZoom(state.zoom)
+      setTags(state.tags)
+      setBack(state.back)
+      setQ(state.q)
+      setQCategories(state.qCategories)
     },
-    [query.id, pathname, latitude, longitude, zoom, tags, q, qCategories, back]
+    [query.id, pathname, latitude, longitude, zoom, tags, qCategories, back]
   )
 
   useEffect(() => {
