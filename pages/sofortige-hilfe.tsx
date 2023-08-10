@@ -43,7 +43,6 @@ const Home: NextPage = () => {
         ) as keyof typeof texts
       ]
 
-  console.log(query)
   return (
     <>
       <Head>
