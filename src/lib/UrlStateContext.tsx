@@ -52,29 +52,23 @@ export const UrlStateProvider: FC = ({ children }) => {
   const updateUrlState = useCallback(
     (newState: PageQueryType) => {
       const path = typeof query.id === 'string' ? `/${query.id}` : pathname
-      const newQuery = {
+      const state = removeNullAndUndefinedFromQuery({
+        latitude,
+        longitude,
+        zoom,
+        tags,
+        qCategories,
+        back,
         ...newState,
-        ...(typeof newState.q !== 'undefined'
-          ? { q: truncateSearchTerm(newState.q) }
-          : {}),
-      }
-      const paramsString = new URLSearchParams({
-        ...removeNullAndUndefinedFromQuery({
-          latitude,
-          longitude,
-          zoom,
-          tags,
-          q,
-          qCategories,
-          back,
-          ...newState,
-        }),
-      } as Record<string, string>).toString()
+        q: truncateSearchTerm(newState.q) || q,
+      })
+      const paramsString = new URLSearchParams(
+        state as Record<string, string>
+      ).toString()
       const as = `${path}?${paramsString}`
       window.history.replaceState(
         {
           ...window.history.state,
-          ...newQuery,
           as,
           url: pathname,
         },
@@ -100,23 +94,14 @@ export const UrlStateProvider: FC = ({ children }) => {
     setBack(mappedQuery.back)
     setQ(mappedQuery.q)
     setQCategories(mappedQuery.qCategories)
-  }, [mappedQuery])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
     const urlParams = new URLSearchParams(window.location.search)
     if (urlParams.get('qCategories')) return
-    const parsedQuery = mapRawQueryToState({
-      latitude: urlParams.get('latitude') || undefined,
-      longitude: urlParams.get('longitude') || undefined,
-      zoom: urlParams.get('zoom') || undefined,
-      tags: urlParams.getAll('tags') || undefined,
-      back: urlParams.get('back') || undefined,
-      q: urlParams.get('q') || undefined,
-      qCategories: urlParams.getAll('qCategories') || undefined,
-    })
     updateUrlState({
-      ...parsedQuery,
       qCategories: stateSearchCategoriesToUrlSearchCategories({
         categorySelfHelp: true,
         categoryAdvising: true,
