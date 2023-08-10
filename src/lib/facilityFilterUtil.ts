@@ -46,7 +46,7 @@ export const getFilterStatus: GetFilterStatusType = ({
 const MAX_TEXT_SEARCH_STRING_LENGTH = 100
 export function truncateSearchTerm(searchTerm: unknown): string {
   if (typeof searchTerm !== 'string') return ''
-  return encodeURIComponent(searchTerm.slice(0, MAX_TEXT_SEARCH_STRING_LENGTH))
+  return searchTerm.slice(0, MAX_TEXT_SEARCH_STRING_LENGTH)
 }
 
 export const isFaclilityActive = ({
