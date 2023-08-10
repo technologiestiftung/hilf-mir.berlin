@@ -59,7 +59,7 @@ export const UrlStateProvider: FC = ({ children }) => {
         qCategories,
         back,
         ...newState,
-        q: newState.q ? truncateSearchTerm(newState.q) : q,
+        q: truncateSearchTerm(newState.q ?? q),
       })
       const paramsString = new URLSearchParams(
         state as Record<string, string>
