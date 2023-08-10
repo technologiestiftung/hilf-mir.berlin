@@ -5,11 +5,12 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from 'react'
 import { mapRawQueryToState, PageQueryType } from './mapRawQueryToState'
 import { truncateSearchTerm } from './facilityFilterUtil'
-import { removeFalsyFromQuery } from './removeNullAndUndefinedFromQuery'
+import { removeFalsyFromQuery } from './removeFalsyFromQuery'
 
 type ParsedSearchTermCategoriesType = {
   categorySelfHelp: boolean
@@ -33,6 +34,7 @@ export const useUrlState = (): [PageQueryType, SetUrlStateHandlerType] =>
 
 export const UrlStateProvider: FC = ({ children }) => {
   const { query, pathname } = useRouter()
+  const isInitalized = useRef(false)
   const mappedQuery = mapRawQueryToState(query)
   const [latitude, setLatitude] = useState<number | undefined>(
     mappedQuery.latitude
@@ -98,15 +100,17 @@ export const UrlStateProvider: FC = ({ children }) => {
   }, [query])
 
   useEffect(() => {
-    if (typeof window === 'undefined') return
+    if (typeof window === 'undefined' || isInitalized.current) return
     const urlParams = new URLSearchParams(window.location.search)
-    if (urlParams.get('qCategories')) return
-    updateUrlState({
-      qCategories: stateSearchCategoriesToUrlSearchCategories({
-        categorySelfHelp: true,
-        categoryAdvising: true,
-      }),
-    })
+    if (!urlParams.get('qCategories')) {
+      updateUrlState({
+        qCategories: stateSearchCategoriesToUrlSearchCategories({
+          categorySelfHelp: true,
+          categoryAdvising: true,
+        }),
+      })
+    }
+    isInitalized.current = true
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
