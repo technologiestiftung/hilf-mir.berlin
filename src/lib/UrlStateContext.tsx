@@ -60,9 +60,10 @@ export const UrlStateProvider: FC = ({ children }) => {
         tags,
         qCategories,
         back,
+        q,
         ...newState,
-        q: truncateSearchTerm(newState.q),
       })
+      state.q = truncateSearchTerm(state.q)
       const paramsString = new URLSearchParams(
         state as Record<string, string>
       ).toString()
@@ -85,7 +86,7 @@ export const UrlStateProvider: FC = ({ children }) => {
       setQ(state.q)
       setQCategories(state.qCategories)
     },
-    [query.id, pathname, latitude, longitude, zoom, tags, qCategories, back]
+    [query.id, pathname, latitude, longitude, zoom, tags, qCategories, back, q]
   )
 
   useEffect(() => {
@@ -103,12 +104,19 @@ export const UrlStateProvider: FC = ({ children }) => {
     if (typeof window === 'undefined' || isInitalized.current) return
     const urlParams = new URLSearchParams(window.location.search)
     if (!urlParams.get('qCategories')) {
-      updateUrlState({
+      const query = mapRawQueryToState({
+        latitude: urlParams.get('latitude') || undefined,
+        longitude: urlParams.get('longitude') || undefined,
+        zoom: urlParams.get('zoom') || undefined,
+        tags: urlParams.getAll('tags')?.join(',') || undefined,
+        back: urlParams.get('back') || undefined,
+        q: urlParams.get('q') || undefined,
         qCategories: stateSearchCategoriesToUrlSearchCategories({
           categorySelfHelp: true,
           categoryAdvising: true,
-        }),
+        })?.join(','),
       })
+      updateUrlState(query)
     }
     isInitalized.current = true
     // eslint-disable-next-line react-hooks/exhaustive-deps
