@@ -43,7 +43,8 @@
     "./pages/**/*.ts",
     "./pages/**/*.tsx",
     "./scripts/createFakeGristData.ts",
-    "./middleware.ts"
+    "./middleware.ts",
+    "./scripts/filter-railway-data.ts"
   ],
   "exclude": [
     "node_modules",
@@ -57,7 +58,9 @@
   "ts-node": {
     "compilerOptions": {
       "target": "es2019",
-      "lib": ["es2019"],
+      "lib": [
+        "es2019"
+      ],
       "module": "Node16",
     }
   }
