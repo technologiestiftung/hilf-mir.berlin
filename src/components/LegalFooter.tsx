@@ -2,9 +2,12 @@ import { useTexts } from '@lib/TextsContext'
 import { FC } from 'react'
 import Link from 'next/link'
 import classNames from '@lib/classNames'
+import { useRouter } from 'next/router'
 
 export const LegalFooter: FC = () => {
   const texts = useTexts()
+  const { query } = useRouter()
+
   return (
     <>
       <footer className={classNames(`border-t border-gray-20`)}>
@@ -25,7 +28,10 @@ export const LegalFooter: FC = () => {
             )}
           >
             <Link
-              href="/info"
+              href={{
+                pathname: '/info',
+                query,
+              }}
               className={classNames(
                 `underline transition-colors hover:text-primary`,
                 `focus:outline-none focus:ring-2 focus:ring-primary`,

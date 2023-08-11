@@ -34,6 +34,7 @@ import {
   getActiveLabelGroups,
   isFaclilityActive,
 } from '@lib/facilityFilterUtil'
+import { useActiveIdsBySearchTerm } from '@lib/hooks/useActiveIdsBySearchTerm'
 
 interface MapType {
   markers?: MinimalRecordType[]
@@ -92,6 +93,8 @@ export const FacilitiesMap: FC<MapType> = ({
   const labels = useFiltersWithActiveProp()
 
   const [urlState, setUrlState] = useUrlState()
+  const joinedLabelIds = urlState.tags?.join('-')
+  const activeIdsBySearchTerm = useActiveIdsBySearchTerm()
 
   const id = typeof query.id === 'string' ? parseInt(query.id, 10) : undefined
   const currentFacilityIdPageIsSpiderfied =
@@ -183,15 +186,13 @@ export const FacilitiesMap: FC<MapType> = ({
     if (!map || !markers || !mapLayersLoaded) return
     const { activeTopcisLabels, activeTargetLabels } =
       getActiveLabelGroups(labels)
-    const isFilteredByTopic = activeTopcisLabels.length > 0
-    const isFilteredByTarget = activeTargetLabels.length > 0
     markers.forEach((marker) => {
       const active = isFaclilityActive({
+        facilityId: marker.id,
         facilityLabels: marker.labels,
         activeTopcisLabels,
         activeTargetLabels,
-        isFilteredByTopic,
-        isFilteredByTarget,
+        activeIdsBySearchTerm: activeIdsBySearchTerm.ids,
       })
       map.setFeatureState(
         {
@@ -201,7 +202,8 @@ export const FacilitiesMap: FC<MapType> = ({
         { active }
       )
     })
-  }, [map, markers, urlState.tags?.join('-'), mapLayersLoaded])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map, markers, joinedLabelIds, mapLayersLoaded, activeIdsBySearchTerm.key])
 
   useEffect(() => {
     if (!map) return
@@ -397,7 +399,7 @@ export const FacilitiesMap: FC<MapType> = ({
   useEffect(() => {
     unspiderfy()
     updateFilteredFacilities()
-  }, [activeTags, markers, updateFilteredFacilities, query.id])
+  }, [activeTags, markers, updateFilteredFacilities, query.id, unspiderfy])
 
   return (
     <>

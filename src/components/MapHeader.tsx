@@ -1,6 +1,5 @@
 import classNames from '@lib/classNames'
 import { useTexts } from '@lib/TextsContext'
-import { useUrlState } from '@lib/UrlStateContext'
 import { FC } from 'react'
 import { IconButtonLink } from './IconButton'
 import { House } from './icons/House'
@@ -16,7 +15,6 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
   setFilterSidebarIsOpened,
   listViewOpen,
 }) => {
-  const [urlState] = useUrlState()
   const texts = useTexts()
 
   return (
@@ -32,7 +30,7 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
       <IconButtonLink
         pathName="/"
         className={classNames(
-          'flex border-r-0 md:border-r',
+          'flex border',
           `fixed lg:left-sidebarW ml-4 top-4 z-30`,
           !listViewOpen && `shadow-md shadow-black/5`
         )}
@@ -48,45 +46,29 @@ export const MapHeader: FC<MapHeaderPropsType> = ({
             : `2xl:translate-x-0`
         )}
       >
-        <IconButtonLink
-          pathName="/"
-          className={classNames(
-            'flex md:hidden border-r md:rounded-r focus:rounded',
-            !listViewOpen &&
-              '!border-r-trasparent !focus:border-r-gray-20 rounded-r-none'
-          )}
-          aria-label={texts.backToHome}
-        >
-          <House />
-        </IconButtonLink>
-
         <button
           onClick={() => setFilterSidebarIsOpened(!filterSidebarIsOpened)}
           className={classNames(
+            `transition motion-reduce:transition-none`,
             `flex items-center group relative border-gray-20`,
-            `focus:border-l focus:z-20 focus:rounded`,
-            `focus:outline-none focus:ring-2 focus:ring-primary`,
-            `focus:ring-offset-2 focus:ring-offset-white`
+            `focus-visible:border-l focus-visible:z-20 focus-visible:rounded`,
+            `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary`,
+            `focus-visible:ring-offset-2 focus-visible:ring-offset-white`,
+            filterSidebarIsOpened ? `opacity-0` : `opacity-100`
           )}
+          tabIndex={filterSidebarIsOpened ? -1 : 0}
         >
           <span
             className={classNames(
-              `border-t border-b border-r md:border-l border-gray-20 font-bold`,
-              listViewOpen && `border-l lg:border-l-0`,
+              `border border-gray-20 font-bold`,
               `px-4 py-2.5 h-12 text-xl`,
               `rounded group-focus:rounded`,
-              !listViewOpen && `rounded-l-none md:rounded-l`,
               !listViewOpen && `shadow-md shadow-black/5`,
               `text-left whitespace-nowrap items-center`,
               `transition-colors group-hover:bg-primary group-hover:text-white`,
-              urlState.tags && urlState.tags.length > 0
-                ? `bg-primary text-white`
-                : `bg-white`
+              `bg-white`
             )}
           >
-            {urlState.tags && urlState.tags.length > 0
-              ? `${urlState.tags.length} `
-              : ''}
             {texts.filterLabel}
           </span>
         </button>

@@ -1,6 +1,7 @@
 import classNames from '@lib/classNames'
 import { useUrlState } from '@lib/UrlStateContext'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { FC } from 'react'
 
 interface IconButtonCommonProps {
@@ -52,9 +53,11 @@ export const IconButtonLink: FC<IconButtonLinkPropsType> = ({
   tabIndex = 0,
 }) => {
   const [urlState] = useUrlState()
+  const { asPath } = useRouter()
+  const query = { ...urlState, back: asPath.split('?')[0] }
   return (
     <Link
-      href={{ pathname: pathName, query: { ...urlState } }}
+      href={{ pathname: pathName, query }}
       tabIndex={tabIndex}
       className={classNames(className, ...commonClasses)}
       aria-label={ariaLabel}

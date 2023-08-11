@@ -118,6 +118,15 @@ const defaultValue = {
   disclaimerContent: '',
   moreInfos: '',
   noTargetPreferenceButtonText: '',
+  textSearchLabel: '',
+  textSearchPlaceholder: '',
+  textSearchCategorySelfHelp: '',
+  textSearchCategoryAdvising: '',
+  textSearchCategoryClinics: '',
+  textSearchCategoryOnlineOffers: '',
+  textSearchCategoryDisctrictOfficeHelp: '',
+  optionalFurtherSearchIntroText: '',
+  filtersButtonLoading: '',
 }
 
 export type TextsMapType = typeof defaultValue

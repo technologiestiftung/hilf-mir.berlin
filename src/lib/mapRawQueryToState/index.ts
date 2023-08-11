@@ -1,10 +1,15 @@
-import { removeNullAndUndefinedFromQuery } from '@lib/removeNullAndUndefinedFromQuery'
+import { truncateSearchTerm } from '@lib/facilityFilterUtil'
+import { removeFalsyFromQuery } from '@lib/removeFalsyFromQuery'
 
+type qCategoryType = 1 | 2 | 3 | 4 | 5
 export interface PageQueryType {
   latitude?: number
   longitude?: number
   zoom?: number
   tags?: number[]
+  q?: string
+  qCategories?: qCategoryType[]
+  back?: string
 }
 
 const isNumber = (val: unknown): boolean =>
@@ -48,9 +53,11 @@ const parseNumbersArray = (
 export const mapRawQueryToState = (
   rawQuery: Record<string, string | string[] | undefined>
 ): PageQueryType =>
-  removeNullAndUndefinedFromQuery({
+  removeFalsyFromQuery({
     latitude: parseSingleNumber(rawQuery.latitude),
     longitude: parseSingleNumber(rawQuery.longitude),
     zoom: parseSingleNumber(rawQuery.zoom),
     tags: parseNumbersArray(rawQuery.tags),
+    q: truncateSearchTerm(rawQuery.q),
+    qCategories: parseNumbersArray(rawQuery.qCategories) as qCategoryType[],
   })
