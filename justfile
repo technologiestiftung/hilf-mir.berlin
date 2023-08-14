@@ -6,7 +6,7 @@ default:
 	just --list --verbose
 
 json-to-geojson:
-	npx tsx scripts/json-to-geojson-stops.ts > data/stops.geo.json
+	npx tsx scripts/json-to-geojson-stops.ts
 
 filter-railway-data:
 	npx tsx scripts/filter-railway-data.ts
