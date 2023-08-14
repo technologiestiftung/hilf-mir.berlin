@@ -34,48 +34,28 @@ export const useUrlState = (): [PageQueryType, SetUrlStateHandlerType] =>
 export const UrlStateProvider: FC = ({ children }) => {
   const { query, pathname } = useRouter()
   const mappedQuery = mapRawQueryToState(query)
-  const [latitude, setLatitude] = useState<number | undefined>(
-    mappedQuery.latitude
-  )
-  const [longitude, setLongitude] = useState<number | undefined>(
-    mappedQuery.longitude
-  )
-  const [zoom, setZoom] = useState<number | undefined>(mappedQuery.zoom)
-  const [tags, setTags] = useState<number[] | undefined>(mappedQuery.tags)
-  const [back, setBack] = useState<string | undefined>(mappedQuery.back)
-  const [q, setQ] = useState<string | undefined>(mappedQuery.q)
-  const [qCategories, setQCategories] = useState<
-    PageQueryType['qCategories'] | undefined
-  >(mappedQuery.qCategories)
+  const [latitude, setLatitude] = useState(mappedQuery.latitude)
+  const [longitude, setLongitude] = useState(mappedQuery.longitude)
+  const [zoom, setZoom] = useState(mappedQuery.zoom)
+  const [tags, setTags] = useState(mappedQuery.tags)
+  const [back, setBack] = useState(mappedQuery.back)
+  const [q, setQ] = useState(mappedQuery.q)
+  const [qCategories, setQCategories] = useState(mappedQuery.qCategories)
 
-  const updateUrlState = useCallback(
-    (newState: PageQueryType) => {
-      const path = typeof query.id === 'string' ? `/${query.id}` : pathname
-      const state = removeFalsyFromQuery({
-        latitude,
-        longitude,
-        zoom,
-        tags,
-        qCategories,
-        back,
-        q,
-        ...newState,
-      })
-      state.q = truncateSearchTerm(state.q)
-      const paramsString = new URLSearchParams(
-        state as Record<string, string>
-      ).toString()
-      const as = [path, paramsString].filter(Boolean).join('?')
-      window.history.replaceState(
-        {
-          ...window.history.state,
-          ...state,
-          as,
-          url: as,
-        },
-        '',
-        as
-      )
+  // GET A COMBINED STATE OBJECT WITH APPLIED DEFAULTS
+  const state = getFormattedUrlStateWithDefaults({
+    latitude,
+    longitude,
+    zoom,
+    tags,
+    back,
+    q,
+    qCategories,
+  })
+
+  // UTILITY FUNCTION TO UPDATE ALL REACT STATES
+  const updateReactUrlState = useCallback(
+    (state: PageQueryType) => {
       setLatitude(state.latitude)
       setLongitude(state.longitude)
       setZoom(state.zoom)
@@ -84,50 +64,52 @@ export const UrlStateProvider: FC = ({ children }) => {
       setQ(state.q)
       setQCategories(state.qCategories)
     },
-    [query.id, pathname, latitude, longitude, zoom, tags, qCategories, back, q]
+    [setLatitude, setLongitude, setZoom, setTags, setBack, setQ, setQCategories]
   )
 
-  useEffect(() => {
-    setLatitude(mappedQuery.latitude)
-    setLongitude(mappedQuery.longitude)
-    setZoom(mappedQuery.zoom)
-    setTags(mappedQuery.tags)
-    setBack(mappedQuery.back)
-    setQ(mappedQuery.q)
-    setQCategories(mappedQuery.qCategories)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query])
+  // UTILITY FUNCTION TO UPDATE URL STATE (Passed down the context as a setter)
+  const updateUrlState = useCallback(
+    (newState: PageQueryType) => {
+      const path = typeof query.id === 'string' ? `/${query.id}` : pathname
 
+      const fullNewState = removeFalsyFromQuery({
+        ...state,
+        ...newState,
+      })
+      fullNewState.q = truncateSearchTerm(fullNewState.q)
+
+      updateStateWindowLocation(path, fullNewState)
+      updateReactUrlState(fullNewState)
+    },
+    [query.id, pathname, state, updateReactUrlState]
+  )
+
+  // UPDATE REACT STATE ON NEXTJS ROUTER QUERY CHANGE
+  useEffect(
+    () => updateReactUrlState(mappedQuery),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [query]
+  )
+
+  // UPADTE URL WITH DEFAULTS ON INITIAL LOAD AND PAGE CHANGE
   useEffect(() => {
     if (typeof window === 'undefined') return
-    const urlParams = new URLSearchParams(window.location.search)
-    if (!urlParams.get('qCategories')) {
-      const query = mapRawQueryToState({
-        latitude: urlParams.get('latitude') || undefined,
-        longitude: urlParams.get('longitude') || undefined,
-        zoom: urlParams.get('zoom') || undefined,
-        tags: urlParams.getAll('tags')?.join(',') || undefined,
-        back: urlParams.get('back') || undefined,
-        q: urlParams.get('q') || undefined,
+
+    const urlStateFromWindowLocation = getUrlStateFromWindowLocation()
+    const allCatergoriesAreUnselected =
+      !urlStateFromWindowLocation.qCategories?.length
+
+    if (allCatergoriesAreUnselected) {
+      updateUrlState({
+        ...urlStateFromWindowLocation,
         qCategories: stateSearchCategoriesToUrlSearchCategories({
           categorySelfHelp: true,
           categoryAdvising: true,
-        })?.join(','),
+        }),
       })
-      updateUrlState(query)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query.id, pathname])
-
-  const state = {
-    latitude,
-    longitude,
-    zoom,
-    tags: tags || [],
-    back,
-    q: q || '',
-    qCategories: qCategories || [],
-  }
 
   return <Provider value={[state, updateUrlState]}>{children}</Provider>
 }
@@ -156,4 +138,56 @@ export function stateSearchCategoriesToUrlSearchCategories(
     searchTermCategories.categoryDistrictOfficeHelp && 4,
     searchTermCategories.categoryOnlineOffers && 5,
   ].filter(Boolean) as PageQueryType['qCategories']
+}
+
+function getUrlStateFromWindowLocation(): PageQueryType {
+  const urlParams = new URLSearchParams(window.location.search)
+  return mapRawQueryToState({
+    latitude: urlParams.get('latitude') || undefined,
+    longitude: urlParams.get('longitude') || undefined,
+    zoom: urlParams.get('zoom') || undefined,
+    tags: urlParams.getAll('tags')?.join(',') || undefined,
+    back: urlParams.get('back') || undefined,
+    q: urlParams.get('q') || undefined,
+    qCategories: urlParams.getAll('qCategories')?.join(',') || undefined,
+  })
+}
+
+function getFormattedUrlStateWithDefaults({
+  latitude,
+  longitude,
+  zoom,
+  tags,
+  back,
+  q,
+  qCategories,
+}: PageQueryType): PageQueryType {
+  return {
+    latitude,
+    longitude,
+    zoom,
+    tags: tags || [],
+    back,
+    q: q || '',
+    qCategories: qCategories || [],
+  }
+}
+
+function updateStateWindowLocation(path: string, state: PageQueryType): void {
+  const paramsString = new URLSearchParams(
+    state as Record<string, string>
+  ).toString()
+
+  const as = [path, paramsString].filter(Boolean).join('?')
+
+  window.history.replaceState(
+    {
+      ...window.history.state,
+      ...state,
+      as,
+      url: as,
+    },
+    '',
+    as
+  )
 }
