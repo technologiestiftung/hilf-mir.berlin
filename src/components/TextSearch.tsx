@@ -152,7 +152,7 @@ export const getCategoriesTexts = (
     categoryAdvising: texts.textSearchCategoryAdvising,
     categoryClinics: texts.textSearchCategoryClinics,
     categoryOnlineOffers: texts.textSearchCategoryOnlineOffers,
-    categoryDistrictOfficeHelp: texts.textSearchcategoryDistrictOfficeHelp,
+    categoryDistrictOfficeHelp: texts.textSearchCategoryDistrictOfficeHelp,
   }
 }
 
