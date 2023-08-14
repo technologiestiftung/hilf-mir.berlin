@@ -15,7 +15,7 @@ type ParsedSearchTermCategoriesType = {
   categorySelfHelp: boolean
   categoryAdvising: boolean
   categoryClinics: boolean
-  categoryDisctrictOfficeHelp: boolean
+  categoryDistrictOfficeHelp: boolean
   categoryOnlineOffers: boolean
 }
 
@@ -139,7 +139,7 @@ export function urlSearchCategoriesToStateSearchCategories(
     categorySelfHelp: !!qCategories?.includes(1),
     categoryAdvising: !!qCategories?.includes(2),
     categoryClinics: !!qCategories?.includes(3),
-    categoryDisctrictOfficeHelp: !!qCategories?.includes(4),
+    categoryDistrictOfficeHelp: !!qCategories?.includes(4),
     categoryOnlineOffers: !!qCategories?.includes(5),
   }
 }
@@ -153,7 +153,7 @@ export function stateSearchCategoriesToUrlSearchCategories(
     searchTermCategories.categorySelfHelp && 1,
     searchTermCategories.categoryAdvising && 2,
     searchTermCategories.categoryClinics && 3,
-    searchTermCategories.categoryDisctrictOfficeHelp && 4,
+    searchTermCategories.categoryDistrictOfficeHelp && 4,
     searchTermCategories.categoryOnlineOffers && 5,
   ].filter(Boolean) as PageQueryType['qCategories']
 }

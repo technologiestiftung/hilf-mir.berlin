@@ -2,7 +2,7 @@ import { TableRowType } from '@common/types/gristData'
 import {
   getActiveLabelGroups,
   getFilterStatus,
-  isFaclilityActive,
+  isFacilityActive,
 } from '@lib/facilityFilterUtil'
 import { useEffect, useState } from 'react'
 import { useFiltersWithActiveProp } from './useFiltersWithActiveProp'
@@ -28,13 +28,13 @@ export const useFilteredFacilitiesCount = (
   )
 
   useEffect(() => {
-    const { activeTopcisLabels, activeTargetLabels } =
+    const { activeTopicsLabels, activeTargetLabels } =
       getActiveLabelGroups(labels)
 
     const { isNotFilteredAtAll } = getFilterStatus({
       activeIdsBySearchTerm: activeIdsBySearchTerm.ids,
       activeTargetLabels,
-      activeTopcisLabels,
+      activeTopicsLabels,
     })
 
     if (isNotFilteredAtAll) {
@@ -44,11 +44,11 @@ export const useFilteredFacilitiesCount = (
 
     const filteredFacilities = facilitiesWithOnlyLabels.filter(
       ([id, recordLabels]) =>
-        isFaclilityActive({
+        isFacilityActive({
           facilityLabels: recordLabels,
           facilityId: id,
           activeTargetLabels: activeTargetLabels,
-          activeTopcisLabels: activeTopcisLabels,
+          activeTopicsLabels: activeTopicsLabels,
           activeIdsBySearchTerm: activeIdsBySearchTerm.ids,
         })
     )

@@ -30,10 +30,7 @@ import { useInitialViewport } from '@lib/hooks/useInitialViewport'
 import { useMapHighlightMarker } from '@lib/hooks/useMapHighlightMarker'
 import { useMaplibreMap } from '@lib/hooks/useMaplibreMap'
 import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
-import {
-  getActiveLabelGroups,
-  isFaclilityActive,
-} from '@lib/facilityFilterUtil'
+import { getActiveLabelGroups, isFacilityActive } from '@lib/facilityFilterUtil'
 import { useActiveIdsBySearchTerm } from '@lib/hooks/useActiveIdsBySearchTerm'
 
 interface MapType {
@@ -184,13 +181,13 @@ export const FacilitiesMap: FC<MapType> = ({
 
   const updateFilteredFacilities = useCallback(() => {
     if (!map || !markers || !mapLayersLoaded) return
-    const { activeTopcisLabels, activeTargetLabels } =
+    const { activeTopicsLabels, activeTargetLabels } =
       getActiveLabelGroups(labels)
     markers.forEach((marker) => {
-      const active = isFaclilityActive({
+      const active = isFacilityActive({
         facilityId: marker.id,
         facilityLabels: marker.labels,
-        activeTopcisLabels,
+        activeTopicsLabels,
         activeTargetLabels,
         activeIdsBySearchTerm: activeIdsBySearchTerm.ids,
       })

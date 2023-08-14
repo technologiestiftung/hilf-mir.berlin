@@ -11,7 +11,7 @@ type CategoriesType = Partial<{
   categoryAdvising: boolean
   categoryClinics: boolean
   categoryOnlineOffers: boolean
-  categoryDisctrictOfficeHelp: boolean
+  categoryDistrictOfficeHelp: boolean
 }>
 interface StateType {
   text: string
@@ -152,7 +152,7 @@ export const getCategoriesTexts = (
     categoryAdvising: texts.textSearchCategoryAdvising,
     categoryClinics: texts.textSearchCategoryClinics,
     categoryOnlineOffers: texts.textSearchCategoryOnlineOffers,
-    categoryDisctrictOfficeHelp: texts.textSearchCategoryDisctrictOfficeHelp,
+    categoryDistrictOfficeHelp: texts.textSearchcategoryDistrictOfficeHelp,
   }
 }
 

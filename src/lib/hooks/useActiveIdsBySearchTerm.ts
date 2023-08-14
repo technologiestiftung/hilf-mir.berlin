@@ -79,7 +79,7 @@ function categoriesToFilterString(
   return [
     categoriesState.categoryAdvising && 'Beratung',
     categoriesState.categoryClinics && 'Klinik',
-    categoriesState.categoryDisctrictOfficeHelp && 'Amt',
+    categoriesState.categoryDistrictOfficeHelp && 'Amt',
     categoriesState.categoryOnlineOffers && 'Online',
     categoriesState.categorySelfHelp && 'Selbsthilfe',
   ]
