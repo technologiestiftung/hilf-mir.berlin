@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, useCallback, useEffect, useState } from 'react'
 import { FacilitiesMap } from './Map'
 import classNames from '@lib/classNames'
 import { useRouter } from 'next/router'
@@ -18,6 +18,7 @@ import { Arrow } from './icons/Arrow'
 import { useIsMobile } from '@lib/hooks/useIsMobile'
 
 const SCROLL_THRESHOLD = 300
+const LARGE_SCREEN_BREAKPOINT_MIN_WIDTH = 1920
 
 export const MapLayout: FC<{
   records: MinimalRecordType[]
@@ -71,6 +72,30 @@ export const MapLayout: FC<{
     if (!currentRecord) return
     setMapCenter([currentRecord.longitude, currentRecord.latitude])
   }, [query.id, records])
+
+  const updateSidebarVisibility = useCallback(
+    (evt: MediaQueryListEvent | boolean) => {
+      const isMatch = typeof evt === 'boolean' ? evt : evt?.matches || false
+      setFilterSidebarIsOpened(isMatch)
+    },
+    [setFilterSidebarIsOpened]
+  )
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const minWidth = LARGE_SCREEN_BREAKPOINT_MIN_WIDTH
+    updateSidebarVisibility(window.innerWidth > minWidth)
+    const windowWidthMediaQuery = window.matchMedia(
+      `(min-width: ${minWidth}px)`
+    )
+
+    windowWidthMediaQuery.addEventListener('change', updateSidebarVisibility)
+    return () =>
+      windowWidthMediaQuery.removeEventListener(
+        'change',
+        updateSidebarVisibility
+      )
+  }, [setFilterSidebarIsOpened, updateSidebarVisibility])
 
   return (
     <LabelsProvider value={labels}>
