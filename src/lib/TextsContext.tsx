@@ -124,7 +124,7 @@ const defaultValue = {
   textSearchCategoryAdvising: '',
   textSearchCategoryClinics: '',
   textSearchCategoryOnlineOffers: '',
-  textSearchcategoryDistrictOfficeHelp: '',
+  textSearchCategoryDistrictOfficeHelp: '',
   optionalFurtherSearchIntroText: '',
   filtersButtonLoading: '',
 }
