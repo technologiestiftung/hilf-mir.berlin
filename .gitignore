@@ -55,6 +55,7 @@ data/GTFS/README.md
 data/GTFS/routes.txt
 data/GTFS/shapes.txt
 data/GTFS/stop_times.txt
-
 data/GTFS/transfers.txt
 data/GTFS/trips.txt
+
+!data/stops.location_type_1.geo.json

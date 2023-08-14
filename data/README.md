@@ -31,7 +31,18 @@ csvjson data/GTFS/stops.txt > data/stops.json
 npx tsx scripts/json-to-geojson-stops.ts
 ```
 
-The file stops.location_type_1.geo.json contains all stops we need for our data layer in maptiler.
+This will produce several files:
+
+```plain
+stops.json
+stops.geo.json
+stops.location_type_0.geo.json
+stops.location_type_1.geo.json
+
+```
+
+
+The file `stops.location_type_1.geo.json` contains all stops we need for our data layer in maptiler.
 
 ---
 
