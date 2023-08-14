@@ -44,7 +44,7 @@
     "./pages/**/*.tsx",
     "./scripts/createFakeGristData.ts",
     "./middleware.ts",
-    "./scripts/filter-railway-data.ts"
+    "./scripts/*.ts",
   ],
   "exclude": [
     "node_modules",
