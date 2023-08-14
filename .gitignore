@@ -41,10 +41,7 @@ yarn-error.log*
 # cache data
 
 data/*.json
-!data/railways*.json
 
-.vscode/settings.json
-.vscode/spellright.dict
 data/GTFS/agency.txt
 data/GTFS/calendar_dates.txt
 data/GTFS/calendar.txt
@@ -59,3 +56,6 @@ data/GTFS/transfers.txt
 data/GTFS/trips.txt
 
 !data/stops.location_type_1.geo.json
+
+.vscode/spellright.dict
+.vscode/settings.json

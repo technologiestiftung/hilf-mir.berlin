@@ -1,56 +1,363 @@
 # HILF-MIR Berlin
 
-This repo hosts the code for the HILF-MIR Berlin - a website for finding psychological and health-related facilities in Berlin.
+This repo hosts the code for the [hilf-mir.berlin](https://www.hilf-mir.berlin/) - a website for finding psychological and health-related facilities in Berlin.
+
+
+<!-- @import "[TOC]" {cmd="toc" depthFrom=2 depthTo=6 orderedList=false} -->
+
+<!-- code_chunk_output -->
+
+- [HILF-MIR Berlin](#hilf-mir-berlin)
+  - [Tech stack](#tech-stack)
+    - [Setup](#setup)
+  - [Development](#development)
+  - [Grist](#grist)
+    - [Authentik](#authentik)
+  - [Contributors](#contributors)
+  - [Credits](#credits)
+
+<!-- /code_chunk_output -->
+
 
 ## Tech stack
 
 The project is built using the React framework [Next.js](https://nextjs.org/) and [TypeScript](https://www.typescriptlang.org/).
-
 The data of the facilities is stored in a [self-hosted Grist instance](https://github.com/technologiestiftung/grist-core).
+The frontend is deployed to [Vercel](https://vercel.com/) and the backend is currently running on one of our own servers. See the section [grist](#grist) for a working example of the backend.
+The map is provided by [maptiler.com](https://www.maptiler.com/)
 
-## Getting started
 
-### Requirements
 
-If you are contributing to this repository, you can simply fill in the required environment variables as per `.env.example` and you are connected to our (development) Grist instance.
+### Setup
 
-If you want to re-deploy the project, you will need an account at [getgrist.com](https://www.getgrist.com/) or your own self-hosted Grist instance. In this case make sure your table schema(s) in Grist and the calls to the Grist API are adjusted to your data.
+- Copy `.env.example` to `.env` and fill in the required environment variables as per `.env.example` to connect to your Grist instance.
+- Install your dependencies via `npm ci`
 
-In addition to Grist you need:
 
-- [Node.js](https://nodejs.org)
-- An account at [maptiler.com](https://www.maptiler.com/) along with a personal API key. This is because we display our basemaps using Maptiler. If you are re-deploying this project, you can change your basemap provider according to your preference.
+## Development
 
-### Developing
+- Start your grist instance
+- Create the tables. You can find an example sqlite database in `./docs/example.db` with test data and the right rows. 
+- Install dependencies via `npm ci` 
+- Create a file `.env.development.local` and/or `.env` and fill it according to `.env.example`. The environment variables will connect to your development Grist instance.
+- Create fake data in your grist instance for development `npx ts-node src/scripts/createFakeGristData.ts` 
+- Create your local cache. `npm run downloadCacheData` (will create json from your records under `./data/`)
+- Run `npm run dev` to get a development server running at [http://localhost:3000](http://localhost:3000)
 
-1. Install dependencies via `npm install`
-2. Create a file `.env.development.local` and `.env` and fill it according to `.env.example`. The environment variables will connect to our development Grist instance which currently contains fake data instead of real facilities data. This is because in development mode we want to have the expected amount of records (~300) while the real dataset is currently being collected.
-3. Run `npm run dev` to get a development server running at [http://localhost:3000](http://localhost:3000)
-
-> If you want to start the app with the production table data, please change the values of 
+If you want to start the app with the production table data, please change the values of 
 `.env.development.local` to point to the production table.
 
-## Deprecated (but still relevant) README
+## Grist
 
-> This repo started out as a small proof of concept, but is now hosting the code for the actual Wegweiser Berlin project. We are in the process of adjusting the README to this. Below you find the parts that are still referring to the proof of concept and havce not been updated yet.
+Here is a working example of a `docker-compose.yml` to run Grist. Note that we are running this on a single node docker swarm. You might need to adjust this. Since grist has no auth built in, we use [authentik](https://goauthentik.io/) (see below) for authentication. See [this guide](https://support.getgrist.com/install/saml/#example-authentik) hon how to connect both. 
 
-This project is a small proof-of-concept on how to use a [Grist](https://www.getgrist.com/) table and display its records in an external service, in this case a Next.js app. The table holds information about ~2700 _Kindertagesstätten_ in Berlin and is used an exemplary set of data.
+```yaml
+version: "3.9"
+services:
+  grist:
+    # even though it is bad practice to use the latest tag, we want the latest state. Last tag v0.7.9 is 4 month old. There has been so many changes since then.
+    # Other possibility would be to pull latest and rename the tag to mach some versioning we can use.
+    image: gristlabs/grist:latest
+    restart: always
+    # currently not needed with pynbox
+    # once gvisor is available in grist-core we can use it
+    # runtime: runsc
+    ports:
+      - published: 8080
+        target: 80
+        mode: host
+    volumes:
+      - grist:/persist
+      - /path/to/your/custom.css:/grist/static/custom.css
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [ node.role == manager ]
+    environment:
 
-The main goal of this project was to be able to edit the data in the Grist backend and have a separate frontend that displays the Kindertagesstätten on a map.
+      DEBUG: "1"
+      PORT: 80
+      APP_DOC_URL: https://$GRIST_DOMAIN
+      APP_HOME_URL: https://$GRIST_DOMAIN
+        # GRIST_SINGLE_ORG: docs
+      GRIST_ORG_IN_PATH: $GRIST_ORG_IN_PATH
+      GRIST_DOMAIN: $GRIST_DOMAIN
+      # GRIST_HOST: $GRIST_DOMAIN
+      # GRIST_DEFAULT_EMAIL: $GRIST_DEFAULT_EMAIL
+      GRIST_EXPERIMENTAL_PLUGINS: $GRIST_EXPERIMENTAL_PLUGINS
+      GRIST_SANDBOX_FLAVOR: $GRIST_SANDBOX_FLAVOR
+      GRIST_SESSION_SECRET: $GRIST_SESSION_SECRET
+      APP_STATIC_INCLUDE_CUSTOM_CSS: $APP_STATIC_INCLUDE_CUSTOM_CSS
 
-For rendering the map, a combination of [MapLibre GL JS](https://maplibre.org/maplibre-gl-js-docs/api/) (for the map, the markers and the interactions) and [maptiler](https://www.maptiler.com/) (for vector tiles) is used.
+      GRIST_SAML_IDP_CERTS: $GRIST_SAML_IDP_CERTS
+      GRIST_SAML_SP_KEY: $GRIST_SAML_SP_KEY
+      GRIST_SAML_SP_CERT: $GRIST_SAML_SP_CERT
+      GRIST_SAML_IDP_LOGIN: $GRIST_SAML_IDP_LOGIN
+      GRIST_SAML_IDP_LOGOUT: $GRIST_SAML_IDP_LOGOUT
+      GRIST_HIDE_UI_ELEMENTS: helpCenter,billing,templates
+      PYTHON_VERSION: $PYTHON_VERSION
+      PYTHON_VERSION_ON_CREATION: $PYTHON_VERSION_ON_CREATION
+      GRIST_FORCE_LOGIN: $GRIST_FORCE_LOGIN
+      GRIST_SAML_IDP_UNENCRYPTED: $GRIST_SAML_IDP_UNENCRYPTED
+      GRIST_SAML_SP_HOST: https://$GRIST_DOMAIN
+      PIPE_MODE: $PIPE_MODE
+      ALLOWED_WEBHOOK_DOMAINS: $ALLOWED_WEBHOOK_DOMAINS
+volumes:
+  grist:
+```
 
-> Note that you don't need to use maptiler if you prefer to not create an account. Open Street Maps provides free (raster) tiles that can be used instead.
+Here is an example .env for you to use:
 
-## Notes
+```plain
+GRIST_DOMAIN=
+GRIST_SESSION_SECRET=
+GRIST_SANDBOX_FLAVOR=
+GRIST_ORG_IN_PATH=
+APP_DOC_URL=
+APP_HOME_URL=
+PYTHON_VERSION=
+PYTHON_VERSION_ON_CREATION=
+GRIST_SAML_IDP_LOGIN=
+GRIST_SAML_IDP_LOGOUT=
+GRIST_SAML_IDP_CERTS=
+GRIST_SAML_SP_KEY=
+GRIST_SAML_SP_CERT=
+GRIST_EXPERIMENTAL_PLUGINS=
+GRIST_HIDE_UI_ELEMENTS=
+GRIST_FORCE_LOGIN=
+GRIST_SAML_IDP_UNENCRYPTED=
+GRIST_SAML_SP_HOST=
+PORT=
+```
 
-### Accessing the Grist API from a Next API route
 
-We need to make use of Next's [API route](https://nextjs.org/docs/api-routes/introduction) feature because we have to ensure that the Grist API key remains secret (it can be used for **posting, updating and deleting data** as well). With the custom API route at `/pages/api/grist.ts` we make sure that the Grist API itself is only accessed on our server side and not exposed to clients. Grist is indicating that they are working on building a more nuanced permissions concept for their API keys, which might make our workaround unnecessary in the future.
+### Authentik
 
-### The map cluster view
+Here is our authentik docker-compose.yml configuration.
 
-The code for creating the map clusters is mainly taken and adapted from [MapLibre's examples](https://maplibre.org/maplibre-gl-js-docs/example/cluster/). This is a quick proof-of-concept, so please excuse the `@ts-ignore`'s here and there.
+
+```yaml
+version: '3.4'
+
+services:
+  postgresql:
+    image: docker.io/library/postgres:12-alpine
+    restart: unless-stopped
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"
+        ]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 5s
+    volumes:
+      - database:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=${PG_PASS:?database password required}
+      - POSTGRES_USER=${PG_USER:-authentik}
+      - POSTGRES_DB=${PG_DB:-authentik}
+    # env_file:
+    #   - .env
+  redis:
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+    image: docker.io/library/redis:alpine
+    command: --save 60 1 --loglevel warning
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 3s
+    volumes:
+      - redis:/data
+  server:
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2022.9.0}
+    restart: unless-stopped
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+    command: server
+    environment:
+
+      AUTHENTIK_SECRET_KEY: $AUTHENTIK_SECRET_KEY
+      AUTHENTIK_ERROR_REPORTING__ENABLED: "true"
+      # ----- email
+      # SMTP Host Emails are sent to
+      AUTHENTIK_EMAIL__HOST: $AUTHENTIK_EMAIL__HOST
+      AUTHENTIK_EMAIL__PORT: $AUTHENTIK_EMAIL__PORT
+      # Optionally authenticate (don't add quotation marks to you password)
+      AUTHENTIK_EMAIL__USERNAME: $AUTHENTIK_EMAIL__USERNAME
+      AUTHENTIK_EMAIL__PASSWORD: $AUTHENTIK_EMAIL__PASSWORD
+      # Use StartTLS
+      AUTHENTIK_EMAIL__USE_TLS: $AUTHENTIK_EMAIL__USE_TLS
+      # Use SSL
+      AUTHENTIK_EMAIL__USE_SSL: $AUTHENTIK_EMAIL__USE_SSL
+      AUTHENTIK_EMAIL__TIMEOUT: 10
+      # Email address authentik will send from, should have a correct @domain
+      AUTHENTIK_EMAIL__FROM: $AUTHENTIK_EMAIL__FROM
+
+      GEOIPUPDATE_ACCOUNT_ID: $GEOIPUPDATE_ACCOUNT_ID
+      GEOIPUPDATE_LICENSE_KEY: $GEOIPUPDATE_LICENSE_KEY
+      AUTHENTIK_AUTHENTIK__GEOIP: /geoip/GeoLite2-City.mmdb
+
+      AUTHENTIK_PORT_HTTP: 9004
+      AUTHENTIK_PORT_HTTPS: 9444
+      AUTHENTIK_TAG: 2022.9.0
+      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_POSTGRESQL__HOST: postgresql
+      AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
+      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+      # AUTHENTIK_ERROR_REPORTING__ENABLED: "true"
+    volumes:
+      - media:/media
+      - custom-templates:/templates
+      - geoip:/geoip
+    # env_file:
+    #   - .env
+    ports:
+      - published: 9004
+        target: 9000
+
+        mode: host
+      - published: 9444
+        target: 9443
+
+        mode: host
+      # - "0.0.0.0:${AUTHENTIK_PORT_HTTP:-9004}:9000"
+      # - "0.0.0.0:${AUTHENTIK_PORT_HTTPS:-9444}:9443"
+  worker:
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2022.9.0}
+    restart: unless-stopped
+    command: worker
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+    environment:
+      AUTHENTIK_SECRET_KEY: $AUTHENTIK_SECRET_KEY
+      AUTHENTIK_ERROR_REPORTING__ENABLED: "true"
+      # ----- email
+      # SMTP Host Emails are sent to
+      AUTHENTIK_EMAIL__HOST: $AUTHENTIK_EMAIL__HOST
+      AUTHENTIK_EMAIL__PORT: $AUTHENTIK_EMAIL__PORT
+      # Optionally authenticate (don't add quotation marks to you password)
+      AUTHENTIK_EMAIL__USERNAME: $AUTHENTIK_EMAIL__USERNAME
+      AUTHENTIK_EMAIL__PASSWORD: $AUTHENTIK_EMAIL__PASSWORD
+      # Use StartTLS
+      AUTHENTIK_EMAIL__USE_TLS: $AUTHENTIK_EMAIL__USE_TLS
+      # Use SSL
+      AUTHENTIK_EMAIL__USE_SSL: $AUTHENTIK_EMAIL__USE_SSL
+      AUTHENTIK_EMAIL__TIMEOUT: ${AUTHENTIK_EMAIL__TIMEOUT:-10}
+      # Email address authentik will send from, should have a correct @domain
+      AUTHENTIK_EMAIL__FROM: $AUTHENTIK_EMAIL__FROM
+
+      GEOIPUPDATE_ACCOUNT_ID: $GEOIPUPDATE_ACCOUNT_ID
+      GEOIPUPDATE_LICENSE_KEY: $GEOIPUPDATE_LICENSE_KEY
+      AUTHENTIK_AUTHENTIK__GEOIP: /geoip/GeoLite2-City.mmdb
+
+      AUTHENTIK_PORT_HTTP: 9004
+      AUTHENTIK_PORT_HTTPS: 9444
+      AUTHENTIK_TAG: 2022.9.0
+      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_POSTGRESQL__HOST: postgresql
+      AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
+      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+      # AUTHENTIK_ERROR_REPORTING__ENABLED: "true"
+      # This is optional, and can be removed. If you remove this, the following will happen
+      # - The permissions for the /media folders aren't fixed, so make sure they are 1000:1000
+      # - The docker socket can't be accessed anymore
+    user: root
+    volumes:
+      - media:/media
+      - certs:/certs
+      - /var/run/docker.sock:/var/run/docker.sock
+      - custom-templates:/templates
+      - geoip:/geoip
+    # env_file:
+    #   - .env
+  geoipupdate:
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+    image: "maxmindinc/geoipupdate:latest"
+    volumes:
+      - "geoip:/usr/share/GeoIP"
+    environment:
+      GEOIPUPDATE_EDITION_IDS: "GeoLite2-City"
+      GEOIPUPDATE_FREQUENCY: "8"
+      GEOIPUPDATE_ACCOUNT_ID: $GEOIPUPDATE_ACCOUNT_ID
+      GEOIPUPDATE_LICENSE_KEY: $GEOIPUPDATE_LICENSE_KEY
+    # env_file:
+    #   - .env
+
+volumes:
+  database:
+    driver: local
+  redis:
+    driver: local
+  geoip:
+    driver: local
+  media:
+    driver: local
+  certs:
+    driver: local
+  custom-templates:
+    driver: local
+
+```
+
+And the .env for authentik.
+
+```plain
+PG_PASS=
+AUTHENTIK_SECRET_KEY=
+AUTHENTIK_ERROR_REPORTING__ENABLED=
+
+# ----- email
+
+# SMTP Host Emails are sent to
+AUTHENTIK_EMAIL__HOST=
+AUTHENTIK_EMAIL__PORT=
+# Optionally authenticate (don't add quotation marks to you password)
+AUTHENTIK_EMAIL__USERNAME=
+AUTHENTIK_EMAIL__PASSWORD=
+# Use StartTLS
+AUTHENTIK_EMAIL__USE_TLS=
+# Use SSL
+AUTHENTIK_EMAIL__USE_SSL=
+AUTHENTIK_EMAIL__TIMEOUT=
+# Email address authentik will send from, should have a correct @domain
+AUTHENTIK_EMAIL__FROM=
+
+GEOIPUPDATE_ACCOUNT_ID=
+GEOIPUPDATE_LICENSE_KEY=
+AUTHENTIK_AUTHENTIK__GEOIP=
+
+AUTHENTIK_PORT_HTTP=
+AUTHENTIK_PORT_HTTPS=
+AUTHENTIK_TAG= 
+```
 
 ## Contributors
 
