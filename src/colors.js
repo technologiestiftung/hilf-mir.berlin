@@ -20,8 +20,8 @@ module.exports = {
     '80': '#333333',
   },
   type: {
-    categorySelfHelp: '#834375',
-    categoryAdvising: '#91CE41',
+    categoryAdvising: '#834375',
+    categorySelfHelp: '#91CE41',
     categoryClinics: '#BC748B',
     categoryDistrictOfficeHelp: '#BC8746',
     categoryOnlineOffers: '#6969F3',

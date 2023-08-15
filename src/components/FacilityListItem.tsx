@@ -11,6 +11,7 @@ import { Arrow } from './icons/Arrow'
 import { Globe } from './icons/Globe'
 import { Phone } from './icons/Phone'
 import { ExternalLink } from './icons/ExternalLink'
+import FacilityType from './FacilityType'
 
 interface FacilityListItemType {
   facility: MinimalRecordType
@@ -30,6 +31,7 @@ export const FacilityListItem: FC<FacilityListItemType> = ({
     longitude: facility.longitude,
   })
   const phone: string | undefined = facility.phone?.split(',')[0]
+  const type = facility.type
 
   return (
     <Card
@@ -37,16 +39,24 @@ export const FacilityListItem: FC<FacilityListItemType> = ({
       title={facility.title}
       className={classNames('pt-9 pb-9', 'border-t-0 border-x-0', className)}
       header={
-        (distance || open) && (
-          <div className="flex text-lg gap-4">
-            {open && (
-              <small className="flex items-center text-success gap-2">
-                <span className="inline-block w-2 h-2 rounded-full bg-success"></span>
-                {texts.opened}
-              </small>
+        (distance || open || type) && (
+          <>
+            {(distance || type) && (
+              <div className="flex text-lg gap-4">
+                {type && <FacilityType type={type} />}
+                {distance && <small>{distance} km</small>}
+              </div>
             )}
-            {distance && <small>{distance} km</small>}
-          </div>
+
+            {open && (
+              <p className="flex text-lg gap-4">
+                <small className="flex items-center text-success gap-2">
+                  <span className="inline-block w-2 h-2 rounded-full bg-success"></span>
+                  {texts.opened}
+                </small>
+              </p>
+            )}
+          </>
         )
       }
       footer={

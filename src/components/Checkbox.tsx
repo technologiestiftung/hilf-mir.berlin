@@ -3,15 +3,15 @@ import React from 'react'
 
 interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
   id?: string
-  labelText?: string
+  children?: JSX.Element | JSX.Element[] | null
 }
 
 let idCounter = 0
 
 function Checkbox({
   id = `Checkbox-${idCounter++}`,
-  labelText,
   className,
+  children,
   ...props
 }: CheckboxProps): JSX.Element {
   const checkbox = (
@@ -28,11 +28,11 @@ function Checkbox({
       {...props}
     />
   )
-  if (!labelText) return checkbox
+  if (!children) return checkbox
   return (
-    <label className="flex gap-2 items-center mb-2">
+    <label className="flex gap-4 items-center mb-2">
       {checkbox}
-      {labelText}
+      {children}
     </label>
   )
 }

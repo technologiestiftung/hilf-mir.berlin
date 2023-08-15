@@ -32,8 +32,8 @@ import { useMaplibreMap } from '@lib/hooks/useMaplibreMap'
 import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
 import { getActiveLabelGroups, isFacilityActive } from '@lib/facilityFilterUtil'
 import { useActiveIdsBySearchTerm } from '@lib/hooks/useActiveIdsBySearchTerm'
-import colors from 'src/colors'
-import { getCategoryColorMatchQuery } from '@lib/facilityColorUtil'
+import colors from '../../colors'
+import { getCategoryColorMatchQuery } from '@lib/facilityTypeUtil'
 
 interface MapType {
   markers?: MinimalRecordType[]
