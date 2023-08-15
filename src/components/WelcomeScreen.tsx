@@ -15,7 +15,7 @@ export const WelcomeScreen: FC<{
   onShowOffers: () => void
 }> = ({ onShowOffers }) => {
   const texts = useTexts()
-  const { push } = useRouter()
+  const { push, query } = useRouter()
   const isMobile = useIsMobile()
   return (
     <div
@@ -82,7 +82,12 @@ export const WelcomeScreen: FC<{
                 size="large"
                 className="group"
                 icon={<Phone className={classNames('text-purple-500')} />}
-                onClick={() => void push(`/sofortige-hilfe`)}
+                onClick={() =>
+                  void push({
+                    pathname: '/sofortige-hilfe',
+                    query,
+                  })
+                }
               >
                 {texts.directHelpButtonText}
               </Button>

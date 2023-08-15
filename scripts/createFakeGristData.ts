@@ -83,6 +83,8 @@ const fakeData: Omit<TableRowType, 'id'>[] = Array.from(Array(300)).map(() => {
       Weitere_Offnungszeiten: '',
       Wichtige_Hinweise: '',
       Zusatz: '',
+      Typ: 'Beratung',
+      Kategorie: 'KJPD',
     } as TableRowType['fields'],
   }
 })

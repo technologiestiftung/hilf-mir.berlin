@@ -197,7 +197,7 @@ export const MapLayout: FC<{
                 className={classNames(
                   `sticky top-0 flex justify-between font-bold`,
                   `px-5 py-6 bg-white border-b border-gray-10`,
-                  `text-2xl items-center leading-tight`
+                  `text-2xl items-center leading-tight z-10`
                 )}
               >
                 {texts.filterLabel}
@@ -210,7 +210,10 @@ export const MapLayout: FC<{
               </h3>
               <div className="p-5">
                 <FiltersList
-                  recordsWithOnlyLabels={(records || []).map((r) => r.labels)}
+                  recordsWithOnlyLabels={(records || []).map((r) => [
+                    r.id,
+                    r.labels,
+                  ])}
                   onSubmit={() => setFilterSidebarIsOpened(false)}
                 />
               </div>

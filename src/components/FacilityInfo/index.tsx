@@ -124,7 +124,12 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
 
   return (
     <>
-      <BackButton href={{ pathname: `/map`, query: { ...urlState } }} />
+      <BackButton
+        href={{
+          pathname: `/map`,
+          query: { ...urlState, back: `/${facility.id}` },
+        }}
+      />
       <article className="flex flex-col h-full gap-8">
         <div className="px-5 pt-5">
           <h1 className="mb-2 text-2xl break-words hyphens-auto">

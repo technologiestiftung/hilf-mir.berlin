@@ -1,47 +1,65 @@
 import { TableRowType } from '@common/types/gristData'
 import {
   getActiveLabelGroups,
-  isFaclilityActive,
+  getFilterStatus,
+  isFacilityActive,
 } from '@lib/facilityFilterUtil'
 import { useEffect, useState } from 'react'
 import { useFiltersWithActiveProp } from './useFiltersWithActiveProp'
+import { useActiveIdsBySearchTerm } from './useActiveIdsBySearchTerm'
+
+export type RecordsWithOnlyLabelsType = [
+  id: TableRowType['id'],
+  labels: TableRowType['fields']['Schlagworte']
+]
 
 export const useFilteredFacilitiesCount = (
-  facilitiesWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
+  facilitiesWithOnlyLabels: RecordsWithOnlyLabelsType[]
 ): number => {
   const labels = useFiltersWithActiveProp()
   const concatenatedActiveLabelIds = labels
     .filter((label) => label.isActive)
     .map((label) => label.id)
     .join('-')
+  const activeIdsBySearchTerm = useActiveIdsBySearchTerm()
 
   const [filteredFacilities, setFilteredFacilities] = useState(
     facilitiesWithOnlyLabels
   )
 
   useEffect(() => {
-    const { activeTopcisLabels, activeTargetLabels } =
+    const { activeTopicsLabels, activeTargetLabels } =
       getActiveLabelGroups(labels)
 
-    const isFilteredByTopic = activeTopcisLabels.length > 0
-    const isFilteredByTarget = activeTargetLabels.length > 0
+    const { isNotFilteredAtAll } = getFilterStatus({
+      activeIdsBySearchTerm: activeIdsBySearchTerm.ids,
+      activeTargetLabels,
+      activeTopicsLabels,
+    })
+
+    if (isNotFilteredAtAll) {
+      setFilteredFacilities([])
+      return
+    }
 
     const filteredFacilities = facilitiesWithOnlyLabels.filter(
-      (recordLabels) => {
-        if (!isFilteredByTopic && !isFilteredByTarget) return true
-        return isFaclilityActive({
-          isFilteredByTopic,
-          isFilteredByTarget,
+      ([id, recordLabels]) =>
+        isFacilityActive({
           facilityLabels: recordLabels,
+          facilityId: id,
           activeTargetLabels: activeTargetLabels,
-          activeTopcisLabels: activeTopcisLabels,
+          activeTopicsLabels: activeTopicsLabels,
+          activeIdsBySearchTerm: activeIdsBySearchTerm.ids,
         })
-      }
     )
 
     setFilteredFacilities(filteredFacilities)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [concatenatedActiveLabelIds, facilitiesWithOnlyLabels])
+  }, [
+    concatenatedActiveLabelIds,
+    facilitiesWithOnlyLabels,
+    activeIdsBySearchTerm.key,
+  ])
 
   return filteredFacilities.length
 }

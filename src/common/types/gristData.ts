@@ -57,5 +57,7 @@ export interface TableRowType extends Record<string, unknown> {
     lat: number
     /** The facility's longitude */
     long: number
+    Kategorie: string
+    Typ: 'Beratung' | 'Klinik' | 'Amt' | 'Online' | 'Selbsthilfe'
   }
 }
