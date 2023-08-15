@@ -91,7 +91,7 @@ export const UrlStateProvider: FC = ({ children }) => {
     [query]
   )
 
-  // UPADTE URL WITH DEFAULTS ON INITIAL LOAD AND PAGE CHANGE
+  // UPDATE URL WITH DEFAULTS ON INITIAL LOAD AND PAGE CHANGE
   useEffect(() => {
     if (typeof window === 'undefined') return
 
