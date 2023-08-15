@@ -55,7 +55,7 @@ const Home: Page<HomePropsType> = ({ labels, recordsWithOnlyLabels }) => {
         />
         <meta
           name="keywords"
-          content="Hilfe,Beratung,Angst,Zwänge,Verzeiflung,Stimmen hören,Traurigkeit,Essverhalten,Einsamkeit,Beziehung zu anderen Menschen,Alkohol,Kiffen,Drogen,Glücksspiel,Gaming,Medikamente,LSTBIQ,Schwangerschaft,Sexuell übertragbare Infektionen,Körperliche Erkrankungen,Gewalterfahrungen"
+          content="Hilfe,Beratung,Angst,Zwänge,Verzeiflung,Stimmen hören,Traurigkeit,Essverhalten,Einsamkeit,Beziehung zu anderen Menschen,Alkohol,Kiffen,Drogen,Glücksspiel,Gaming,Medikamente,LSTBIQ,Schwangerschaft,Sexuell übertragbare Infektionen,Körperliche Erkrankungen,Gewalterfahrungen,Depression,Depressionen"
         />
         <meta name="robots" content="index, follow" />
         <meta name="revisit-after" content="30 days" />
