@@ -9,12 +9,14 @@ export const Label: FC<{
   className?: string
   onClick?: (id: number) => void
   isInteractive?: boolean
+  disabled?: boolean
 }> = ({
   label,
   onClick = () => undefined,
   isActive,
   className = '',
   isInteractive = true,
+  disabled = false,
 }) => {
   const Icon = icons[label.fields.icon as keyof typeof icons] || Fragment
   return (
@@ -24,20 +26,24 @@ export const Label: FC<{
         className={classNames(
           className,
           `py-1.5 text-lg flex gap-2 text-left leading-6 pl-2 pr-3 rounded`,
+          `transition motion-reduce:transition-none`,
           isActive &&
             isInteractive &&
+            !disabled &&
             `bg-primary border-primary text-white hover:bg-purple-400`,
-          (!isActive || !isInteractive) && ` border-gray-20`,
+          (!isInteractive || disabled) && `ring-1 ring-inset ring-gray-20`,
           !isActive &&
+            !disabled &&
             isInteractive &&
             'bg-purple-50 hover:bg-purple-200 text-purple-700',
-          isInteractive && [
-            `focus:outline-none focus:ring-2 focus:ring-primary`,
-            `focus:ring-offset-2 focus:ring-offset-white`,
-          ],
+          isInteractive &&
+            !disabled && [
+              `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary`,
+              `focus-visible:ring-offset-2 focus-visible:ring-offset-white`,
+            ],
           !isInteractive && `cursor-default`
         )}
-        disabled={!isInteractive}
+        disabled={!isInteractive || disabled}
       >
         {label.fields.icon && (
           <Icon

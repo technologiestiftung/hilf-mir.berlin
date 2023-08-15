@@ -7,12 +7,14 @@ interface FiltersTagsListPropType {
   onLabelClick?: (activeFilters: number[]) => void
   filters: FiltersWithActivePropType[]
   className?: string
+  disabled?: boolean
 }
 
 export const FiltersTagsList: FC<FiltersTagsListPropType> = ({
   onLabelClick,
   filters,
   className,
+  disabled = false,
 }) => {
   const [urlState] = useUrlState()
   const activeFilters = urlState.tags || []
@@ -21,6 +23,7 @@ export const FiltersTagsList: FC<FiltersTagsListPropType> = ({
     <>
       {filters.map((filter) => (
         <Label
+          disabled={disabled}
           label={filter}
           key={filter.id}
           isActive={filter.isActive}

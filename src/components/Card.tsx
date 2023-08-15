@@ -6,10 +6,12 @@ interface CardPropsType {
   header?: ReactNode
   footer?: ReactNode
   className?: string
+  id?: string
 }
 
 export const Card: FC<CardPropsType> = ({
   className = '',
+  id = '',
   title,
   header: headerContent,
   footer,
@@ -17,6 +19,7 @@ export const Card: FC<CardPropsType> = ({
 }) => {
   return (
     <div
+      id={id}
       className={classNames(
         'block',
         'flex flex-col gap-1 bg-white',

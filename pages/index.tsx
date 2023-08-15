@@ -4,19 +4,21 @@ import classNames from '@lib/classNames'
 import { WelcomeScreen } from '@components/WelcomeScreen'
 import { WelcomeFilters } from '@components/WelcomeFilters'
 import { useEffect, useState } from 'react'
-import { GristLabelType, TableRowType } from '@common/types/gristData'
+import { GristLabelType } from '@common/types/gristData'
 import { useIsMobile } from '@lib/hooks/useIsMobile'
 import { LegalFooter } from '@components/LegalFooter'
 import { Page } from '@common/types/nextPage'
 import { LabelsProvider } from '@lib/LabelsContext'
 import { loadData } from '@lib/loadData'
 import { Footer } from '@components/Footer'
+import { RecordsWithOnlyLabelsType } from '@lib/hooks/useFilteredFacilitiesCount'
 
 export const getStaticProps: GetStaticProps = async () => {
   const { texts, labels, records } = await loadData()
-  const recordsWithOnlyLabels = records.map(
-    (records) => records.fields.Schlagworte
-  )
+  const recordsWithOnlyLabels = records.map((record) => [
+    record.id,
+    record.fields.Schlagworte,
+  ])
   return {
     props: { texts, recordsWithOnlyLabels, labels },
     revalidate: 120,
@@ -24,7 +26,7 @@ export const getStaticProps: GetStaticProps = async () => {
 }
 
 interface HomePropsType {
-  recordsWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
+  recordsWithOnlyLabels: RecordsWithOnlyLabelsType[]
   labels: GristLabelType[]
 }
 

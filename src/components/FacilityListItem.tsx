@@ -33,6 +33,7 @@ export const FacilityListItem: FC<FacilityListItemType> = ({
 
   return (
     <Card
+      id={`facility-${facility.id}`}
       title={facility.title}
       className={classNames('pt-9 pb-9', 'border-t-0 border-x-0', className)}
       header={

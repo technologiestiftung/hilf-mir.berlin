@@ -4,38 +4,100 @@ import { MinimalRecordType } from './mapRecordToMinimum'
 interface GetFilteredFacilitiesPropType {
   facilities: MinimalRecordType[]
   labels: GristLabelType[]
+  activeIdsBySearchTerm: MinimalRecordType['id'][] | null
 }
 
-interface IsFaclilityActivePropType {
+interface isFacilityActivePropType {
   activeTargetLabels: GristLabelType[]
-  activeTopcisLabels: GristLabelType[]
+  activeTopicsLabels: GristLabelType[]
   facilityLabels: GristLabelType['id'][]
-  isFilteredByTarget: boolean
-  isFilteredByTopic: boolean
+  facilityId: MinimalRecordType['id']
+  activeIdsBySearchTerm: MinimalRecordType['id'][] | null
 }
 
-export const isFaclilityActive = ({
+type GetFilterStatusType = (props: {
+  activeIdsBySearchTerm: MinimalRecordType['id'][] | null
+  activeTargetLabels: GristLabelType[]
+  activeTopicsLabels: GristLabelType[]
+}) => {
+  isFilteredByTopic: boolean
+  isFilteredByTarget: boolean
+  isFilteredBySearchTerm: boolean
+  isNotFilteredAtAll: boolean
+}
+
+export const getFilterStatus: GetFilterStatusType = ({
+  activeIdsBySearchTerm,
   activeTargetLabels,
-  activeTopcisLabels,
-  isFilteredByTarget,
-  isFilteredByTopic,
+  activeTopicsLabels,
+}) => {
+  const isFilteredBySearchTerm = activeIdsBySearchTerm !== null
+  const isFilteredByTopic = activeTopicsLabels.length > 0
+  const isFilteredByTarget = activeTargetLabels.length > 0
+  return {
+    isFilteredByTopic,
+    isFilteredByTarget,
+    isFilteredBySearchTerm,
+    isNotFilteredAtAll:
+      !isFilteredByTopic && !isFilteredByTarget && !isFilteredBySearchTerm,
+  }
+}
+
+const MAX_TEXT_SEARCH_STRING_LENGTH = 100
+export function truncateSearchTerm(searchTerm: unknown): string {
+  if (typeof searchTerm !== 'string') return ''
+  return searchTerm.slice(0, MAX_TEXT_SEARCH_STRING_LENGTH)
+}
+
+export const isFacilityActive = ({
+  activeTargetLabels,
+  activeTopicsLabels,
   facilityLabels,
-}: IsFaclilityActivePropType): boolean => {
-  if (!isFilteredByTopic && !isFilteredByTarget) return true
+  facilityId,
+  activeIdsBySearchTerm,
+}: isFacilityActivePropType): boolean => {
+  const {
+    isNotFilteredAtAll,
+    isFilteredByTopic,
+    isFilteredByTarget,
+    isFilteredBySearchTerm,
+  } = getFilterStatus({
+    activeIdsBySearchTerm,
+    activeTargetLabels,
+    activeTopicsLabels,
+  })
+  if (isNotFilteredAtAll) return true
   const hasAllOfTheActiveTopics =
-    activeTopcisLabels?.every((tag) => facilityLabels.includes(tag.id)) || false
+    activeTopicsLabels?.every((tag) => facilityLabels.includes(tag.id)) || false
   const hasAnActiveTarget =
     (activeTargetLabels[0] &&
       facilityLabels.includes(activeTargetLabels[0].id)) ||
     false
+  const includesTextSearchTerm =
+    activeIdsBySearchTerm !== null && activeIdsBySearchTerm.includes(facilityId)
 
-  if (!isFilteredByTopic && isFilteredByTarget) return hasAnActiveTarget
-  if (isFilteredByTopic && !isFilteredByTarget) return hasAllOfTheActiveTopics
-  return hasAllOfTheActiveTopics && hasAnActiveTarget
+  if (!includesTextSearchTerm) return false
+
+  if (!isFilteredByTopic && !isFilteredBySearchTerm && isFilteredByTarget)
+    return hasAnActiveTarget
+  if (isFilteredByTopic && !isFilteredBySearchTerm && !isFilteredByTarget)
+    return hasAllOfTheActiveTopics
+  if (isFilteredByTopic && isFilteredBySearchTerm && !isFilteredByTarget)
+    return hasAllOfTheActiveTopics && includesTextSearchTerm
+  if (!isFilteredByTopic && isFilteredBySearchTerm && isFilteredByTarget)
+    return hasAnActiveTarget && includesTextSearchTerm
+  if (!isFilteredByTopic && isFilteredBySearchTerm && !isFilteredByTarget)
+    return includesTextSearchTerm
+  return hasAllOfTheActiveTopics && hasAnActiveTarget && includesTextSearchTerm
 }
 
-export const getActiveLabelGroups = (labels: GristLabelType[]) => ({
-  activeTopcisLabels: labels.filter(
+export const getActiveLabelGroups = (
+  labels: GristLabelType[]
+): {
+  activeTopicsLabels: GristLabelType[]
+  activeTargetLabels: GristLabelType[]
+} => ({
+  activeTopicsLabels: labels.filter(
     (f) => f.isActive && f.fields.group2 !== 'zielpublikum'
   ),
   activeTargetLabels: labels.filter(
@@ -46,19 +108,23 @@ export const getActiveLabelGroups = (labels: GristLabelType[]) => ({
 export const getFilteredFacilities = ({
   facilities,
   labels,
+  activeIdsBySearchTerm,
 }: GetFilteredFacilitiesPropType): MinimalRecordType[] => {
-  const { activeTopcisLabels, activeTargetLabels } =
+  const { activeTopicsLabels, activeTargetLabels } =
     getActiveLabelGroups(labels)
-  const isFilteredByTopic = activeTopcisLabels.length > 0
-  const isFilteredByTarget = activeTargetLabels.length > 0
-  if (!isFilteredByTopic && !isFilteredByTarget) return facilities
+  const { isNotFilteredAtAll } = getFilterStatus({
+    activeIdsBySearchTerm,
+    activeTargetLabels,
+    activeTopicsLabels,
+  })
+  if (isNotFilteredAtAll) return facilities
   return facilities.filter((facility) => {
-    return isFaclilityActive({
+    return isFacilityActive({
       facilityLabels: facility.labels,
-      activeTopcisLabels,
+      facilityId: facility.id,
+      activeTopicsLabels,
       activeTargetLabels,
-      isFilteredByTopic,
-      isFilteredByTarget,
+      activeIdsBySearchTerm,
     })
   })
 }

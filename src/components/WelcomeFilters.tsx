@@ -1,17 +1,17 @@
 import { useTexts } from '@lib/TextsContext'
 import { FC } from 'react'
 import { BackButton } from './BackButton'
-import { TableRowType } from '@common/types/gristData'
 import { FiltersList } from './FiltersList'
 import { useIsMobile } from '@lib/hooks/useIsMobile'
 import { LegalFooter } from './LegalFooter'
 import classNames from '@lib/classNames'
 import { TextLink } from './TextLink'
 import { Footer } from './Footer'
+import { RecordsWithOnlyLabelsType } from '@lib/hooks/useFilteredFacilitiesCount'
 
 export const WelcomeFilters: FC<{
   onGoBack: () => void
-  recordsWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
+  recordsWithOnlyLabels: RecordsWithOnlyLabelsType[]
 }> = ({ onGoBack, recordsWithOnlyLabels }) => {
   const texts = useTexts()
   const isMobile = useIsMobile()
