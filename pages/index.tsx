@@ -21,7 +21,6 @@ export const getStaticProps: GetStaticProps = async () => {
   ])
   return {
     props: { texts, recordsWithOnlyLabels, labels },
-    revalidate: 120,
   }
 }
 

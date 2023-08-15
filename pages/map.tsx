@@ -30,7 +30,6 @@ export const getStaticProps: GetStaticProps = async () => {
       records: recordsWithOnlyMinimum,
       labels,
     },
-    revalidate: 120,
   }
 }
 

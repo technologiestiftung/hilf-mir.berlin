@@ -14,7 +14,6 @@ export const getStaticProps: GetStaticProps = async () => {
   const texts = await getGristTexts()
   return {
     props: { texts },
-    revalidate: 120,
   }
 }
 
