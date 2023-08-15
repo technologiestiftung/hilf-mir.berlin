@@ -17,7 +17,7 @@ export const BackButton: FC<BackButtonPropsType> = (props) => {
   const content = (
     <>
       <Arrow orientation="left" className="scale-75" />
-      <span className="font-bold text-lg">{texts.backText}</span>
+      <span className="text-lg font-bold">{texts.backText}</span>
     </>
   )
   const commonProps = {
@@ -29,10 +29,10 @@ export const BackButton: FC<BackButtonPropsType> = (props) => {
     ),
     'aria-label': texts.backText,
   }
-  const isLink = 'href' in props && typeof props.href !== undefined
-  const isButton = 'onClick' in props && typeof props.onClick !== undefined
+  const isLink = 'href' in props && typeof props.href !== 'undefined'
+  const isButton = 'onClick' in props && typeof props.onClick !== 'undefined'
   return (
-    <div className="p-2 sticky bg-white top-0 z-20">
+    <div className="sticky top-0 z-20 p-2 bg-white">
       {isLink && !isButton && (
         <Link {...commonProps} {...props} href={props.href || ''}>
           {content}

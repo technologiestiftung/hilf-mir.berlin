@@ -39,5 +39,23 @@ yarn-error.log*
 *.tsbuildinfo
 
 # cache data
-data
+
+data/*.json
+
+data/GTFS/agency.txt
+data/GTFS/calendar_dates.txt
+data/GTFS/calendar.txt
+data/GTFS/frequencies.txt
+data/GTFS/levels.txt
+data/GTFS/pathways.txt
+data/GTFS/README.md
+data/GTFS/routes.txt
+data/GTFS/shapes.txt
+data/GTFS/stop_times.txt
+data/GTFS/transfers.txt
+data/GTFS/trips.txt
+
+!data/stops.location_type_1.geo.json
+
+.vscode/spellright.dict
 .vscode/settings.json
