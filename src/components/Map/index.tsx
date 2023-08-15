@@ -32,6 +32,8 @@ import { useMaplibreMap } from '@lib/hooks/useMaplibreMap'
 import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
 import { getActiveLabelGroups, isFacilityActive } from '@lib/facilityFilterUtil'
 import { useActiveIdsBySearchTerm } from '@lib/hooks/useActiveIdsBySearchTerm'
+import colors from 'src/colors'
+import { getCategoryColorMatchQuery } from '@lib/facilityColorUtil'
 
 interface MapType {
   markers?: MinimalRecordType[]
@@ -323,13 +325,8 @@ export const FacilitiesMap: FC<MapType> = ({
         paint: {
           'circle-radius': 10,
           'circle-stroke-width': 1,
-          'circle-stroke-color': '#FAFAFF',
-          'circle-color': [
-            'case',
-            ['boolean', ['feature-state', 'hover'], false],
-            '#999999',
-            '#773666',
-          ],
+          'circle-stroke-color': colors.white,
+          'circle-color': getCategoryColorMatchQuery(),
           'circle-stroke-opacity': opacityGlCondition,
           'circle-opacity': opacityGlCondition,
         },
