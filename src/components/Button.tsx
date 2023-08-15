@@ -1,5 +1,7 @@
+import { useUrlState } from '@lib/UrlStateContext'
 import classNames from '@lib/classNames'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { ParsedUrlQueryInput } from 'querystring'
 import { FC, ReactNode } from 'react'
 
@@ -8,7 +10,7 @@ interface ButtonType {
   scheme?: 'primary' | 'secondary' | 'link'
   size?: 'large' | 'medium' | 'small' | 'extrasmall'
   href?: string
-  query?: string | ParsedUrlQueryInput | null
+  query?: ParsedUrlQueryInput
   onClick?: () => void
   disabled?: boolean
   icon?: ReactNode
@@ -45,7 +47,7 @@ export const Button: FC<ButtonType> = ({
   scheme = 'secondary',
   size = 'medium',
   href,
-  query,
+  query: additionalQuery = {},
   onClick = () => undefined,
   className: additionalClassNames = '',
   disabled = false,
@@ -53,6 +55,9 @@ export const Button: FC<ButtonType> = ({
   tooltip,
   children,
 }) => {
+  const [urlState] = useUrlState()
+  const { asPath } = useRouter()
+  const query = { ...urlState, ...additionalQuery, back: asPath.split('?')[0] }
   const SIZE_CLASSES = getSizeClasses(size)
   const SCHEME_CLASSES = getSchemeClasses(scheme)
   const LAYOUT_CLASSES = classNames(
@@ -61,7 +66,7 @@ export const Button: FC<ButtonType> = ({
   )
 
   const SHARED_CLASSES = classNames(
-    'text-center',
+    'text-center group',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white',
     SIZE_CLASSES,
     SCHEME_CLASSES,
@@ -120,9 +125,10 @@ export const Button: FC<ButtonType> = ({
         {tooltip && (
           <span
             className={classNames(
-              `absolute -top-2 left-1/2 -translate-x-1/2 -translate-y-full`,
+              `absolute -top-2 left-1/2 -translate-x-1/2 -translate-y-full w-full`,
               `px-2 py-1 text-white bg-black opacity-0 pointer-events-none`,
-              `group-hover:opacity-100 transition-colors text-sm leading-tight`
+              `group-hover:opacity-100 text-sm leading-tight text-left`,
+              `transition-opacity motion-reduce:transition-none`
             )}
           >
             {tooltip}
