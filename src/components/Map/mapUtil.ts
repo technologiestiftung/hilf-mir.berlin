@@ -74,8 +74,8 @@ function getFacilitiesOnSameCoordsThanFirstOne(
     const coordinates = [feat.longitude, feat.latitude] as [number, number]
     const pointB = new LngLat(...coordinates)
     const dist = pointA.distanceTo(pointB)
-    const distance = Math.round(dist / 100) / 10
-    return distance < 0.1
+    const distance = dist
+    return distance < 1
   })
 }
 
