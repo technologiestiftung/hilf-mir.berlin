@@ -20,13 +20,14 @@ function FacilitySecondaryInfos({
     longitude: facility.longitude,
   })
   const type = facility.type
+  const isOnlineOffer = facility.type === 'Online'
 
   if (!open && !distance && !type) return null
   return (
     <p className="flex text-lg gap-x-4 flex-wrap">
       {type && <FacilityType type={type} />}
-      {distance && <small>{distance} km</small>}
-      {open && (
+      {distance && !isOnlineOffer && <small>{distance} km</small>}
+      {open && !isOnlineOffer && (
         <small className="flex items-center text-success gap-2">
           <span className="inline-block w-2 h-2 rounded-full bg-success"></span>
           {texts.opened}
