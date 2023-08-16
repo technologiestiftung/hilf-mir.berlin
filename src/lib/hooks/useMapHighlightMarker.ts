@@ -3,9 +3,13 @@ import { ViewportType } from '@lib/types/map'
 import { LngLatLike, Map, Marker } from 'maplibre-gl'
 import { useEffect, useRef } from 'react'
 
+interface MarkerProps extends ViewportType {
+  color: string
+}
+
 export function useMapHighlightMarker(
   map: Map | null,
-  markerViewport: ViewportType | null
+  markerViewport: MarkerProps | null
 ): Marker | null {
   const highlightedMarker = useRef<Marker>(null)
 
@@ -20,6 +24,7 @@ export function useMapHighlightMarker(
       'w-10 h-10 bg-primary rounded-full ring-2',
       'ring-offset-white ring-offset-2 ring-primary'
     )
+    customMarker.style.backgroundColor = markerViewport.color
 
     const markerCenter = [
       markerViewport.longitude,

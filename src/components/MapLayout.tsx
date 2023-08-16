@@ -27,9 +27,7 @@ export const MapLayout: FC<{
   const { query, pathname, isFallback } = useRouter()
   const texts = useTexts()
   const [listViewOpen, setListViewOpen] = useState<boolean>(true)
-  const [mapCenter, setMapCenter] = useState<
-    [lng: number, lat: number] | undefined
-  >()
+  const [selectedFacility, setSelectedFacility] = useState<MinimalRecordType>()
   const [selectedFacilities, setSelectedFacilities] = useState<
     MinimalRecordType[]
   >([])
@@ -64,13 +62,13 @@ export const MapLayout: FC<{
   useEffect(() => {
     setSelectedFacilities([])
     if (!query.id || typeof query.id !== 'string') {
-      setMapCenter(undefined)
+      setSelectedFacility(undefined)
       return
     }
     const currentId = parseInt(`${query.id}`, 10)
     const currentRecord = records.find(({ id }) => id === currentId)
     if (!currentRecord) return
-    setMapCenter([currentRecord.longitude, currentRecord.latitude])
+    setSelectedFacility(currentRecord)
   }, [query.id, records])
 
   const updateSidebarVisibility = useCallback(
@@ -117,7 +115,7 @@ export const MapLayout: FC<{
               onClickAnywhere={() => {
                 setSelectedFacilities([])
               }}
-              highlightedCenter={mapCenter}
+              highlightedFacility={selectedFacility}
             />
             {[selectedFacilities[0]].filter(Boolean).map(({ id }) => (
               <div

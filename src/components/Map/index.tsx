@@ -33,7 +33,10 @@ import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
 import { getActiveLabelGroups, isFacilityActive } from '@lib/facilityFilterUtil'
 import { useActiveIdsBySearchTerm } from '@lib/hooks/useActiveIdsBySearchTerm'
 import colors from '../../colors'
-import { getCategoryColorMatchQuery } from '@lib/facilityTypeUtil'
+import {
+  getCategoryColorMatchQuery,
+  getColorByFacilityType,
+} from '@lib/facilityTypeUtil'
 
 interface MapType {
   markers?: MinimalRecordType[]
@@ -41,11 +44,7 @@ interface MapType {
   onMarkerClick?: (facilities: MinimalRecordType[]) => void
   onClickAnywhere?: () => void
   onMoveStart?: () => void
-  /** An optional array of [longitude, latitude].
-   * If provided, the map's center will be forced to this location.
-   * Also, a highlighted marker will be drawn to the map.
-   */
-  highlightedCenter?: [longitude: number, latitude: number]
+  highlightedFacility?: MinimalRecordType
 }
 
 const easeInOutQuad = (t: number): number =>
@@ -71,7 +70,7 @@ export const FacilitiesMap: FC<MapType> = ({
   onMarkerClick = () => undefined,
   onClickAnywhere = () => undefined,
   onMoveStart = () => undefined,
-  highlightedCenter,
+  highlightedFacility,
 }) => {
   const { query, push } = useRouter()
   const texts = useTexts()
@@ -100,11 +99,12 @@ export const FacilitiesMap: FC<MapType> = ({
     id && isSpiderfied && spiderifier.current?.expandedIds.includes(id)
 
   const highlightedMarkerViewport =
-    highlightedCenter && !currentFacilityIdPageIsSpiderfied
+    highlightedFacility && !currentFacilityIdPageIsSpiderfied
       ? {
-          latitude: highlightedCenter[1],
-          longitude: highlightedCenter[0],
+          latitude: highlightedFacility.latitude,
+          longitude: highlightedFacility.longitude,
           zoom: MAP_CONFIG.zoomedInZoom,
+          color: getColorByFacilityType(highlightedFacility.type),
         }
       : null
   const highlightedMarker = useMapHighlightMarker(

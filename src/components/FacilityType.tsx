@@ -1,7 +1,7 @@
 import { useTexts } from '@lib/TextsContext'
 import classNames from '@lib/classNames'
 import {
-  facilityTypeColorMap,
+  getColorByFacilityType,
   getTextKeyByFacilityType,
 } from '@lib/facilityTypeUtil'
 import { MinimalRecordType } from '@lib/mapRecordToMinimum'
@@ -13,11 +13,11 @@ function FacilityType({
 }): JSX.Element {
   const texts = useTexts()
   return (
-    <span className="flex items-center gap-2">
+    <span className="flex items-center gap-2 text-base">
       <span
         className={classNames(`inline-block w-4 h-4 rounded-full `)}
         style={{
-          backgroundColor: facilityTypeColorMap[type],
+          backgroundColor: getColorByFacilityType(type),
         }}
       />
       <span>{texts[getTextKeyByFacilityType(type)]}</span>

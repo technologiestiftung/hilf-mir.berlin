@@ -30,7 +30,7 @@ export const getKeyByFacilityType = (
     facilityTypeToKeyMap[facilityType]
   )}` as keyof typeof colors.type
 
-const getColorByFacilityType = (facilityType: FacilityType): string =>
+export const getColorByFacilityType = (facilityType: FacilityType): string =>
   colors.type[getKeyByFacilityType(facilityType)]
 
 export const getTextKeyByFacilityType = (
@@ -40,7 +40,7 @@ export const getTextKeyByFacilityType = (
     facilityTypeToKeyMap[facilityType]
   )}` as keyof TextsMapType
 
-export const facilityTypeColorMap = facilityTypes.reduce(
+const facilityTypeColorMap = facilityTypes.reduce(
   (acc, facilityType) => ({
     ...acc,
     [facilityType]: getColorByFacilityType(facilityType),

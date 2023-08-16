@@ -1,6 +1,4 @@
 import classNames from '@lib/classNames'
-import { useDistanceToUser } from '@lib/hooks/useDistanceToUser'
-import { useIsFacilityOpened } from '@lib/hooks/useIsFacilityOpened'
 import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { useTexts } from '@lib/TextsContext'
 import { useUrlState } from '@lib/UrlStateContext'
@@ -11,7 +9,7 @@ import { Arrow } from './icons/Arrow'
 import { Globe } from './icons/Globe'
 import { Phone } from './icons/Phone'
 import { ExternalLink } from './icons/ExternalLink'
-import FacilityType from './FacilityType'
+import FacilitySecondaryInfos from './FacilitySecondaryInfos'
 
 interface FacilityListItemType {
   facility: MinimalRecordType
@@ -24,41 +22,14 @@ export const FacilityListItem: FC<FacilityListItemType> = ({
 }) => {
   const [urlState] = useUrlState()
   const texts = useTexts()
-  const open = useIsFacilityOpened(facility)
-  const { getDistanceToUser } = useDistanceToUser()
-  const distance = getDistanceToUser({
-    latitude: facility.latitude,
-    longitude: facility.longitude,
-  })
   const phone: string | undefined = facility.phone?.split(',')[0]
-  const type = facility.type
 
   return (
     <Card
       id={`facility-${facility.id}`}
       title={facility.title}
       className={classNames('pt-9 pb-9', 'border-t-0 border-x-0', className)}
-      header={
-        (distance || open || type) && (
-          <>
-            {(distance || type) && (
-              <div className="flex text-lg gap-4">
-                {type && <FacilityType type={type} />}
-                {distance && <small>{distance} km</small>}
-              </div>
-            )}
-
-            {open && (
-              <p className="flex text-lg gap-4">
-                <small className="flex items-center text-success gap-2">
-                  <span className="inline-block w-2 h-2 rounded-full bg-success"></span>
-                  {texts.opened}
-                </small>
-              </p>
-            )}
-          </>
-        )
-      }
+      header={<FacilitySecondaryInfos facility={facility} />}
       footer={
         <div className="flex flex-nowrap gap-3 justify-end max-w-lg">
           {phone && (
