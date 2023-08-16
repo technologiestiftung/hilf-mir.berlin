@@ -6,6 +6,7 @@ import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { TextsMapType } from '@lib/TextsContext'
 import { LngLat, Map, LngLatLike, Popup } from 'maplibre-gl'
 import { getPopupHTML } from './popupUtils'
+import { getColorByFacilityType } from '@lib/facilityTypeUtil'
 
 export type MarkerClickHandlerType = (facility: MinimalRecordType) => void
 export type ClusterClickHandlerType = (
@@ -36,6 +37,12 @@ export function getSpiderfier(config: {
     onMouseleave() {
       popup.setOffset(0)
       popup.remove()
+    },
+    initializeMarker({ elements, marker }) {
+      elements.parent.style.setProperty(
+        `--markerColor`,
+        getColorByFacilityType(marker.type)
+      )
     },
   })
 }

@@ -88,6 +88,7 @@ html .maplibregl-map {
   @apply absolute z-10 border border-white rounded-full bg-primary -translate-x-1/2 -translate-y-1/2 transition-colors;
   width: 22px;
   height: 22px;
+  background-color: var(--markerColor);
 }
 
 .spidered-marker .icon-div.active::before {

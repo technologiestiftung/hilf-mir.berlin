@@ -47,6 +47,14 @@ interface MapType {
   highlightedFacility?: MinimalRecordType
 }
 
+type SpiderifierMarkerType = InstanceType<
+  typeof MaplibreglSpiderifier<
+    MinimalRecordType & {
+      color?: string
+    }
+  >
+>
+
 const easeInOutQuad = (t: number): number =>
   t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1
 
@@ -85,8 +93,7 @@ export const FacilitiesMap: FC<MapType> = ({
   const [isSpiderfied, setIsSpiderfied] = useState(false)
   const markerClickHandler = useRef<MarkerClickHandlerType>(() => undefined)
   const clusterClickHandler = useRef<ClusterClickHandlerType>(() => undefined)
-  const spiderifier =
-    useRef<InstanceType<typeof MaplibreglSpiderifier<MinimalRecordType>>>(null)
+  const spiderifier = useRef<SpiderifierMarkerType>(null)
   const map = useMaplibreMap({ containerId: 'map', ...MAP_CONFIG })
   const labels = useFiltersWithActiveProp()
 
@@ -280,7 +287,10 @@ export const FacilitiesMap: FC<MapType> = ({
       popup.current?.remove.bind(popup.current)()
       spiderifier.current.spiderfy(
         firstFeature.geometry.coordinates,
-        clickedFacilities,
+        clickedFacilities.map((f) => ({
+          ...f,
+          color: getColorByFacilityType(f.type),
+        })),
         typeof query.id === 'string' ? query.id : undefined
       )
       spiderifier.current?.expandedIds.forEach((id) => {
@@ -288,7 +298,7 @@ export const FacilitiesMap: FC<MapType> = ({
       })
       setIsSpiderfied(true)
     }
-  }, [query.id, markers, map])
+  }, [query.id, markers, map, onMarkerClick])
 
   useEffect(() => {
     if (!mapStylesLoaded || !markers || !map) return
