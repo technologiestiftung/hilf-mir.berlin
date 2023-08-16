@@ -37,6 +37,7 @@ import {
   getCategoryColorMatchQuery,
   getColorByFacilityType,
 } from '@lib/facilityTypeUtil'
+import useClusterMarkers from '@lib/hooks/useClusterMarkers'
 
 interface MapType {
   markers?: MinimalRecordType[]
@@ -134,6 +135,12 @@ export const FacilitiesMap: FC<MapType> = ({
 
   useMapUserGeolocationMarker(map, MAP_CONFIG.zoomedInZoom, mapLayersLoaded)
 
+  useClusterMarkers({
+    map,
+    markers,
+    mapLayersLoaded,
+  })
+
   useOnMapFeatureMove(map, 'unclustered-point', (features) => {
     if (!map) return
     const isMobile = window.innerWidth <= MOBILE_BREAKPOINT
@@ -210,6 +217,12 @@ export const FacilitiesMap: FC<MapType> = ({
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, markers, joinedLabelIds, mapLayersLoaded, activeIdsBySearchTerm.key])
+
+  useClusterMarkers({
+    map,
+    markers,
+    mapLayersLoaded,
+  })
 
   useEffect(() => {
     if (!map) return

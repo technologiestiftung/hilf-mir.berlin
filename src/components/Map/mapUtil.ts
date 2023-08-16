@@ -4,7 +4,7 @@ import MaplibreglSpiderifier, {
 } from '@lib/MaplibreglSpiderifier'
 import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { TextsMapType } from '@lib/TextsContext'
-import { LngLat, Map, LngLatLike, Popup } from 'maplibre-gl'
+import { LngLat, Map as MaplibreMap, LngLatLike, Popup } from 'maplibre-gl'
 import { getPopupHTML } from './popupUtils'
 import { getColorByFacilityType } from '@lib/facilityTypeUtil'
 
@@ -15,7 +15,7 @@ export type ClusterClickHandlerType = (
 
 export function getSpiderfier(config: {
   popup: Popup
-  map: Map
+  map: MaplibreMap
   clickHandler: MarkerClickHandlerType
   texts: TextsMapType
 }): MaplibreglSpiderifier<MinimalRecordType> {
@@ -61,8 +61,64 @@ export function getFeaturesOnSameCoordsThanFirstOne<PropsType>(
   })
 }
 
+function getFacilitiesOnSameCoordsThanFirstOne(
+  facility: MinimalRecordType,
+  facilities: MinimalRecordType[]
+): MinimalRecordType[] {
+  const pointACoords = [facility.longitude, facility.latitude] as [
+    number,
+    number
+  ]
+  const pointA = new LngLat(...pointACoords)
+  return facilities.filter((feat) => {
+    const coordinates = [feat.longitude, feat.latitude] as [number, number]
+    const pointB = new LngLat(...coordinates)
+    const dist = pointA.distanceTo(pointB)
+    const distance = Math.round(dist / 100) / 10
+    return distance < 0.1
+  })
+}
+
+export type ClusterType = {
+  id: string
+  facilities: MinimalRecordType[]
+  includedTypes: MinimalRecordType['type'][]
+}
+type ClusterMapType = Map<string, ClusterType>
+export function getClusteredFacilities(
+  facilities: MinimalRecordType[]
+): ClusterType[] {
+  const clusters: ClusterMapType = new Map()
+  const alreadySearchedIds: Set<MinimalRecordType['id']> = new Set()
+
+  facilities.forEach((facility) => {
+    if (alreadySearchedIds.has(facility.id)) return
+    const facilitiesOnSameCoords = getFacilitiesOnSameCoordsThanFirstOne(
+      facility,
+      facilities
+    )
+    if (facilitiesOnSameCoords.length > 1) {
+      clusters.set(`${facility.id}`, {
+        id: `${facility.id}`,
+        facilities: facilitiesOnSameCoords,
+        includedTypes: [
+          ...facilitiesOnSameCoords
+            .reduce(
+              (acc, curr) => acc.add(curr.type),
+              new Set<MinimalRecordType['type']>()
+            )
+            .values(),
+        ],
+      })
+    }
+    facilitiesOnSameCoords.forEach((f) => alreadySearchedIds.add(f.id))
+  })
+
+  return [...clusters.values()]
+}
+
 export function zoomIn(
-  map: Map,
+  map: MaplibreMap,
   coordinates?: LngLatLike,
   zoomIncrease = 1,
   maxZoom = 17
