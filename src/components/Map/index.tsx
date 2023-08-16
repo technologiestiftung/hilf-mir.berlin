@@ -287,10 +287,7 @@ export const FacilitiesMap: FC<MapType> = ({
       popup.current?.remove.bind(popup.current)()
       spiderifier.current.spiderfy(
         firstFeature.geometry.coordinates,
-        clickedFacilities.map((f) => ({
-          ...f,
-          color: getColorByFacilityType(f.type),
-        })),
+        clickedFacilities,
         typeof query.id === 'string' ? query.id : undefined
       )
       spiderifier.current?.expandedIds.forEach((id) => {
