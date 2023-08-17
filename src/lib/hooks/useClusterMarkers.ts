@@ -6,32 +6,35 @@ import { getColorByFacilityType } from '@lib/facilityTypeUtil'
 
 interface UseClusterMarkersProps {
   map: MaptilerMap | null
-  markers?: MinimalRecordType[]
-  mapLayersLoaded: boolean
+  activeFacilitiesMap?: Map<number, MinimalRecordType>
 }
 
 function useClusterMarkers({
   map,
-  markers,
-  mapLayersLoaded,
+  activeFacilitiesMap,
 }: UseClusterMarkersProps): void {
-  const isInitialized = useRef(false)
+  const clusterMarkers = useRef<Record<string, [Marker, ClusterType['id']]>>({})
+  const isReady = !!map && activeFacilitiesMap instanceof Map
 
   useEffect(() => {
-    if (isInitialized.current) return
-    if (!map || !markers || !mapLayersLoaded) return
+    if (!isReady) return
 
-    const clusters = getClusteredFacilities(markers)
+    Object.values(clusterMarkers.current).forEach(([marker]) => {
+      marker.remove()
+    })
+    clusterMarkers.current = {}
+
+    const clusters = getClusteredFacilities(activeFacilitiesMap)
     clusters.forEach((cluster) => {
       const firstFacility = cluster.facilities[0]
       const { longitude, latitude } = firstFacility
       const marker = new Marker(getClusterHTMLElement(cluster))
       marker.setLngLat([longitude, latitude])
       marker.addTo(map)
+      clusterMarkers.current[cluster.id] = [marker, cluster.id]
     })
-
-    isInitialized.current = true
-  }, [map, markers, mapLayersLoaded])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isReady, activeFacilitiesMap])
 }
 
 function getClusterHTMLElement(cluster: ClusterType): HTMLButtonElement {
@@ -41,7 +44,9 @@ function getClusterHTMLElement(cluster: ClusterType): HTMLButtonElement {
     `h-[34px]`,
     `rounded-full`,
     `-translate-x-1/2`,
-    `-translate-y-1/2`
+    `-translate-y-1/2`,
+    `pointer-events-none`,
+    `transition-opacity`
   )
   parentButton.innerHTML = getClusterSVG(cluster)
   return parentButton
@@ -78,7 +83,7 @@ function getClusterSVG(cluster: ClusterType): string {
       ],
     ][includedTypes.length - 1] || []
   return `
-    <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34" class="pointer-events-none">
+    <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34">
       <g fill="none" fill-rule="evenodd">
         ${svgContent
           .map(

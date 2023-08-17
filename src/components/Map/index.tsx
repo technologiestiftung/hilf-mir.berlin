@@ -15,12 +15,12 @@ import { MOBILE_BREAKPOINT } from '@lib/hooks/useIsMobile'
 import { useTexts } from '@lib/TextsContext'
 import { getPopupHTML } from './popupUtils'
 import {
-  getFeaturesOnSameCoordsThanFirstOne,
   getSpiderfier,
   MarkerClickHandlerType,
   ClusterClickHandlerType,
   setCursor,
   zoomIn,
+  getFacilitiesOnSameCoords,
 } from './mapUtil'
 import { useEaseOnBackToMap } from '@lib/hooks/useEaseOnBackToMap'
 import { useMapStylesLoaded } from '@lib/hooks/useMapStylesLoaded'
@@ -30,14 +30,13 @@ import { useInitialViewport } from '@lib/hooks/useInitialViewport'
 import { useMapHighlightMarker } from '@lib/hooks/useMapHighlightMarker'
 import { useMaplibreMap } from '@lib/hooks/useMaplibreMap'
 import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
-import { getActiveLabelGroups, isFacilityActive } from '@lib/facilityFilterUtil'
-import { useActiveIdsBySearchTerm } from '@lib/hooks/useActiveIdsBySearchTerm'
 import colors from '../../colors'
 import {
   getCategoryColorMatchQuery,
   getColorByFacilityType,
 } from '@lib/facilityTypeUtil'
 import useClusterMarkers from '@lib/hooks/useClusterMarkers'
+import { useActiveFacilities } from '@lib/hooks/useActiveFacilities'
 
 interface MapType {
   markers?: MinimalRecordType[]
@@ -100,7 +99,6 @@ export const FacilitiesMap: FC<MapType> = ({
 
   const [urlState, setUrlState] = useUrlState()
   const joinedLabelIds = urlState.tags?.join('-')
-  const activeIdsBySearchTerm = useActiveIdsBySearchTerm()
 
   const id = typeof query.id === 'string' ? parseInt(query.id, 10) : undefined
   const currentFacilityIdPageIsSpiderfied =
@@ -135,10 +133,15 @@ export const FacilitiesMap: FC<MapType> = ({
 
   useMapUserGeolocationMarker(map, MAP_CONFIG.zoomedInZoom, mapLayersLoaded)
 
+  const activeFacilitiesMap = useActiveFacilities({
+    facilities: markers || [],
+    joinedLabelIds: joinedLabelIds || '',
+    labels,
+  })
+
   useClusterMarkers({
     map,
-    markers,
-    mapLayersLoaded,
+    activeFacilitiesMap,
   })
 
   useOnMapFeatureMove(map, 'unclustered-point', (features) => {
@@ -197,16 +200,8 @@ export const FacilitiesMap: FC<MapType> = ({
 
   const updateFilteredFacilities = useCallback(() => {
     if (!map || !markers || !mapLayersLoaded) return
-    const { activeTopicsLabels, activeTargetLabels } =
-      getActiveLabelGroups(labels)
     markers.forEach((marker) => {
-      const active = isFacilityActive({
-        facilityId: marker.id,
-        facilityLabels: marker.labels,
-        activeTopicsLabels,
-        activeTargetLabels,
-        activeIdsBySearchTerm: activeIdsBySearchTerm.ids,
-      })
+      const active = activeFacilitiesMap.has(marker.id)
       map.setFeatureState(
         {
           source: 'facilities',
@@ -215,14 +210,7 @@ export const FacilitiesMap: FC<MapType> = ({
         { active }
       )
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, markers, joinedLabelIds, mapLayersLoaded, activeIdsBySearchTerm.key])
-
-  useClusterMarkers({
-    map,
-    markers,
-    mapLayersLoaded,
-  })
+  }, [map, markers, mapLayersLoaded, activeFacilitiesMap])
 
   useEffect(() => {
     if (!map) return
@@ -266,22 +254,21 @@ export const FacilitiesMap: FC<MapType> = ({
       if (activeFeatures.length === 0 || !firstFeature.geometry.coordinates)
         return
 
-      const featuresOnSameCoords =
-        getFeaturesOnSameCoordsThanFirstOne(activeFeatures)
+      const [longitude, latitude] = firstFeature.geometry.coordinates
+
+      const featuresOnSameCoords = getFacilitiesOnSameCoords(
+        { longitude, latitude },
+        activeFacilitiesMap
+      )
 
       const isClusterOfVeryNearButNotOverlappingPoints =
         featuresOnSameCoords.length !== activeFeatures.length
       if (isClusterOfVeryNearButNotOverlappingPoints) {
-        zoomIn(
-          map,
-          featuresOnSameCoords[0].geometry.coordinates,
-          2,
-          MAP_CONFIG.zoomedInZoom
-        )
+        zoomIn(map, [longitude, latitude], 2, MAP_CONFIG.zoomedInZoom)
         return
       }
 
-      const clickedMarkerIds = featuresOnSameCoords.map((f) => f.properties.id)
+      const clickedMarkerIds = featuresOnSameCoords.map((f) => f.id)
       const clickedFacilities = markers.filter((marker) =>
         clickedMarkerIds.includes(marker.id)
       )
@@ -308,7 +295,7 @@ export const FacilitiesMap: FC<MapType> = ({
       })
       setIsSpiderfied(true)
     }
-  }, [query.id, markers, map, onMarkerClick])
+  }, [query.id, markers, map, onMarkerClick, activeFacilitiesMap])
 
   useEffect(() => {
     if (!mapStylesLoaded || !markers || !map) return

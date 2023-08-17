@@ -47,30 +47,20 @@ export function getSpiderfier(config: {
   })
 }
 
-export function getFeaturesOnSameCoordsThanFirstOne<PropsType>(
-  features: GeojsonFeatureType<PropsType>[]
-): GeojsonFeatureType<PropsType>[] {
-  const pointACoords = features[0].geometry.coordinates || [0, 0]
-  const pointA = new LngLat(...pointACoords)
-  return features.filter((feat) => {
-    const coordinates = feat.geometry.coordinates || [0, 0]
-    const pointB = new LngLat(...coordinates)
-    const dist = pointA.distanceTo(pointB)
-    const distance = Math.round(dist / 100) / 10
-    return distance < 0.1
-  })
-}
-
-function getFacilitiesOnSameCoordsThanFirstOne(
-  facility: MinimalRecordType,
-  facilities: MinimalRecordType[]
+export function getFacilitiesOnSameCoords(
+  facility: {
+    longitude: number
+    latitude: number
+  },
+  facilities: Map<number, MinimalRecordType>
 ): MinimalRecordType[] {
   const pointACoords = [facility.longitude, facility.latitude] as [
     number,
     number
   ]
   const pointA = new LngLat(...pointACoords)
-  return facilities.filter((feat) => {
+  const features = Array.from(facilities.values())
+  return features.filter((feat) => {
     const coordinates = [feat.longitude, feat.latitude] as [number, number]
     const pointB = new LngLat(...coordinates)
     const dist = pointA.distanceTo(pointB)
@@ -86,14 +76,14 @@ export type ClusterType = {
 }
 type ClusterMapType = Map<string, ClusterType>
 export function getClusteredFacilities(
-  facilities: MinimalRecordType[]
+  facilities: Map<number, MinimalRecordType>
 ): ClusterType[] {
   const clusters: ClusterMapType = new Map()
   const alreadySearchedIds: Set<MinimalRecordType['id']> = new Set()
 
   facilities.forEach((facility) => {
     if (alreadySearchedIds.has(facility.id)) return
-    const facilitiesOnSameCoords = getFacilitiesOnSameCoordsThanFirstOne(
+    const facilitiesOnSameCoords = getFacilitiesOnSameCoords(
       facility,
       facilities
     )
@@ -108,7 +98,7 @@ export function getClusteredFacilities(
               new Set<MinimalRecordType['type']>()
             )
             .values(),
-        ],
+        ].sort(),
       })
     }
     facilitiesOnSameCoords.forEach((f) => alreadySearchedIds.add(f.id))
