@@ -8,6 +8,7 @@ const defaultValue = {
   directHelpButtonText: '',
   moreOffersKVBLinkText: '',
   moreOffersKVBLinkUrl: '',
+  footerMapPageLinkText: '',
   footerInfoPageLinkText: '',
   footerImprintLinkText: '',
   footerImprintLinkUrl: '',
