@@ -8,7 +8,6 @@ import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
 import { TextsMapType, useTexts } from '@lib/TextsContext'
 import { FC, useEffect, useMemo, useState } from 'react'
 import { SwitchButton } from './SwitchButton'
-import { useRouter } from 'next/router'
 import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
 import { FiltersTagsList } from './FiltersTagsList'
 import {
@@ -26,7 +25,6 @@ export const FiltersList: FC<{
   recordsWithOnlyLabels: RecordsWithOnlyLabelsType[]
   onSubmit?: () => void
 }> = ({ recordsWithOnlyLabels, onSubmit = () => undefined }) => {
-  const { push } = useRouter()
   const texts = useTexts()
   const labels = useFiltersWithActiveProp()
   const [urlState, updateUrlState] = useUrlState()
@@ -200,15 +198,11 @@ export const FiltersList: FC<{
         scheme="primary"
         size="large"
         className={classNames('w-full @md:w-max @md:min-w-[324px]', 'group')}
+        href="/map"
+        query={latitude && longitude ? { latitude, longitude } : {}}
+        tag="a"
         onClick={() => {
           onSubmit()
-          void push({
-            pathname: '/map',
-            query: {
-              ...urlState,
-              ...(latitude && longitude ? { latitude, longitude } : {}),
-            },
-          })
         }}
         icon={
           textSearchLoading ? (
