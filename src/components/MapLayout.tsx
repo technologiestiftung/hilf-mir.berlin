@@ -24,7 +24,7 @@ export const MapLayout: FC<{
   records: MinimalRecordType[]
   labels: GristLabelType[]
 }> = ({ children, records, labels }) => {
-  const { query, pathname, isFallback } = useRouter()
+  const { query, pathname } = useRouter()
   const texts = useTexts()
   const [listViewOpen, setListViewOpen] = useState<boolean>(true)
   const [selectedFacility, setSelectedFacility] = useState<MinimalRecordType>()
@@ -103,43 +103,38 @@ export const MapLayout: FC<{
           `overflow-hidden lg:w-mapW`
         )}
       >
-        {!isFallback && (
-          <div className="fixed inset-0 z-10 lg:left-sidebarW">
-            <FacilitiesMap
-              markers={records}
-              activeTags={urlState.tags}
-              onMarkerClick={handleMarkerClick}
-              onMoveStart={() => {
-                setSelectedFacilities([])
-              }}
-              onClickAnywhere={() => {
-                setSelectedFacilities([])
-              }}
-              highlightedFacility={selectedFacility}
+        <div className="fixed inset-0 z-10 lg:left-sidebarW">
+          <FacilitiesMap
+            markers={records}
+            activeTags={urlState.tags}
+            onMarkerClick={handleMarkerClick}
+            onMoveStart={() => {
+              setSelectedFacilities([])
+            }}
+            onClickAnywhere={() => {
+              setSelectedFacilities([])
+            }}
+            highlightedFacility={selectedFacility}
+          />
+          {[selectedFacilities[0]].filter(Boolean).map(({ id }) => (
+            <div
+              key={id}
+              className={classNames(
+                'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
+                'opacity-0 delay-700 animate-fadein-delay-400',
+                'pointer-events-none w-9 h-9 rounded-full',
+                'ring-2 ring-primary -ml-[0.5px]'
+              )}
             />
-            {[selectedFacilities[0]].filter(Boolean).map(({ id }) => (
-              <div
-                key={id}
-                className={classNames(
-                  'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
-                  'opacity-0 delay-700 animate-fadein-delay-400',
-                  'pointer-events-none w-5 h-5 rounded-full bg-primary',
-                  'ring-2 ring-offset-2 ring-primary ring-offset-white'
-                )}
-              />
-            ))}
-          </div>
+          ))}
+        </div>
+        {showMapUi && <MapButtons />}
+        {isMobile && pathname === '/map' && selectedFacilities.length === 0 && (
+          <MapListSwitch
+            listViewOpen={listViewOpen}
+            setListViewOpen={setListViewOpen}
+          />
         )}
-        {!isFallback && showMapUi && <MapButtons />}
-        {!isFallback &&
-          isMobile &&
-          pathname === '/map' &&
-          selectedFacilities.length === 0 && (
-            <MapListSwitch
-              listViewOpen={listViewOpen}
-              setListViewOpen={setListViewOpen}
-            />
-          )}
         {showMapUi && listViewOpen && (
           <div
             className={classNames(
@@ -172,9 +167,9 @@ export const MapLayout: FC<{
             showMapUi && !listViewOpen && `translate-y-[100vh] lg:translate-y-0`
           )}
         >
-          {!isFallback && children}
+          {children}
         </aside>
-        {!isFallback && showMapUi && (
+        {showMapUi && (
           <MapHeader
             filterSidebarIsOpened={filterSidebarIsOpened}
             setFilterSidebarIsOpened={setFilterSidebarIsOpened}
@@ -189,7 +184,7 @@ export const MapLayout: FC<{
             !filterSidebarIsOpened && `translate-x-full`
           )}
         >
-          {!isFallback && (
+          {
             <>
               <h3
                 className={classNames(
@@ -216,7 +211,7 @@ export const MapLayout: FC<{
                 />
               </div>
             </>
-          )}
+          }
         </aside>
       </main>
     </LabelsProvider>

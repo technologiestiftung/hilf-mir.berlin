@@ -41,7 +41,7 @@ interface MapProps {
 const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
   const [urlState] = useUrlState()
   const texts = useTexts()
-  const { query, isFallback } = useRouter()
+  const { query } = useRouter()
   const { getDistanceToUser } = useDistanceToUser()
   const { useGeolocation } = useUserGeolocation()
   const labels = useFiltersWithActiveProp()
@@ -128,9 +128,7 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
     <>
       <Head>
         <title>
-          {isFallback
-            ? 'Seite Lädt...'
-            : `${texts.resultPageTitle} – ${texts.siteTitle}`}
+          {texts.resultPageTitle} – ${texts.siteTitle}
         </title>
       </Head>
       <ActiveFiltersList />
