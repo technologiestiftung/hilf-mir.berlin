@@ -32,7 +32,7 @@ export const Card: FC<CardPropsType> = ({
       <div className="flex flex-col">
         <header className={classNames(`flex flex-col pb-2`)}>
           <h2 className={classNames(`font-bold text-xl`)}>{title}</h2>
-          {headerContent && <header>{headerContent}</header>}
+          {headerContent}
         </header>
         {children}
       </div>
