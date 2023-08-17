@@ -5,6 +5,7 @@ import { useTexts } from '@lib/TextsContext'
 import { Page } from '@common/types/nextPage'
 import { MapLayout } from '@components/MapLayout'
 import { FacilityInfo } from '@components/FacilityInfo'
+import { useRouter } from 'next/router'
 import { mapRecordToMinimum, MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { useEffect } from 'react'
 import { loadCacheData } from '@lib/loadCacheData'
@@ -61,6 +62,7 @@ interface MapProps {
 
 const FacilityPage: Page<MapProps> = ({ record }) => {
   const texts = useTexts()
+  const { isFallback } = useRouter()
 
   useEffect(() => {
     document.querySelector(`main > aside`)?.scrollTo(0, 0)
@@ -70,10 +72,13 @@ const FacilityPage: Page<MapProps> = ({ record }) => {
     <>
       <Head>
         <title>
-          {record.fields.Einrichtung} - ${texts.siteTitle}
+          {isFallback
+            ? `Seite lädt...`
+            : `${record.fields.Einrichtung} - ${texts.siteTitle}`}
         </title>
       </Head>
-      <FacilityInfo facility={record} />
+      {isFallback && `Seite lädt...`}
+      {!isFallback && <FacilityInfo facility={record} />}
     </>
   )
 }

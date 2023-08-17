@@ -25,7 +25,7 @@ export const MapLayout: FC<{
   records: MinimalRecordType[]
   labels: GristLabelType[]
 }> = ({ children, records, labels }) => {
-  const { query, pathname } = useRouter()
+  const { query, pathname, isFallback } = useRouter()
   const texts = useTexts()
   const [listViewOpen, setListViewOpen] = useState<boolean>(true)
   const [selectedFacility, setSelectedFacility] = useState<MinimalRecordType>()
@@ -105,42 +105,47 @@ export const MapLayout: FC<{
           `overflow-hidden lg:w-mapW`
         )}
       >
-        <div className="fixed inset-0 z-10 lg:left-sidebarW">
-          <FacilitiesMap
-            markers={records}
-            activeTags={urlState.tags}
-            onMarkerClick={handleMarkerClick}
-            onMoveStart={() => setSelectedFacilities([])}
-            onClickAnywhere={() => setSelectedFacilities([])}
-            highlightedFacility={selectedFacility}
-          />
-          {validSelectedFacilities.map(({ id }) => (
-            <div
-              key={id}
-              className={classNames(
-                'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
-                'opacity-0 delay-700 animate-fadein-delay-400',
-                'pointer-events-none w-8 h-8 rounded-full',
-                'ring-2 ring-primary',
-                'ring-offset-2 ring-offset-white',
-                'transition-colors'
-              )}
-              style={{
-                backgroundColor:
-                  validSelectedFacilities.length > 1
-                    ? 'transparent'
-                    : getColorByFacilityType(validSelectedFacilities[0].type),
-              }}
+        {!isFallback && (
+          <div className="fixed inset-0 z-10 lg:left-sidebarW">
+            <FacilitiesMap
+              markers={records}
+              activeTags={urlState.tags}
+              onMarkerClick={handleMarkerClick}
+              onMoveStart={() => setSelectedFacilities([])}
+              onClickAnywhere={() => setSelectedFacilities([])}
+              highlightedFacility={selectedFacility}
             />
-          ))}
-        </div>
-        {showMapUi && <MapButtons />}
-        {isMobile && pathname === '/map' && selectedFacilities.length === 0 && (
-          <MapListSwitch
-            listViewOpen={listViewOpen}
-            setListViewOpen={setListViewOpen}
-          />
+            {validSelectedFacilities.map(({ id }) => (
+              <div
+                key={id}
+                className={classNames(
+                  'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
+                  'opacity-0 delay-700 animate-fadein-delay-400',
+                  'pointer-events-none w-8 h-8 rounded-full',
+                  'ring-2 ring-primary',
+                  'ring-offset-2 ring-offset-white',
+                  'transition-colors'
+                )}
+                style={{
+                  backgroundColor:
+                    validSelectedFacilities.length > 1
+                      ? 'transparent'
+                      : getColorByFacilityType(validSelectedFacilities[0].type),
+                }}
+              />
+            ))}
+          </div>
         )}
+        {!isFallback && showMapUi && <MapButtons />}
+        {!isFallback &&
+          isMobile &&
+          pathname === '/map' &&
+          selectedFacilities.length === 0 && (
+            <MapListSwitch
+              listViewOpen={listViewOpen}
+              setListViewOpen={setListViewOpen}
+            />
+          )}
         {showMapUi && listViewOpen && (
           <div
             className={classNames(
@@ -173,9 +178,9 @@ export const MapLayout: FC<{
             showMapUi && !listViewOpen && `translate-y-[100vh] lg:translate-y-0`
           )}
         >
-          {children}
+          {!isFallback && children}
         </aside>
-        {showMapUi && (
+        {!isFallback && showMapUi && (
           <MapHeader
             filterSidebarIsOpened={filterSidebarIsOpened}
             setFilterSidebarIsOpened={setFilterSidebarIsOpened}
@@ -190,7 +195,7 @@ export const MapLayout: FC<{
             !filterSidebarIsOpened && `translate-x-full`
           )}
         >
-          {
+          {!isFallback && (
             <>
               <h3
                 className={classNames(
@@ -217,7 +222,7 @@ export const MapLayout: FC<{
                 />
               </div>
             </>
-          }
+          )}
         </aside>
       </main>
     </LabelsProvider>
