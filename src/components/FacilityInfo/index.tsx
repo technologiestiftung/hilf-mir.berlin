@@ -77,8 +77,9 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
 
   const facilityIsLabelledAsOpen247 = parsedFacilty.open247
 
+  const hasAddress = Strasse && Hausnummer && PLZ
   const infoList = [
-    {
+    hasAddress && {
       icon: <Geopin />,
       text: (
         <>
