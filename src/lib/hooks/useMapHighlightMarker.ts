@@ -45,6 +45,7 @@ export function useMapHighlightMarker(
     markerViewport?.longitude,
     markerViewport?.latitude,
     markerViewport?.zoom,
+    markerViewport?.color,
   ])
 
   return highlightedMarker.current
