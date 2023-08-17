@@ -16,6 +16,7 @@ import { MapButtons } from './MapButtons'
 import { IconButton } from './IconButton'
 import { Arrow } from './icons/Arrow'
 import { useIsMobile } from '@lib/hooks/useIsMobile'
+import { getColorByFacilityType } from '@lib/facilityTypeUtil'
 
 const SCROLL_THRESHOLD = 300
 const LARGE_SCREEN_BREAKPOINT_MIN_WIDTH = 1920
@@ -95,6 +96,7 @@ export const MapLayout: FC<{
       )
   }, [setFilterSidebarIsOpened, updateSidebarVisibility])
 
+  const validSelectedFacilities = selectedFacilities.filter(Boolean)
   return (
     <LabelsProvider value={labels}>
       <main
@@ -108,23 +110,27 @@ export const MapLayout: FC<{
             markers={records}
             activeTags={urlState.tags}
             onMarkerClick={handleMarkerClick}
-            onMoveStart={() => {
-              setSelectedFacilities([])
-            }}
-            onClickAnywhere={() => {
-              setSelectedFacilities([])
-            }}
+            onMoveStart={() => setSelectedFacilities([])}
+            onClickAnywhere={() => setSelectedFacilities([])}
             highlightedFacility={selectedFacility}
           />
-          {[selectedFacilities[0]].filter(Boolean).map(({ id }) => (
+          {validSelectedFacilities.map(({ id }) => (
             <div
               key={id}
               className={classNames(
                 'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
                 'opacity-0 delay-700 animate-fadein-delay-400',
-                'pointer-events-none w-9 h-9 rounded-full',
-                'ring-2 ring-primary -ml-[0.5px]'
+                'pointer-events-none w-8 h-8 rounded-full',
+                'ring-2 ring-primary',
+                'ring-offset-2 ring-offset-white',
+                'transition-colors'
               )}
+              style={{
+                backgroundColor:
+                  validSelectedFacilities.length > 1
+                    ? 'transparent'
+                    : getColorByFacilityType(validSelectedFacilities[0].type),
+              }}
             />
           ))}
         </div>
