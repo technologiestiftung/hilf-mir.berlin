@@ -54,16 +54,16 @@ html .maplibregl-map {
 }
 
 .maplibregl-canvas-container canvas {
-  @apply focus-visible:outline-none;
+  @apply outline-none;
 }
 
 .maplibregl-canvas-container {
-  @apply relative w-full h-full overflow-hidden box-border focus-within:outline-none focus-within:border-2 focus-within:border-primary;
+  @apply relative w-full h-full overflow-hidden box-border outline-none;
 }
 
-.maplibregl-canvas-container:focus-within canvas {
-  margin-top: -2px;
-  margin-left: -2px;
+.maplibregl-canvas-container:has(:focus-visible):before {
+  content: '';
+  @apply absolute inset-0 z-10 border-2 border-primary rounded-sm;
 }
 
 /* Spiderifier  */
@@ -88,6 +88,7 @@ html .maplibregl-map {
   @apply absolute z-10 border border-white rounded-full bg-primary -translate-x-1/2 -translate-y-1/2 transition-colors;
   width: 22px;
   height: 22px;
+  background-color: var(--markerColor);
 }
 
 .spidered-marker .icon-div.active::before {

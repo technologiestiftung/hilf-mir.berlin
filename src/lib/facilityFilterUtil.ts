@@ -43,6 +43,17 @@ export const getFilterStatus: GetFilterStatusType = ({
   }
 }
 
+type ObjWithProp<PropName extends string> = Record<PropName, unknown>
+export function mapIdsString<PropName extends string>(
+  arr: ObjWithProp<PropName>[],
+  prop: PropName
+): string {
+  return arr
+    .map((obj) => String(obj[prop]))
+    .sort()
+    .join('-')
+}
+
 const MAX_TEXT_SEARCH_STRING_LENGTH = 100
 export function truncateSearchTerm(searchTerm: unknown): string {
   if (typeof searchTerm !== 'string') return ''

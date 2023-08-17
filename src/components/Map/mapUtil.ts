@@ -4,8 +4,9 @@ import MaplibreglSpiderifier, {
 } from '@lib/MaplibreglSpiderifier'
 import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { TextsMapType } from '@lib/TextsContext'
-import { LngLat, Map, LngLatLike, Popup } from 'maplibre-gl'
+import { LngLat, Map as MaplibreMap, LngLatLike, Popup } from 'maplibre-gl'
 import { getPopupHTML } from './popupUtils'
+import { getColorByFacilityType } from '@lib/facilityTypeUtil'
 
 export type MarkerClickHandlerType = (facility: MinimalRecordType) => void
 export type ClusterClickHandlerType = (
@@ -14,7 +15,7 @@ export type ClusterClickHandlerType = (
 
 export function getSpiderfier(config: {
   popup: Popup
-  map: Map
+  map: MaplibreMap
   clickHandler: MarkerClickHandlerType
   texts: TextsMapType
 }): MaplibreglSpiderifier<MinimalRecordType> {
@@ -37,25 +38,77 @@ export function getSpiderfier(config: {
       popup.setOffset(0)
       popup.remove()
     },
+    initializeMarker({ elements, marker }) {
+      elements.parent.style.setProperty(
+        `--markerColor`,
+        getColorByFacilityType(marker.type)
+      )
+    },
   })
 }
 
-export function getFeaturesOnSameCoordsThanFirstOne<PropsType>(
-  features: GeojsonFeatureType<PropsType>[]
-): GeojsonFeatureType<PropsType>[] {
-  const pointACoords = features[0].geometry.coordinates || [0, 0]
+export function getFacilitiesOnSameCoords(
+  facility: {
+    longitude: number
+    latitude: number
+  },
+  facilities: Map<number, MinimalRecordType>
+): MinimalRecordType[] {
+  const pointACoords = [facility.longitude, facility.latitude] as [
+    number,
+    number
+  ]
   const pointA = new LngLat(...pointACoords)
+  const features = Array.from(facilities.values())
   return features.filter((feat) => {
-    const coordinates = feat.geometry.coordinates || [0, 0]
+    const coordinates = [feat.longitude, feat.latitude] as [number, number]
     const pointB = new LngLat(...coordinates)
     const dist = pointA.distanceTo(pointB)
-    const distance = Math.round(dist / 100) / 10
-    return distance < 0.1
+    const distance = dist
+    return distance < 1
   })
+}
+
+export type ClusterType = {
+  id: string
+  facilities: MinimalRecordType[]
+  includedTypes: MinimalRecordType['type'][]
+}
+type ClusterMapType = Map<string, ClusterType>
+export function getClusteredFacilities(
+  facilities: Map<number, MinimalRecordType>
+): ClusterType[] {
+  const clusters: ClusterMapType = new Map()
+  const alreadySearchedIds: Set<MinimalRecordType['id']> = new Set()
+
+  facilities.forEach((facility) => {
+    if (alreadySearchedIds.has(facility.id)) return
+    const facilitiesOnSameCoords = getFacilitiesOnSameCoords(
+      facility,
+      facilities
+    )
+    if (facilitiesOnSameCoords.length > 1) {
+      clusters.set(`${facility.id}`, {
+        id: `${facility.id}`,
+        facilities: facilitiesOnSameCoords,
+        includedTypes: [
+          ...facilitiesOnSameCoords
+            .reduce(
+              (acc, curr) => acc.add(curr.type),
+              new Set<MinimalRecordType['type']>()
+            )
+            .values(),
+        ].sort(),
+      })
+    }
+    facilitiesOnSameCoords.forEach((f) => alreadySearchedIds.add(f.id))
+  })
+
+  return [...clusters.values()]
 }
 
 export function zoomIn(
-  map: Map,
+  map: MaplibreMap,
   coordinates?: LngLatLike,
   zoomIncrease = 1,
   maxZoom = 17
