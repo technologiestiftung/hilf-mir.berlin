@@ -139,7 +139,7 @@ export const FacilitiesMap: FC<MapType> = ({
     labels,
   })
 
-  useClusterMarkers({
+  const { showClusters, hideCluster } = useClusterMarkers({
     map,
     activeFacilitiesMap,
   })
@@ -294,8 +294,9 @@ export const FacilitiesMap: FC<MapType> = ({
         map?.setFeatureState({ source: 'facilities', id }, { spidered: true })
       })
       setIsSpiderfied(true)
+      hideCluster(clickedFacilities[0].id)
     }
-  }, [query.id, markers, map, onMarkerClick, activeFacilitiesMap])
+  }, [query.id, markers, map, onMarkerClick, activeFacilitiesMap, hideCluster])
 
   useEffect(() => {
     if (!mapStylesLoaded || !markers || !map) return
@@ -364,6 +365,7 @@ export const FacilitiesMap: FC<MapType> = ({
     map.on('click', function () {
       unspiderfy()
       onClickAnywhere()
+      showClusters()
     })
 
     map.on('click', 'unclustered-point', (e) => {

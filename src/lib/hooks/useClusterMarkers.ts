@@ -1,5 +1,5 @@
 import { ClusterType, getClusteredFacilities } from '@components/Map/mapUtil'
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { Map as MaptilerMap, Marker } from 'maplibre-gl'
 import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { getColorByFacilityType } from '@lib/facilityTypeUtil'
@@ -12,17 +12,20 @@ interface UseClusterMarkersProps {
 function useClusterMarkers({
   map,
   activeFacilitiesMap,
-}: UseClusterMarkersProps): void {
-  const clusterMarkers = useRef<Record<string, [Marker, ClusterType['id']]>>({})
+}: UseClusterMarkersProps): {
+  showClusters: () => void
+  hideCluster: (facilityId: MinimalRecordType['id']) => void
+} {
+  const clusterMarkers = useRef<Map<string, [Marker, ClusterType]>>(new Map())
   const isReady = !!map && activeFacilitiesMap instanceof Map
 
   useEffect(() => {
     if (!isReady) return
 
-    Object.values(clusterMarkers.current).forEach(([marker]) => {
+    clusterMarkers.current.forEach(([marker]) => {
       marker.remove()
     })
-    clusterMarkers.current = {}
+    clusterMarkers.current.clear()
 
     const clusters = getClusteredFacilities(activeFacilitiesMap)
     clusters.forEach((cluster) => {
@@ -31,10 +34,40 @@ function useClusterMarkers({
       const marker = new Marker(getClusterHTMLElement(cluster))
       marker.setLngLat([longitude, latitude])
       marker.addTo(map)
-      clusterMarkers.current[cluster.id] = [marker, cluster.id]
+      clusterMarkers.current.set(cluster.id, [marker, cluster])
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady, activeFacilitiesMap])
+
+  const getClusterByFacilityId = useCallback(
+    (facilityId: number): [Marker, ClusterType] | undefined => {
+      let cluster = clusterMarkers.current.get(facilityId.toString())
+      if (cluster) return cluster
+      cluster = Array.from(clusterMarkers.current.values()).find(
+        ([, cluster]) => cluster.facilities.find((f) => f.id === facilityId)
+      )
+      return cluster
+    },
+    []
+  )
+
+  const showClusters = useCallback((): void => {
+    clusterMarkers.current.forEach(([marker]) => {
+      marker.getElement().classList.remove('opacity-0')
+    })
+  }, [])
+
+  const hideCluster = useCallback(
+    (facilityId: MinimalRecordType['id']): void => {
+      const cluster = getClusterByFacilityId(facilityId)
+      if (!cluster) return
+      const [marker] = cluster
+      marker.getElement().classList.add('opacity-0')
+    },
+    [getClusterByFacilityId]
+  )
+
+  return { showClusters, hideCluster }
 }
 
 function getClusterHTMLElement(cluster: ClusterType): HTMLButtonElement {
