@@ -23,6 +23,7 @@ export const FacilityListItem: FC<FacilityListItemType> = ({
   const [urlState] = useUrlState()
   const texts = useTexts()
   const phone: string | undefined = facility.phone?.split(',')[0]
+  const isOnline = facility.type.toLowerCase() === 'online'
 
   return (
     <Card
@@ -32,7 +33,7 @@ export const FacilityListItem: FC<FacilityListItemType> = ({
       header={<FacilitySecondaryInfos facility={facility} />}
       footer={
         <div className="flex flex-nowrap gap-3 justify-end max-w-lg">
-          {phone && (
+          {!isOnline && phone && (
             <Button
               tag="a"
               href={`tel:${phone}`}
@@ -43,7 +44,7 @@ export const FacilityListItem: FC<FacilityListItemType> = ({
               {phone}
             </Button>
           )}
-          {!phone && facility.website && (
+          {isOnline && facility.website && (
             <Button
               tag="a"
               href={facility.website}
@@ -51,7 +52,7 @@ export const FacilityListItem: FC<FacilityListItemType> = ({
               className="w-1/2 flex flex-nowrap gap-x-2 items-center truncate"
             >
               <ExternalLink className="w-5 h-5 text-purple-500 shrink-0" />
-              Website
+              {texts.websiteLabel}
             </Button>
           )}
           <Button
