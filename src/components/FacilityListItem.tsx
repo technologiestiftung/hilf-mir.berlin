@@ -81,7 +81,7 @@ export const FacilityListItem: FC<FacilityListItemType> = ({
             {facility.languages.map((language, idx) => (
               <span key={language} className="text-sm text-gray-80">
                 {language}
-                {idx !== facility.languages.length - 1 && ','}
+                {idx !== facility.languages.length - 1 && ', '}
               </span>
             ))}
           </div>

@@ -33,9 +33,16 @@
     },
     "moduleResolution": "node",
     "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
     "next-env.d.ts",
+    "./app/**/*.ts",
+    "./app/**/*.tsx",
     "./test/**/*.ts",
     "./test/**/*.tsx",
     "./src/**/*.ts",
@@ -43,7 +50,8 @@
     "./pages/**/*.ts",
     "./pages/**/*.tsx",
     "./scripts/createFakeGristData.ts",
-    "./middleware.ts"
+    "./middleware.ts",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
@@ -57,8 +65,10 @@
   "ts-node": {
     "compilerOptions": {
       "target": "es2019",
-      "lib": ["es2019"],
-      "module": "Node16",
+      "lib": [
+        "es2019"
+      ],
+      "module": "Node16"
     }
   }
 }

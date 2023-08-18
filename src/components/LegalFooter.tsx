@@ -24,9 +24,23 @@ export const LegalFooter: FC = () => {
           </p>
           <section
             className={classNames(
-              `flex gap-x-6 gap-y-4 flex-wrap text-gray-40`
+              `flex gap-x-6 gap-y-1 flex-wrap text-gray-40`,
+              `justify-center sm:justify-start`
             )}
           >
+            <Link
+              href={{
+                pathname: '/map',
+                query,
+              }}
+              className={classNames(
+                `underline transition-colors hover:text-primary`,
+                `focus:outline-none focus:ring-2 focus:ring-primary`,
+                `focus:ring-offset-2 focus:ring-offset-white`
+              )}
+            >
+              {texts.footerMapPageLinkText}
+            </Link>
             <Link
               href={{
                 pathname: '/info',
