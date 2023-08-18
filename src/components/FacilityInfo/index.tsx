@@ -1,6 +1,5 @@
 import { FC, ReactNode } from 'react'
 import { TableRowType } from '@common/types/gristData'
-import { useDistanceToUser } from '@lib/hooks/useDistanceToUser'
 import { useIsFacilityOpened } from '@lib/hooks/useIsFacilityOpened'
 import { useTexts } from '@lib/TextsContext'
 import { mapRecordToMinimum } from '@lib/mapRecordToMinimum'
@@ -17,6 +16,7 @@ import { Accessible } from '@components/icons/Accessible'
 import Link from 'next/link'
 import { FacilityLabels } from '@components/FacilityLabels'
 import { splitString } from '@lib/splitString'
+import FacilitySecondaryInfos from '@components/FacilitySecondaryInfos'
 
 interface FacilityInfoType {
   facility: TableRowType
@@ -47,11 +47,6 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
   const texts = useTexts()
   const parsedFacilty = mapRecordToMinimum(facility)
   const isOpened = useIsFacilityOpened(parsedFacilty)
-  const { getDistanceToUser } = useDistanceToUser()
-  const distance = getDistanceToUser({
-    latitude: facility.fields.lat,
-    longitude: facility.fields.long,
-  })
   const { allLabels } = useRecordLabels(facility.fields.Schlagworte)
 
   const { Strasse, Hausnummer, PLZ, Zusatz, Art_der_Anmeldung } =
@@ -82,8 +77,9 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
 
   const facilityIsLabelledAsOpen247 = parsedFacilty.open247
 
+  const hasAddress = Strasse && Hausnummer && PLZ
   const infoList = [
-    {
+    hasAddress && {
       icon: <Geopin />,
       text: (
         <>
@@ -135,17 +131,7 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
           <h1 className="mb-2 text-2xl break-words hyphens-auto">
             {facility.fields.Einrichtung}
           </h1>
-          {(distance || isOpened) && (
-            <div className="flex text-lg gap-4">
-              {isOpened && (
-                <span className="flex items-center text-success gap-2">
-                  <span className="inline-block w-2 h-2 rounded-full bg-success"></span>
-                  {texts.opened}
-                </span>
-              )}
-              {distance && <span>{distance} km</span>}
-            </div>
-          )}
+          <FacilitySecondaryInfos facility={parsedFacilty} />
           {facility.fields.Uber_uns.length > 1 && (
             <p
               className="mt-4"

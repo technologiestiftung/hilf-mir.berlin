@@ -1,3 +1,5 @@
+import classNames from '@lib/classNames'
+import { FacilityType, getColorByFacilityType } from '@lib/facilityTypeUtil'
 import { isFacilityOpened } from '@lib/hooks/useIsFacilityOpened'
 import { MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { TextsMapType } from '@lib/TextsContext'
@@ -10,7 +12,7 @@ export function getPopupHTML(
   const facility = facilities[0]
   const isOpened = isFacilityOpened(facility)
   return `
-    ${getTitleHTML(facility.title)}
+    ${getTitleHTML(facility.title, facility.type)}
     ${
       (isOpened &&
         `
@@ -33,10 +35,20 @@ export function getPopupHTML(
   `
 }
 
-function getTitleHTML(title: string): string {
+function getTitleHTML(title: string, type?: FacilityType): string {
   return `
-    <h2 class="font-bold text-lg px-1 leading-tight break-words flex justify-between items-end gap-4">
+    <h2 class="font-bold text-lg px-1 leading-tight break-words flex justify-between items-start gap-4">
+      <span class="flex justify-between gap-4 items-end line-clamp-3">
       ${title}
+      </span>
+      ${
+        type
+          ? `<span
+          class="w-4 h-4 rounded-full inline-block shrink-0 grow-0"
+          style="background-color: ${getColorByFacilityType(type)};"
+        ></span>`
+          : ''
+      }
     </h2>
   `
 }
@@ -58,7 +70,7 @@ function getMultipleFacilitiesHTML(
     `)}
     ${facilities
       .slice(0, max)
-      .map((facility) => getRowHTML(facility.title))
+      .map((facility) => getRowHTML(facility.title, facility.type))
       .join('\n')}
     ${
       facilities.length > max
@@ -70,13 +82,24 @@ function getMultipleFacilitiesHTML(
   `
 }
 
-function getRowHTML(title: string): string {
+function getRowHTML(title: string, type?: FacilityType): string {
   return `
     <div
-      class="border-t text-sm font-sans border-gray-10 py-1 truncate first-of-type:mt-2"
+      class="${classNames(
+        `border-t text-sm font-sans border-gray-10 py-1 first-of-type:mt-2`,
+        `flex items-center justify-stretch gap-2`
+      )}"
       style="border-top-width: 1.5px;"
     >
-      ${title}
+      ${
+        type
+          ? `<span
+              class="w-3 h-3 rounded-full inline-block shrink-0 grow-0"
+              style="background-color: ${getColorByFacilityType(type)};"
+            ></span>`
+          : ''
+      }
+      <span class="truncate inline-block">${title}</span>
     </div>
   `
 }

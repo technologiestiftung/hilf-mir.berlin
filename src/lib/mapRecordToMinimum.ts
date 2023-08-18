@@ -23,6 +23,7 @@ export interface MinimalRecordType
   phone: string
   description: string
   website: string
+  type: 'Beratung' | 'Klinik' | 'Selbsthilfe' | 'Amt' | 'Online'
 }
 
 export const mapRecordToMinimum = (record: TableRowType): MinimalRecordType => {
@@ -44,6 +45,7 @@ export const mapRecordToMinimum = (record: TableRowType): MinimalRecordType => {
     }),
     phone: record.fields.Telefonnummer,
     website: record.fields.Website,
+    type: record.fields.Typ,
   }
 }
 

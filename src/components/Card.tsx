@@ -2,7 +2,7 @@ import classNames from '@lib/classNames'
 import { FC, ReactNode } from 'react'
 
 interface CardPropsType {
-  title: string
+  title: string | ReactNode
   header?: ReactNode
   footer?: ReactNode
   className?: string
@@ -21,17 +21,22 @@ export const Card: FC<CardPropsType> = ({
     <div
       id={id}
       className={classNames(
+        className,
         'block',
         'flex flex-col gap-1 bg-white',
         'px-5 py-5',
         'border border-gray-20',
-        className
+        `justify-between`
       )}
     >
-      <h2 className={classNames(`font-bold text-xl`)}>{title}</h2>
-      {headerContent && <header>{headerContent}</header>}
-      {children}
-      {footer && <footer className="mt-6 w-full">{footer}</footer>}
+      <div className="flex flex-col">
+        <header className={classNames(`flex flex-col pb-2`)}>
+          <h2 className={classNames(`font-bold text-xl`)}>{title}</h2>
+          {headerContent}
+        </header>
+        {children}
+      </div>
+      {footer && <footer className="mt-[2vh] w-full">{footer}</footer>}
     </div>
   )
 }

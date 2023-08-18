@@ -15,12 +15,12 @@ import { MOBILE_BREAKPOINT } from '@lib/hooks/useIsMobile'
 import { useTexts } from '@lib/TextsContext'
 import { getPopupHTML } from './popupUtils'
 import {
-  getFeaturesOnSameCoordsThanFirstOne,
   getSpiderfier,
   MarkerClickHandlerType,
   ClusterClickHandlerType,
   setCursor,
   zoomIn,
+  getFacilitiesOnSameCoords,
 } from './mapUtil'
 import { useEaseOnBackToMap } from '@lib/hooks/useEaseOnBackToMap'
 import { useMapStylesLoaded } from '@lib/hooks/useMapStylesLoaded'
@@ -30,8 +30,13 @@ import { useInitialViewport } from '@lib/hooks/useInitialViewport'
 import { useMapHighlightMarker } from '@lib/hooks/useMapHighlightMarker'
 import { useMaplibreMap } from '@lib/hooks/useMaplibreMap'
 import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
-import { getActiveLabelGroups, isFacilityActive } from '@lib/facilityFilterUtil'
-import { useActiveIdsBySearchTerm } from '@lib/hooks/useActiveIdsBySearchTerm'
+import colors from '../../colors'
+import {
+  getCategoryColorMatchQuery,
+  getColorByFacilityType,
+} from '@lib/facilityTypeUtil'
+import useClusterMarkers from '@lib/hooks/useClusterMarkers'
+import { useActiveFacilities } from '@lib/hooks/useActiveFacilities'
 
 interface MapType {
   markers?: MinimalRecordType[]
@@ -39,12 +44,16 @@ interface MapType {
   onMarkerClick?: (facilities: MinimalRecordType[]) => void
   onClickAnywhere?: () => void
   onMoveStart?: () => void
-  /** An optional array of [longitude, latitude].
-   * If provided, the map's center will be forced to this location.
-   * Also, a highlighted marker will be drawn to the map.
-   */
-  highlightedCenter?: [longitude: number, latitude: number]
+  highlightedFacility?: MinimalRecordType
 }
+
+type SpiderifierMarkerType = InstanceType<
+  typeof MaplibreglSpiderifier<
+    MinimalRecordType & {
+      color?: string
+    }
+  >
+>
 
 const easeInOutQuad = (t: number): number =>
   t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1
@@ -69,7 +78,7 @@ export const FacilitiesMap: FC<MapType> = ({
   onMarkerClick = () => undefined,
   onClickAnywhere = () => undefined,
   onMoveStart = () => undefined,
-  highlightedCenter,
+  highlightedFacility,
 }) => {
   const { query, push } = useRouter()
   const texts = useTexts()
@@ -84,25 +93,24 @@ export const FacilitiesMap: FC<MapType> = ({
   const [isSpiderfied, setIsSpiderfied] = useState(false)
   const markerClickHandler = useRef<MarkerClickHandlerType>(() => undefined)
   const clusterClickHandler = useRef<ClusterClickHandlerType>(() => undefined)
-  const spiderifier =
-    useRef<InstanceType<typeof MaplibreglSpiderifier<MinimalRecordType>>>(null)
+  const spiderifier = useRef<SpiderifierMarkerType>(null)
   const map = useMaplibreMap({ containerId: 'map', ...MAP_CONFIG })
   const labels = useFiltersWithActiveProp()
 
   const [urlState, setUrlState] = useUrlState()
   const joinedLabelIds = urlState.tags?.join('-')
-  const activeIdsBySearchTerm = useActiveIdsBySearchTerm()
 
   const id = typeof query.id === 'string' ? parseInt(query.id, 10) : undefined
   const currentFacilityIdPageIsSpiderfied =
     id && isSpiderfied && spiderifier.current?.expandedIds.includes(id)
 
   const highlightedMarkerViewport =
-    highlightedCenter && !currentFacilityIdPageIsSpiderfied
+    highlightedFacility && !currentFacilityIdPageIsSpiderfied
       ? {
-          latitude: highlightedCenter[1],
-          longitude: highlightedCenter[0],
+          latitude: highlightedFacility.latitude,
+          longitude: highlightedFacility.longitude,
           zoom: MAP_CONFIG.zoomedInZoom,
+          color: getColorByFacilityType(highlightedFacility.type),
         }
       : null
   const highlightedMarker = useMapHighlightMarker(
@@ -124,6 +132,17 @@ export const FacilitiesMap: FC<MapType> = ({
   const [mapLayersLoaded, setMapLayersLoaded] = useState(false)
 
   useMapUserGeolocationMarker(map, MAP_CONFIG.zoomedInZoom, mapLayersLoaded)
+
+  const activeFacilitiesMap = useActiveFacilities({
+    facilities: markers || [],
+    joinedLabelIds: joinedLabelIds || '',
+    labels,
+  })
+
+  const { showClusters, hideCluster } = useClusterMarkers({
+    map,
+    activeFacilitiesMap,
+  })
 
   useOnMapFeatureMove(map, 'unclustered-point', (features) => {
     if (!map) return
@@ -181,16 +200,8 @@ export const FacilitiesMap: FC<MapType> = ({
 
   const updateFilteredFacilities = useCallback(() => {
     if (!map || !markers || !mapLayersLoaded) return
-    const { activeTopicsLabels, activeTargetLabels } =
-      getActiveLabelGroups(labels)
     markers.forEach((marker) => {
-      const active = isFacilityActive({
-        facilityId: marker.id,
-        facilityLabels: marker.labels,
-        activeTopicsLabels,
-        activeTargetLabels,
-        activeIdsBySearchTerm: activeIdsBySearchTerm.ids,
-      })
+      const active = activeFacilitiesMap.has(marker.id)
       map.setFeatureState(
         {
           source: 'facilities',
@@ -199,8 +210,7 @@ export const FacilitiesMap: FC<MapType> = ({
         { active }
       )
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, markers, joinedLabelIds, mapLayersLoaded, activeIdsBySearchTerm.key])
+  }, [map, markers, mapLayersLoaded, activeFacilitiesMap])
 
   useEffect(() => {
     if (!map) return
@@ -244,22 +254,21 @@ export const FacilitiesMap: FC<MapType> = ({
       if (activeFeatures.length === 0 || !firstFeature.geometry.coordinates)
         return
 
-      const featuresOnSameCoords =
-        getFeaturesOnSameCoordsThanFirstOne(activeFeatures)
+      const [longitude, latitude] = firstFeature.geometry.coordinates
+
+      const featuresOnSameCoords = getFacilitiesOnSameCoords(
+        { longitude, latitude },
+        activeFacilitiesMap
+      )
 
       const isClusterOfVeryNearButNotOverlappingPoints =
         featuresOnSameCoords.length !== activeFeatures.length
       if (isClusterOfVeryNearButNotOverlappingPoints) {
-        zoomIn(
-          map,
-          featuresOnSameCoords[0].geometry.coordinates,
-          2,
-          MAP_CONFIG.zoomedInZoom
-        )
+        zoomIn(map, [longitude, latitude], 2, MAP_CONFIG.zoomedInZoom)
         return
       }
 
-      const clickedMarkerIds = featuresOnSameCoords.map((f) => f.properties.id)
+      const clickedMarkerIds = featuresOnSameCoords.map((f) => f.id)
       const clickedFacilities = markers.filter((marker) =>
         clickedMarkerIds.includes(marker.id)
       )
@@ -285,8 +294,9 @@ export const FacilitiesMap: FC<MapType> = ({
         map?.setFeatureState({ source: 'facilities', id }, { spidered: true })
       })
       setIsSpiderfied(true)
+      hideCluster(clickedFacilities[0].id)
     }
-  }, [query.id, markers, map])
+  }, [query.id, markers, map, onMarkerClick, activeFacilitiesMap, hideCluster])
 
   useEffect(() => {
     if (!mapStylesLoaded || !markers || !map) return
@@ -323,13 +333,8 @@ export const FacilitiesMap: FC<MapType> = ({
         paint: {
           'circle-radius': 10,
           'circle-stroke-width': 1,
-          'circle-stroke-color': '#FAFAFF',
-          'circle-color': [
-            'case',
-            ['boolean', ['feature-state', 'hover'], false],
-            '#999999',
-            '#773666',
-          ],
+          'circle-stroke-color': colors.white,
+          'circle-color': getCategoryColorMatchQuery(),
           'circle-stroke-opacity': opacityGlCondition,
           'circle-opacity': opacityGlCondition,
         },
@@ -360,6 +365,7 @@ export const FacilitiesMap: FC<MapType> = ({
     map.on('click', function () {
       unspiderfy()
       onClickAnywhere()
+      showClusters()
     })
 
     map.on('click', 'unclustered-point', (e) => {
