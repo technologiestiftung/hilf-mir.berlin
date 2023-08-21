@@ -8,6 +8,7 @@ const defaultValue = {
   directHelpButtonText: '',
   moreOffersKVBLinkText: '',
   moreOffersKVBLinkUrl: '',
+  footerMapPageLinkText: '',
   footerInfoPageLinkText: '',
   footerImprintLinkText: '',
   footerImprintLinkUrl: '',
@@ -118,6 +119,16 @@ const defaultValue = {
   disclaimerContent: '',
   moreInfos: '',
   noTargetPreferenceButtonText: '',
+  textSearchLabel: '',
+  textSearchPlaceholder: '',
+  textSearchCategorySelfHelp: '',
+  textSearchCategoryAdvising: '',
+  textSearchCategoryClinics: '',
+  textSearchCategoryOnlineOffers: '',
+  textSearchCategoryDistrictOfficeHelp: '',
+  optionalFurtherSearchIntroText: '',
+  filtersButtonLoading: '',
+  websiteLabel: '',
 }
 
 export type TextsMapType = typeof defaultValue

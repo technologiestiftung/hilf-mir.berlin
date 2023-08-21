@@ -1,23 +1,30 @@
-import { TableRowType } from '@common/types/gristData'
 import classNames from '@lib/classNames'
-import { useUrlState } from '@lib/UrlStateContext'
+import {
+  urlSearchCategoriesToStateSearchCategories,
+  stateSearchCategoriesToUrlSearchCategories,
+  useUrlState,
+} from '@lib/UrlStateContext'
 import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
-import { useTexts } from '@lib/TextsContext'
+import { TextsMapType, useTexts } from '@lib/TextsContext'
 import { FC, useEffect, useMemo, useState } from 'react'
 import { SwitchButton } from './SwitchButton'
-import { useRouter } from 'next/router'
 import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
 import { FiltersTagsList } from './FiltersTagsList'
-import { useFilteredFacilitiesCount } from '@lib/hooks/useFilteredFacilitiesCount'
+import {
+  RecordsWithOnlyLabelsType,
+  useFilteredFacilitiesCount,
+} from '@lib/hooks/useFilteredFacilitiesCount'
 import { Listbox } from './Listbox'
 import { Button } from './Button'
 import { Arrow } from './icons/Arrow'
+import TextSearch from './TextSearch'
+import { useActiveIdsBySearchTerm } from '@lib/hooks/useActiveIdsBySearchTerm'
+import { Spinner } from './icons/Spinner'
 
 export const FiltersList: FC<{
-  recordsWithOnlyLabels: TableRowType['fields']['Schlagworte'][]
+  recordsWithOnlyLabels: RecordsWithOnlyLabelsType[]
   onSubmit?: () => void
 }> = ({ recordsWithOnlyLabels, onSubmit = () => undefined }) => {
-  const { push } = useRouter()
   const texts = useTexts()
   const labels = useFiltersWithActiveProp()
   const [urlState, updateUrlState] = useUrlState()
@@ -35,6 +42,8 @@ export const FiltersList: FC<{
   const filteredFacilitiesCount = useFilteredFacilitiesCount(
     recordsWithOnlyLabels
   )
+  const { isLoading: textSearchLoading, total } = useActiveIdsBySearchTerm()
+  const fieldsDisabled = textSearchLoading
 
   const group1 = labels.filter(({ fields }) => fields.group2 === 'gruppe-1')
   const group2 = labels.filter(({ fields }) => fields.group2 === 'gruppe-2')
@@ -48,21 +57,17 @@ export const FiltersList: FC<{
     .map((label) => label.id)
 
   const [activeTargetGroupId, setActiveTargetGroupId] = useState(
-    queryTagIds.find((tagId) => {
-      return targetGroupIds.includes(tagId)
-    })
+    queryTagIds.find((tagId) => targetGroupIds.includes(tagId)) || null
   )
 
+  const tagsKey = queryTagIds.join('-')
   useEffect(() => {
-    if (queryTagIds.length === 0) return
-
     const currentTargetGroupId = queryTagIds.find((tagId) =>
       targetGroupIds.includes(tagId)
     )
-    if (currentTargetGroupId) {
-      setActiveTargetGroupId(currentTargetGroupId)
-    }
-  }, [queryTagIds, targetGroupIds])
+    setActiveTargetGroupId(currentTargetGroupId || null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tagsKey, targetGroupIds])
 
   const someGroupFiltersActive = labels
     .filter(({ fields }) => fields.group2 !== 'zielpublikum')
@@ -72,35 +77,19 @@ export const FiltersList: FC<{
     updateUrlState({ tags: newTags })
   }
 
-  const getSubmitText = (): string => {
-    switch (true) {
-      case queryTagIds.length === 0 || queryTagIds.length === labels.length:
-        return texts.filtersButtonTextAllFilters
-      case queryTagIds.length > 0 && filteredFacilitiesCount === 1:
-        return texts.filtersButtonTextFilteredSingular
-      case queryTagIds.length > 0 && filteredFacilitiesCount > 1:
-        return texts.filtersButtonTextFilteredPlural.replace(
-          '#number',
-          `${filteredFacilitiesCount}`
-        )
-      case queryTagIds.length > 0 && filteredFacilitiesCount === 0:
-        return texts.filtersButtonTextFilteredNoResults
-      default:
-        return ''
-    }
-  }
-
   return (
-    <div className="pb-20 lg:pb-0">
-      <div className="md:pt-10 flex flex-wrap gap-x-8 pb-6 md:pb-8">
+    <div className="pb-20 lg:pb-0 @container">
+      <div className="@md:pt-10 flex flex-wrap gap-x-8 pb-6 @md:pb-8">
         <ul className="flex flex-wrap gap-2 place-content-start mb-5">
           <FiltersTagsList
             filters={[...group1, ...group2, ...group3]}
             onLabelClick={updateFilters}
+            disabled={fieldsDisabled}
           />
         </ul>
         {someGroupFiltersActive && (
           <button
+            disabled={fieldsDisabled}
             onClick={() =>
               updateFilters(
                 queryTagIds.filter((f) => {
@@ -111,19 +100,40 @@ export const FiltersList: FC<{
             }
             className={classNames(
               `text-lg leading-6 text-left font-normal mb-8`,
-              `focus:outline-none focus:ring-2 focus:ring-primary`,
-              `focus:ring-offset-2 focus:ring-offset-white`,
-              `underline text-gray-80 hover-primary transition-colors`
+              !fieldsDisabled && [
+                `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary`,
+                `focus-visible:ring-offset-2 focus-visible:ring-offset-white`,
+                `underline text-gray-80 hover-primary`,
+              ],
+              fieldsDisabled && `text-gray-40`,
+              `transition motion-reduce:transition-none`
             )}
           >
             {texts.reset}
           </button>
         )}
       </div>
-      <div className="grid">
-        <div className="block w-full md:w-[324px] z-10">
+      <p className="text-lg mb-6">{texts.optionalFurtherSearchIntroText}</p>
+      <div className="flex gap-8 flex-wrap text-lg mb-6">
+        <TextSearch
+          onChange={({ text, categories }) =>
+            updateUrlState({
+              ...urlState,
+              q: text,
+              qCategories:
+                stateSearchCategoriesToUrlSearchCategories(categories),
+            })
+          }
+          text={urlState.q || ''}
+          categories={urlSearchCategoriesToStateSearchCategories(
+            urlState.qCategories
+          )}
+          disabled={fieldsDisabled}
+        />
+        <div className="block w-full @md:w-[324px] z-10">
           <Listbox
             label={texts.filtersSearchTargetLabel}
+            disabled={fieldsDisabled}
             options={targetGroups
               .sort((a, b) => {
                 if (!a.fields.order) return 1
@@ -158,14 +168,14 @@ export const FiltersList: FC<{
                   break
                 case targetGroupAlreadyInUrl && !hasValidTargetGroup:
                   updateFilters([...tagsWithoutOldTargetGroup])
-                  setActiveTargetGroupId(undefined)
+                  setActiveTargetGroupId(null)
                   break
                 case !targetGroupAlreadyInUrl && hasValidTargetGroup:
                   updateFilters([...queryTagIds, selectedValue as number])
                   break
                 case !targetGroupAlreadyInUrl && !hasValidTargetGroup:
                   updateFilters([...queryTagIds])
-                  setActiveTargetGroupId(undefined)
+                  setActiveTargetGroupId(null)
                   break
                 default:
                   break
@@ -174,46 +184,69 @@ export const FiltersList: FC<{
             className="mb-12"
           />
         </div>
-        <SwitchButton
-          value={useGeolocation}
-          onToggle={setGeolocationUsage}
-          disabled={geolocationIsForbidden}
-          tooltip={geolocationIsForbidden ? texts.geolocationForbidden : ``}
-        >
-          {texts.filtersGeoSearchLabel}
-        </SwitchButton>
-        <Button
-          scheme="primary"
-          size="large"
-          className={classNames('w-full md:w-max md:min-w-[324px]', 'group')}
-          onClick={() => {
-            onSubmit()
-            void push({
-              pathname: '/map',
-              query: {
-                ...urlState,
-                ...(latitude && longitude ? { latitude, longitude } : {}),
-              },
-            })
-          }}
-          icon={
+      </div>
+
+      <SwitchButton
+        value={useGeolocation}
+        onToggle={setGeolocationUsage}
+        disabled={geolocationIsForbidden || fieldsDisabled}
+        tooltip={geolocationIsForbidden ? texts.geolocationForbidden : ``}
+      >
+        {texts.filtersGeoSearchLabel}
+      </SwitchButton>
+      <Button
+        scheme="primary"
+        size="large"
+        className={classNames('w-full @md:w-max @md:min-w-[324px]', 'group')}
+        href="/map"
+        query={latitude && longitude ? { latitude, longitude } : {}}
+        tag="a"
+        onClick={() => {
+          onSubmit()
+        }}
+        icon={
+          textSearchLoading ? (
+            <Spinner className={classNames('animate-spin')} />
+          ) : (
             <Arrow
               className={classNames(
                 'transition-transform group-hover:translate-x-0.5 group-disabled:group-hover:translate-x-0'
               )}
             />
-          }
-          disabled={queryTagIds.length > 0 && filteredFacilitiesCount === 0}
-          tooltip={
-            queryTagIds.length > 0 &&
-            filteredFacilitiesCount === 0 && (
-              <span>{texts.filtersButtonTextFilteredNoResultsHint}</span>
-            )
-          }
-        >
-          {getSubmitText()}
-        </Button>
-      </div>
+          )
+        }
+        disabled={filteredFacilitiesCount === 0 || fieldsDisabled}
+        tooltip={
+          filteredFacilitiesCount === 0 && (
+            <span>{texts.filtersButtonTextFilteredNoResultsHint}</span>
+          )
+        }
+      >
+        {getSubmitText({
+          texts,
+          isLoading: textSearchLoading,
+          count: filteredFacilitiesCount,
+          total,
+        })}
+      </Button>
     </div>
   )
+}
+
+function getSubmitText({
+  texts,
+  isLoading = false,
+  count,
+  total,
+}: {
+  texts: TextsMapType
+  isLoading?: boolean
+  count: number
+  total: number
+}): string {
+  if (isLoading) return texts.filtersButtonLoading
+  if (count === 0) return texts.filtersButtonTextFilteredNoResults
+  if (count === 1) return texts.filtersButtonTextFilteredSingular
+  if (count === total) return texts.filtersButtonTextAllFilters
+  return texts.filtersButtonTextFilteredPlural.replace('#number', `${count}`)
 }

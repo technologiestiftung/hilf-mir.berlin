@@ -10,8 +10,10 @@ export function useMaplibreMap(config: {
   minZoom: number
 }): Map | null {
   const map = useRef<Map>(null)
+  const mapIsInitialized = useRef<boolean>(false)
   // Map setup (run only once on initial render)
   useEffect(() => {
+    if (mapIsInitialized.current) return
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     map.current = new Map({
@@ -24,6 +26,7 @@ export function useMaplibreMap(config: {
       minZoom: config.minZoom,
       maxZoom: config.maxZoom,
     })
+    mapIsInitialized.current = true
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

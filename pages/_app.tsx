@@ -6,6 +6,7 @@ import { Page } from '@common/types/nextPage'
 import Head from 'next/head'
 import { UrlStateProvider } from '@lib/UrlStateContext'
 import { UserGeolocationProvider } from '@lib/hooks/useUserGeolocation'
+import colors from '../src/colors'
 import { useMatomo } from '@lib/hooks/useMatomo'
 
 interface PagePropsType {
@@ -42,11 +43,14 @@ const App = ({ Component, pageProps }: AppPropsType): JSX.Element => {
               sizes="16x16"
               href="/favicon-16x16.png"
             />
+            <link rel="manifest" href="/site.webmanifest" />
             <link
               rel="mask-icon"
               href="/safari-pinned-tab.svg"
-              color="#b14882"
+              color={colors.primary}
             />
+            <meta name="msapplication-TileColor" content={colors.primary} />
+            <meta name="theme-color" content={colors.primary}></meta>
             <meta name="msapplication-TileColor" content="#b14882" />
             <meta name="theme-color" content="#FAFAFF" />
           </Head>

@@ -16,6 +16,7 @@ interface ListboxType {
   onChange?: (selectedValue: number | null) => void
   nullSelectionLabel?: string
   className?: string
+  disabled?: boolean
 }
 
 export const Listbox: FC<ListboxType> = ({
@@ -25,18 +26,23 @@ export const Listbox: FC<ListboxType> = ({
   onChange = () => undefined,
   nullSelectionLabel = 'Keine Präferenz',
   className = '',
+  disabled = false,
 }) => {
   const handleChange = (selectedOption: number): void =>
     onChange(selectedOption)
 
-  const mergedOptions = [{ label: nullSelectionLabel, value: null }, ...options]
-  const selectedOption = mergedOptions.find(
-    (option) => option.value === activeValue
-  )
+  const nullSection = { label: nullSelectionLabel, value: null }
+  const mergedOptions = [nullSection, ...options]
+  const selectedOption =
+    mergedOptions.find((option) => option.value === activeValue) || nullSection
 
   return (
     <div className={classNames(className, 'w-full')}>
-      <HeadlessListbox value={activeValue} onChange={handleChange}>
+      <HeadlessListbox
+        value={activeValue}
+        onChange={handleChange}
+        disabled={disabled}
+      >
         <HeadlessListbox.Label
           className={classNames('w-full flex justify-between', 'text-lg')}
         >
@@ -45,13 +51,14 @@ export const Listbox: FC<ListboxType> = ({
         <div className="relative mt-2 w-full">
           <HeadlessListbox.Button
             className={classNames(
-              'relative w-full py-1 pl-3 cursor-pointer',
+              'relative w-full py-2 pl-3 cursor-pointer',
               'text-lg text-left',
               'border rounded',
               'grid grid-cols-[1fr,auto] gap-x-2',
+              'transition-colors motion-reduce:transition-none',
               selectedOption?.value
                 ? 'bg-purple-500 text-white border-purple-500'
-                : 'bg-white text-gray-80 border-gray-20',
+                : 'bg-white text-gray-80 border-gray-20 hover:border-gray-40',
               'focus:outline-none focus-visible:border-purple-500 focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white'
             )}
           >

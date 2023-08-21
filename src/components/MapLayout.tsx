@@ -1,5 +1,4 @@
-import { FeatureType } from '@lib/requests/geocode'
-import { FC, useEffect, useState } from 'react'
+import { FC, useCallback, useEffect, useState } from 'react'
 import { FacilitiesMap } from './Map'
 import classNames from '@lib/classNames'
 import { useRouter } from 'next/router'
@@ -17,8 +16,10 @@ import { MapButtons } from './MapButtons'
 import { IconButton } from './IconButton'
 import { Arrow } from './icons/Arrow'
 import { useIsMobile } from '@lib/hooks/useIsMobile'
+import { getColorByFacilityType } from '@lib/facilityTypeUtil'
 
 const SCROLL_THRESHOLD = 300
+const LARGE_SCREEN_BREAKPOINT_MIN_WIDTH = 1920
 
 export const MapLayout: FC<{
   records: MinimalRecordType[]
@@ -27,17 +28,12 @@ export const MapLayout: FC<{
   const { query, pathname, isFallback } = useRouter()
   const texts = useTexts()
   const [listViewOpen, setListViewOpen] = useState<boolean>(true)
-  const [mapCenter, setMapCenter] = useState<
-    [lng: number, lat: number] | undefined
-  >()
-  const [searchCenter, setSearchCenter] = useState<
-    [lng: number, lat: number] | undefined
-  >()
+  const [selectedFacility, setSelectedFacility] = useState<MinimalRecordType>()
   const [selectedFacilities, setSelectedFacilities] = useState<
     MinimalRecordType[]
   >([])
   const [filterSidebarIsOpened, setFilterSidebarIsOpened] = useState(false)
-  const [urlState, setUrlState] = useUrlState()
+  const [urlState] = useUrlState()
   const [hasScrolled, setHasScrolled] = useState<boolean>(false)
   const isMobile = useIsMobile()
 
@@ -64,26 +60,43 @@ export const MapLayout: FC<{
     if (!records) return
   }
 
-  const handleSearchResult = (place: FeatureType): void => {
-    setSearchCenter(place.center)
-    setUrlState({
-      longitude: place.center[0],
-      latitude: place.center[1],
-    })
-  }
-
   useEffect(() => {
     setSelectedFacilities([])
     if (!query.id || typeof query.id !== 'string') {
-      setMapCenter(undefined)
+      setSelectedFacility(undefined)
       return
     }
     const currentId = parseInt(`${query.id}`, 10)
     const currentRecord = records.find(({ id }) => id === currentId)
     if (!currentRecord) return
-    setMapCenter([currentRecord.longitude, currentRecord.latitude])
+    setSelectedFacility(currentRecord)
   }, [query.id, records])
 
+  const updateSidebarVisibility = useCallback(
+    (evt: MediaQueryListEvent | boolean) => {
+      const isMatch = typeof evt === 'boolean' ? evt : evt?.matches || false
+      setFilterSidebarIsOpened(isMatch)
+    },
+    [setFilterSidebarIsOpened]
+  )
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const minWidth = LARGE_SCREEN_BREAKPOINT_MIN_WIDTH
+    updateSidebarVisibility(window.innerWidth > minWidth)
+    const windowWidthMediaQuery = window.matchMedia(
+      `(min-width: ${minWidth}px)`
+    )
+
+    windowWidthMediaQuery.addEventListener('change', updateSidebarVisibility)
+    return () =>
+      windowWidthMediaQuery.removeEventListener(
+        'change',
+        updateSidebarVisibility
+      )
+  }, [setFilterSidebarIsOpened, updateSidebarVisibility])
+
+  const validSelectedFacilities = selectedFacilities.filter(Boolean)
   return (
     <LabelsProvider value={labels}>
       <main
@@ -98,24 +111,27 @@ export const MapLayout: FC<{
               markers={records}
               activeTags={urlState.tags}
               onMarkerClick={handleMarkerClick}
-              onMoveStart={() => {
-                setSelectedFacilities([])
-              }}
-              onClickAnywhere={() => {
-                setSelectedFacilities([])
-              }}
-              highlightedCenter={mapCenter}
-              searchCenter={searchCenter}
+              onMoveStart={() => setSelectedFacilities([])}
+              onClickAnywhere={() => setSelectedFacilities([])}
+              highlightedFacility={selectedFacility}
             />
-            {[selectedFacilities[0]].filter(Boolean).map(({ id }) => (
+            {validSelectedFacilities.map(({ id }) => (
               <div
                 key={id}
                 className={classNames(
                   'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
                   'opacity-0 delay-700 animate-fadein-delay-400',
-                  'pointer-events-none w-5 h-5 rounded-full bg-primary',
-                  'ring-2 ring-offset-2 ring-primary ring-offset-white'
+                  'pointer-events-none w-8 h-8 rounded-full',
+                  'ring-2 ring-primary',
+                  'ring-offset-2 ring-offset-white',
+                  'transition-colors'
                 )}
+                style={{
+                  backgroundColor:
+                    validSelectedFacilities.length > 1
+                      ? 'transparent'
+                      : getColorByFacilityType(validSelectedFacilities[0].type),
+                }}
               />
             ))}
           </div>
@@ -166,7 +182,6 @@ export const MapLayout: FC<{
         </aside>
         {!isFallback && showMapUi && (
           <MapHeader
-            handleSearchResult={handleSearchResult}
             filterSidebarIsOpened={filterSidebarIsOpened}
             setFilterSidebarIsOpened={setFilterSidebarIsOpened}
             listViewOpen={listViewOpen}
@@ -186,7 +201,7 @@ export const MapLayout: FC<{
                 className={classNames(
                   `sticky top-0 flex justify-between font-bold`,
                   `px-5 py-6 bg-white border-b border-gray-10`,
-                  `text-2xl items-center leading-tight`
+                  `text-2xl items-center leading-tight z-10`
                 )}
               >
                 {texts.filterLabel}
@@ -199,7 +214,10 @@ export const MapLayout: FC<{
               </h3>
               <div className="p-5">
                 <FiltersList
-                  recordsWithOnlyLabels={(records || []).map((r) => r.labels)}
+                  recordsWithOnlyLabels={(records || []).map((r) => [
+                    r.id,
+                    r.labels,
+                  ])}
                   onSubmit={() => setFilterSidebarIsOpened(false)}
                 />
               </div>

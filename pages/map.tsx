@@ -13,8 +13,9 @@ import { useDistanceToUser } from '@lib/hooks/useDistanceToUser'
 import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
 import { useFiltersWithActiveProp } from '@lib/hooks/useFiltersWithActiveProp'
 import { getFilteredFacilities } from '@lib/facilityFilterUtil'
-import { Button } from '@components/Button'
 import { FacilityListItem } from '@components/FacilityListItem'
+import { useActiveIdsBySearchTerm } from '@lib/hooks/useActiveIdsBySearchTerm'
+import ActiveFiltersList from '@components/ActiveFiltersList'
 
 export const getStaticProps: GetStaticProps = async () => {
   const { texts, labels, records } = await loadData()
@@ -29,7 +30,6 @@ export const getStaticProps: GetStaticProps = async () => {
       records: recordsWithOnlyMinimum,
       labels,
     },
-    revalidate: 120,
   }
 }
 
@@ -41,12 +41,13 @@ interface MapProps {
 const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
   const [urlState] = useUrlState()
   const texts = useTexts()
-  const { isFallback } = useRouter()
+  const { query, isFallback } = useRouter()
   const { getDistanceToUser } = useDistanceToUser()
   const { useGeolocation } = useUserGeolocation()
   const labels = useFiltersWithActiveProp()
   const [filteredRecords, setFilteredRecords] =
     useState<MinimalRecordType[]>(originalRecords)
+  const activeIdsBySearchTerm = useActiveIdsBySearchTerm()
 
   const sortByTagsCount = useCallback(
     (a: MinimalRecordType, b: MinimalRecordType) => {
@@ -101,13 +102,27 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
     [getDistanceToUser, useGeolocation, defaultSort, sortByTagsCount]
   )
 
+  const tagsKey = urlState.tags?.join('-') || ''
   useEffect(() => {
     const filteredRecords = getFilteredFacilities({
       facilities: originalRecords,
       labels,
+      activeIdsBySearchTerm: activeIdsBySearchTerm.ids,
     })
     return setFilteredRecords(sortFacilities(filteredRecords))
-  }, [urlState.tags?.join('-')])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tagsKey, activeIdsBySearchTerm.key, activeIdsBySearchTerm.isLoading])
+
+  useEffect(() => {
+    if (!query.back || typeof query.back !== 'string') return
+    const prevItemId = query.back.replace('/', '')
+    if (!prevItemId) return
+    const listEl = document.getElementById(`facility-${prevItemId}`)
+    if (!listEl) return
+    listEl.scrollIntoView({ behavior: 'instant' as ScrollBehavior })
+    listEl?.focus()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <>
@@ -118,35 +133,23 @@ const MapPage: Page<MapProps> = ({ records: originalRecords }) => {
             : `${texts.resultPageTitle} – ${texts.siteTitle}`}
         </title>
       </Head>
-      {labels.filter((label) => label.isActive).length > 0 && (
+      <ActiveFiltersList />
+
+      {filteredRecords.length === 0 && (
         <div className="p-5 border-b border-gray-20 bg-gray-10 bg-opacity-25">
-          <p className="text-sm font-bold">{texts.resultPageIntro}</p>
-          <ul className="mt-2 md:mt-3 flex flex-wrap gap-1 md:gap-2">
-            {labels
-              .filter((label) => label.isActive)
-              .map((label) => (
-                <Button
-                  key={label.id}
-                  tag="button"
-                  disabled={true}
-                  scheme="primary"
-                  size="extrasmall"
-                  className="!bg-primary !text-white !cursor-default flex gap-x-1 items-center"
-                >
-                  {label.fields.text}
-                </Button>
-              ))}
-          </ul>
+          <p className="text-sm font-bold">{texts.noResults}</p>
         </div>
       )}
 
-      <ul className="pb-28">
-        {filteredRecords.map((record) => (
-          <li key={record.id}>
-            <FacilityListItem facility={record} />
-          </li>
-        ))}
-      </ul>
+      {filteredRecords.length > 0 && (
+        <ul className="pb-28">
+          {filteredRecords.map((record) => (
+            <li key={record.id}>
+              <FacilityListItem facility={record} />
+            </li>
+          ))}
+        </ul>
+      )}
     </>
   )
 }
