@@ -20,11 +20,15 @@ import { Arrow } from './icons/Arrow'
 import TextSearch from './TextSearch'
 import { useActiveIdsBySearchTerm } from '@lib/hooks/useActiveIdsBySearchTerm'
 import { Spinner } from './icons/Spinner'
+import { useRouter } from 'next/router'
+import { useIsMobile } from '@lib/hooks/useIsMobile'
 
 export const FiltersList: FC<{
   recordsWithOnlyLabels: RecordsWithOnlyLabelsType[]
   onSubmit?: () => void
 }> = ({ recordsWithOnlyLabels, onSubmit = () => undefined }) => {
+  const { pathname } = useRouter()
+  const isMobile = useIsMobile()
   const texts = useTexts()
   const labels = useFiltersWithActiveProp()
   const [urlState, updateUrlState] = useUrlState()
@@ -77,6 +81,7 @@ export const FiltersList: FC<{
     updateUrlState({ tags: newTags })
   }
 
+  const showSubmitButton = pathname.trim().split('?')[0] === '/' || isMobile
   return (
     <div className="pb-20 lg:pb-0 @container">
       <div className="@md:pt-10 flex flex-wrap gap-x-8 pb-6 @md:pb-8">
@@ -194,41 +199,43 @@ export const FiltersList: FC<{
       >
         {texts.filtersGeoSearchLabel}
       </SwitchButton>
-      <Button
-        scheme="primary"
-        size="large"
-        className={classNames('w-full @md:w-max @md:min-w-[324px]', 'group')}
-        href="/map"
-        query={latitude && longitude ? { latitude, longitude } : {}}
-        tag="a"
-        onClick={() => {
-          onSubmit()
-        }}
-        icon={
-          textSearchLoading ? (
-            <Spinner className={classNames('animate-spin')} />
-          ) : (
-            <Arrow
-              className={classNames(
-                'transition-transform group-hover:translate-x-0.5 group-disabled:group-hover:translate-x-0'
-              )}
-            />
-          )
-        }
-        disabled={filteredFacilitiesCount === 0 || fieldsDisabled}
-        tooltip={
-          filteredFacilitiesCount === 0 && (
-            <span>{texts.filtersButtonTextFilteredNoResultsHint}</span>
-          )
-        }
-      >
-        {getSubmitText({
-          texts,
-          isLoading: textSearchLoading,
-          count: filteredFacilitiesCount,
-          total,
-        })}
-      </Button>
+      {showSubmitButton && (
+        <Button
+          scheme="primary"
+          size="large"
+          className={classNames('w-full @md:w-max @md:min-w-[324px]', 'group')}
+          href="/map"
+          query={latitude && longitude ? { latitude, longitude } : {}}
+          tag="a"
+          onClick={() => {
+            onSubmit()
+          }}
+          icon={
+            textSearchLoading ? (
+              <Spinner className={classNames('animate-spin')} />
+            ) : (
+              <Arrow
+                className={classNames(
+                  'transition-transform group-hover:translate-x-0.5 group-disabled:group-hover:translate-x-0'
+                )}
+              />
+            )
+          }
+          disabled={filteredFacilitiesCount === 0 || fieldsDisabled}
+          tooltip={
+            filteredFacilitiesCount === 0 && (
+              <span>{texts.filtersButtonTextFilteredNoResultsHint}</span>
+            )
+          }
+        >
+          {getSubmitText({
+            texts,
+            isLoading: textSearchLoading,
+            count: filteredFacilitiesCount,
+            total,
+          })}
+        </Button>
+      )}
     </div>
   )
 }
