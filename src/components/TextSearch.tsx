@@ -1,35 +1,17 @@
 import { TextsMapType, useTexts } from '@lib/TextsContext'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import TextInput from './TextInput'
-import Checkbox from './Checkbox'
 import classNames from '@lib/classNames'
 import { Check } from './icons/Check'
 import { Cross } from './icons/Cross'
-import FacilityType from './FacilityType'
-import {
-  facilityTypeToKeyMap,
-  getKeyByFacilityType,
-} from '@lib/facilityTypeUtil'
-import { MinimalRecordType } from '@lib/mapRecordToMinimum'
-
-type CategoriesType = Partial<{
-  categorySelfHelp: boolean
-  categoryAdvising: boolean
-  categoryClinics: boolean
-  categoryOnlineOffers: boolean
-  categoryDistrictOfficeHelp: boolean
-}>
-interface StateType {
-  text: string
-  categories: CategoriesType
-}
+import { StateType } from './TypeCheckboxesFilter'
 
 interface TextSearchProps extends StateType {
   onChange: (state: Partial<StateType>) => void
   disabled?: boolean
 }
 
-type CategoriesTextMapType = Record<keyof CategoriesType, string>
+type CategoriesTextMapType = Record<keyof StateType['categories'], string>
 
 function TextSearch({
   text: initialText,
@@ -60,16 +42,6 @@ function TextSearch({
   useEffect(() => {
     setText(initialText || '')
   }, [initialText])
-
-  const checkboxes = useMemo(() => {
-    const facilityTypeKeys = Object.keys(
-      facilityTypeToKeyMap
-    ) as MinimalRecordType['type'][]
-    return facilityTypeKeys.map((type) => ({
-      id: getKeyByFacilityType(type),
-      type,
-    }))
-  }, [])
 
   return (
     <fieldset
@@ -132,25 +104,6 @@ function TextSearch({
           <Check className="scale-90 -mt-1" />
         </button>
       </div>
-      {checkboxes.map(({ id, type }) => (
-        <Checkbox
-          key={id}
-          id={id}
-          disabled={disabled}
-          onChange={(evt) => {
-            onChange({
-              text,
-              categories: {
-                ...categories,
-                [id]: evt.target.checked,
-              },
-            })
-          }}
-          checked={!!categories[id]}
-        >
-          <FacilityType type={type} />
-        </Checkbox>
-      ))}
     </fieldset>
   )
 }
