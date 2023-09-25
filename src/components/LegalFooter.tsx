@@ -3,10 +3,12 @@ import { FC } from 'react'
 import Link from 'next/link'
 import classNames from '@lib/classNames'
 import { useRouter } from 'next/router'
+import { useUrlState } from '@lib/UrlStateContext'
 
 export const LegalFooter: FC = () => {
   const texts = useTexts()
   const { query } = useRouter()
+  const [, , resetUrlState] = useUrlState()
 
   return (
     <>
@@ -29,10 +31,8 @@ export const LegalFooter: FC = () => {
             )}
           >
             <Link
-              href={{
-                pathname: '/map',
-                query,
-              }}
+              onClick={() => resetUrlState()}
+              href={{ pathname: '/map', query: {} }}
               className={classNames(
                 `underline transition-colors hover:text-primary`,
                 `focus:outline-none focus:ring-2 focus:ring-primary`,

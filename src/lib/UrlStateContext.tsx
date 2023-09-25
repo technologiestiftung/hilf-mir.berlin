@@ -20,16 +20,24 @@ type ParsedSearchTermCategoriesType = {
 }
 
 type SetUrlStateHandlerType = (newState: PageQueryType) => void
+type ResetUrlStateHandlerType = () => void
 
-const UrlStateContext = createContext<[PageQueryType, SetUrlStateHandlerType]>([
-  {},
-  () => undefined,
-])
+const UrlStateContext = createContext<
+  [PageQueryType, SetUrlStateHandlerType, ResetUrlStateHandlerType]
+>([{}, () => undefined, () => undefined])
 
 const Provider = UrlStateContext.Provider
 
-export const useUrlState = (): [PageQueryType, SetUrlStateHandlerType] =>
-  useContext(UrlStateContext) as [PageQueryType, SetUrlStateHandlerType]
+export const useUrlState = (): [
+  PageQueryType,
+  SetUrlStateHandlerType,
+  ResetUrlStateHandlerType
+] =>
+  useContext(UrlStateContext) as [
+    PageQueryType,
+    SetUrlStateHandlerType,
+    ResetUrlStateHandlerType
+  ]
 
 export const UrlStateProvider: FC = ({ children }) => {
   const { query, pathname } = useRouter()
@@ -84,6 +92,11 @@ export const UrlStateProvider: FC = ({ children }) => {
     [query.id, pathname, state, updateReactUrlState]
   )
 
+  const resetUrlState = useCallback(() => {
+    updateStateWindowLocation(pathname, {})
+    updateReactUrlState({})
+  }, [pathname, updateReactUrlState])
+
   // UPDATE REACT STATE ON NEXTJS ROUTER QUERY CHANGE
   useEffect(
     () => updateReactUrlState(mappedQuery),
@@ -111,7 +124,11 @@ export const UrlStateProvider: FC = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query.id, pathname])
 
-  return <Provider value={[state, updateUrlState]}>{children}</Provider>
+  return (
+    <Provider value={[state, updateUrlState, resetUrlState]}>
+      {children}
+    </Provider>
+  )
 }
 
 export function urlSearchCategoriesToStateSearchCategories(
