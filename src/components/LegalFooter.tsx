@@ -3,7 +3,7 @@ import { FC } from 'react'
 import Link from 'next/link'
 import classNames from '@lib/classNames'
 import { useRouter } from 'next/router'
-import { useUrlState } from '@lib/UrlStateContext'
+import { allOffersStateDefault, useUrlState } from '@lib/UrlStateContext'
 
 export const LegalFooter: FC = () => {
   const texts = useTexts()
@@ -32,7 +32,12 @@ export const LegalFooter: FC = () => {
           >
             <Link
               onClick={() => resetUrlState()}
-              href={{ pathname: '/map', query: {} }}
+              href={{
+                pathname: '/map',
+                query: {
+                  qCategories: allOffersStateDefault.qCategories?.join(','),
+                },
+              }}
               className={classNames(
                 `underline transition-colors hover:text-primary`,
                 `focus:outline-none focus:ring-2 focus:ring-primary`,

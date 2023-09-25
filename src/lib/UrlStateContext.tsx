@@ -28,6 +28,16 @@ const UrlStateContext = createContext<
 
 const Provider = UrlStateContext.Provider
 
+export const allOffersStateDefault: PageQueryType = {
+  qCategories: stateSearchCategoriesToUrlSearchCategories({
+    categorySelfHelp: true,
+    categoryAdvising: true,
+    categoryClinics: true,
+    categoryDistrictOfficeHelp: true,
+    categoryOnlineOffers: true,
+  }),
+}
+
 export const useUrlState = (): [
   PageQueryType,
   SetUrlStateHandlerType,
@@ -92,9 +102,9 @@ export const UrlStateProvider: FC = ({ children }) => {
     [query.id, pathname, state, updateReactUrlState]
   )
 
-  const resetUrlState = useCallback(() => {
-    updateStateWindowLocation(pathname, {})
-    updateReactUrlState({})
+  const resetUrlStateToAll = useCallback(() => {
+    updateStateWindowLocation(pathname, allOffersStateDefault)
+    updateReactUrlState(allOffersStateDefault)
   }, [pathname, updateReactUrlState])
 
   // UPDATE REACT STATE ON NEXTJS ROUTER QUERY CHANGE
@@ -125,7 +135,7 @@ export const UrlStateProvider: FC = ({ children }) => {
   }, [query.id, pathname])
 
   return (
-    <Provider value={[state, updateUrlState, resetUrlState]}>
+    <Provider value={[state, updateUrlState, resetUrlStateToAll]}>
       {children}
     </Provider>
   )
