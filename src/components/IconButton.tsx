@@ -22,8 +22,8 @@ const commonClasses = [
   `h-12 w-12 border border-gray-20 bg-white rounded`,
   `justify-center items-center shrink-0`,
   `hover:bg-primary hover:text-white transition-colors`,
-  `focus:outline-none focus:ring-2 focus:ring-primary`,
-  `focus:ring-offset-2 focus:ring-offset-white focus:z-30`,
+  `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary`,
+  `focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:z-30`,
 ]
 
 export const IconButton: FC<IconButtonPropsType> = ({
