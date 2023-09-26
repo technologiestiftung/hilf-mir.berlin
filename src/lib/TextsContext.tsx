@@ -129,6 +129,7 @@ const defaultValue = {
   optionalFurtherSearchIntroText: '',
   filtersButtonLoading: '',
   websiteLabel: '',
+  offerTypesIntroText: '',
 }
 
 export type TextsMapType = typeof defaultValue
