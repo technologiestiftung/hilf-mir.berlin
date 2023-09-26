@@ -22,6 +22,7 @@ import { useActiveIdsBySearchTerm } from '@lib/hooks/useActiveIdsBySearchTerm'
 import { Spinner } from './icons/Spinner'
 import { useRouter } from 'next/router'
 import { useIsMobile } from '@lib/hooks/useIsMobile'
+import TypeCheckboxesFilter from './TypeCheckboxesFilter'
 
 export const FiltersList: FC<{
   recordsWithOnlyLabels: RecordsWithOnlyLabelsType[]
@@ -118,6 +119,24 @@ export const FiltersList: FC<{
           </button>
         )}
       </div>
+      <p className="text-lg mb-6">{texts.offerTypesIntroText}</p>
+      <div className="flex gap-8 flex-wrap text-lg mb-6">
+        <TypeCheckboxesFilter
+          onChange={({ text, categories }) =>
+            updateUrlState({
+              ...urlState,
+              q: text,
+              qCategories:
+                stateSearchCategoriesToUrlSearchCategories(categories),
+            })
+          }
+          text={urlState.q || ''}
+          categories={urlSearchCategoriesToStateSearchCategories(
+            urlState.qCategories
+          )}
+          disabled={fieldsDisabled}
+        />
+      </div>
       <p className="text-lg mb-6">{texts.optionalFurtherSearchIntroText}</p>
       <div className="flex gap-8 flex-wrap text-lg mb-6">
         <TextSearch
@@ -186,7 +205,6 @@ export const FiltersList: FC<{
                   break
               }
             }}
-            className="mb-12"
           />
         </div>
       </div>

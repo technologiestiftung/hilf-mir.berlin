@@ -21,16 +21,16 @@ export const SwitchButton: FC<SwitchButtonPropsType> = ({
     onClick={() => !disabled && onToggle(!value)}
     className={classNames(
       className,
-      `mb-8 flex w-max gap-5 text-lg items-center`,
+      `mb-8 flex w-max max-w-full gap-4 xs:gap-5 text-lg items-center`,
       `transition-colors relative text-left`,
-      `focus:outline-none group`,
+      `focus:outline-none group leading-5`,
       !disabled && `hover:text-primary`,
       disabled && `cursor-not-allowed text-gray-40`
     )}
   >
     <span
       className={classNames(
-        `rounded-full p-1 flex relative w-[61px] transition-colors`,
+        `rounded-full p-1 flex relative w-[61px] transition-colors shrink-0`,
         !disabled && [
           `border `,
           `group-focus:outline-none group-focus:ring-2 group-focus:ring-primary`,
@@ -55,7 +55,7 @@ export const SwitchButton: FC<SwitchButtonPropsType> = ({
         )}
       />
     </span>
-    {children}
+    <span>{children}</span>
     {tooltip && (
       <span
         className={classNames(
