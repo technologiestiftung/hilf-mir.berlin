@@ -21,7 +21,7 @@ interface ButtonType {
 const getSizeClasses = (size: ButtonType['size']): string => {
   switch (size) {
     case 'large':
-      return 'text-2xl py-3 px-5 rounded gap-x-5'
+      return 'text-xl xs:text-2xl py-3 px-5 rounded gap-x-5'
     case 'small':
       return 'text-base py-2 px-3 rounded gap-x-2'
     case 'extrasmall':
