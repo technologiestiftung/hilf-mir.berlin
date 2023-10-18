@@ -40,7 +40,7 @@ const FAQS: {
   },
   {
     question:
-      'Welche Einrichtungen können NICHT im bei HILF-MIR Berlin gefunden werden?',
+      'Welche Einrichtungen können NICHT bei HILF-MIR Berlin gefunden werden?',
     answer: (
       <>
         <p>
@@ -58,12 +58,16 @@ const FAQS: {
           und andere besondere Wohnformen sind Leistungen der Teilhabe für
           Menschen mit einer seelischen Behinderung. Ob du für diese in Frage
           kommst, erfährst du im Gespräch mit dem Teilhabefachdienst von deinem
-          Bezirk.
+          Bezirk{' '}
+          <a href="https://www.teilhabeberatung.de/artikel/ueber-die-app-teilhabeberatung">
+            oder die Teilhabeberatung-App
+          </a>
+          .
         </p>
         <p>
-          Selbsthilfegruppen können wir in der ersten Version von HILF-MIR
-          Berlin noch nicht integrieren. Aktuell findest du eine gute Übersicht
-          über passende Selbsthilfegruppen auf{' '}
+          Bisher können wir nur einzelne Selbsthilfegruppen in dieser Version
+          von HILF-MIR Berlin integrieren. Aktuell findest du eine gute
+          Übersicht über passende Selbsthilfegruppen auf{' '}
           <a href="https://sekis-berlin.de/">Sekis-Berlin</a> und bei der{' '}
           <a href="https://www.landesstelle-berlin.de/adressen/suchtselbsthilfegruppen/suche-suchtselbsthilfegruppen-in-berlin/">
             Landesstelle für Suchtfragen
