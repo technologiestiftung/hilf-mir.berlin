@@ -54,9 +54,9 @@ export interface TableRowType extends Record<string, unknown> {
     Art_der_Anmeldung: string
     Weitere_Offnungszeiten: string
     /** The facility's latitude */
-    lat: number
+    lat: string
     /** The facility's longitude */
-    long: number
+    long: string
     Kategorie: string
     Typ: 'Beratung' | 'Klinik' | 'Amt' | 'Online' | 'Selbsthilfe'
   }

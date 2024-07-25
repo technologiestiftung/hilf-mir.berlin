@@ -30,8 +30,8 @@ export const mapRecordToMinimum = (record: TableRowType): MinimalRecordType => {
   return {
     id: record.id,
     title: record.fields.Einrichtung,
-    latitude: record.fields.lat,
-    longitude: record.fields.long,
+    latitude: Number(record.fields.lat.replace(',', '.')),
+    longitude: Number(record.fields.long.replace(',', '.')),
     ...getRecordOpeningTimesBounds(record.fields),
     labels: record.fields.Schlagworte,
     languages: splitString(record.fields.Sprachen, ','),
