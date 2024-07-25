@@ -53,13 +53,9 @@ const fakeData: Omit<TableRowType, 'id'>[] = Array.from(Array(300)).map(() => {
       EMail: faker.internet.email(),
       Hausnummer: `${faker.datatype.number({ max: 350 })}`,
       // TODO: Fakers latitude produces weird, nor really random-looking results. Improve that.
-      lat: parseFloat(
-        faker.address.latitude(52.645919276537, 52.54470760200334, 6)
-      ),
+      lat: faker.address.latitude(52.645919276537, 52.54470760200334, 6),
       // TODO: Fakers latitude produces weird, nor really random-looking results. Improve that.
-      long: parseFloat(
-        faker.address.longitude(13.381266029328117, 13.349337606247445, 6)
-      ),
+      long: faker.address.longitude(13.381266029328117, 13.349337606247445, 6),
       PLZ: `${faker.datatype.number({ min: 10_000, max: 13_000 })}`,
       Schlagworte: createRandomArrayFromArray(
         ['1', '2', '3', '4', '5', '6'],
