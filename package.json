@@ -18,7 +18,7 @@
     "@headlessui/react": "1.7.8",
     "@tailwindcss/container-queries": "0.1.1",
     "date-fns": "2.29.3",
-    "maplibre-gl": "2.4.0",
+    "maplibre-gl": "4.7.1",
     "next": "13.4.12",
     "react": "18.2.0",
     "react-dom": "18.2.0",
