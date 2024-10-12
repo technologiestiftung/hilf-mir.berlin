@@ -78,6 +78,45 @@ const FAQS: {
   },
   {
     question:
+      'Wie funktioniert das psychiatrische Versorgungssystem in Berlin?',
+    answer: (
+      <>
+        <p>
+          Das psychiatrische Versorgungssystem in Berlin beinhaltet Hilfe-,
+          Versorgungs- und Betreuungsangebote, die wohnortnah organisiert und
+          auf die Bedarfe der Betroffenen zugeschnitten sind. Zum
+          Versorgungssystem gehören neben den Krankenhäusern, niedergelassenen
+          Fachärztinnen und Fachärzten, Psychotherapeutinnen und
+          Psychotherapeuten sowie dem Öffentlichen Gesundheitsdienst auch viele
+          verschiedenen Beratungs-, Beschäftigungs- und Betreuungsmöglichkeiten.
+          Mehr Informationen findest du bei der{' '}
+          <a href="https://www.berlin.de/lb/psychiatrie/versorgungssystem/">
+            Landesbeauftragten für psychische Gesundheit
+          </a>
+          .
+        </p>
+      </>
+    ),
+  },
+  {
+    question:
+      'Wo finde ich verlässliche Informationen zu psychischer Gesundheit?',
+    answer: (
+      <>
+        <p>
+          Es ist gut, sich über psychische Gesundheit zu informieren, um zu
+          erkennen ob und welche Art von Unterstützung benötigt wird. Aktuell
+          findest du eine gute Übersicht auf der{' '}
+          <a href="https://www.psychenet.de/de/psychische-gesundheit.html">
+            Seite des Netzes psychische Gesundheit
+          </a>
+          .
+        </p>
+      </>
+    ),
+  },
+  {
+    question:
       'Welche Daten werden von mir gespeichert, wenn ich HILF-MIR Berlin benutze?',
     answer: (
       <>
@@ -189,7 +228,7 @@ const FAQS: {
         <p>
           HILF-MIR Berlin ist ein Angebot des{' '}
           <a href="https://www.citylab-berlin.org">CityLAB Berlin</a> und wurde
-          durch die Senatsverwaltung für Wissenschaft, Pflege und Gleichstellung
+          durch die Senatsverwaltung für Wissenschaft, Gesundheit und Pflege
           unterstützt.
         </p>
       </>
@@ -210,7 +249,7 @@ const FAQS: {
   },
   {
     question:
-      'Sie haben schlechte Erfahrungen mit der psychiatrischen Versorgung gemacht?',
+      'Du hast schlechte Erfahrungen mit der psychiatrischen Versorgung gemacht?',
     answer: (
       <>
         <p>
@@ -220,7 +259,7 @@ const FAQS: {
           Angehörige und professionell Tätige. Du kannst dich dort anonym und
           unbürokratisch über mögliche Beschwerdewege und alternative
           Handlungsmöglichkeiten informieren. Auf Wunsch wirst du bei der
-          Klärung Ihrer Beschwerdeanliegen gegenüber Dritten unterstützt. Der
+          Klärung deiner Beschwerdeanliegen gegenüber Dritten unterstützt. Der
           Fokus der BIP liegt dabei auf Behandlungen-, Betreuungs- und
           Unterbringungsbedingungen oder Umgangsweisen.
         </p>
