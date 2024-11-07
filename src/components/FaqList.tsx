@@ -210,6 +210,42 @@ const FAQS: {
   },
   {
     question:
+      'Welche Interessenvertretungen für psychiatrieerfahrene Personen gibt es in Berlin?',
+    answer: (
+      <p>
+        Die folgenden Betroffenen- oder Angehörigenverbände sind Mitglied oder
+        Stellvertretende im Berliner Landesbeirat für psychische Gesundheit:
+        <ul>
+          <li>
+            <a href="http://www.apk-berlin.de/de">
+              Angehörige psychisch erkrankter Menschen Berlin e.V.
+            </a>
+          </li>
+          <li>
+            <a href="https://bopp-ev.de/">
+              Berliner Organisation Psychiatrie-Erfahrener und
+              Psychiatrie-Betroffener
+            </a>
+          </li>
+          <li>
+            <a href="https://www.bipolaris.de/"> Bipolaris e.V.</a>
+          </li>
+          <li>
+            <a href="https://bpe-online.de/">
+              Bundesverband Psychiatrie-Erfahrener e.V.
+            </a>
+          </li>
+          <li>
+            <a href="https://expeerienced.de/">
+              exPEERienced – erfahren mit seelischen Krisen e.V.
+            </a>
+          </li>
+        </ul>
+      </p>
+    ),
+  },
+  {
+    question:
       'Sie haben schlechte Erfahrungen mit der psychiatrischen Versorgung gemacht?',
     answer: (
       <>
