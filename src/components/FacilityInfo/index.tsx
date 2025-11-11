@@ -46,8 +46,22 @@ export const FacilityInfo: FC<FacilityInfoType> = ({ facility }) => {
   const [urlState] = useUrlState()
   const texts = useTexts()
   const parsedFacilty = mapRecordToMinimum(facility)
-  const isOpened = useIsFacilityOpened(parsedFacilty)
   const { allLabels } = useRecordLabels(facility.fields.Schlagworte)
+  const isOpened = useIsFacilityOpened(parsedFacilty)
+
+  // If facility doesn't have valid coordinates, we can't display location-dependent info
+  if (!parsedFacilty) {
+    return (
+      <div className="px-5 pt-5">
+        <h1 className="mb-2 text-2xl break-words hyphens-auto">
+          {facility.fields.Einrichtung}
+        </h1>
+        <p className="text-red-600">
+          Fehler: Ungültige Koordinaten für diese Einrichtung.
+        </p>
+      </div>
+    )
+  }
 
   const { Strasse, Hausnummer, PLZ, Zusatz, Art_der_Anmeldung } =
     facility.fields

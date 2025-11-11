@@ -21,7 +21,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const { texts, labels, records } = await loadData()
   const recordsWithOnlyMinimum = records
     .map(mapRecordToMinimum)
-    .filter((r) => r.prioriy >= 0)
+    .filter((r): r is MinimalRecordType => r !== null && r.prioriy >= 0)
     .sort((a, b) => b.prioriy - a.prioriy || a.title.localeCompare(b.title))
 
   return {

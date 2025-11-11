@@ -21,7 +21,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   if (!record) return { notFound: true }
 
-  const minimalRecords = records.map(mapRecordToMinimum)
+  const minimalRecords = records
+    .map(mapRecordToMinimum)
+    .filter((r): r is MinimalRecordType => r !== null)
 
   return {
     props: {
