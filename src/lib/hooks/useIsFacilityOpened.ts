@@ -11,16 +11,19 @@ export function isFacilityOpened(record: MinimalRecordType): boolean {
   return todayIsAfterStart && todayIsBeforeEnd
 }
 
-export const useIsFacilityOpened = (record: MinimalRecordType): boolean => {
+export const useIsFacilityOpened = (
+  record: MinimalRecordType | null
+): boolean => {
   const [isOpened, setIsOpened] = useState(false)
 
   useEffect(() => {
-    const updateIsOpened = (): void => setIsOpened(isFacilityOpened(record))
+    const updateIsOpened = (): void =>
+      setIsOpened(record ? isFacilityOpened(record) : false)
     updateIsOpened()
     const interval = setInterval(updateIsOpened, 1000 * 60)
     return () => clearInterval(interval)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [record.open247, record.start, record.end])
+  }, [record?.open247, record?.start, record?.end])
 
   return isOpened
 }

@@ -26,7 +26,14 @@ export interface MinimalRecordType
   type: 'Beratung' | 'Klinik' | 'Selbsthilfe' | 'Amt' | 'Online'
 }
 
-export const mapRecordToMinimum = (record: TableRowType): MinimalRecordType => {
+export const mapRecordToMinimum = (
+  record: TableRowType
+): MinimalRecordType | null => {
+  // Skip records without valid coordinates
+  if (!record.fields.lat || !record.fields.long) {
+    return null
+  }
+
   return {
     id: record.id,
     title: record.fields.Einrichtung,
