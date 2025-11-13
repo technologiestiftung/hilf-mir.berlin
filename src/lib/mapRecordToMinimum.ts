@@ -26,35 +26,6 @@ export interface MinimalRecordType
   type: 'Beratung' | 'Klinik' | 'Selbsthilfe' | 'Amt' | 'Online'
 }
 
-export const hasValidData = (record: TableRowType): boolean => {
-  // Check for required fields
-  if (!record?.fields) return false
-
-  const fields = record.fields
-
-  // Check for valid coordinates
-  if (!fields.lat || !fields.long) return false
-  if (typeof fields.lat !== 'string' || typeof fields.long !== 'string')
-    return false
-  if (fields.lat.trim() === '' || fields.long.trim() === '') return false
-
-  // Check for valid basic info
-  if (!fields.Einrichtung || typeof fields.Einrichtung !== 'string')
-    return false
-  if (fields.Einrichtung.trim() === '') return false
-
-  // Check for valid type
-  const validTypes = ['Beratung', 'Klinik', 'Selbsthilfe', 'Amt', 'Online']
-  if (!fields.Typ || !validTypes.includes(fields.Typ)) {
-    // We can still process if we have a fallback, but log this
-    console.warn(
-      `Invalid or missing type for record ${record.id}: ${String(fields.Typ)}`
-    )
-  }
-
-  return true
-}
-
 export const mapRecordToMinimum = (record: TableRowType): MinimalRecordType => {
   const lat = record.fields.lat
   const long = record.fields.long

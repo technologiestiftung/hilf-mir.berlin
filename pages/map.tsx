@@ -3,11 +3,7 @@ import Head from 'next/head'
 import { useTexts } from '@lib/TextsContext'
 import { Page } from '@common/types/nextPage'
 import { MapLayout } from '@components/MapLayout'
-import {
-  mapRecordToMinimum,
-  MinimalRecordType,
-  hasValidData,
-} from '@lib/mapRecordToMinimum'
+import { mapRecordToMinimum, MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { GristLabelType } from '@common/types/gristData'
 import { useUrlState } from '@lib/UrlStateContext'
 import { useRouter } from 'next/router'
@@ -24,7 +20,6 @@ import ActiveFiltersList from '@components/ActiveFiltersList'
 export const getStaticProps: GetStaticProps = async () => {
   const { texts, labels, records } = await loadData()
   const recordsWithOnlyMinimum = records
-    .filter(hasValidData)
     .map(mapRecordToMinimum)
     .filter((r) => r.prioriy >= 0)
     .sort((a, b) => b.prioriy - a.prioriy || a.title.localeCompare(b.title))
