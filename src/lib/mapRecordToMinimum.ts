@@ -48,7 +48,7 @@ export const hasValidData = (record: TableRowType): boolean => {
   if (!fields.Typ || !validTypes.includes(fields.Typ)) {
     // We can still process if we have a fallback, but log this
     console.warn(
-      `Invalid or missing type for record ${record.id}: ${fields.Typ}`
+      `Invalid or missing type for record ${record.id}: ${String(fields.Typ)}`
     )
   }
 
