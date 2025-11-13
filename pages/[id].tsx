@@ -6,7 +6,11 @@ import { Page } from '@common/types/nextPage'
 import { MapLayout } from '@components/MapLayout'
 import { FacilityInfo } from '@components/FacilityInfo'
 import { useRouter } from 'next/router'
-import { mapRecordToMinimum, MinimalRecordType } from '@lib/mapRecordToMinimum'
+import {
+  mapRecordToMinimum,
+  MinimalRecordType,
+  hasValidData,
+} from '@lib/mapRecordToMinimum'
 import { useEffect } from 'react'
 import { loadCacheData } from '@lib/loadCacheData'
 import { loadData } from '@lib/loadData'
@@ -21,9 +25,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   if (!record) return { notFound: true }
 
-  const minimalRecords = records
-    .filter((r) => r.fields.lat !== null && r.fields.long !== null)
-    .map(mapRecordToMinimum)
+  // Check if the record has valid data
+  if (!hasValidData(record)) return { notFound: true }
+
+  const minimalRecords = records.filter(hasValidData).map(mapRecordToMinimum)
 
   return {
     props: {

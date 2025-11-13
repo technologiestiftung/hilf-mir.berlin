@@ -20,25 +20,45 @@ export type FacilityTypeKey = (typeof facilityTypeToKeyMap)[FacilityType]
 
 const facilityTypes = Object.keys(facilityTypeToKeyMap) as FacilityType[]
 
-const ucFirst = (str: string): string =>
-  str.charAt(0).toUpperCase() + str.slice(1)
+const ucFirst = (str: string): string => {
+  if (!str || typeof str !== 'string') return ''
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
 
 export const getKeyByFacilityType = (
   facilityType: MinimalRecordType['type']
-): keyof typeof colors.type =>
-  `category${ucFirst(
-    facilityTypeToKeyMap[facilityType]
-  )}` as keyof typeof colors.type
+): keyof typeof colors.type => {
+  if (!facilityType || typeof facilityType !== 'string') {
+    return 'categoryAdvising' as keyof typeof colors.type
+  }
 
-export const getColorByFacilityType = (facilityType: FacilityType): string =>
-  colors.type[getKeyByFacilityType(facilityType)]
+  const key = facilityTypeToKeyMap[facilityType]
+  if (!key) {
+    return 'categoryAdvising' as keyof typeof colors.type
+  }
+  return `category${ucFirst(key)}` as keyof typeof colors.type
+}
+
+export const getColorByFacilityType = (facilityType: FacilityType): string => {
+  if (!facilityType) {
+    return colors.type.categoryAdvising
+  }
+  return colors.type[getKeyByFacilityType(facilityType)]
+}
 
 export const getTextKeyByFacilityType = (
   facilityType: MinimalRecordType['type']
-): keyof TextsMapType =>
-  `textSearchCategory${ucFirst(
-    facilityTypeToKeyMap[facilityType]
-  )}` as keyof TextsMapType
+): keyof TextsMapType => {
+  if (!facilityType || typeof facilityType !== 'string') {
+    return 'textSearchCategoryAdvising' as keyof TextsMapType
+  }
+
+  const key = facilityTypeToKeyMap[facilityType]
+  if (!key) {
+    return 'textSearchCategoryAdvising' as keyof TextsMapType
+  }
+  return `textSearchCategory${ucFirst(key)}` as keyof TextsMapType
+}
 
 const facilityTypeColorMap = facilityTypes.reduce(
   (acc, facilityType) => ({
