@@ -21,7 +21,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   if (!record) return { notFound: true }
 
-  const minimalRecords = records.map(mapRecordToMinimum)
+  const minimalRecords = records
+    .filter((r) => r.fields.lat !== null && r.fields.long !== null)
+    .map(mapRecordToMinimum)
 
   return {
     props: {
@@ -38,7 +40,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
         }),
       },
       labels,
-      center: [record.fields.long, record.fields.lat],
+      center:
+        record.fields.long && record.fields.lat
+          ? [
+              Number(record.fields.long.replace(',', '.')),
+              Number(record.fields.lat.replace(',', '.')),
+            ]
+          : undefined,
     },
   }
 }
