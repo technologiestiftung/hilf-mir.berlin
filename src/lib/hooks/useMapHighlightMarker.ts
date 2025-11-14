@@ -18,7 +18,15 @@ export function useMapHighlightMarker(
     // Remove possibly existent markers:
     highlightedMarker.current?.remove()
 
-    if (!markerViewport?.latitude) return
+    if (
+      !markerViewport?.latitude ||
+      !markerViewport?.longitude ||
+      isNaN(markerViewport.latitude) ||
+      isNaN(markerViewport.longitude) ||
+      !isFinite(markerViewport.latitude) ||
+      !isFinite(markerViewport.longitude)
+    )
+      return
     const customMarker = document.createElement('div')
     customMarker.className = classNames(
       'w-10 h-10 bg-primary rounded-full ring-2',
