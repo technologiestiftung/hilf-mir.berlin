@@ -24,7 +24,7 @@ jobs:
       - name: Set nvmrc version as .env variable
         run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_ENV
       - name: Use Node.js (.nvmrc)
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "${{ env.NODE_VERSION }}"
       - run: npm ci
@@ -49,7 +49,7 @@ jobs:
         run: echo "##[set-output name=NVMRC;]$(cat .nvmrc)"
         id: nvm
       - name: Use Node.js (.nvmrc)
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ steps.nvm.outputs.NVMRC }}
       - run: npm ci
