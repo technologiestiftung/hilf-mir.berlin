@@ -15,7 +15,7 @@
     "downloadCacheData": "npx ts-node src/scripts/downloadCacheData.ts"
   },
   "dependencies": {
-    "@headlessui/react": "1.7.8",
+    "@headlessui/react": "2.2.9",
     "@tailwindcss/container-queries": "0.1.1",
     "date-fns": "2.29.3",
     "maplibre-gl": "2.4.0",
