@@ -38,7 +38,22 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
         }),
       },
       labels,
-      center: [record.fields.long, record.fields.lat],
+      center: (() => {
+        if (
+          !record.fields.long ||
+          !record.fields.lat ||
+          typeof record.fields.long !== 'string' ||
+          typeof record.fields.lat !== 'string'
+        ) {
+          return null
+        }
+        const lng = Number(record.fields.long.replace(',', '.'))
+        const lat = Number(record.fields.lat.replace(',', '.'))
+        if (isNaN(lng) || isNaN(lat) || !isFinite(lng) || !isFinite(lat)) {
+          return null
+        }
+        return [lng, lat] as LngLatLike
+      })(),
     },
   }
 }
@@ -57,7 +72,7 @@ interface MapProps {
   records: MinimalRecordType[]
   labels: GristLabelType[]
   record: TableRowType
-  center?: LngLatLike
+  center: LngLatLike | null
 }
 
 const FacilityPage: Page<MapProps> = ({ record }) => {
