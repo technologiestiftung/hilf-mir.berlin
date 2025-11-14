@@ -24,16 +24,24 @@ export const createGeoJsonStructure = (
 ): GeojsonType => {
   return {
     type: 'FeatureCollection',
-    features: markers.map((marker) => {
-      return {
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: [marker.longitude, marker.latitude],
-        },
-        properties: marker,
-        state: {},
-      }
-    }),
+    features: markers
+      .filter(
+        (marker) =>
+          !isNaN(marker.latitude) &&
+          !isNaN(marker.longitude) &&
+          isFinite(marker.latitude) &&
+          isFinite(marker.longitude)
+      )
+      .map((marker) => {
+        return {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [marker.longitude, marker.latitude],
+          },
+          properties: marker,
+          state: {},
+        }
+      }),
   }
 }

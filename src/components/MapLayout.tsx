@@ -69,7 +69,17 @@ export const MapLayout: FC<{
     const currentId = parseInt(`${query.id}`, 10)
     const currentRecord = records.find(({ id }) => id === currentId)
     if (!currentRecord) return
-    setSelectedFacility(currentRecord)
+    // Only set as selected facility if it has valid coordinates
+    if (
+      !isNaN(currentRecord.latitude) &&
+      !isNaN(currentRecord.longitude) &&
+      isFinite(currentRecord.latitude) &&
+      isFinite(currentRecord.longitude)
+    ) {
+      setSelectedFacility(currentRecord)
+    } else {
+      setSelectedFacility(undefined)
+    }
   }, [query.id, records])
 
   const updateSidebarVisibility = useCallback(

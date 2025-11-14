@@ -17,7 +17,10 @@ const searchData = ({
   if (!query && filters.length === 5) return data
   return data.filter((item) => {
     // check if item.fields.Typ is in the filters array
-    if (filters.length > 0 && !filters.includes(item.fields.Typ)) {
+    if (
+      filters.length > 0 &&
+      (!item.fields.Typ || !filters.includes(item.fields.Typ))
+    ) {
       return false
     }
 
