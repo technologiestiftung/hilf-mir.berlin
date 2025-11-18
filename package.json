@@ -22,7 +22,7 @@
     "next": "13.4.12",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "sanitize-html": "2.7.3",
+    "sanitize-html": "2.12.1",
     "swiper": "8.4.5",
     "swr": "2.2.0",
     "use-debounce": "10.0.0"
