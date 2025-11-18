@@ -15,17 +15,17 @@
     "downloadCacheData": "npx ts-node src/scripts/downloadCacheData.ts"
   },
   "dependencies": {
-    "@headlessui/react": "1.7.8",
+    "@headlessui/react": "1.7.19",
     "@tailwindcss/container-queries": "0.1.1",
-    "date-fns": "2.29.3",
+    "date-fns": "2.30.0",
     "maplibre-gl": "2.4.0",
     "next": "13.4.12",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
     "sanitize-html": "2.7.3",
-    "swiper": "8.4.5",
-    "swr": "2.2.0",
-    "use-debounce": "10.0.0"
+    "swiper": "8.4.7",
+    "swr": "2.3.6",
+    "use-debounce": "10.0.6"
   },
   "devDependencies": {
     "@faker-js/faker": "7.6.0",
