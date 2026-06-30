@@ -3,7 +3,7 @@ import Head from 'next/head'
 import { LegalFooter } from '@components/LegalFooter'
 import { Page } from '@common/types/nextPage'
 import classNames from '@lib/classNames'
-import { loadData } from '@lib/loadData'
+import { loadCacheData } from '@lib/loadCacheData'
 import { FaqList } from '@components/FaqList'
 import { BackButton } from '@components/BackButton'
 import { useRouter } from 'next/router'
@@ -11,7 +11,7 @@ import { About } from '@components/About'
 import { Footer } from '@components/Footer'
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { texts } = await loadData()
+  const { texts } = await loadCacheData()
   return {
     props: {
       texts,
