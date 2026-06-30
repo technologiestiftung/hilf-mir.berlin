@@ -38,6 +38,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
-# cache data
-data
+# generated JSON cache (built from data/csv/*.csv at build time)
+/data/*.json
 .vscode/settings.json

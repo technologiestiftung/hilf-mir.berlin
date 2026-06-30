@@ -1,7 +1,7 @@
 import type { GetStaticProps, NextPage } from 'next'
 import Head from 'next/head'
 import { useTexts } from '@lib/TextsContext'
-import { getGristTexts } from '@lib/requests/getGristTexts'
+import { loadData } from '@lib/loadData'
 import { useRouter } from 'next/router'
 import classNames from '@lib/classNames'
 import { Phone } from '@components/icons/Phone'
@@ -11,7 +11,7 @@ import { BackButton } from '@components/BackButton'
 import { useIsEmergencyTime } from '@lib/hooks/useIsEmergencyTime'
 
 export const getStaticProps: GetStaticProps = async () => {
-  const texts = await getGristTexts()
+  const { texts } = await loadData()
   return {
     props: { texts },
   }
