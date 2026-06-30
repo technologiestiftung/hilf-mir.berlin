@@ -49,8 +49,6 @@
     "./src/**/*.tsx",
     "./pages/**/*.ts",
     "./pages/**/*.tsx",
-    "./scripts/createFakeGristData.ts",
-    "./middleware.ts",
     ".next/types/**/*.ts"
   ],
   "exclude": [

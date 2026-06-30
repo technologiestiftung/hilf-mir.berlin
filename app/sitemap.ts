@@ -1,11 +1,11 @@
-import { loadData } from '@lib/loadData'
+import { loadCacheData } from '@lib/loadCacheData'
 import { MetadataRoute } from 'next'
 
 const baseUrl =
   process.env.NEXT_PUBLIC_BASE_URL || 'https://www.hilf-mir.berlin'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const { records: facilities } = await loadData()
+  const { records: facilities } = await loadCacheData()
   const lastModified = new Date()
 
   return [

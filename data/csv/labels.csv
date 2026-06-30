@@ -1,0 +1,25 @@
+id,text,icon,group2,order
+1,Angst & Zwänge,heartbeat,gruppe-1,
+2,Stimmen hören,ear,gruppe-1,
+3,Traurigkeit Verzweiflung & Depression,drop,gruppe-1,
+4,Essverhalten,pizza,gruppe-1,
+5,Einsamkeit,wind,gruppe-1,
+6,Beziehung zu anderen Menschen,people,gruppe-1,
+7,Alkohol,wine-glas,gruppe-2,
+8,Kiffen,blunt,gruppe-2,
+9,Drogen,drug-pills,gruppe-2,
+10,Glücksspiel,dice,gruppe-2,
+11,Gaming & Medien,game-controller,gruppe-2,
+12,Medikamente,drug-pill,gruppe-2,
+13,LSBTIQ*,,zielpublikum,4
+14,Schwangerschaft & Geburt,pregnancy-test,gruppe-3,
+15,Sexuell übertragbare Infektionen,hiv,gruppe-3,
+16,Körperliche Erkrankungen,stetoscope,gruppe-3,
+17,Frauen,,zielpublikum,1
+18,Männer,,zielpublikum,2
+20,Kinder & Jugendliche,,zielpublikum,5
+21,Senioren,,zielpublikum,6
+22,Migration & Flucht,,zielpublikum,7
+23,Gewalterfahrung,blast,gruppe-3,
+24,Divers,,zielpublikum,3
+25,Angehörige,,zielpublikum,8

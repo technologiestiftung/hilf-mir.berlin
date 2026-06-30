@@ -7,7 +7,7 @@ import { mapRecordToMinimum, MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { GristLabelType } from '@common/types/gristData'
 import { useUrlState } from '@lib/UrlStateContext'
 import { useRouter } from 'next/router'
-import { loadData } from '@lib/loadData'
+import { loadCacheData } from '@lib/loadCacheData'
 import { useCallback, useEffect, useState } from 'react'
 import { useDistanceToUser } from '@lib/hooks/useDistanceToUser'
 import { useUserGeolocation } from '@lib/hooks/useUserGeolocation'
@@ -18,7 +18,7 @@ import { useActiveIdsBySearchTerm } from '@lib/hooks/useActiveIdsBySearchTerm'
 import ActiveFiltersList from '@components/ActiveFiltersList'
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { texts, labels, records } = await loadData()
+  const { texts, labels, records } = await loadCacheData()
   const recordsWithOnlyMinimum = records
     .map(mapRecordToMinimum)
     .filter((r) => r.prioriy >= 0)

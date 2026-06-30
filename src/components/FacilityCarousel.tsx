@@ -1,4 +1,5 @@
 import { FC, useState } from 'react'
+// eslint-disable-next-line import/no-unresolved
 import { Swiper, SwiperSlide } from 'swiper/react'
 import type { Swiper as SwiperClass } from 'swiper/types'
 import { MinimalRecordType } from '@lib/mapRecordToMinimum'

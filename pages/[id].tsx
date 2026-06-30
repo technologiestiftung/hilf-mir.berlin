@@ -9,14 +9,13 @@ import { useRouter } from 'next/router'
 import { mapRecordToMinimum, MinimalRecordType } from '@lib/mapRecordToMinimum'
 import { useEffect } from 'react'
 import { loadCacheData } from '@lib/loadCacheData'
-import { loadData } from '@lib/loadData'
 import { LngLatLike } from 'maplibre-gl'
 import sanitizeHtml from 'sanitize-html'
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const id = params?.id
   if (!id || Array.isArray(id)) return { notFound: true }
-  const { texts, labels, records } = await loadData()
+  const { texts, labels, records } = await loadCacheData()
   const record = records.find((r) => `${r.id}` === `${id}`)
 
   if (!record) return { notFound: true }

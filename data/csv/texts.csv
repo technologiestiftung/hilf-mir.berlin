@@ -1,0 +1,137 @@
+id,key,de
+1,siteTitle,Hilf-Mir.Berlin
+2,homeWelcomeTitle,Willkommen bei Hilf-Mir.Berlin
+3,homeWelcomeText,"Hier findest Du schnell und einfach psychosoziale Hilfsangebote in ganz Berlin, die zu Deiner Situation passen."
+4,findOffersButtonText,Angebote finden
+5,directHelpButtonText,Sofortige Hilfe
+6,moreOffersKVBLinkText,Psychotherapie und psychiatrische Angebote sind unter der Kassenärztlichen Vereinigung zu finden
+7,moreOffersKVBLinkUrl,https://www.kvberlin.de/fuer-patienten/arzt-und-psychotherapeutensuche
+8,footerInfoPageLinkText,Informationen
+9,footerImprintLinkText,Impressum
+10,footerImprintLinkUrl,https://www.technologiestiftung-berlin.de/impressum
+11,footerPrivacyLinkText,Datenschutz
+12,footerPrivacyLinkUrl,https://www.technologiestiftung-berlin.de/datenschutz
+13,footerProjectOwnerLabel,Ein Projekt der
+14,footerTSBLogoAltText,Logo der Technologiestiftung Berlin
+15,footerProjectExecutionerLabel,Durchgeführt vom
+16,footerCityLABLogoAltText,Logo vom CityLAB Berlin
+17,footerCooperationLabel,"Unterstützt durch die Senatsverwaltung für Wissenschaft, Gesundheit und Pflege (SenWGP)."
+19,footerProjectSponsorLabel,Gefördert durch
+20,footerSentatskanzleiLogoAltText,Logo der Senatskanzlei Berlin
+21,suicidePreventionLabel,Suizidprävention
+22,suicidePreventionPhoneNumber,+49 30 666 33 488
+23,psychiatricServicesLabel,Sozialpsychiatrischer Dienst
+24,emergencyServicesLabel,Krisendienste
+25,seelsorgeLabel,Telefon Seelsorge Berlin
+26,seelsorgePhoneNumber1,(0800) 111 0 111
+27,backText,Zurück
+28,neighborhoodCharlottenburgWilmersdorfLabel,Charlottenburg-Wilmersdorf
+29,neighborhoodFriedrichshainKreuzbergLabel,Friedrichshain-Kreuzberg
+30,neighborhoodLichtenbergLabel,Lichtenberg
+31,neighborhoodMarzahnHellersdorfLabel,Marzahn-Hellersdorf
+32,neighborhoodMitteLabel,Mitte
+33,neighborhoodNeukoellnLabel,Neukölln
+34,neighborhoodPankowLabel,Pankow
+35,neighborhoodReinickendorfLabel,Reinickendorf
+36,neighborhoodSpandauLabel,Spandau
+37,neighborhoodSteglitzZehlendorfLabel,Steglitz-Zehlendorf
+38,neighborhoodTempelhofSchoenebergLabel,Tempelhof-Schöneberg
+39,neighborhoodTrepotowKoepenickLabel,Treptow-Köpenick
+40,neighborhoodCharlottenburgWilmersdorfPhoneNumber,+49 30 90291 6044
+41,neighborhoodFriedrichshainKreuzbergPhoneNumber,+49 30 90298 8400
+42,neighborhoodLichtenbergPhoneNumber,+49 30 90296 7575
+43,neighborhoodMarzahnHellersdorfPhoneNumber,+49 30 90293 3751
+44,neighborhoodMittePhoneNumber,+49 30 9018 33347
+45,neighborhoodNeukoellnPhoneNumber,+49 30 90239 2886
+46,neighborhoodPankowPhoneNumber,+49 30 90295 2863
+47,neighborhoodReinickendorfPhoneNumber,+49 30 90294 5010
+48,neighborhoodSpandauPhoneNumber,+49 30 90279 2355
+49,neighborhoodSteglitzZehlendorfPhoneNumber,+49 30 90299 4758
+50,neighborhoodTempelhofSchoenebergPhoneNumber,+49 30 90277 7575
+51,neighborhoodTrepotowKoepenickPhoneNumber,+49 30 90297 6000
+52,emergencyCharlottenburgWilmersdorfPhoneNumber,+49 30 390 63 - 20
+53,emergencyFriedrichshainKreuzbergPhoneNumber,+49 30 390 63 - 10
+54,emergencyLichtenbergPhoneNumber,+49 30 390 63 - 70
+55,emergencyMarzahnHellersdorfPhoneNumber,+49 30 390 63 - 70
+56,emergencyMittePhoneNumber,+49 30 390 63 - 10
+57,emergencyNeukoellnPhoneNumber,+49 30 390 63 - 90
+58,emergencyPankowPhoneNumber,+49 30 390 63 - 40
+59,emergencyReinickendorfPhoneNumber,+49 30 390 63 - 50
+60,emergencySpandauPhoneNumber,+49 30 390 63 - 30
+61,emergencySteglitzZehlendorfPhoneNumber,+49 30 390 63 - 60
+62,emergencyTempelhofSchoenebergPhoneNumber,+49 30 390 63 - 60
+63,emergencyTrepotowKoepenickPhoneNumber,+49 30 390 63 - 80
+64,footerTSBLogoLink,https://www.technologiestiftung-berlin.de/
+65,footerCityLABLogoLink,https://citylab-berlin.org/
+66,footerSenWGPGLogoLink,https://www.berlin.de/sen/wgpg/
+67,footerSentatskanzleiLogoLink,https://www.berlin.de/rbmskzl/
+68,welcomeFiltersHeadline,Schnell und einfach zu den passenden Angeboten
+69,welcomeFiltersText,"Wähle ein oder mehrere Themen aus, für die Du Empfehlungen erhalten möchtest. Du kannst Deine Auswahl später jederzeit anpassen."
+70,filtersButtonTextFilteredPlural,#number Angebote zeigen
+71,filtersButtonTextFilteredSingular,Ein Angebot zeigen
+72,filtersButtonTextAllFilters,Alle Angebote
+73,filtersButtonTextFilteredNoResults,Keine Ergebnisse
+74,filtersButtonTextFilteredNoResultsHint,Für diese Themenkombination gibt es leider keine Ergebnisse. Versuche weniger Schlagworte.
+75,noTargetPreferenceButtonText,Keine Präferenz
+76,orLabel,Oder
+77,filtersSearchTargetLabel,Speziell für
+78,filtersSearchTargetLabelOnCard,Speziell für
+79,filtersGeoSearchLabel,Nähe zu den Angeboten zeigen
+80,geolocationForbidden,Entweder unterstützt Dein Browser keine Geolokalisierung oder die Einwilligung wurde nicht gegeben.
+81,mapPageTitle,#number Ergebnisse
+82,opened,Geöffnet
+83,weekdayMonday,Montag
+84,weekdayTuesday,Dienstag
+85,weekdayWednesday,Mittwoch
+86,weekdayThursday,Donnerstag
+87,weekdayFriday,Freitag
+88,weekdaySaturday,Samstag
+89,weekdaySunday,Sonntag
+90,filteredResultsAmountPlural,"#number Ergebnisse passen zu Deiner Suche. Klicke auf ein Ergebnis, um mehr Informationen zu erhalten."
+91,filteredResultsAmountSingular,"Ein Ergebnis passt zu Deiner Suche. Klicke auf das Ergebnis, um mehr Informationen zu erhalten."
+92,resetFilters,Filter zurücksetzen
+93,noResults,Keine Ergebnisse für diese Suche.
+94,seeMap,Karte anzeigen
+95,seeList,Liste anzeigen
+96,filterLabel,Suche
+97,backToHome,Zurück zum Start
+98,seelsorgePhoneNumber2,(0800) 111 0 222
+99,seelsorgePhoneNumber,(0800) 111 0 111
+100,drugsPhoneLabel,Drogennotruf
+101,drugsPhoneNumber1,(030) 192 37
+102,accessibleLabel,Barrierefrei
+103,openFacilityLinkText,Einrichtung ansehen
+104,alwaysOpened,Immer geöffnet
+105,reset,Zurücksetzen
+106,distanceLabel,#distance km von mir entfernt
+107,filtersTagsLabelOnCard,Themen
+108,andAllOtherFiltersLabel,und alle anderen
+109,allOtherFiltersLabel,Alle
+110,multipleFacilitiesPopupTitle,#number Einrichtungen
+111,clickToExpandPopupLabel,Erweitern mit Klick
+112,kidsPhoneNumber1,(030) 61 00 66
+113,kidsPhoneLabel,Hotline Kinderschutz
+114,muslimSeelsorgeLabel,Muslimisches Seelsorge Telefon
+115,muslimSeelsorgePhoneNumber,(030) 443 509 821
+116,furtherEmergencyNumbersLabel,Weitere Rufnummern unter
+117,furtherEmergencyNumbersLinkText,berliner-notruf.de
+118,furtherEmergencyNumbersLinkUrl,https://www.berliner-notruf.de/
+119,languagesLabel,Sprachen
+120,disclaimerContent,Dies ist ein Angebot des CityLAB Berlin und befindet sich in der Testphase.
+121,disclaimerPrefix,Hinweis:
+122,filtersButtonTextResults,Angebote ansehen
+123,resultPageTitle,Angebote
+124,resultPageIntro,Hier sind die besten Treffer für Deine Suche nach:
+125,moreInfos,Mehr Infos
+126,textSearchLabel,Detailsuche
+127,textSearchPlaceholder,Suchbegriff eingeben
+128,textSearchCategorySelfHelp,Selbsthilfegruppen
+129,textSearchCategoryAdvising,Beratungsstellen
+130,textSearchCategoryClinics,Kliniken
+131,textSearchCategoryOnlineOffers,Onlineangebote
+132,textSearchCategoryDistrictOfficeHelp,Hilfe vom Bezirksamt
+133,optionalFurtherSearchIntroText,Du kannst optional die Suche weiter eingrenzen:
+134,filtersButtonLoading,Lädt...
+135,websiteLabel,Webseite
+136,footerMapPageLinkText,Alle Angebote
+137,offerTypesIntroText,Bitte wähle die gewünschten Angebote:

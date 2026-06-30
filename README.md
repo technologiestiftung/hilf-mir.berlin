@@ -11,8 +11,7 @@ This repo hosts the code for the [hilf-mir.berlin](https://www.hilf-mir.berlin/)
   - [Tech stack](#tech-stack)
     - [Setup](#setup)
   - [Development](#development)
-  - [Grist](#grist)
-    - [Authentik](#authentik)
+  - [Data](#data)
   - [Contributors](#contributors)
   - [Credits](#credits)
 
@@ -22,342 +21,36 @@ This repo hosts the code for the [hilf-mir.berlin](https://www.hilf-mir.berlin/)
 ## Tech stack
 
 The project is built using the React framework [Next.js](https://nextjs.org/) and [TypeScript](https://www.typescriptlang.org/).
-The data of the facilities is stored in a [self-hosted Grist instance](https://github.com/technologiestiftung/grist-core).
-The frontend is deployed to [Vercel](https://vercel.com/) and the backend is currently running on one of our own servers. See the section [grist](#grist) for a working example of the backend.
+The data of the facilities, labels and texts is stored as CSV files in this repository under [`./data/csv/`](./data/csv/) (see [Data](#data)).
+The frontend is deployed to [Vercel](https://vercel.com/).
 The map is provided by [maptiler.com](https://www.maptiler.com/)
 
 
 
 ### Setup
 
-- Copy `.env.example` to `.env` and fill in the required environment variables as per `.env.example` to connect to your Grist instance.
+- Copy `.env.example` to `.env` and fill in the required environment variables as per `.env.example` (only the MapTiler keys are needed to render the map locally).
 - Install your dependencies via `npm ci`
 
 
 ## Development
 
-- Start your grist instance
-- Create the tables. You can find an example sqlite database in `./docs/example.db` with test data and the right rows. 
-- Install dependencies via `npm ci` 
-- Create a file `.env.development.local` and/or `.env` and fill it according to `.env.example`. The environment variables will connect to your development Grist instance.
-- Create fake data in your grist instance for development `npx ts-node src/scripts/createFakeGristData.ts` 
-- Create your local cache. `npm run downloadCacheData` (will create json from your records under `./data/`)
+- Install dependencies via `npm ci`
+- Copy `.env.example` to `.env` and fill it according to `.env.example`
+- Build the local JSON cache from the committed CSVs: `npm run buildData` (reads `./data/csv/*.csv` and writes `./data/*.json`)
 - Run `npm run dev` to get a development server running at [http://localhost:3000](http://localhost:3000)
 
-If you want to start the app with the production table data, please change the values of 
-`.env.development.local` to point to the production table.
+`npm run build` runs `buildData` automatically before building the site, so the JSON cache is always regenerated from the CSVs.
 
-## Grist
+## Data
 
-Here is a working example of a `docker-compose.yml` to run Grist. Note that we are running this on a single node docker swarm. You might need to adjust this. Since grist has no auth built in, we use [authentik](https://goauthentik.io/) (see below) for authentication. See [this guide](https://support.getgrist.com/install/saml/#example-authentik) hon how to connect both. 
+All content is kept as CSV files under [`./data/csv/`](./data/csv/) and is the source of truth for the app:
 
-```yaml
-version: "3.9"
-services:
-  grist:
-    # even though it is bad practice to use the latest tag, we want the latest state. Last tag v0.7.9 is 4 month old. There has been so many changes since then.
-    # Other possibility would be to pull latest and rename the tag to mach some versioning we can use.
-    image: gristlabs/grist:latest
-    restart: always
-    # currently not needed with pynbox
-    # once gvisor is available in grist-core we can use it
-    # runtime: runsc
-    ports:
-      - published: 8080
-        target: 80
-        mode: host
-    volumes:
-      - grist:/persist
-      - /path/to/your/custom.css:/grist/static/custom.css
-    deploy:
-      mode: replicated
-      replicas: 1
-      placement:
-        constraints: [ node.role == manager ]
-    environment:
+- `records.csv` — the facilities. Only rows with `Anzeigen` set to `1` are shown in the app. The `Schlagworte` column holds a JSON array of label IDs referencing `labels.csv`.
+- `labels.csv` — the filter labels (id, text, icon, `group2`, order).
+- `texts.csv` — the UI texts as `key`/`de` pairs.
 
-      DEBUG: "1"
-      PORT: 80
-      APP_DOC_URL: https://$GRIST_DOMAIN
-      APP_HOME_URL: https://$GRIST_DOMAIN
-        # GRIST_SINGLE_ORG: docs
-      GRIST_ORG_IN_PATH: $GRIST_ORG_IN_PATH
-      GRIST_DOMAIN: $GRIST_DOMAIN
-      # GRIST_HOST: $GRIST_DOMAIN
-      # GRIST_DEFAULT_EMAIL: $GRIST_DEFAULT_EMAIL
-      GRIST_EXPERIMENTAL_PLUGINS: $GRIST_EXPERIMENTAL_PLUGINS
-      GRIST_SANDBOX_FLAVOR: $GRIST_SANDBOX_FLAVOR
-      GRIST_SESSION_SECRET: $GRIST_SESSION_SECRET
-      APP_STATIC_INCLUDE_CUSTOM_CSS: $APP_STATIC_INCLUDE_CUSTOM_CSS
-
-      GRIST_SAML_IDP_CERTS: $GRIST_SAML_IDP_CERTS
-      GRIST_SAML_SP_KEY: $GRIST_SAML_SP_KEY
-      GRIST_SAML_SP_CERT: $GRIST_SAML_SP_CERT
-      GRIST_SAML_IDP_LOGIN: $GRIST_SAML_IDP_LOGIN
-      GRIST_SAML_IDP_LOGOUT: $GRIST_SAML_IDP_LOGOUT
-      GRIST_HIDE_UI_ELEMENTS: helpCenter,billing,templates
-      PYTHON_VERSION: $PYTHON_VERSION
-      PYTHON_VERSION_ON_CREATION: $PYTHON_VERSION_ON_CREATION
-      GRIST_FORCE_LOGIN: $GRIST_FORCE_LOGIN
-      GRIST_SAML_IDP_UNENCRYPTED: $GRIST_SAML_IDP_UNENCRYPTED
-      GRIST_SAML_SP_HOST: https://$GRIST_DOMAIN
-      PIPE_MODE: $PIPE_MODE
-      ALLOWED_WEBHOOK_DOMAINS: $ALLOWED_WEBHOOK_DOMAINS
-volumes:
-  grist:
-```
-
-Here is an example .env for you to use:
-
-```plain
-GRIST_DOMAIN=
-GRIST_SESSION_SECRET=
-GRIST_SANDBOX_FLAVOR=
-GRIST_ORG_IN_PATH=
-APP_DOC_URL=
-APP_HOME_URL=
-PYTHON_VERSION=
-PYTHON_VERSION_ON_CREATION=
-GRIST_SAML_IDP_LOGIN=
-GRIST_SAML_IDP_LOGOUT=
-GRIST_SAML_IDP_CERTS=
-GRIST_SAML_SP_KEY=
-GRIST_SAML_SP_CERT=
-GRIST_EXPERIMENTAL_PLUGINS=
-GRIST_HIDE_UI_ELEMENTS=
-GRIST_FORCE_LOGIN=
-GRIST_SAML_IDP_UNENCRYPTED=
-GRIST_SAML_SP_HOST=
-PORT=
-```
-
-
-### Authentik
-
-Here is our authentik docker-compose.yml configuration.
-
-
-```yaml
-version: '3.4'
-
-services:
-  postgresql:
-    image: docker.io/library/postgres:12-alpine
-    restart: unless-stopped
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == manager
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"
-        ]
-      start_period: 20s
-      interval: 30s
-      retries: 5
-      timeout: 5s
-    volumes:
-      - database:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_PASSWORD=${PG_PASS:?database password required}
-      - POSTGRES_USER=${PG_USER:-authentik}
-      - POSTGRES_DB=${PG_DB:-authentik}
-    # env_file:
-    #   - .env
-  redis:
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == manager
-    image: docker.io/library/redis:alpine
-    command: --save 60 1 --loglevel warning
-    restart: unless-stopped
-    healthcheck:
-      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
-      start_period: 20s
-      interval: 30s
-      retries: 5
-      timeout: 3s
-    volumes:
-      - redis:/data
-  server:
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2022.9.0}
-    restart: unless-stopped
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == manager
-    command: server
-    environment:
-
-      AUTHENTIK_SECRET_KEY: $AUTHENTIK_SECRET_KEY
-      AUTHENTIK_ERROR_REPORTING__ENABLED: "true"
-      # ----- email
-      # SMTP Host Emails are sent to
-      AUTHENTIK_EMAIL__HOST: $AUTHENTIK_EMAIL__HOST
-      AUTHENTIK_EMAIL__PORT: $AUTHENTIK_EMAIL__PORT
-      # Optionally authenticate (don't add quotation marks to you password)
-      AUTHENTIK_EMAIL__USERNAME: $AUTHENTIK_EMAIL__USERNAME
-      AUTHENTIK_EMAIL__PASSWORD: $AUTHENTIK_EMAIL__PASSWORD
-      # Use StartTLS
-      AUTHENTIK_EMAIL__USE_TLS: $AUTHENTIK_EMAIL__USE_TLS
-      # Use SSL
-      AUTHENTIK_EMAIL__USE_SSL: $AUTHENTIK_EMAIL__USE_SSL
-      AUTHENTIK_EMAIL__TIMEOUT: 10
-      # Email address authentik will send from, should have a correct @domain
-      AUTHENTIK_EMAIL__FROM: $AUTHENTIK_EMAIL__FROM
-
-      GEOIPUPDATE_ACCOUNT_ID: $GEOIPUPDATE_ACCOUNT_ID
-      GEOIPUPDATE_LICENSE_KEY: $GEOIPUPDATE_LICENSE_KEY
-      AUTHENTIK_AUTHENTIK__GEOIP: /geoip/GeoLite2-City.mmdb
-
-      AUTHENTIK_PORT_HTTP: 9004
-      AUTHENTIK_PORT_HTTPS: 9444
-      AUTHENTIK_TAG: 2022.9.0
-      AUTHENTIK_REDIS__HOST: redis
-      AUTHENTIK_POSTGRESQL__HOST: postgresql
-      AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
-      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
-      AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
-      # AUTHENTIK_ERROR_REPORTING__ENABLED: "true"
-    volumes:
-      - media:/media
-      - custom-templates:/templates
-      - geoip:/geoip
-    # env_file:
-    #   - .env
-    ports:
-      - published: 9004
-        target: 9000
-
-        mode: host
-      - published: 9444
-        target: 9443
-
-        mode: host
-      # - "0.0.0.0:${AUTHENTIK_PORT_HTTP:-9004}:9000"
-      # - "0.0.0.0:${AUTHENTIK_PORT_HTTPS:-9444}:9443"
-  worker:
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2022.9.0}
-    restart: unless-stopped
-    command: worker
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == manager
-    environment:
-      AUTHENTIK_SECRET_KEY: $AUTHENTIK_SECRET_KEY
-      AUTHENTIK_ERROR_REPORTING__ENABLED: "true"
-      # ----- email
-      # SMTP Host Emails are sent to
-      AUTHENTIK_EMAIL__HOST: $AUTHENTIK_EMAIL__HOST
-      AUTHENTIK_EMAIL__PORT: $AUTHENTIK_EMAIL__PORT
-      # Optionally authenticate (don't add quotation marks to you password)
-      AUTHENTIK_EMAIL__USERNAME: $AUTHENTIK_EMAIL__USERNAME
-      AUTHENTIK_EMAIL__PASSWORD: $AUTHENTIK_EMAIL__PASSWORD
-      # Use StartTLS
-      AUTHENTIK_EMAIL__USE_TLS: $AUTHENTIK_EMAIL__USE_TLS
-      # Use SSL
-      AUTHENTIK_EMAIL__USE_SSL: $AUTHENTIK_EMAIL__USE_SSL
-      AUTHENTIK_EMAIL__TIMEOUT: ${AUTHENTIK_EMAIL__TIMEOUT:-10}
-      # Email address authentik will send from, should have a correct @domain
-      AUTHENTIK_EMAIL__FROM: $AUTHENTIK_EMAIL__FROM
-
-      GEOIPUPDATE_ACCOUNT_ID: $GEOIPUPDATE_ACCOUNT_ID
-      GEOIPUPDATE_LICENSE_KEY: $GEOIPUPDATE_LICENSE_KEY
-      AUTHENTIK_AUTHENTIK__GEOIP: /geoip/GeoLite2-City.mmdb
-
-      AUTHENTIK_PORT_HTTP: 9004
-      AUTHENTIK_PORT_HTTPS: 9444
-      AUTHENTIK_TAG: 2022.9.0
-      AUTHENTIK_REDIS__HOST: redis
-      AUTHENTIK_POSTGRESQL__HOST: postgresql
-      AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
-      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
-      AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
-      # AUTHENTIK_ERROR_REPORTING__ENABLED: "true"
-      # This is optional, and can be removed. If you remove this, the following will happen
-      # - The permissions for the /media folders aren't fixed, so make sure they are 1000:1000
-      # - The docker socket can't be accessed anymore
-    user: root
-    volumes:
-      - media:/media
-      - certs:/certs
-      - /var/run/docker.sock:/var/run/docker.sock
-      - custom-templates:/templates
-      - geoip:/geoip
-    # env_file:
-    #   - .env
-  geoipupdate:
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == manager
-    image: "maxmindinc/geoipupdate:latest"
-    volumes:
-      - "geoip:/usr/share/GeoIP"
-    environment:
-      GEOIPUPDATE_EDITION_IDS: "GeoLite2-City"
-      GEOIPUPDATE_FREQUENCY: "8"
-      GEOIPUPDATE_ACCOUNT_ID: $GEOIPUPDATE_ACCOUNT_ID
-      GEOIPUPDATE_LICENSE_KEY: $GEOIPUPDATE_LICENSE_KEY
-    # env_file:
-    #   - .env
-
-volumes:
-  database:
-    driver: local
-  redis:
-    driver: local
-  geoip:
-    driver: local
-  media:
-    driver: local
-  certs:
-    driver: local
-  custom-templates:
-    driver: local
-
-```
-
-And the .env for authentik.
-
-```plain
-PG_PASS=
-AUTHENTIK_SECRET_KEY=
-AUTHENTIK_ERROR_REPORTING__ENABLED=
-
-# ----- email
-
-# SMTP Host Emails are sent to
-AUTHENTIK_EMAIL__HOST=
-AUTHENTIK_EMAIL__PORT=
-# Optionally authenticate (don't add quotation marks to you password)
-AUTHENTIK_EMAIL__USERNAME=
-AUTHENTIK_EMAIL__PASSWORD=
-# Use StartTLS
-AUTHENTIK_EMAIL__USE_TLS=
-# Use SSL
-AUTHENTIK_EMAIL__USE_SSL=
-AUTHENTIK_EMAIL__TIMEOUT=
-# Email address authentik will send from, should have a correct @domain
-AUTHENTIK_EMAIL__FROM=
-
-GEOIPUPDATE_ACCOUNT_ID=
-GEOIPUPDATE_LICENSE_KEY=
-AUTHENTIK_AUTHENTIK__GEOIP=
-
-AUTHENTIK_PORT_HTTP=
-AUTHENTIK_PORT_HTTPS=
-AUTHENTIK_TAG= 
-```
+To change the data, edit the CSV files and run `npm run buildData` (or `npm run dev`/`npm run build`, which run it for you). The generated `./data/*.json` files are build artifacts and are git-ignored.
 
 ## Contributors
 
