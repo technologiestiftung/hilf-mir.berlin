@@ -54,7 +54,7 @@ jobs:
           node-version: ${{ steps.nvm.outputs.NVMRC }}
       - run: npm ci
       - id: semantic-release
-        uses: cycjimmy/semantic-release-action@v3
+        uses: cycjimmy/semantic-release-action@v6.0.0
         with:
           semantic_version: 18
         env:
