@@ -125,7 +125,7 @@ const FAQS: {
     answer: (
       <p>
         Bitte schreibe eine Mail an:{' '}
-        <a href="mailto:info@hilf-mir.berlin">info@hilf-mir.berlin</a>
+        <a href="mailto:wegweiser@senwgp.berlin.de">wegweiser@senwgp.berlin.de</a>
       </p>
     ),
   },
@@ -135,7 +135,7 @@ const FAQS: {
     answer: (
       <p>
         Bitte schreibe eine Mail an:{' '}
-        <a href="mailto:info@hilf-mir.berlin">info@hilf-mir.berlin</a>
+        <a href="mailto:wegweiser@senwgp.berlin.de">wegweiser@senwgp.berlin.de</a>
       </p>
     ),
   },
@@ -150,7 +150,7 @@ const FAQS: {
         </p>
         <p>
           Bitte schreibe eine Mail mit deinem Lob oder deiner Kritik an:{' '}
-          <a href="mailto:info@hilf-mir.berlin">info@hilf-mir.berlin</a>
+          <a href="mailto:wegweiser@senwgp.berlin.de">wegweiser@senwgp.berlin.de</a>
         </p>
       </>
     ),
